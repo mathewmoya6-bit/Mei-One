@@ -1,345 +1,695 @@
+/* ============================================================
+MEI ONE - AUTHENTICATION
+js/auth.js
+
+Admin users  -> admin.html
+Customers    -> dashboard.html
+============================================================ */
+
 (function () {
-  'use strict';
+'use strict';
 
-  const SUPABASE =
+```
+const SUPABASE =
     window.supabaseClient ||
-    window.MEISupabase ||
-    null;
+    window.MEISupabase;
 
-  const CONFIG = window.MEI_CONFIG || {};
-
-  const ROUTES = CONFIG.routes || {};
-
-  const LOGIN_ROUTE =
-    ROUTES.login || 'login.html';
-
-  const DASHBOARD_ROUTE =
-    ROUTES.dashboard || 'dashboard.html';
-
-  function $(selector) {
-    return document.querySelector(selector);
-  }
-
-  function showMessage(message, type) {
-    const element = $('#loginMessage');
-
-    if (!element) {
-      return;
-    }
-
-    element.textContent = message;
-    element.className = 'message show ' + (
-      type === 'success'
-        ? 'success'
-        : 'error'
+if (!SUPABASE) {
+    console.error(
+        'MEI One: Supabase client is not available.'
     );
-  }
+    return;
+}
 
-  function clearMessage() {
-    const element = $('#loginMessage');
+const $ = selector =>
+    document.querySelector(selector);
 
-    if (!element) {
-      return;
+/* ----------------------------------------------------------
+   CONFIG
+---------------------------------------------------------- */
+
+const ADMIN_ROLES = [
+    'SUPER_ADMIN',
+    'ADMIN',
+    'OPERATIONS',
+    'FINANCE',
+    'SUPPORT',
+    'AUDITOR'
+];
+
+/* ----------------------------------------------------------
+   HELPERS
+---------------------------------------------------------- */
+
+function timeoutPromise(
+    promise,
+    milliseconds = 10000
+) {
+    return Promise.race([
+        promise,
+
+        new Promise((_, reject) => {
+            setTimeout(() => {
+                reject(
+                    new Error(
+                        'Request timed out.'
+                    )
+                );
+            }, milliseconds);
+        })
+    ]);
+}
+
+function setLoading(
+    loading,
+    button = null
+) {
+    if (button) {
+        button.disabled = loading;
+
+        if (loading) {
+            button.dataset.originalText =
+                button.textContent;
+
+            button.textContent =
+                'Signing in...';
+        } else {
+            button.textContent =
+                button.dataset.originalText ||
+                'Sign in';
+        }
     }
 
-    element.textContent = '';
-    element.className = 'message';
-  }
+    document.body.classList.toggle(
+        'auth-loading',
+        loading
+    );
+}
 
-  function setLoading(isLoading) {
-    const button = $('#loginButton');
+function showError(message) {
 
-    if (!button) {
-      return;
+    const errorElement =
+        $('#loginError') ||
+        $('#authError') ||
+        $('.login-error');
+
+    if (errorElement) {
+        errorElement.textContent =
+            message;
+
+        errorElement.style.display =
+            'block';
+
+        return;
     }
 
-    button.disabled = isLoading;
-    button.textContent = isLoading
-      ? 'Signing in...'
-      : 'Sign In';
-  }
+    alert(message);
+}
 
-  function redirectToDashboard() {
-    window.location.replace(DASHBOARD_ROUTE);
-  }
+function clearError() {
 
-  function getFriendlyError(error) {
-    if (!error) {
-      return 'Unable to sign in. Please try again.';
+    const errorElement =
+        $('#loginError') ||
+        $('#authError') ||
+        $('.login-error');
+
+    if (errorElement) {
+        errorElement.textContent = '';
+        errorElement.style.display =
+            'none';
     }
+}
 
-    const message = String(
-      error.message || ''
-    ).toLowerCase();
+/* ----------------------------------------------------------
+   CHECK ADMIN ROLE
+---------------------------------------------------------- */
 
-    if (
-      message.includes('invalid login credentials') ||
-      message.includes('invalid credentials')
-    ) {
-      return 'Incorrect email or password.';
-    }
-
-    if (message.includes('email not confirmed')) {
-      return 'Please confirm your email address before signing in.';
-    }
-
-    if (message.includes('too many requests')) {
-      return 'Too many attempts. Please wait a moment and try again.';
-    }
-
-    return error.message ||
-      'Unable to sign in. Please try again.';
-  }
-
-  async function checkExistingSession() {
-    if (!SUPABASE) {
-      showMessage(
-        'Authentication is not configured. Check js/config.js and js/supabase.js.',
-        'error'
-      );
-      return;
-    }
+async function getAdminRecord(
+    userId
+) {
 
     try {
-      const result = await SUPABASE.auth.getSession();
 
-      if (result.error) {
-        console.error(
-          'Session check failed:',
-          result.error
-        );
-        return;
-      }
+        const result =
+            await timeoutPromise(
+                SUPABASE
+                    .from('admin_users')
+                    .select(
+                        'id,user_id,role,is_active'
+                    )
+                    .eq(
+                        'user_id',
+                        userId
+                    )
+                    .maybeSingle(),
 
-      if (result.data && result.data.session) {
-        redirectToDashboard();
-      }
+                8000
+            );
+
+        if (result.error) {
+
+            console.error(
+                'MEI One: Admin lookup failed:',
+                result.error
+            );
+
+            /*
+             * IMPORTANT:
+             * A failed admin lookup should not
+             * prevent a normal customer from
+             * signing in.
+             */
+
+            return null;
+        }
+
+        if (
+            !result.data ||
+            !result.data.is_active
+        ) {
+            return null;
+        }
+
+        if (
+            !ADMIN_ROLES.includes(
+                result.data.role
+            )
+        ) {
+            return null;
+        }
+
+        return result.data;
+
     } catch (error) {
-      console.error(
-        'Unexpected session error:',
-        error
-      );
-    }
-  }
 
-  async function handleLogin(event) {
+        console.error(
+            'MEI One: Admin lookup timeout:',
+            error
+        );
+
+        return null;
+    }
+}
+
+/* ----------------------------------------------------------
+   REDIRECT AFTER LOGIN
+---------------------------------------------------------- */
+
+async function redirectUser(
+    user
+) {
+
+    if (!user?.id) {
+        window.location.href =
+            'login.html';
+
+        return;
+    }
+
+    console.log(
+        'MEI One: Checking account type...'
+    );
+
+    const admin =
+        await getAdminRecord(
+            user.id
+        );
+
+    if (admin) {
+
+        console.log(
+            'MEI One: Administrator detected:',
+            admin.role
+        );
+
+        /*
+         * SUPER_ADMIN and all active
+         * administrator roles go here.
+         */
+
+        window.location.replace(
+            'admin.html'
+        );
+
+        return;
+    }
+
+    console.log(
+        'MEI One: Customer account detected.'
+    );
+
+    window.location.replace(
+        'dashboard.html'
+    );
+}
+
+/* ----------------------------------------------------------
+   EXISTING SESSION
+---------------------------------------------------------- */
+
+async function checkExistingSession() {
+
+    try {
+
+        const result =
+            await timeoutPromise(
+                SUPABASE.auth.getSession(),
+                8000
+            );
+
+        if (result.error) {
+
+            console.error(
+                'MEI One: Session error:',
+                result.error
+            );
+
+            return;
+        }
+
+        const session =
+            result.data?.session;
+
+        if (!session?.user) {
+            return;
+        }
+
+        console.log(
+            'MEI One: Existing session found:',
+            session.user.email
+        );
+
+        await redirectUser(
+            session.user
+        );
+
+    } catch (error) {
+
+        console.error(
+            'MEI One: Session check failed:',
+            error
+        );
+    }
+}
+
+/* ----------------------------------------------------------
+   LOGIN
+---------------------------------------------------------- */
+
+async function handleLogin(
+    event
+) {
+
     event.preventDefault();
 
-    clearMessage();
+    clearError();
 
-    if (!SUPABASE) {
-      showMessage(
-        'Authentication is not configured.',
-        'error'
-      );
-      return;
-    }
+    const form =
+        event.currentTarget;
 
-    const emailInput = $('#email');
-    const passwordInput = $('#password');
+    const emailInput =
+        form.querySelector(
+            '[name="email"], #email'
+        );
 
-    const email = emailInput
-      ? emailInput.value.trim()
-      : '';
+    const passwordInput =
+        form.querySelector(
+            '[name="password"], #password'
+        );
 
-    const password = passwordInput
-      ? passwordInput.value
-      : '';
+    const submitButton =
+        form.querySelector(
+            'button[type="submit"]'
+        );
+
+    const email =
+        emailInput?.value
+            ?.trim()
+            .toLowerCase();
+
+    const password =
+        passwordInput?.value || '';
 
     if (!email) {
-      showMessage(
-        'Please enter your email address.',
-        'error'
-      );
 
-      if (emailInput) {
-        emailInput.focus();
-      }
+        showError(
+            'Please enter your email address.'
+        );
 
-      return;
+        return;
     }
 
     if (!password) {
-      showMessage(
-        'Please enter your password.',
-        'error'
-      );
 
-      if (passwordInput) {
-        passwordInput.focus();
-      }
-
-      return;
-    }
-
-    setLoading(true);
-
-    try {
-      const result =
-        await SUPABASE.auth.signInWithPassword({
-          email: email,
-          password: password
-        });
-
-      if (result.error) {
-        throw result.error;
-      }
-
-      showMessage(
-        'Login successful. Opening your dashboard...',
-        'success'
-      );
-
-      window.setTimeout(
-        redirectToDashboard,
-        350
-      );
-
-    } catch (error) {
-      console.error(
-        'Login failed:',
-        error
-      );
-
-      showMessage(
-        getFriendlyError(error),
-        'error'
-      );
-
-      setLoading(false);
-    }
-  }
-
-  async function handlePasswordReset() {
-    clearMessage();
-
-    if (!SUPABASE) {
-      showMessage(
-        'Authentication is not configured.',
-        'error'
-      );
-      return;
-    }
-
-    const emailInput = $('#email');
-
-    const email = emailInput
-      ? emailInput.value.trim()
-      : '';
-
-    if (!email) {
-      showMessage(
-        'Enter your email address first, then select Forgot password.',
-        'error'
-      );
-
-      if (emailInput) {
-        emailInput.focus();
-      }
-
-      return;
-    }
-
-    try {
-      const redirectBase =
-        window.location.origin +
-        window.location.pathname
-          .replace(/\/[^/]*$/, '/');
-
-      const redirectUrl =
-        redirectBase +
-        'reset-password.html';
-
-      const result =
-        await SUPABASE.auth.resetPasswordForEmail(
-          email,
-          {
-            redirectTo: redirectUrl
-          }
+        showError(
+            'Please enter your password.'
         );
 
-      if (result.error) {
-        throw result.error;
-      }
+        return;
+    }
 
-      showMessage(
-        'Password reset instructions have been sent to your email.',
-        'success'
-      );
+    setLoading(
+        true,
+        submitButton
+    );
+
+    try {
+
+        console.log(
+            'MEI One: Signing in:',
+            email
+        );
+
+        const result =
+            await timeoutPromise(
+                SUPABASE.auth
+                    .signInWithPassword({
+                        email,
+                        password
+                    }),
+                12000
+            );
+
+        if (result.error) {
+
+            console.error(
+                'MEI One: Login failed:',
+                result.error
+            );
+
+            throw result.error;
+        }
+
+        const user =
+            result.data?.user;
+
+        if (!user) {
+
+            throw new Error(
+                'Login succeeded but no user was returned.'
+            );
+        }
+
+        console.log(
+            'MEI One: Login successful:',
+            user.email
+        );
+
+        /*
+         * Give Supabase a moment to persist
+         * the session before checking role.
+         */
+
+        await new Promise(resolve =>
+            setTimeout(resolve, 150)
+        );
+
+        await redirectUser(
+            user
+        );
 
     } catch (error) {
-      console.error(
-        'Password reset failed:',
-        error
-      );
 
-      showMessage(
-        error.message ||
-        'Unable to send password reset instructions.',
-        'error'
-      );
+        console.error(
+            'MEI One: Authentication error:',
+            error
+        );
+
+        let message =
+            'Unable to sign in. Please try again.';
+
+        if (
+            error?.message
+                ?.toLowerCase()
+                .includes(
+                    'invalid login credentials'
+                )
+        ) {
+            message =
+                'Incorrect email or password.';
+        }
+
+        if (
+            error?.message
+                ?.toLowerCase()
+                .includes(
+                    'email not confirmed'
+                )
+        ) {
+            message =
+                'Please confirm your email address before signing in.';
+        }
+
+        if (
+            error?.message
+                ?.toLowerCase()
+                .includes(
+                    'timed out'
+                )
+        ) {
+            message =
+                'The login request timed out. Please check your internet connection and try again.';
+        }
+
+        showError(
+            message
+        );
+
+    } finally {
+
+        setLoading(
+            false,
+            submitButton
+        );
     }
-  }
+}
 
-  function setupPasswordToggle() {
-    const toggle = $('#togglePassword');
-    const input = $('#password');
+/* ----------------------------------------------------------
+   PASSWORD RESET
+---------------------------------------------------------- */
 
-    if (!toggle || !input) {
-      return;
+async function handlePasswordReset(
+    event
+) {
+
+    event.preventDefault();
+
+    clearError();
+
+    const emailInput =
+        $('#email') ||
+        $('[name="email"]');
+
+    const email =
+        emailInput?.value
+            ?.trim()
+            .toLowerCase();
+
+    if (!email) {
+
+        showError(
+            'Enter your email address first.'
+        );
+
+        return;
     }
 
-    toggle.addEventListener(
-      'click',
-      function () {
-        const isPassword =
-          input.type === 'password';
+    try {
 
-        input.type =
-          isPassword
-            ? 'text'
-            : 'password';
+        const result =
+            await timeoutPromise(
+                SUPABASE.auth
+                    .resetPasswordForEmail(
+                        email,
+                        {
+                            redirectTo:
+                                `${window.location.origin}/login.html`
+                        }
+                    ),
+                10000
+            );
 
-        toggle.textContent =
-          isPassword
-            ? 'HIDE'
-            : 'SHOW';
-      }
+        if (result.error) {
+            throw result.error;
+        }
+
+        alert(
+            'Password reset instructions have been sent to your email.'
+        );
+
+    } catch (error) {
+
+        console.error(
+            'MEI One: Password reset failed:',
+            error
+        );
+
+        showError(
+            'Unable to send password reset instructions.'
+        );
+    }
+}
+
+/* ----------------------------------------------------------
+   PASSWORD VISIBILITY
+---------------------------------------------------------- */
+
+function setupPasswordToggle() {
+
+    const buttons = document.querySelectorAll(
+        '[data-password-toggle], #togglePassword, .password-toggle'
     );
-  }
 
-  function setup() {
-    const form = $('#loginForm');
+    buttons.forEach(button => {
 
-    if (form) {
-      form.addEventListener(
-        'submit',
-        handleLogin
-      );
+        button.addEventListener(
+            'click',
+            () => {
+
+                const input =
+                    $('#password') ||
+                    $('[name="password"]');
+
+                if (!input) {
+                    return;
+                }
+
+                const visible =
+                    input.type === 'text';
+
+                input.type =
+                    visible
+                        ? 'password'
+                        : 'text';
+
+                button.textContent =
+                    visible
+                        ? 'Show'
+                        : 'Hide';
+            }
+        );
+
+    });
+}
+
+/* ----------------------------------------------------------
+   AUTH STATE
+---------------------------------------------------------- */
+
+function setupAuthListener() {
+
+    SUPABASE.auth.onAuthStateChange(
+        async (
+            event,
+            session
+        ) => {
+
+            if (
+                event ===
+                'SIGNED_IN'
+            ) {
+
+                /*
+                 * Do not redirect if this
+                 * listener fires while the
+                 * explicit login handler
+                 * is already redirecting.
+                 */
+
+                if (
+                    window.location.pathname
+                        .toLowerCase()
+                        .endsWith(
+                            '/login.html'
+                        )
+                ) {
+
+                    const user =
+                        session?.user;
+
+                    if (user) {
+                        await redirectUser(
+                            user
+                        );
+                    }
+                }
+            }
+
+            if (
+                event ===
+                'SIGNED_OUT'
+            ) {
+
+                console.log(
+                    'MEI One: Signed out.'
+                );
+            }
+        }
+    );
+}
+
+/* ----------------------------------------------------------
+   INITIALIZE
+---------------------------------------------------------- */
+
+function init() {
+
+    const loginForm =
+        $('#loginForm') ||
+        document.querySelector(
+            'form'
+        );
+
+    if (loginForm) {
+
+        loginForm.addEventListener(
+            'submit',
+            handleLogin
+        );
     }
 
-    const forgotButton =
-      $('#forgotPassword');
+    const resetButton =
+        $('#forgotPassword') ||
+        $('[data-action="forgot-password"]');
 
-    if (forgotButton) {
-      forgotButton.addEventListener(
-        'click',
-        handlePasswordReset
-      );
+    if (resetButton) {
+
+        resetButton.addEventListener(
+            'click',
+            handlePasswordReset
+        );
     }
 
     setupPasswordToggle();
 
-    checkExistingSession();
-  }
+    setupAuthListener();
 
-  if (document.readyState === 'loading') {
-    document.addEventListener(
-      'DOMContentLoaded',
-      setup
+    checkExistingSession();
+
+    console.log(
+        'MEI One: Auth initialized.'
     );
-  } else {
-    setup();
-  }
+}
+
+/* ----------------------------------------------------------
+   START
+---------------------------------------------------------- */
+
+if (
+    document.readyState ===
+    'loading'
+) {
+
+    document.addEventListener(
+        'DOMContentLoaded',
+        init
+    );
+
+} else {
+
+    init();
+
+}
+```
 
 })();
