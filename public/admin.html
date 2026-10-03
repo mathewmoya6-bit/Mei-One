@@ -2,20 +2,13 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
-  >
-
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#07111f">
+  <meta name="robots" content="noindex">
+  <meta name="description" content="MEI One administration dashboard.">
   <title>Admin Dashboard | MEI One</title>
 
-  <meta
-    name="description"
-    content="MEI One administration dashboard."
-  >
-
-  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/styles.css?v=3">
 
   <style>
     :root {
@@ -23,370 +16,262 @@
       --admin-sidebar: #091728;
       --admin-card: #0d1d31;
       --admin-card-2: #10243c;
-      --admin-text: #ffffff;
+      --admin-text: #fff;
       --admin-muted: #8e9caf;
-      --admin-green: #b7ff00;
-      --admin-border: rgba(255,255,255,.09);
-      --admin-danger: #ff5c5c;
+      --admin-faint: #63738a;
+      --admin-green: #39ff88;
+      --admin-border: rgba(255, 255, 255, .09);
+      --admin-danger: #ff8585;
+      --sidebar-width: 260px;
+      --topbar-height: 72px;
     }
 
-    * {
-      box-sizing: border-box;
-    }
+    *, *::before, *::after { box-sizing: border-box; }
 
     body {
       margin: 0;
       min-height: 100vh;
-      background: var(--admin-bg);
       color: var(--admin-text);
-      font-family: Inter, Arial, Helvetica, sans-serif;
+      background: var(--admin-bg);
+      font-family: Inter, system-ui, -apple-system, "Segoe UI", sans-serif;
+      -webkit-font-smoothing: antialiased;
     }
 
-    .admin-layout {
-      min-height: 100vh;
-      display: flex;
-    }
+    :focus-visible { outline: 3px solid rgba(57, 255, 136, .45); outline-offset: 2px; }
+
+    /* Layout ------------------------------------------------------------- */
+    .admin-layout { min-height: 100vh; }
 
     .admin-sidebar {
       position: fixed;
       inset: 0 auto 0 0;
-      width: 260px;
+      z-index: 100;
+      display: flex;
+      flex-direction: column;
+      width: var(--sidebar-width);
       padding: 22px 16px;
+      overflow-y: auto;
       background: var(--admin-sidebar);
       border-right: 1px solid var(--admin-border);
-      z-index: 100;
-      overflow-y: auto;
     }
 
-    .admin-brand {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      padding: 5px 10px 25px;
-    }
+    .admin-main { margin-left: var(--sidebar-width); min-height: 100vh; }
+
+    /* Sidebar ------------------------------------------------------------ */
+    .admin-brand { display: flex; align-items: center; gap: 12px; padding: 4px 10px 24px; }
 
     .admin-logo {
-      width: 42px;
-      height: 42px;
       display: grid;
       place-items: center;
+      flex: none;
+      width: 42px;
+      height: 42px;
       border-radius: 12px;
-      background: var(--admin-green);
       color: var(--admin-bg);
+      background: var(--admin-green);
       font-size: 15px;
-      font-weight: 950;
+      font-weight: 900;
     }
 
-    .admin-brand strong {
-      display: block;
-      font-size: 17px;
-      font-weight: 950;
-    }
-
-    .admin-brand span {
-      display: block;
-      margin-top: 2px;
-      color: var(--admin-muted);
-      font-size: 11px;
-    }
+    .admin-brand strong { display: block; font-size: 17px; font-weight: 800; line-height: 1.2; }
+    .admin-brand span { display: block; margin-top: 2px; color: var(--admin-muted); font-size: 11px; }
 
     .admin-nav-title {
       margin: 18px 10px 8px;
-      color: #63738a;
-      font-size: 10px;
-      font-weight: 900;
-      letter-spacing: 1px;
+      color: var(--admin-faint);
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: .08em;
       text-transform: uppercase;
     }
 
-    .admin-nav {
-      display: grid;
-      gap: 5px;
-    }
+    .admin-nav { display: grid; gap: 4px; }
 
     .admin-nav button,
-    .admin-nav a {
-      width: 100%;
-      min-height: 44px;
+    .admin-nav a,
+    .admin-logout {
       display: flex;
       align-items: center;
       gap: 11px;
+      width: 100%;
+      min-height: 44px;
       padding: 0 12px;
       border: 0;
       border-radius: 10px;
-      background: transparent;
       color: #b7c2d1;
-      text-align: left;
-      text-decoration: none;
+      background: transparent;
+      font: inherit;
       font-size: 13px;
       font-weight: 700;
+      text-align: left;
+      text-decoration: none;
       cursor: pointer;
+      transition: background 160ms ease, color 160ms ease;
     }
 
     .admin-nav button:hover,
     .admin-nav a:hover,
     .admin-nav .active {
-      background: rgba(183,255,0,.08);
       color: var(--admin-green);
+      background: rgba(57, 255, 136, .08);
     }
+    .admin-nav .active { box-shadow: inset 3px 0 0 var(--admin-green); }
 
-    .admin-nav-icon {
-      width: 23px;
-      text-align: center;
-      font-size: 15px;
-    }
+    .admin-nav-icon { flex: none; width: 22px; text-align: center; font-size: 15px; }
 
-    .admin-sidebar-footer {
-      position: absolute;
-      left: 16px;
-      right: 16px;
-      bottom: 18px;
-    }
+    .admin-sidebar-footer { margin-top: auto; padding-top: 18px; }
+    .admin-logout { color: var(--admin-danger); background: rgba(255, 92, 92, .07); font-weight: 800; }
+    .admin-logout:hover { background: rgba(255, 92, 92, .14); }
 
-    .admin-main {
-      width: calc(100% - 260px);
-      margin-left: 260px;
-      min-height: 100vh;
-    }
-
+    /* Topbar ------------------------------------------------------------- */
     .admin-topbar {
       position: sticky;
       top: 0;
       z-index: 50;
-      height: 72px;
       display: flex;
       align-items: center;
       justify-content: space-between;
+      gap: 16px;
+      height: var(--topbar-height);
       padding: 0 28px;
-      background: rgba(7,17,31,.90);
+      background: rgba(7, 17, 31, .9);
       border-bottom: 1px solid var(--admin-border);
       backdrop-filter: blur(16px);
     }
 
+    .topbar-left { display: flex; align-items: center; gap: 12px; min-width: 0; }
+
     .mobile-menu {
       display: none;
-      border: 0;
+      width: 42px;
+      height: 42px;
+      border: 1px solid var(--admin-border);
+      border-radius: 10px;
+      color: #fff;
       background: transparent;
-      color: white;
-      font-size: 24px;
+      font-size: 20px;
       cursor: pointer;
     }
 
-    .topbar-title h1 {
-      margin: 0;
-      font-size: 19px;
-      font-weight: 950;
-    }
+    .topbar-title h1 { margin: 0; font-size: 19px; font-weight: 800; letter-spacing: -.01em; }
+    .topbar-title p { margin: 2px 0 0; color: var(--admin-muted); font-size: 12px; }
 
-    .topbar-title p {
-      margin: 3px 0 0;
-      color: var(--admin-muted);
-      font-size: 11px;
-    }
-
-    .admin-user {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
+    .admin-user { display: flex; align-items: center; gap: 10px; }
+    .admin-user-info { text-align: right; line-height: 1.3; }
+    .admin-user-info strong { display: block; font-size: 13px; }
+    .admin-user-info span { display: block; color: var(--admin-muted); font-size: 11px; }
 
     .admin-avatar {
-      width: 38px;
-      height: 38px;
       display: grid;
       place-items: center;
+      flex: none;
+      width: 38px;
+      height: 38px;
       border-radius: 50%;
-      background: var(--admin-green);
       color: var(--admin-bg);
-      font-size: 13px;
-      font-weight: 950;
-    }
-
-    .admin-user-info {
-      text-align: right;
-    }
-
-    .admin-user-info strong {
-      display: block;
-      font-size: 12px;
-    }
-
-    .admin-user-info span {
-      display: block;
-      margin-top: 2px;
-      color: var(--admin-muted);
-      font-size: 10px;
-    }
-
-    .admin-content {
-      padding: 28px;
-      max-width: 1500px;
-      margin: auto;
-    }
-
-    .welcome {
-      margin-bottom: 25px;
-    }
-
-    .welcome h2 {
-      margin: 0;
-      font-size: 28px;
-      font-weight: 950;
-      letter-spacing: -.7px;
-    }
-
-    .welcome p {
-      margin: 7px 0 0;
-      color: var(--admin-muted);
-      font-size: 13px;
-    }
-
-    .stat-grid {
-      display: grid;
-      grid-template-columns: repeat(4, minmax(0, 1fr));
-      gap: 15px;
-      margin-bottom: 22px;
-    }
-
-    .stat-card {
-      padding: 20px;
-      background: var(--admin-card);
-      border: 1px solid var(--admin-border);
-      border-radius: 16px;
-    }
-
-    .stat-label {
-      color: var(--admin-muted);
-      font-size: 11px;
-      font-weight: 800;
-      text-transform: uppercase;
-      letter-spacing: .5px;
-    }
-
-    .stat-value {
-      margin-top: 10px;
-      font-size: 28px;
-      font-weight: 950;
-    }
-
-    .stat-note {
-      margin-top: 7px;
-      color: #63738a;
-      font-size: 10px;
-    }
-
-    .section-grid {
-      display: grid;
-      grid-template-columns: 1.5fr 1fr;
-      gap: 20px;
-    }
-
-    .panel {
-      background: var(--admin-card);
-      border: 1px solid var(--admin-border);
-      border-radius: 18px;
-      overflow: hidden;
-    }
-
-    .panel-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 18px 20px;
-      border-bottom: 1px solid var(--admin-border);
-    }
-
-    .panel-header h3 {
-      margin: 0;
+      background: var(--admin-green);
       font-size: 14px;
       font-weight: 900;
     }
 
-    .panel-header span {
-      color: var(--admin-muted);
-      font-size: 11px;
-    }
+    /* Content ------------------------------------------------------------ */
+    .admin-content { max-width: 1500px; margin-inline: auto; padding: 28px; }
 
-    .panel-body {
+    .welcome { margin-bottom: 24px; }
+    .welcome h2 { margin: 0; font-size: 28px; font-weight: 900; letter-spacing: -.02em; }
+    .welcome p { margin: 6px 0 0; color: var(--admin-muted); font-size: 14px; }
+
+    .stat-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; margin-bottom: 20px; }
+
+    .stat-card {
       padding: 20px;
+      border: 1px solid var(--admin-border);
+      border-radius: 16px;
+      background: var(--admin-card);
     }
+    .stat-label { color: var(--admin-muted); font-size: 11px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; }
+    .stat-value { margin-top: 10px; font-size: 30px; font-weight: 900; line-height: 1.1; }
+    .stat-note { margin-top: 8px; color: var(--admin-faint); font-size: 11px; }
 
-    .empty-state {
-      padding: 45px 20px;
-      text-align: center;
-      color: var(--admin-muted);
+    .section-grid { display: grid; grid-template-columns: 1.5fr 1fr; gap: 16px; align-items: start; }
+
+    .panel {
+      overflow: hidden;
+      border: 1px solid var(--admin-border);
+      border-radius: 18px;
+      background: var(--admin-card);
     }
+    .panel-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 18px 20px;
+      border-bottom: 1px solid var(--admin-border);
+    }
+    .panel-header h3 { margin: 0; font-size: 15px; font-weight: 800; }
+    .panel-header span { color: var(--admin-muted); font-size: 12px; }
+    .panel-body { padding: 20px; }
 
+    .empty-state { padding: 40px 20px; color: var(--admin-muted); text-align: center; }
     .empty-icon {
-      width: 52px;
-      height: 52px;
       display: grid;
       place-items: center;
+      width: 52px;
+      height: 52px;
       margin: 0 auto 14px;
       border-radius: 15px;
-      background: rgba(183,255,0,.07);
       color: var(--admin-green);
+      background: rgba(57, 255, 136, .07);
       font-size: 21px;
     }
+    .empty-state strong { display: block; margin-bottom: 6px; color: #fff; font-size: 15px; }
+    .empty-state p { max-width: 360px; margin: 0 auto; font-size: 13px; line-height: 1.6; }
 
-    .empty-state strong {
-      display: block;
-      margin-bottom: 6px;
-      color: white;
-      font-size: 14px;
-    }
-
-    .empty-state p {
-      max-width: 360px;
-      margin: auto;
-      font-size: 12px;
-      line-height: 1.6;
-    }
-
-    .quick-grid {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 10px;
-    }
+    .quick-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
 
     .quick-action {
-      min-height: 95px;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 3px;
+      min-height: 100px;
       padding: 15px;
       border: 1px solid var(--admin-border);
       border-radius: 13px;
+      color: #fff;
       background: var(--admin-card-2);
-      color: white;
+      font: inherit;
       text-align: left;
       cursor: pointer;
-      transition: .2s ease;
+      transition: border-color 160ms ease, transform 160ms ease;
     }
+    .quick-action:hover { border-color: rgba(57, 255, 136, .4); transform: translateY(-2px); }
+    .quick-action-icon { margin-bottom: 6px; color: var(--admin-green); font-size: 18px; }
+    .quick-action strong { font-size: 13px; }
+    .quick-action span { color: var(--admin-muted); font-size: 11px; line-height: 1.4; }
 
-    .quick-action:hover {
-      border-color: rgba(183,255,0,.35);
-      transform: translateY(-2px);
-    }
+    /* Activity list ------------------------------------------------------ */
+    .activity-item { display: flex; align-items: flex-start; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--admin-border); }
+    .activity-item:first-child { padding-top: 0; }
+    .activity-item:last-child { padding-bottom: 0; border-bottom: 0; }
+    .activity-icon { display: grid; place-items: center; flex: none; width: 32px; height: 32px; border-radius: 10px; color: var(--admin-green); background: rgba(57, 255, 136, .08); font-size: 13px; }
+    .activity-title { font-size: 13px; font-weight: 700; }
+    .activity-meta { margin-top: 2px; color: var(--admin-muted); font-size: 11px; }
 
-    .quick-action-icon {
-      color: var(--admin-green);
-      font-size: 18px;
-    }
+    /* Section views and data tables -------------------------------------- */
+    [hidden] { display: none !important; }
+    .table-wrap { overflow-x: auto; }
+    .data-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    .data-table th { padding: 10px 14px; color: var(--admin-muted); font-size: 11px; font-weight: 800; letter-spacing: .06em; text-align: left; text-transform: uppercase; white-space: nowrap; border-bottom: 1px solid var(--admin-border); }
+    .data-table td { max-width: 260px; padding: 13px 14px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; border-bottom: 1px solid rgba(255, 255, 255, .05); }
+    .data-table tbody tr:hover { background: rgba(255, 255, 255, .03); }
+    .data-table tr:last-child td { border-bottom: 0; }
+    #viewSection .panel-body { padding: 0; }
+    #viewSection .empty-state { padding: 48px 20px; }
 
-    .quick-action strong {
-      display: block;
-      margin-top: 9px;
-      font-size: 12px;
-    }
-
-    .quick-action span {
-      display: block;
-      margin-top: 4px;
-      color: var(--admin-muted);
-      font-size: 10px;
-    }
-
-    .admin-overlay {
-      display: none;
-    }
+    /* Overlay and loading ------------------------------------------------ */
+    .admin-overlay { display: none; }
 
     .loading-screen {
       position: fixed;
@@ -394,117 +279,80 @@
       z-index: 9999;
       display: grid;
       place-items: center;
+      align-content: center;
+      gap: 18px;
+      padding: 20px;
+      text-align: center;
       background: var(--admin-bg);
     }
-
-    .loading-screen.hidden {
-      display: none;
-    }
+    .loading-screen.hidden { display: none; }
 
     .loader {
       width: 42px;
       height: 42px;
-      border: 4px solid rgba(255,255,255,.10);
+      border: 4px solid rgba(255, 255, 255, .1);
       border-top-color: var(--admin-green);
       border-radius: 50%;
       animation: spin .8s linear infinite;
     }
+    @keyframes spin { to { transform: rotate(360deg); } }
 
-    @keyframes spin {
-      to {
-        transform: rotate(360deg);
-      }
-    }
+    .loading-error { display: none; max-width: 380px; color: var(--admin-muted); font-size: 14px; line-height: 1.6; }
+    .loading-error strong { display: block; margin-bottom: 6px; color: #fff; font-size: 16px; }
+    .loading-error a { color: var(--admin-green); font-weight: 800; }
+    .loading-screen.failed .loader { display: none; }
+    .loading-screen.failed .loading-error { display: block; }
 
+    /* Responsive --------------------------------------------------------- */
     @media (max-width: 1050px) {
-      .stat-grid {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-      }
-
-      .section-grid {
-        grid-template-columns: 1fr;
-      }
+      .stat-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .section-grid { grid-template-columns: 1fr; }
     }
 
     @media (max-width: 800px) {
-      .admin-sidebar {
-        transform: translateX(-100%);
-        transition: transform .25s ease;
-      }
-
-      .admin-sidebar.open {
-        transform: translateX(0);
-      }
-
-      .admin-main {
-        width: 100%;
-        margin-left: 0;
-      }
-
-      .mobile-menu {
-        display: block;
-      }
-
-      .admin-overlay {
-        position: fixed;
-        inset: 0;
-        z-index: 90;
-        background: rgba(0,0,0,.55);
-      }
-
-      .admin-overlay.show {
-        display: block;
-      }
-
-      .admin-content {
-        padding: 20px 15px;
-      }
-
-      .admin-topbar {
-        padding: 0 15px;
-      }
-
-      .admin-user-info {
-        display: none;
-      }
+      .admin-sidebar { transform: translateX(-100%); transition: transform 250ms ease; }
+      .admin-sidebar.open { transform: none; box-shadow: 0 0 60px rgba(0, 0, 0, .5); }
+      .admin-main { margin-left: 0; }
+      .mobile-menu { display: grid; place-items: center; }
+      .admin-overlay { position: fixed; inset: 0; z-index: 90; background: rgba(0, 0, 0, .55); }
+      .admin-overlay.show { display: block; }
+      .admin-topbar { padding: 0 15px; }
+      .admin-content { padding: 20px 15px 48px; }
+      .admin-user-info { display: none; }
     }
 
     @media (max-width: 520px) {
-      .stat-grid {
-        grid-template-columns: 1fr;
-      }
+      .stat-grid, .quick-grid { grid-template-columns: 1fr; }
+      .welcome h2 { font-size: 23px; }
+    }
 
-      .welcome h2 {
-        font-size: 23px;
-      }
+    @media (prefers-reduced-motion: reduce) {
+      .loader { animation-duration: 2s; }
+      .admin-sidebar { transition: none; }
     }
   </style>
 </head>
 
 <body>
 
-  <div
-    id="adminLoading"
-    class="loading-screen"
-  >
-    <div class="loader"></div>
+  <!-- Loading screen (hidden by admin.js; fails open after 10s) -->
+  <div id="adminLoading" class="loading-screen" role="status" aria-live="polite">
+    <div class="loader" aria-hidden="true"></div>
+    <div class="loading-error">
+      <strong>Taking longer than expected</strong>
+      The dashboard could not finish loading. <a href="admin-login.html">Sign in again</a>
+      or <a href="admin.html">retry</a>. Details are in the browser console (F12).
+    </div>
   </div>
 
-  <div
-    id="adminOverlay"
-    class="admin-overlay"
-  ></div>
+  <div id="adminOverlay" class="admin-overlay"></div>
 
   <div class="admin-layout">
 
-    <aside
-      id="adminSidebar"
-      class="admin-sidebar"
-    >
-
+    <!-- Sidebar -->
+    <aside id="adminSidebar" class="admin-sidebar" aria-label="Admin navigation">
       <div class="admin-brand">
         <div class="admin-logo">MEI</div>
-
         <div>
           <strong>MEI One</strong>
           <span>Administration</span>
@@ -512,283 +360,157 @@
       </div>
 
       <div class="admin-nav-title">Overview</div>
-
       <nav class="admin-nav">
-
-        <button
-          type="button"
-          class="active"
-          data-admin-section="dashboard"
-        >
-          <span class="admin-nav-icon">▦</span>
-          Dashboard
-        </button>
-
-        <button
-          type="button"
-          data-admin-section="users"
-        >
-          <span class="admin-nav-icon">◉</span>
-          Users
-        </button>
-
-        <button
-          type="button"
-          data-admin-section="services"
-        >
-          <span class="admin-nav-icon">◆</span>
-          Services
-        </button>
-
-        <button
-          type="button"
-          data-admin-section="payments"
-        >
-          <span class="admin-nav-icon">▣</span>
-          Payments
-        </button>
-
-        <button
-          type="button"
-          data-admin-section="activity"
-        >
-          <span class="admin-nav-icon">◷</span>
-          Activity
-        </button>
-
+        <button type="button" class="active" data-admin-section="dashboard"><span class="admin-nav-icon" aria-hidden="true">▦</span>Dashboard</button>
+        <button type="button" data-admin-section="users"><span class="admin-nav-icon" aria-hidden="true">◉</span>Users</button>
+        <button type="button" data-admin-section="services"><span class="admin-nav-icon" aria-hidden="true">◆</span>Services</button>
+        <button type="button" data-admin-section="payments"><span class="admin-nav-icon" aria-hidden="true">▣</span>Payments</button>
+        <button type="button" data-admin-section="activity"><span class="admin-nav-icon" aria-hidden="true">◷</span>Activity</button>
       </nav>
 
       <div class="admin-nav-title">Management</div>
-
       <nav class="admin-nav">
-
-        <button
-          type="button"
-          data-admin-section="settings"
-        >
-          <span class="admin-nav-icon">⚙</span>
-          Settings
-        </button>
-
-        <a href="dashboard.html">
-          <span class="admin-nav-icon">←</span>
-          Customer Dashboard
-        </a>
-
+        <button type="button" data-admin-section="settings"><span class="admin-nav-icon" aria-hidden="true">⚙</span>Settings</button>
+        <a href="dashboard.html"><span class="admin-nav-icon" aria-hidden="true">←</span>Customer dashboard</a>
       </nav>
 
       <div class="admin-sidebar-footer">
-
-        <button
-          id="adminLogout"
-          type="button"
-          class="admin-nav"
-          style="
-            width:100%;
-            min-height:44px;
-            padding:0 12px;
-            border:0;
-            border-radius:10px;
-            background:rgba(255,92,92,.07);
-            color:#ff8585;
-            font-weight:800;
-            cursor:pointer;
-          "
-        >
-          Sign Out
-        </button>
-
+        <button id="adminLogout" type="button" class="admin-logout"><span class="admin-nav-icon" aria-hidden="true">↪</span>Sign out</button>
       </div>
-
     </aside>
 
+    <!-- Main -->
     <main class="admin-main">
 
       <header class="admin-topbar">
-
-        <div style="display:flex;align-items:center;gap:12px;">
-
-          <button
-            id="mobileMenu"
-            class="mobile-menu"
-            type="button"
-            aria-label="Open menu"
-          >
-            ☰
-          </button>
-
+        <div class="topbar-left">
+          <button id="mobileMenu" class="mobile-menu" type="button" aria-label="Open menu" aria-controls="adminSidebar">☰</button>
           <div class="topbar-title">
-            <h1>Admin Dashboard</h1>
+            <h1>Admin dashboard</h1>
             <p>MEI One platform management</p>
           </div>
-
         </div>
 
         <div class="admin-user">
-
           <div class="admin-user-info">
             <strong id="adminUserName">Administrator</strong>
-            <span id="adminUserEmail">Loading...</span>
+            <span id="adminUserEmail">Loading…</span>
           </div>
-
-          <div
-            id="adminAvatar"
-            class="admin-avatar"
-          >
-            A
-          </div>
-
+          <div id="adminAvatar" class="admin-avatar" aria-hidden="true">A</div>
         </div>
-
       </header>
 
       <section class="admin-content">
 
-        <div class="welcome">
-          <h2>Platform Overview</h2>
+        <!-- Dashboard view -->
+        <div id="viewDashboard">
 
-          <p>
-            Manage MEI One from one central administration workspace.
-          </p>
+        <div class="welcome">
+          <h2>Platform overview</h2>
+          <p>Manage MEI One from one central administration workspace.</p>
         </div>
 
         <div class="stat-grid">
-
           <article class="stat-card">
             <div class="stat-label">Users</div>
             <div class="stat-value" id="statUsers">—</div>
-            <div class="stat-note">
-              Database connection pending
-            </div>
+            <div class="stat-note">Registered accounts</div>
           </article>
-
           <article class="stat-card">
             <div class="stat-label">Services</div>
             <div class="stat-value" id="statServices">8</div>
-            <div class="stat-note">
-              MEI One service areas
-            </div>
+            <div class="stat-note">MEI One service areas</div>
           </article>
-
           <article class="stat-card">
             <div class="stat-label">Payments</div>
             <div class="stat-value" id="statPayments">—</div>
-            <div class="stat-note">
-              Database connection pending
-            </div>
+            <div class="stat-note">Recorded payments</div>
           </article>
-
           <article class="stat-card">
             <div class="stat-label">Activity</div>
             <div class="stat-value" id="statActivity">—</div>
-            <div class="stat-note">
-              Database connection pending
-            </div>
+            <div class="stat-note">Logged events</div>
           </article>
-
         </div>
 
         <div class="section-grid">
 
           <section class="panel">
-
             <div class="panel-header">
-              <h3>Recent Activity</h3>
-              <span>Live data will appear here</span>
+              <h3>Recent activity</h3>
+              <span>Latest events</span>
             </div>
-
-            <div class="panel-body">
-
+            <div class="panel-body" id="recentActivity">
               <div class="empty-state">
-
-                <div class="empty-icon">◷</div>
-
+                <div class="empty-icon" aria-hidden="true">◷</div>
                 <strong>No activity yet</strong>
-
-                <p>
-                  There are currently no activity records because the
-                  MEI One database tables have not been created yet.
-                  This section is ready for database integration.
-                </p>
-
+                <p>Sign-ins, requests and payments will be listed here as they happen.</p>
               </div>
-
             </div>
-
           </section>
 
           <section class="panel">
-
             <div class="panel-header">
-              <h3>Quick Actions</h3>
-              <span>Frontend ready</span>
+              <h3>Quick actions</h3>
+              <span>Shortcuts</span>
             </div>
-
             <div class="panel-body">
-
               <div class="quick-grid">
-
-                <button
-                  type="button"
-                  class="quick-action"
-                  data-admin-section="users"
-                >
-                  <div class="quick-action-icon">◉</div>
-                  <strong>Manage Users</strong>
-                  <span>Connect when users table exists</span>
+                <button type="button" class="quick-action" data-admin-section="users">
+                  <div class="quick-action-icon" aria-hidden="true">◉</div>
+                  <strong>Manage users</strong>
+                  <span>View and update accounts</span>
                 </button>
-
-                <button
-                  type="button"
-                  class="quick-action"
-                  data-admin-section="services"
-                >
-                  <div class="quick-action-icon">◆</div>
+                <button type="button" class="quick-action" data-admin-section="services">
+                  <div class="quick-action-icon" aria-hidden="true">◆</div>
                   <strong>Services</strong>
                   <span>Manage MEI One services</span>
                 </button>
-
-                <button
-                  type="button"
-                  class="quick-action"
-                  data-admin-section="payments"
-                >
-                  <div class="quick-action-icon">▣</div>
+                <button type="button" class="quick-action" data-admin-section="payments">
+                  <div class="quick-action-icon" aria-hidden="true">▣</div>
                   <strong>Payments</strong>
-                  <span>Payment records will appear here</span>
+                  <span>Review payment records</span>
                 </button>
-
-                <button
-                  type="button"
-                  class="quick-action"
-                  data-admin-section="settings"
-                >
-                  <div class="quick-action-icon">⚙</div>
+                <button type="button" class="quick-action" data-admin-section="settings">
+                  <div class="quick-action-icon" aria-hidden="true">⚙</div>
                   <strong>Settings</strong>
                   <span>Platform configuration</span>
                 </button>
-
               </div>
-
             </div>
-
           </section>
 
         </div>
+        </div>
+
+        <!-- Data view (users, services, payments, activity, settings) -->
+        <section id="viewSection" class="panel" hidden>
+          <div class="panel-header">
+            <h3 id="viewTitle">Section</h3>
+            <button type="button" class="quick-action" data-admin-section="dashboard" style="min-height:0;padding:8px 14px;flex-direction:row;">← Dashboard</button>
+          </div>
+          <div class="panel-body" id="viewBody"></div>
+        </section>
 
       </section>
-
     </main>
-
   </div>
 
+  <!-- Scripts -->
   <script src="js/config.js"></script>
-
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
-
   <script src="js/supabase.js"></script>
   <script src="js/site.js"></script>
   <script src="js/admin.js"></script>
 
+  <!-- Failsafe: never spin forever -->
+  <script>
+    setTimeout(function () {
+      var screen = document.getElementById('adminLoading');
+      if (screen && getComputedStyle(screen).display !== 'none') {
+        screen.classList.add('failed');
+      }
+    }, 10000);
+  </script>
 </body>
 </html>
