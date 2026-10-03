@@ -1,239 +1,91 @@
-```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#07111f">
+  <meta name="robots" content="noindex">
+  <meta name="description" content="MEI One administration dashboard.">
+  <title>Admin Dashboard | MEI One</title>
 
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
-  >
+  <link rel="stylesheet" href="css/styles.css?v=3">
 
-  <meta
-    name="theme-color"
-    content="#07111f"
-  >
-
-  <meta
-    name="robots"
-    content="noindex,nofollow"
-  >
-
-  <meta
-    name="description"
-    content="MEI One administration dashboard."
-  >
-
-  <title>MEI One | Administration</title>
-
-  <!-- Global stylesheet -->
-  <link
-    rel="stylesheet"
-    href="css/styles.css?v=4"
-  >
-
-  <!-- Admin stylesheet -->
   <style>
     :root {
       --admin-bg: #07111f;
       --admin-sidebar: #091728;
       --admin-card: #0d1d31;
-      --admin-card-hover: #10243c;
-      --admin-border: rgba(255,255,255,.09);
-
-      --admin-text: #ffffff;
-      --admin-muted: #91a0b5;
+      --admin-card-2: #10243c;
+      --admin-text: #fff;
+      --admin-muted: #8e9caf;
       --admin-faint: #63738a;
-
       --admin-green: #39ff88;
-      --admin-green-soft: rgba(57,255,136,.10);
-
-      --admin-danger: #ff6b7a;
-      --admin-danger-soft: rgba(255,107,122,.10);
-
-      --sidebar-width: 270px;
-      --header-height: 72px;
-
-      --radius-sm: 10px;
-      --radius-md: 14px;
-      --radius-lg: 18px;
+      --admin-border: rgba(255, 255, 255, .09);
+      --admin-danger: #ff8585;
+      --sidebar-width: 260px;
+      --topbar-height: 72px;
     }
 
-    *,
-    *::before,
-    *::after {
-      box-sizing: border-box;
-    }
-
-    html {
-      min-height: 100%;
-      background: var(--admin-bg);
-    }
+    *, *::before, *::after { box-sizing: border-box; }
 
     body {
       margin: 0;
       min-height: 100vh;
-
-      background:
-        radial-gradient(
-          circle at 80% 0%,
-          rgba(57,255,136,.045),
-          transparent 30%
-        ),
-        var(--admin-bg);
-
       color: var(--admin-text);
-
-      font-family:
-        Inter,
-        ui-sans-serif,
-        system-ui,
-        -apple-system,
-        BlinkMacSystemFont,
-        "Segoe UI",
-        sans-serif;
-
+      background: var(--admin-bg);
+      font-family: Inter, system-ui, -apple-system, "Segoe UI", sans-serif;
       -webkit-font-smoothing: antialiased;
-      text-rendering: optimizeLegibility;
     }
 
-    button,
-    input,
-    select,
-    textarea {
-      font: inherit;
-    }
+    :focus-visible { outline: 3px solid rgba(57, 255, 136, .45); outline-offset: 2px; }
 
-    button,
-    a {
-      -webkit-tap-highlight-color: transparent;
-    }
-
-    button {
-      border: 0;
-    }
-
-    a {
-      color: inherit;
-    }
-
-    [hidden] {
-      display: none !important;
-    }
-
-    :focus-visible {
-      outline: 3px solid rgba(57,255,136,.45);
-      outline-offset: 3px;
-    }
-
-    /* =========================================================
-       APP SHELL
-    ========================================================= */
-
-    .admin-layout {
-      min-height: 100vh;
-    }
-
-    .admin-main {
-      min-height: 100vh;
-      margin-left: var(--sidebar-width);
-    }
-
-    /* =========================================================
-       SIDEBAR
-    ========================================================= */
+    /* Layout ------------------------------------------------------------- */
+    .admin-layout { min-height: 100vh; }
 
     .admin-sidebar {
       position: fixed;
       inset: 0 auto 0 0;
-      z-index: 200;
-
+      z-index: 100;
       display: flex;
       flex-direction: column;
-
       width: var(--sidebar-width);
-      padding: 20px 15px;
-
+      padding: 22px 16px;
       overflow-y: auto;
-
-      background:
-        linear-gradient(
-          180deg,
-          #091728 0%,
-          #071422 100%
-        );
-
+      background: var(--admin-sidebar);
       border-right: 1px solid var(--admin-border);
     }
 
-    .admin-brand {
-      display: flex;
-      align-items: center;
-      gap: 12px;
+    .admin-main { margin-left: var(--sidebar-width); min-height: 100vh; }
 
-      padding: 4px 9px 24px;
-    }
+    /* Sidebar ------------------------------------------------------------ */
+    .admin-brand { display: flex; align-items: center; gap: 12px; padding: 4px 10px 24px; }
 
     .admin-logo {
       display: grid;
       place-items: center;
-
-      width: 44px;
-      height: 44px;
-
-      flex: 0 0 auto;
-
-      border-radius: 13px;
-
-      color: #06101c;
+      flex: none;
+      width: 42px;
+      height: 42px;
+      border-radius: 12px;
+      color: var(--admin-bg);
       background: var(--admin-green);
-
-      font-size: 14px;
-      font-weight: 950;
-
-      box-shadow:
-        0 0 22px rgba(57,255,136,.18);
-    }
-
-    .admin-brand-copy {
-      min-width: 0;
-    }
-
-    .admin-brand strong {
-      display: block;
-
-      font-size: 17px;
+      font-size: 15px;
       font-weight: 900;
-      letter-spacing: -.02em;
     }
 
-    .admin-brand span {
-      display: block;
-
-      margin-top: 2px;
-
-      color: var(--admin-muted);
-
-      font-size: 11px;
-      font-weight: 600;
-    }
+    .admin-brand strong { display: block; font-size: 17px; font-weight: 800; line-height: 1.2; }
+    .admin-brand span { display: block; margin-top: 2px; color: var(--admin-muted); font-size: 11px; }
 
     .admin-nav-title {
       margin: 18px 10px 8px;
-
       color: var(--admin-faint);
-
-      font-size: 10px;
-      font-weight: 900;
-
-      letter-spacing: .11em;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: .08em;
       text-transform: uppercase;
     }
 
-    .admin-nav {
-      display: grid;
-      gap: 4px;
-    }
+    .admin-nav { display: grid; gap: 4px; }
 
     .admin-nav button,
     .admin-nav a,
@@ -241,1483 +93,424 @@
       display: flex;
       align-items: center;
       gap: 11px;
-
       width: 100%;
-      min-height: 45px;
-
+      min-height: 44px;
       padding: 0 12px;
-
-      border-radius: 11px;
-
-      color: #b8c4d4;
+      border: 0;
+      border-radius: 10px;
+      color: #b7c2d1;
       background: transparent;
-
+      font: inherit;
       font-size: 13px;
-      font-weight: 750;
-
+      font-weight: 700;
       text-align: left;
       text-decoration: none;
-
       cursor: pointer;
-
-      transition:
-        color .16s ease,
-        background .16s ease,
-        transform .16s ease;
+      transition: background 160ms ease, color 160ms ease;
     }
 
     .admin-nav button:hover,
-    .admin-nav a:hover {
-      color: #ffffff;
-      background: rgba(255,255,255,.045);
-    }
-
-    .admin-nav button.active,
-    .admin-nav a.active {
+    .admin-nav a:hover,
+    .admin-nav .active {
       color: var(--admin-green);
-      background: var(--admin-green-soft);
-
-      box-shadow:
-        inset 3px 0 0 var(--admin-green);
+      background: rgba(57, 255, 136, .08);
     }
+    .admin-nav .active { box-shadow: inset 3px 0 0 var(--admin-green); }
 
-    .admin-nav-icon {
-      display: grid;
-      place-items: center;
+    .admin-nav-icon { flex: none; width: 22px; text-align: center; font-size: 15px; }
 
-      width: 22px;
-      min-width: 22px;
+    .admin-sidebar-footer { margin-top: auto; padding-top: 18px; }
+    .admin-logout { color: var(--admin-danger); background: rgba(255, 92, 92, .07); font-weight: 800; }
+    .admin-logout:hover { background: rgba(255, 92, 92, .14); }
 
-      color: currentColor;
-
-      font-size: 15px;
-    }
-
-    .admin-sidebar-footer {
-      margin-top: auto;
-      padding-top: 20px;
-    }
-
-    .admin-logout {
-      color: var(--admin-danger);
-      background: var(--admin-danger-soft);
-    }
-
-    .admin-logout:hover {
-      color: #ff9aa5;
-      background: rgba(255,107,122,.16);
-    }
-
-    /* =========================================================
-       TOP BAR
-    ========================================================= */
-
+    /* Topbar ------------------------------------------------------------- */
     .admin-topbar {
       position: sticky;
       top: 0;
-      z-index: 100;
-
+      z-index: 50;
       display: flex;
       align-items: center;
       justify-content: space-between;
-
-      min-height: var(--header-height);
+      gap: 16px;
+      height: var(--topbar-height);
       padding: 0 28px;
-
-      background: rgba(7,17,31,.88);
-
+      background: rgba(7, 17, 31, .9);
       border-bottom: 1px solid var(--admin-border);
-
-      backdrop-filter: blur(18px);
-      -webkit-backdrop-filter: blur(18px);
+      backdrop-filter: blur(16px);
     }
 
-    .topbar-left {
-      display: flex;
-      align-items: center;
-      gap: 13px;
-
-      min-width: 0;
-    }
+    .topbar-left { display: flex; align-items: center; gap: 12px; min-width: 0; }
 
     .mobile-menu {
       display: none;
-      place-items: center;
-
       width: 42px;
       height: 42px;
-
       border: 1px solid var(--admin-border);
-      border-radius: 11px;
-
-      color: #ffffff;
-      background: rgba(255,255,255,.03);
-
-      font-size: 19px;
-
+      border-radius: 10px;
+      color: #fff;
+      background: transparent;
+      font-size: 20px;
       cursor: pointer;
     }
 
-    .mobile-menu:hover {
-      background: rgba(255,255,255,.07);
-    }
+    .topbar-title h1 { margin: 0; font-size: 19px; font-weight: 800; letter-spacing: -.01em; }
+    .topbar-title p { margin: 2px 0 0; color: var(--admin-muted); font-size: 12px; }
 
-    .topbar-title {
-      min-width: 0;
-    }
-
-    .topbar-title h1 {
-      margin: 0;
-
-      font-size: 18px;
-      font-weight: 900;
-
-      letter-spacing: -.02em;
-    }
-
-    .topbar-title p {
-      margin: 3px 0 0;
-
-      color: var(--admin-muted);
-
-      font-size: 11px;
-      font-weight: 600;
-    }
-
-    .admin-user {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .admin-user-info {
-      text-align: right;
-      line-height: 1.35;
-    }
-
-    .admin-user-info strong {
-      display: block;
-
-      max-width: 220px;
-
-      overflow: hidden;
-
-      color: #ffffff;
-
-      font-size: 12px;
-      font-weight: 800;
-
-      text-overflow: ellipsis;
-      white-space: nowrap;
-    }
-
-    .admin-user-info span {
-      display: block;
-
-      max-width: 220px;
-
-      margin-top: 2px;
-
-      overflow: hidden;
-
-      color: var(--admin-muted);
-
-      font-size: 10px;
-
-      text-overflow: ellipsis;
-      white-space: nowrap;
-    }
+    .admin-user { display: flex; align-items: center; gap: 10px; }
+    .admin-user-info { text-align: right; line-height: 1.3; }
+    .admin-user-info strong { display: block; font-size: 13px; }
+    .admin-user-info span { display: block; color: var(--admin-muted); font-size: 11px; }
 
     .admin-avatar {
       display: grid;
       place-items: center;
-
-      width: 39px;
-      height: 39px;
-
-      flex: 0 0 auto;
-
+      flex: none;
+      width: 38px;
+      height: 38px;
       border-radius: 50%;
-
-      color: #06101c;
+      color: var(--admin-bg);
       background: var(--admin-green);
-
-      font-size: 13px;
-      font-weight: 950;
-
-      box-shadow:
-        0 0 18px rgba(57,255,136,.15);
+      font-size: 14px;
+      font-weight: 900;
     }
 
-    /* =========================================================
-       CONTENT
-    ========================================================= */
+    /* Content ------------------------------------------------------------ */
+    .admin-content { max-width: 1500px; margin-inline: auto; padding: 28px; }
 
-    .admin-content {
-      width: 100%;
-      max-width: 1550px;
+    .welcome { margin-bottom: 24px; }
+    .welcome h2 { margin: 0; font-size: 28px; font-weight: 900; letter-spacing: -.02em; }
+    .welcome p { margin: 6px 0 0; color: var(--admin-muted); font-size: 14px; }
 
-      margin: 0 auto;
-      padding: 30px;
-    }
-
-    .welcome {
-      margin-bottom: 25px;
-    }
-
-    .welcome h2 {
-      margin: 0;
-
-      font-size: clamp(24px, 3vw, 31px);
-      font-weight: 950;
-
-      letter-spacing: -.035em;
-    }
-
-    .welcome p {
-      margin: 7px 0 0;
-
-      color: var(--admin-muted);
-
-      font-size: 13px;
-      line-height: 1.6;
-    }
-
-    /* =========================================================
-       STAT CARDS
-    ========================================================= */
-
-    .stat-grid {
-      display: grid;
-
-      grid-template-columns:
-        repeat(4, minmax(0, 1fr));
-
-      gap: 15px;
-
-      margin-bottom: 18px;
-    }
+    .stat-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; margin-bottom: 20px; }
 
     .stat-card {
-      position: relative;
-
-      min-height: 135px;
-
       padding: 20px;
-
-      overflow: hidden;
-
       border: 1px solid var(--admin-border);
-      border-radius: var(--radius-lg);
-
-      background:
-        linear-gradient(
-          145deg,
-          rgba(16,36,60,.92),
-          rgba(13,29,49,.92)
-        );
+      border-radius: 16px;
+      background: var(--admin-card);
     }
+    .stat-label { color: var(--admin-muted); font-size: 11px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; }
+    .stat-value { margin-top: 10px; font-size: 30px; font-weight: 900; line-height: 1.1; }
+    .stat-note { margin-top: 8px; color: var(--admin-faint); font-size: 11px; }
 
-    .stat-card::after {
-      content: "";
-
-      position: absolute;
-
-      right: -35px;
-      bottom: -50px;
-
-      width: 110px;
-      height: 110px;
-
-      border-radius: 50%;
-
-      background: rgba(57,255,136,.035);
-    }
-
-    .stat-label {
-      color: var(--admin-muted);
-
-      font-size: 10px;
-      font-weight: 900;
-
-      letter-spacing: .09em;
-      text-transform: uppercase;
-    }
-
-    .stat-value {
-      margin-top: 10px;
-
-      color: #ffffff;
-
-      font-size: 31px;
-      font-weight: 950;
-
-      line-height: 1;
-      letter-spacing: -.035em;
-    }
-
-    .stat-note {
-      margin-top: 10px;
-
-      color: var(--admin-faint);
-
-      font-size: 11px;
-    }
-
-    /* =========================================================
-       PANELS
-    ========================================================= */
-
-    .section-grid {
-      display: grid;
-
-      grid-template-columns:
-        minmax(0, 1.45fr)
-        minmax(320px, .85fr);
-
-      gap: 16px;
-
-      align-items: start;
-    }
+    .section-grid { display: grid; grid-template-columns: 1.5fr 1fr; gap: 16px; align-items: start; }
 
     .panel {
       overflow: hidden;
-
       border: 1px solid var(--admin-border);
-      border-radius: var(--radius-lg);
-
-      background:
-        linear-gradient(
-          145deg,
-          rgba(13,29,49,.96),
-          rgba(10,24,41,.96)
-        );
+      border-radius: 18px;
+      background: var(--admin-card);
     }
-
     .panel-header {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 15px;
-
-      min-height: 62px;
-
-      padding: 0 20px;
-
+      gap: 12px;
+      padding: 18px 20px;
       border-bottom: 1px solid var(--admin-border);
     }
+    .panel-header h3 { margin: 0; font-size: 15px; font-weight: 800; }
+    .panel-header span { color: var(--admin-muted); font-size: 12px; }
+    .panel-body { padding: 20px; }
 
-    .panel-header h3 {
-      margin: 0;
-
-      color: #ffffff;
-
-      font-size: 14px;
-      font-weight: 850;
-    }
-
-    .panel-header > span {
-      color: var(--admin-muted);
-
-      font-size: 10px;
-      font-weight: 700;
-    }
-
-    .panel-body {
-      padding: 20px;
-    }
-
-    /* =========================================================
-       QUICK ACTIONS
-    ========================================================= */
-
-    .quick-grid {
+    .empty-state { padding: 40px 20px; color: var(--admin-muted); text-align: center; }
+    .empty-icon {
       display: grid;
-
-      grid-template-columns:
-        repeat(2, minmax(0, 1fr));
-
-      gap: 10px;
+      place-items: center;
+      width: 52px;
+      height: 52px;
+      margin: 0 auto 14px;
+      border-radius: 15px;
+      color: var(--admin-green);
+      background: rgba(57, 255, 136, .07);
+      font-size: 21px;
     }
+    .empty-state strong { display: block; margin-bottom: 6px; color: #fff; font-size: 15px; }
+    .empty-state p { max-width: 360px; margin: 0 auto; font-size: 13px; line-height: 1.6; }
+
+    .quick-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
 
     .quick-action {
       display: flex;
       flex-direction: column;
       align-items: flex-start;
-      justify-content: flex-start;
-
-      min-height: 104px;
-
+      gap: 3px;
+      min-height: 100px;
       padding: 15px;
-
       border: 1px solid var(--admin-border);
       border-radius: 13px;
-
-      color: #ffffff;
-      background: rgba(16,36,60,.72);
-
+      color: #fff;
+      background: var(--admin-card-2);
+      font: inherit;
       text-align: left;
-
       cursor: pointer;
-
-      transition:
-        transform .16s ease,
-        border-color .16s ease,
-        background .16s ease;
+      transition: border-color 160ms ease, transform 160ms ease;
     }
-
-    .quick-action:hover {
-      transform: translateY(-2px);
-
-      border-color: rgba(57,255,136,.35);
-
-      background: var(--admin-card-hover);
-    }
-
-    .quick-action-icon {
-      margin-bottom: 9px;
-
-      color: var(--admin-green);
-
-      font-size: 18px;
-    }
-
-    .quick-action strong {
-      font-size: 12px;
-      font-weight: 850;
-    }
-
-    .quick-action span {
-      margin-top: 4px;
-
-      color: var(--admin-muted);
-
-      font-size: 10px;
-      line-height: 1.5;
-    }
-
-    /* =========================================================
-       EMPTY STATE
-    ========================================================= */
-
-    .empty-state {
-      padding: 42px 20px;
-
-      color: var(--admin-muted);
-
-      text-align: center;
-    }
-
-    .empty-icon {
-      display: grid;
-      place-items: center;
-
-      width: 52px;
-      height: 52px;
-
-      margin: 0 auto 14px;
-
-      border-radius: 15px;
-
-      color: var(--admin-green);
-      background: var(--admin-green-soft);
-
-      font-size: 20px;
-    }
-
-    .empty-state strong {
-      display: block;
-
-      margin-bottom: 6px;
-
-      color: #ffffff;
-
-      font-size: 14px;
-      font-weight: 850;
-    }
-
-    .empty-state p {
-      max-width: 380px;
-
-      margin: 0 auto;
-
-      color: var(--admin-muted);
-
-      font-size: 12px;
-      line-height: 1.65;
-    }
-
-    /* =========================================================
-       ACTIVITY
-    ========================================================= */
-
-    .activity-item {
-      display: flex;
-      align-items: flex-start;
-      gap: 12px;
-
-      padding: 13px 0;
-
-      border-bottom: 1px solid rgba(255,255,255,.055);
-    }
-
-    .activity-item:first-child {
-      padding-top: 0;
-    }
-
-    .activity-item:last-child {
-      padding-bottom: 0;
-      border-bottom: 0;
-    }
-
-    .activity-icon {
-      display: grid;
-      place-items: center;
-
-      width: 34px;
-      height: 34px;
-
-      flex: 0 0 auto;
-
-      border-radius: 10px;
-
-      color: var(--admin-green);
-      background: var(--admin-green-soft);
-
-      font-size: 13px;
-    }
-
-    .activity-content {
-      min-width: 0;
-    }
-
-    .activity-title {
-      color: #ffffff;
-
-      font-size: 12px;
-      font-weight: 750;
-      line-height: 1.4;
-    }
-
-    .activity-meta {
-      margin-top: 3px;
-
-      color: var(--admin-muted);
-
-      font-size: 10px;
-    }
-
-    /* =========================================================
-       DATA TABLE
-    ========================================================= */
-
-    .table-wrap {
-      width: 100%;
-      overflow-x: auto;
-    }
-
-    .data-table {
-      width: 100%;
-
-      border-collapse: collapse;
-
-      font-size: 12px;
-    }
-
-    .data-table th {
-      padding: 11px 14px;
-
-      color: var(--admin-muted);
-
-      border-bottom: 1px solid var(--admin-border);
-
-      font-size: 9px;
-      font-weight: 900;
-
-      letter-spacing: .08em;
-
-      text-align: left;
-      text-transform: uppercase;
-
-      white-space: nowrap;
-    }
-
-    .data-table td {
-      max-width: 280px;
-
-      padding: 13px 14px;
-
-      overflow: hidden;
-
-      color: #dbe3ed;
-
-      border-bottom: 1px solid rgba(255,255,255,.045);
-
-      text-overflow: ellipsis;
-      white-space: nowrap;
-    }
-
-    .data-table tbody tr:hover {
-      background: rgba(255,255,255,.025);
-    }
-
-    .data-table tr:last-child td {
-      border-bottom: 0;
-    }
-
-    #viewSection .panel-body {
-      padding: 0;
-    }
-
-    #viewSection .empty-state {
-      padding: 55px 20px;
-    }
-
-    /* =========================================================
-       LOADING SCREEN
-    ========================================================= */
+    .quick-action:hover { border-color: rgba(57, 255, 136, .4); transform: translateY(-2px); }
+    .quick-action-icon { margin-bottom: 6px; color: var(--admin-green); font-size: 18px; }
+    .quick-action strong { font-size: 13px; }
+    .quick-action span { color: var(--admin-muted); font-size: 11px; line-height: 1.4; }
+
+    /* Activity list ------------------------------------------------------ */
+    .activity-item { display: flex; align-items: flex-start; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--admin-border); }
+    .activity-item:first-child { padding-top: 0; }
+    .activity-item:last-child { padding-bottom: 0; border-bottom: 0; }
+    .activity-icon { display: grid; place-items: center; flex: none; width: 32px; height: 32px; border-radius: 10px; color: var(--admin-green); background: rgba(57, 255, 136, .08); font-size: 13px; }
+    .activity-title { font-size: 13px; font-weight: 700; }
+    .activity-meta { margin-top: 2px; color: var(--admin-muted); font-size: 11px; }
+
+    /* Section views and data tables -------------------------------------- */
+    [hidden] { display: none !important; }
+    .table-wrap { overflow-x: auto; }
+    .data-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    .data-table th { padding: 10px 14px; color: var(--admin-muted); font-size: 11px; font-weight: 800; letter-spacing: .06em; text-align: left; text-transform: uppercase; white-space: nowrap; border-bottom: 1px solid var(--admin-border); }
+    .data-table td { max-width: 260px; padding: 13px 14px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; border-bottom: 1px solid rgba(255, 255, 255, .05); }
+    .data-table tbody tr:hover { background: rgba(255, 255, 255, .03); }
+    .data-table tr:last-child td { border-bottom: 0; }
+    #viewSection .panel-body { padding: 0; }
+    #viewSection .empty-state { padding: 48px 20px; }
+
+    /* Overlay and loading ------------------------------------------------ */
+    .admin-overlay { display: none; }
 
     .loading-screen {
       position: fixed;
       inset: 0;
-
       z-index: 9999;
-
       display: grid;
       place-items: center;
       align-content: center;
-
-      gap: 16px;
-
+      gap: 18px;
       padding: 20px;
-
-      background: var(--admin-bg);
-
       text-align: center;
+      background: var(--admin-bg);
     }
-
-    .loading-screen.hidden {
-      display: none;
-    }
+    .loading-screen.hidden { display: none; }
 
     .loader {
-      width: 43px;
-      height: 43px;
-
-      border: 4px solid rgba(255,255,255,.08);
+      width: 42px;
+      height: 42px;
+      border: 4px solid rgba(255, 255, 255, .1);
       border-top-color: var(--admin-green);
-
       border-radius: 50%;
-
-      animation: mei-spin .75s linear infinite;
+      animation: spin .8s linear infinite;
     }
+    @keyframes spin { to { transform: rotate(360deg); } }
 
-    @keyframes mei-spin {
-      to {
-        transform: rotate(360deg);
-      }
-    }
+    .loading-error { display: none; max-width: 380px; color: var(--admin-muted); font-size: 14px; line-height: 1.6; }
+    .loading-error strong { display: block; margin-bottom: 6px; color: #fff; font-size: 16px; }
+    .loading-error a { color: var(--admin-green); font-weight: 800; }
+    .loading-screen.failed .loader { display: none; }
+    .loading-screen.failed .loading-error { display: block; }
 
-    .loading-message {
-      color: var(--admin-muted);
-
-      font-size: 12px;
-    }
-
-    .loading-error {
-      display: none;
-
-      max-width: 390px;
-
-      color: var(--admin-muted);
-
-      font-size: 13px;
-      line-height: 1.6;
-    }
-
-    .loading-error strong {
-      display: block;
-
-      margin-bottom: 6px;
-
-      color: #ffffff;
-
-      font-size: 16px;
-    }
-
-    .loading-error a {
-      color: var(--admin-green);
-      font-weight: 800;
-      text-decoration: none;
-    }
-
-    .loading-screen.failed .loader,
-    .loading-screen.failed .loading-message {
-      display: none;
-    }
-
-    .loading-screen.failed .loading-error {
-      display: block;
-    }
-
-    /* =========================================================
-       MOBILE OVERLAY
-    ========================================================= */
-
-    .admin-overlay {
-      display: none;
-
-      position: fixed;
-      inset: 0;
-
-      z-index: 150;
-
-      background: rgba(0,0,0,.62);
-    }
-
-    .admin-overlay.show {
-      display: block;
-    }
-
-    /* =========================================================
-       RESPONSIVE
-    ========================================================= */
-
-    @media (max-width: 1100px) {
-      .stat-grid {
-        grid-template-columns:
-          repeat(2, minmax(0, 1fr));
-      }
-
-      .section-grid {
-        grid-template-columns: 1fr;
-      }
+    /* Responsive --------------------------------------------------------- */
+    @media (max-width: 1050px) {
+      .stat-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .section-grid { grid-template-columns: 1fr; }
     }
 
     @media (max-width: 800px) {
-      .admin-sidebar {
-        transform: translateX(-100%);
-
-        transition:
-          transform .22s ease;
-      }
-
-      .admin-sidebar.open {
-        transform: translateX(0);
-
-        box-shadow:
-          20px 0 60px rgba(0,0,0,.4);
-      }
-
-      .admin-main {
-        margin-left: 0;
-      }
-
-      .mobile-menu {
-        display: grid;
-      }
-
-      .admin-topbar {
-        padding: 0 16px;
-      }
-
-      .admin-content {
-        padding: 22px 16px 45px;
-      }
-
-      .admin-user-info {
-        display: none;
-      }
+      .admin-sidebar { transform: translateX(-100%); transition: transform 250ms ease; }
+      .admin-sidebar.open { transform: none; box-shadow: 0 0 60px rgba(0, 0, 0, .5); }
+      .admin-main { margin-left: 0; }
+      .mobile-menu { display: grid; place-items: center; }
+      .admin-overlay { position: fixed; inset: 0; z-index: 90; background: rgba(0, 0, 0, .55); }
+      .admin-overlay.show { display: block; }
+      .admin-topbar { padding: 0 15px; }
+      .admin-content { padding: 20px 15px 48px; }
+      .admin-user-info { display: none; }
     }
 
     @media (max-width: 520px) {
-      .stat-grid,
-      .quick-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .welcome h2 {
-        font-size: 24px;
-      }
-
-      .panel-header {
-        padding: 0 15px;
-      }
-
-      .panel-body {
-        padding: 15px;
-      }
+      .stat-grid, .quick-grid { grid-template-columns: 1fr; }
+      .welcome h2 { font-size: 23px; }
     }
 
     @media (prefers-reduced-motion: reduce) {
-      *,
-      *::before,
-      *::after {
-        scroll-behavior: auto !important;
-        transition: none !important;
-        animation-duration: .01ms !important;
-        animation-iteration-count: 1 !important;
-      }
+      .loader { animation-duration: 2s; }
+      .admin-sidebar { transition: none; }
     }
   </style>
 </head>
 
 <body>
 
-  <!-- =========================================================
-       AUTH / LOADING GATE
-  ========================================================== -->
-
-  <div
-    id="adminLoading"
-    class="loading-screen"
-    role="status"
-    aria-live="polite"
-  >
-    <div
-      class="loader"
-      aria-hidden="true"
-    ></div>
-
-    <div class="loading-message">
-      Verifying administrator access…
-    </div>
-
+  <!-- Loading screen (hidden by admin.js; fails open after 10s) -->
+  <div id="adminLoading" class="loading-screen" role="status" aria-live="polite">
+    <div class="loader" aria-hidden="true"></div>
     <div class="loading-error">
-      <strong>Dashboard could not load</strong>
-
-      Your administrator session could not be verified.
-
-      <br><br>
-
-      <a href="admin-login.html">
-        Return to administrator login
-      </a>
-
-      &nbsp;·&nbsp;
-
-      <a href="admin.html">
-        Try again
-      </a>
+      <strong>Taking longer than expected</strong>
+      The dashboard could not finish loading. <a href="admin-login.html">Sign in again</a>
+      or <a href="admin.html">retry</a>. Details are in the browser console (F12).
     </div>
   </div>
 
-
-  <!-- Mobile overlay -->
-  <div
-    id="adminOverlay"
-    class="admin-overlay"
-    aria-hidden="true"
-  ></div>
-
-
-  <!-- =========================================================
-       APPLICATION
-  ========================================================== -->
+  <div id="adminOverlay" class="admin-overlay"></div>
 
   <div class="admin-layout">
 
-    <!-- =======================================================
-         SIDEBAR
-    ======================================================== -->
-
-    <aside
-      id="adminSidebar"
-      class="admin-sidebar"
-      aria-label="MEI One administrator navigation"
-    >
-
+    <!-- Sidebar -->
+    <aside id="adminSidebar" class="admin-sidebar" aria-label="Admin navigation">
       <div class="admin-brand">
-
-        <div
-          class="admin-logo"
-          aria-hidden="true"
-        >
-          MEI
-        </div>
-
-        <div class="admin-brand-copy">
+        <div class="admin-logo">MEI</div>
+        <div>
           <strong>MEI One</strong>
           <span>Administration</span>
         </div>
-
       </div>
 
-
-      <!-- Overview -->
-
-      <div class="admin-nav-title">
-        Overview
-      </div>
-
+      <div class="admin-nav-title">Overview</div>
       <nav class="admin-nav">
-
-        <button
-          type="button"
-          class="active"
-          data-admin-section="dashboard"
-        >
-          <span class="admin-nav-icon" aria-hidden="true">
-            ▦
-          </span>
-          <span>Dashboard</span>
-        </button>
-
-        <button
-          type="button"
-          data-admin-section="users"
-        >
-          <span class="admin-nav-icon" aria-hidden="true">
-            ◉
-          </span>
-          <span>Users</span>
-        </button>
-
-        <button
-          type="button"
-          data-admin-section="services"
-        >
-          <span class="admin-nav-icon" aria-hidden="true">
-            ◆
-          </span>
-          <span>Services</span>
-        </button>
-
-        <button
-          type="button"
-          data-admin-section="payments"
-        >
-          <span class="admin-nav-icon" aria-hidden="true">
-            ▣
-          </span>
-          <span>Payments</span>
-        </button>
-
-        <button
-          type="button"
-          data-admin-section="activity"
-        >
-          <span class="admin-nav-icon" aria-hidden="true">
-            ◷
-          </span>
-          <span>Activity</span>
-        </button>
-
+        <button type="button" class="active" data-admin-section="dashboard"><span class="admin-nav-icon" aria-hidden="true">▦</span>Dashboard</button>
+        <button type="button" data-admin-section="users"><span class="admin-nav-icon" aria-hidden="true">◉</span>Users</button>
+        <button type="button" data-admin-section="services"><span class="admin-nav-icon" aria-hidden="true">◆</span>Services</button>
+        <button type="button" data-admin-section="payments"><span class="admin-nav-icon" aria-hidden="true">▣</span>Payments</button>
+        <button type="button" data-admin-section="activity"><span class="admin-nav-icon" aria-hidden="true">◷</span>Activity</button>
       </nav>
 
-
-      <!-- Management -->
-
-      <div class="admin-nav-title">
-        Management
-      </div>
-
+      <div class="admin-nav-title">Management</div>
       <nav class="admin-nav">
-
-        <button
-          type="button"
-          data-admin-section="settings"
-        >
-          <span class="admin-nav-icon" aria-hidden="true">
-            ⚙
-          </span>
-          <span>Settings</span>
-        </button>
-
-        <a href="dashboard.html">
-          <span class="admin-nav-icon" aria-hidden="true">
-            ←
-          </span>
-          <span>Customer dashboard</span>
-        </a>
-
+        <button type="button" data-admin-section="settings"><span class="admin-nav-icon" aria-hidden="true">⚙</span>Settings</button>
+        <a href="dashboard.html"><span class="admin-nav-icon" aria-hidden="true">←</span>Customer dashboard</a>
       </nav>
-
-
-      <!-- Footer -->
 
       <div class="admin-sidebar-footer">
-
-        <button
-          id="adminLogout"
-          type="button"
-          class="admin-logout"
-        >
-          <span
-            class="admin-nav-icon"
-            aria-hidden="true"
-          >
-            ↪
-          </span>
-
-          <span>Sign out</span>
-        </button>
-
+        <button id="adminLogout" type="button" class="admin-logout"><span class="admin-nav-icon" aria-hidden="true">↪</span>Sign out</button>
       </div>
-
     </aside>
 
-
-    <!-- =======================================================
-         MAIN
-    ======================================================== -->
-
+    <!-- Main -->
     <main class="admin-main">
 
-      <!-- Topbar -->
-
       <header class="admin-topbar">
-
         <div class="topbar-left">
-
-          <button
-            id="mobileMenu"
-            class="mobile-menu"
-            type="button"
-            aria-label="Open administrator menu"
-            aria-controls="adminSidebar"
-            aria-expanded="false"
-          >
-            ☰
-          </button>
-
+          <button id="mobileMenu" class="mobile-menu" type="button" aria-label="Open menu" aria-controls="adminSidebar">☰</button>
           <div class="topbar-title">
-
-            <h1>
-              Admin dashboard
-            </h1>
-
-            <p>
-              MEI One platform management
-            </p>
-
+            <h1>Admin dashboard</h1>
+            <p>MEI One platform management</p>
           </div>
-
         </div>
-
-
-        <!-- Administrator identity -->
 
         <div class="admin-user">
-
           <div class="admin-user-info">
-
-            <strong id="adminUserName">
-              Administrator
-            </strong>
-
-            <span id="adminUserEmail">
-              Verifying session…
-            </span>
-
+            <strong id="adminUserName">Administrator</strong>
+            <span id="adminUserEmail">Loading…</span>
           </div>
-
-          <div
-            id="adminAvatar"
-            class="admin-avatar"
-            aria-hidden="true"
-          >
-            A
-          </div>
-
+          <div id="adminAvatar" class="admin-avatar" aria-hidden="true">A</div>
         </div>
-
       </header>
-
-
-      <!-- =====================================================
-           CONTENT
-      ====================================================== -->
 
       <section class="admin-content">
 
-
-        <!-- ===================================================
-             DASHBOARD VIEW
-        ==================================================== -->
-
+        <!-- Dashboard view -->
         <div id="viewDashboard">
 
-          <div class="welcome">
-
-            <h2>
-              Platform overview
-            </h2>
-
-            <p>
-              Monitor MEI One users, services, payments and
-              platform activity from one administration workspace.
-            </p>
-
-          </div>
-
-
-          <!-- Statistics -->
-
-          <div class="stat-grid">
-
-            <article class="stat-card">
-
-              <div class="stat-label">
-                Users
-              </div>
-
-              <div
-                id="statUsers"
-                class="stat-value"
-              >
-                —
-              </div>
-
-              <div class="stat-note">
-                Registered accounts
-              </div>
-
-            </article>
-
-
-            <article class="stat-card">
-
-              <div class="stat-label">
-                Services
-              </div>
-
-              <div
-                id="statServices"
-                class="stat-value"
-              >
-                —
-              </div>
-
-              <div class="stat-note">
-                Active MEI One services
-              </div>
-
-            </article>
-
-
-            <article class="stat-card">
-
-              <div class="stat-label">
-                Payments
-              </div>
-
-              <div
-                id="statPayments"
-                class="stat-value"
-              >
-                —
-              </div>
-
-              <div class="stat-note">
-                Recorded payment records
-              </div>
-
-            </article>
-
-
-            <article class="stat-card">
-
-              <div class="stat-label">
-                Activity
-              </div>
-
-              <div
-                id="statActivity"
-                class="stat-value"
-              >
-                —
-              </div>
-
-              <div class="stat-note">
-                Logged platform events
-              </div>
-
-            </article>
-
-          </div>
-
-
-          <!-- Dashboard panels -->
-
-          <div class="section-grid">
-
-
-            <!-- Activity -->
-
-            <section class="panel">
-
-              <div class="panel-header">
-
-                <h3>
-                  Recent activity
-                </h3>
-
-                <span>
-                  Latest events
-                </span>
-
-              </div>
-
-              <div
-                id="recentActivity"
-                class="panel-body"
-              >
-
-                <div class="empty-state">
-
-                  <div
-                    class="empty-icon"
-                    aria-hidden="true"
-                  >
-                    ◷
-                  </div>
-
-                  <strong>
-                    No activity yet
-                  </strong>
-
-                  <p>
-                    Platform events will appear here as
-                    users, administrators and services
-                    interact with MEI One.
-                  </p>
-
-                </div>
-
-              </div>
-
-            </section>
-
-
-            <!-- Quick actions -->
-
-            <section class="panel">
-
-              <div class="panel-header">
-
-                <h3>
-                  Quick actions
-                </h3>
-
-                <span>
-                  Shortcuts
-                </span>
-
-              </div>
-
-              <div class="panel-body">
-
-                <div class="quick-grid">
-
-
-                  <button
-                    type="button"
-                    class="quick-action"
-                    data-admin-section="users"
-                  >
-
-                    <div
-                      class="quick-action-icon"
-                      aria-hidden="true"
-                    >
-                      ◉
-                    </div>
-
-                    <strong>
-                      Manage users
-                    </strong>
-
-                    <span>
-                      View registered MEI One accounts.
-                    </span>
-
-                  </button>
-
-
-                  <button
-                    type="button"
-                    class="quick-action"
-                    data-admin-section="services"
-                  >
-
-                    <div
-                      class="quick-action-icon"
-                      aria-hidden="true"
-                    >
-                      ◆
-                    </div>
-
-                    <strong>
-                      Services
-                    </strong>
-
-                    <span>
-                      Manage MEI One service areas.
-                    </span>
-
-                  </button>
-
-
-                  <button
-                    type="button"
-                    class="quick-action"
-                    data-admin-section="payments"
-                  >
-
-                    <div
-                      class="quick-action-icon"
-                      aria-hidden="true"
-                    >
-                      ▣
-                    </div>
-
-                    <strong>
-                      Payments
-                    </strong>
-
-                    <span>
-                      Review platform payment records.
-                    </span>
-
-                  </button>
-
-
-                  <button
-                    type="button"
-                    class="quick-action"
-                    data-admin-section="settings"
-                  >
-
-                    <div
-                      class="quick-action-icon"
-                      aria-hidden="true"
-                    >
-                      ⚙
-                    </div>
-
-                    <strong>
-                      Settings
-                    </strong>
-
-                    <span>
-                      Manage platform configuration.
-                    </span>
-
-                  </button>
-
-
-                </div>
-
-              </div>
-
-            </section>
-
-          </div>
-
+        <div class="welcome">
+          <h2>Platform overview</h2>
+          <p>Manage MEI One from one central administration workspace.</p>
         </div>
 
+        <div class="stat-grid">
+          <article class="stat-card">
+            <div class="stat-label">Users</div>
+            <div class="stat-value" id="statUsers">—</div>
+            <div class="stat-note">Registered accounts</div>
+          </article>
+          <article class="stat-card">
+            <div class="stat-label">Services</div>
+            <div class="stat-value" id="statServices">8</div>
+            <div class="stat-note">MEI One service areas</div>
+          </article>
+          <article class="stat-card">
+            <div class="stat-label">Payments</div>
+            <div class="stat-value" id="statPayments">—</div>
+            <div class="stat-note">Recorded payments</div>
+          </article>
+          <article class="stat-card">
+            <div class="stat-label">Activity</div>
+            <div class="stat-value" id="statActivity">—</div>
+            <div class="stat-note">Logged events</div>
+          </article>
+        </div>
 
-        <!-- ===================================================
-             SECTION VIEW
-        ==================================================== -->
+        <div class="section-grid">
 
-        <section
-          id="viewSection"
-          class="panel"
-          hidden
-        >
+          <section class="panel">
+            <div class="panel-header">
+              <h3>Recent activity</h3>
+              <span>Latest events</span>
+            </div>
+            <div class="panel-body" id="recentActivity">
+              <div class="empty-state">
+                <div class="empty-icon" aria-hidden="true">◷</div>
+                <strong>No activity yet</strong>
+                <p>Sign-ins, requests and payments will be listed here as they happen.</p>
+              </div>
+            </div>
+          </section>
 
+          <section class="panel">
+            <div class="panel-header">
+              <h3>Quick actions</h3>
+              <span>Shortcuts</span>
+            </div>
+            <div class="panel-body">
+              <div class="quick-grid">
+                <button type="button" class="quick-action" data-admin-section="users">
+                  <div class="quick-action-icon" aria-hidden="true">◉</div>
+                  <strong>Manage users</strong>
+                  <span>View and update accounts</span>
+                </button>
+                <button type="button" class="quick-action" data-admin-section="services">
+                  <div class="quick-action-icon" aria-hidden="true">◆</div>
+                  <strong>Services</strong>
+                  <span>Manage MEI One services</span>
+                </button>
+                <button type="button" class="quick-action" data-admin-section="payments">
+                  <div class="quick-action-icon" aria-hidden="true">▣</div>
+                  <strong>Payments</strong>
+                  <span>Review payment records</span>
+                </button>
+                <button type="button" class="quick-action" data-admin-section="settings">
+                  <div class="quick-action-icon" aria-hidden="true">⚙</div>
+                  <strong>Settings</strong>
+                  <span>Platform configuration</span>
+                </button>
+              </div>
+            </div>
+          </section>
+
+        </div>
+        </div>
+
+        <!-- Data view (users, services, payments, activity, settings) -->
+        <section id="viewSection" class="panel" hidden>
           <div class="panel-header">
-
-            <h3 id="viewTitle">
-              Section
-            </h3>
-
-            <button
-              type="button"
-              class="quick-action"
-              data-admin-section="dashboard"
-              style="
-                min-height:0;
-                flex-direction:row;
-                padding:8px 13px;
-              "
-            >
-              ← Dashboard
-            </button>
-
+            <h3 id="viewTitle">Section</h3>
+            <button type="button" class="quick-action" data-admin-section="dashboard" style="min-height:0;padding:8px 14px;flex-direction:row;">← Dashboard</button>
           </div>
-
-          <div
-            id="viewBody"
-            class="panel-body"
-          ></div>
-
+          <div class="panel-body" id="viewBody"></div>
         </section>
 
-
       </section>
-
     </main>
-
   </div>
 
-
-  <!-- =========================================================
-       SCRIPTS
-  ========================================================== -->
-
-  <!-- MEI configuration -->
+  <!-- Scripts -->
   <script src="js/config.js"></script>
-
-  <!-- Supabase client -->
-  <script
-    src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"
-  ></script>
-
-  <!-- MEI Supabase client -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
   <script src="js/supabase.js"></script>
-
-  <!-- Global site utilities -->
   <script src="js/site.js"></script>
-
-  <!-- Administrator application -->
   <script src="js/admin.js"></script>
 
-
-  <!-- =========================================================
-       HARD FAILSAFE
-       Prevents infinite loading if JavaScript/auth fails.
-  ========================================================== -->
-
+  <!-- Failsafe: never spin forever -->
   <script>
-    (function () {
-      'use strict';
-
-      const MAX_LOADING_TIME = 10000;
-
-      window.setTimeout(function () {
-
-        const loading =
-          document.getElementById('adminLoading');
-
-        if (!loading) {
-          return;
-        }
-
-        if (
-          !loading.classList.contains('hidden') &&
-          getComputedStyle(loading).display !== 'none'
-        ) {
-          loading.classList.add('failed');
-        }
-
-      }, MAX_LOADING_TIME);
-
-    })();
+    setTimeout(function () {
+      var screen = document.getElementById('adminLoading');
+      if (screen && getComputedStyle(screen).display !== 'none') {
+        screen.classList.add('failed');
+      }
+    }, 10000);
   </script>
-
 </body>
 </html>
-```
