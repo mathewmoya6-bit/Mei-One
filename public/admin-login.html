@@ -1,1153 +1,299 @@
-```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
-  >
-
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#06111f">
+  <meta name="robots" content="noindex">
   <title>Admin Login | MEI One</title>
-
-  <meta
-    name="description"
-    content="Secure MEI One administrator login"
-  >
-
-  <link rel="stylesheet" href="css/styles.css">
 
   <style>
     :root {
-      --navy: #06111f;
-      --navy-2: #0b1c30;
-      --navy-3: #102944;
+      --bg: #06111f;
+      --card: #0b1c30;
+      --input: #071523;
       --green: #39ff88;
-      --green-2: #19dc6b;
-      --white: #ffffff;
-      --text: #e8f0f8;
+      --green-hover: #61ffa1;
+      --text: #fff;
+      --label: #dbe7f2;
       --muted: #91a4b8;
-      --border: rgba(255,255,255,.10);
-      --danger: #ff6678;
+      --faint: #667b91;
+      --border: rgba(255, 255, 255, .1);
     }
 
-    * {
-      box-sizing: border-box;
-    }
+    *, *::before, *::after { box-sizing: border-box; }
 
-    html,
     body {
       margin: 0;
-      padding: 0;
-      min-height: 100%;
-    }
-
-    body {
       min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-
-      padding: 24px;
-
-      font-family:
-        Inter,
-        system-ui,
-        -apple-system,
-        BlinkMacSystemFont,
-        "Segoe UI",
-        sans-serif;
-
+      display: grid;
+      place-items: center;
+      padding: 20px;
+      font-family: Inter, system-ui, -apple-system, "Segoe UI", sans-serif;
       color: var(--text);
-
-      background:
-        radial-gradient(
-          circle at 15% 10%,
-          rgba(57,255,136,.10),
-          transparent 32%
-        ),
-        radial-gradient(
-          circle at 90% 90%,
-          rgba(25,220,107,.08),
-          transparent 30%
-        ),
-        var(--navy);
+      background: var(--bg);
+      -webkit-font-smoothing: antialiased;
     }
 
-    .page {
-      width: 100%;
-      max-width: 440px;
-    }
+    .login-page { width: 100%; max-width: 430px; }
 
-    /* BRAND */
+    /* Brand */
+    .login-brand { margin-bottom: 24px; text-align: center; }
 
-    .brand {
-      text-align: center;
-      margin-bottom: 25px;
-    }
-
-    .brand-logo {
-      width: 76px;
-      height: 76px;
-
-      margin: 0 auto 16px;
-
-      display: flex;
-      align-items: center;
-      justify-content: center;
-
-      border-radius: 22px;
-
+    .logo {
+      display: grid;
+      place-items: center;
+      width: 72px;
+      height: 72px;
+      margin: 0 auto 15px;
+      border-radius: 20px;
+      color: var(--bg);
       background: var(--green);
-      color: var(--navy);
-
       font-size: 25px;
-      font-weight: 1000;
-      letter-spacing: -1px;
-
-      box-shadow:
-        0 0 40px rgba(57,255,136,.18);
-    }
-
-    .brand-title {
-      margin: 0;
-
-      font-size: 31px;
-      font-weight: 1000;
-      letter-spacing: -1px;
-    }
-
-    .brand-subtitle {
-      margin: 7px 0 0;
-
-      color: var(--muted);
-
-      font-size: 14px;
-      font-weight: 600;
-    }
-
-    .security-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 7px;
-
-      margin-top: 14px;
-      padding: 8px 13px;
-
-      border: 1px solid rgba(57,255,136,.22);
-      border-radius: 999px;
-
-      background: rgba(57,255,136,.07);
-
-      color: var(--green);
-
-      font-size: 11px;
       font-weight: 900;
-
-      letter-spacing: .7px;
-      text-transform: uppercase;
+      box-shadow: 0 0 35px rgba(57, 255, 136, .18);
     }
 
-    /* CARD */
+    .login-brand h1 { margin: 0; font-size: 29px; font-weight: 900; letter-spacing: -.02em; }
+    .login-brand p { margin: 7px 0 0; color: var(--muted); font-size: 13px; }
 
-    .card {
-      padding: 30px;
-
-      border:
-        1px solid var(--border);
-
-      border-radius: 24px;
-
-      background:
-        linear-gradient(
-          145deg,
-          rgba(16,41,68,.96),
-          rgba(7,17,31,.97)
-        );
-
-      box-shadow:
-        0 30px 80px rgba(0,0,0,.42);
-
-      backdrop-filter: blur(16px);
-    }
-
-    .card-header {
-      margin-bottom: 23px;
-    }
-
-    .card-title {
-      margin: 0 0 7px;
-
-      color: var(--white);
-
-      font-size: 23px;
-      font-weight: 950;
-      letter-spacing: -.5px;
-    }
-
-    .card-description {
-      margin: 0;
-
-      color: var(--muted);
-
-      font-size: 13px;
-      line-height: 1.6;
-    }
-
-    /* MESSAGE */
-
-    .message {
-      display: none;
-
-      margin-bottom: 18px;
-      padding: 12px 14px;
-
-      border-radius: 12px;
-
-      font-size: 13px;
-      line-height: 1.5;
-      font-weight: 650;
-    }
-
-    .message.error {
-      display: block;
-
-      color: #ffd8dd;
-
-      background: rgba(255,102,120,.09);
-
-      border:
-        1px solid rgba(255,102,120,.22);
-    }
-
-    .message.success {
-      display: block;
-
-      color: #d4ffe3;
-
-      background: rgba(57,255,136,.08);
-
-      border:
-        1px solid rgba(57,255,136,.20);
-    }
-
-    /* FORM */
-
-    .field {
-      margin-bottom: 18px;
-    }
-
-    .field label {
-      display: block;
-
-      margin-bottom: 8px;
-
-      color: #dce8f4;
-
-      font-size: 12px;
-      font-weight: 850;
-
-      letter-spacing: .2px;
-    }
-
-    .input-wrapper {
-      position: relative;
-    }
-
-    .input {
-      width: 100%;
-      height: 53px;
-
-      padding:
-        0 15px;
-
-      border:
-        1px solid var(--border);
-
-      border-radius: 13px;
-
-      outline: none;
-
-      background:
-        rgba(0,0,0,.22);
-
-      color: var(--white);
-
-      font-family: inherit;
-      font-size: 14px;
-
-      transition:
-        border-color .2s ease,
-        box-shadow .2s ease;
-    }
-
-    .input.password {
-      padding-right: 52px;
-    }
-
-    .input::placeholder {
-      color: #61758b;
-    }
-
-    .input:focus {
-      border-color: var(--green);
-
-      box-shadow:
-        0 0 0 3px rgba(57,255,136,.08);
-    }
-
-    .password-toggle {
-      position: absolute;
-
-      right: 7px;
-      top: 50%;
-
-      width: 39px;
-      height: 39px;
-
-      transform: translateY(-50%);
-
-      border: 0;
-      border-radius: 10px;
-
-      background: transparent;
-
-      color: var(--muted);
-
-      cursor: pointer;
-
-      font-size: 16px;
-    }
-
-    .password-toggle:hover {
-      background: rgba(255,255,255,.06);
+    .badge {
+      display: inline-block;
+      margin-top: 13px;
+      padding: 7px 12px;
+      border: 1px solid rgba(57, 255, 136, .2);
+      border-radius: 999px;
       color: var(--green);
+      background: rgba(57, 255, 136, .08);
+      font-size: 11px;
+      font-weight: 800;
     }
 
-    /* BUTTON */
+    /* Card */
+    .card {
+      padding: 28px;
+      border: 1px solid var(--border);
+      border-radius: 22px;
+      background: var(--card);
+      box-shadow: 0 25px 70px rgba(0, 0, 0, .4);
+    }
+
+    .card h2 { margin: 0 0 7px; font-size: 22px; font-weight: 800; }
+    .description { margin: 0 0 22px; color: var(--muted); font-size: 13px; line-height: 1.5; }
+
+    /* Message */
+    .message { display: none; margin-bottom: 17px; padding: 12px 13px; border-radius: 11px; font-size: 13px; line-height: 1.5; }
+    .message.error   { display: block; color: #ffd7dc; background: rgba(255, 92, 112, .08); border: 1px solid rgba(255, 92, 112, .2); }
+    .message.success { display: block; color: #d1ffdf; background: rgba(57, 255, 136, .08); border: 1px solid rgba(57, 255, 136, .2); }
+
+    /* Form */
+    .field { margin-bottom: 17px; }
+    label { display: block; margin-bottom: 7px; color: var(--label); font-size: 12px; font-weight: 700; }
+
+    input {
+      width: 100%;
+      height: 52px;
+      padding: 0 14px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      outline: none;
+      color: var(--text);
+      background: var(--input);
+      font: inherit;
+      font-size: 14px;
+    }
+    input:focus { border-color: var(--green); box-shadow: 0 0 0 3px rgba(57, 255, 136, .1); }
+
+    .password-box { position: relative; }
+    .password-box input { padding-right: 52px; }
+
+    .show-password {
+      position: absolute;
+      top: 50%;
+      right: 7px;
+      width: 38px;
+      height: 38px;
+      transform: translateY(-50%);
+      border: 0;
+      border-radius: 9px;
+      color: var(--muted);
+      background: transparent;
+      cursor: pointer;
+    }
+    .show-password:hover { color: var(--green); background: rgba(255, 255, 255, .05); }
 
     .login-button {
       width: 100%;
-      height: 54px;
-
-      margin-top: 3px;
-
+      height: 53px;
+      margin-top: 2px;
       border: 0;
-      border-radius: 14px;
-
-      background:
-        linear-gradient(
-          135deg,
-          var(--green),
-          var(--green-2)
-        );
-
-      color: var(--navy);
-
-      font-family: inherit;
+      border-radius: 13px;
+      color: var(--bg);
+      background: var(--green);
+      font: inherit;
       font-size: 14px;
-      font-weight: 950;
-
+      font-weight: 900;
       cursor: pointer;
-
-      box-shadow:
-        0 12px 32px rgba(57,255,136,.13);
-
-      transition:
-        transform .18s ease,
-        box-shadow .18s ease,
-        opacity .18s ease;
+      transition: background 180ms ease;
     }
+    .login-button:hover { background: var(--green-hover); }
+    .login-button:disabled { opacity: .7; cursor: wait; }
 
-    .login-button:hover {
-      transform: translateY(-1px);
+    :focus-visible { outline: 3px solid rgba(57, 255, 136, .45); outline-offset: 2px; }
 
-      box-shadow:
-        0 15px 38px rgba(57,255,136,.20);
-    }
+    .back { display: block; margin-top: 19px; color: var(--muted); font-size: 12px; text-align: center; text-decoration: none; }
+    .back:hover { color: var(--green); }
 
-    .login-button:disabled {
-      opacity: .65;
-      cursor: not-allowed;
-      transform: none;
-    }
-
-    /* LOADER */
-
-    .spinner {
-      display: inline-block;
-
-      width: 16px;
-      height: 16px;
-
-      margin-right: 8px;
-
-      vertical-align: -3px;
-
-      border:
-        2px solid rgba(6,17,31,.25);
-
-      border-top-color:
-        var(--navy);
-
-      border-radius: 50%;
-
-      animation:
-        spin .7s linear infinite;
-    }
-
-    @keyframes spin {
-      to {
-        transform: rotate(360deg);
-      }
-    }
-
-    /* FOOTER */
-
-    .back-link {
-      display: block;
-
-      margin-top: 20px;
-
-      text-align: center;
-
-      color: var(--muted);
-
-      text-decoration: none;
-
-      font-size: 13px;
-      font-weight: 650;
-    }
-
-    .back-link:hover {
-      color: var(--green);
-    }
-
-    .security-note {
-      margin-top: 20px;
-      padding: 13px 14px;
-
-      border:
-        1px solid rgba(255,255,255,.055);
-
-      border-radius: 12px;
-
-      background:
-        rgba(255,255,255,.025);
-
-      color: #71849a;
-
-      font-size: 10px;
-      line-height: 1.55;
-
-      text-align: center;
-    }
-
-    @media (max-width: 520px) {
-      body {
-        padding: 15px;
-      }
-
-      .card {
-        padding: 23px;
-      }
-
-      .brand-title {
-        font-size: 27px;
-      }
-    }
+    .status { margin-top: 18px; color: var(--faint); font-size: 11px; text-align: center; }
   </style>
 </head>
 
 <body>
+  <main class="login-page">
 
-  <main class="page">
-
-    <!-- BRAND -->
-
-    <header class="brand">
-
-      <div class="brand-logo">
-        MEI
-      </div>
-
-      <h1 class="brand-title">
-        MEI One
-      </h1>
-
-      <p class="brand-subtitle">
-        Administration Portal
-      </p>
-
-      <div class="security-badge">
-        🔐 Secure Administrator Access
-      </div>
-
-    </header>
-
-
-    <!-- LOGIN CARD -->
+    <div class="login-brand">
+      <div class="logo">MEI</div>
+      <h1>MEI One</h1>
+      <p>Administration Portal</p>
+      <div class="badge">🔐 Administrator access</div>
+    </div>
 
     <section class="card">
+      <h2>Admin login</h2>
+      <p class="description">Sign in with your authorised MEI One administrator account.</p>
 
-      <div class="card-header">
+      <div id="message" class="message" role="alert"></div>
 
-        <h2 class="card-title">
-          Administrator Login
-        </h2>
-
-        <p class="card-description">
-          Sign in with an authorized MEI One administrator account.
-        </p>
-
-      </div>
-
-
-      <!-- MESSAGE -->
-
-      <div
-        id="message"
-        class="message"
-        role="alert"
-        aria-live="polite"
-      ></div>
-
-
-      <!-- FORM -->
-
-      <form id="adminLoginForm">
-
+      <form id="loginForm" novalidate>
         <div class="field">
-
-          <label for="email">
-            Administrator Email
-          </label>
-
-          <div class="input-wrapper">
-
-            <input
-              id="email"
-              class="input"
-              type="email"
-              name="email"
-              autocomplete="username"
-              placeholder="admin@mei-one.meipressgroup.com"
-              required
-            >
-
-          </div>
-
+          <label for="email">Administrator email</label>
+          <input id="email" type="email" autocomplete="username"
+                 value="admin@mei-one.meipressgroup.com" required>
         </div>
 
-
         <div class="field">
-
-          <label for="password">
-            Password
-          </label>
-
-          <div class="input-wrapper">
-
-            <input
-              id="password"
-              class="input password"
-              type="password"
-              name="password"
-              autocomplete="current-password"
-              placeholder="Enter your password"
-              required
-            >
-
-            <button
-              type="button"
-              id="passwordToggle"
-              class="password-toggle"
-              aria-label="Show password"
-            >
-              👁
-            </button>
-
+          <label for="password">Password</label>
+          <div class="password-box">
+            <input id="password" type="password" autocomplete="current-password"
+                   placeholder="Enter password" required>
+            <button type="button" id="showPassword" class="show-password" aria-label="Show password">👁</button>
           </div>
-
         </div>
 
-
-        <button
-          id="loginButton"
-          class="login-button"
-          type="submit"
-        >
-          Sign In to Admin
-        </button>
-
+        <button id="loginButton" class="login-button" type="submit">Sign in</button>
       </form>
 
-
-      <a
-        class="back-link"
-        href="login.html"
-      >
-        ← Return to Customer Login
-      </a>
-
-
-      <div class="security-note">
-        Access is restricted to active MEI One administrator
-        accounts. Your administrator role is verified securely
-        before the dashboard is opened.
-      </div>
-
+      <a class="back" href="login.html">← Customer login</a>
+      <div id="status" class="status" aria-live="polite">MEI One secure administrator authentication</div>
     </section>
 
   </main>
 
-
-  <!-- =====================================================
-       SUPABASE
-       ===================================================== -->
-
   <script src="js/config.js"></script>
-
-  <script
-    src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"
-  ></script>
-
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
   <script src="js/supabase.js"></script>
 
-
-  <!-- =====================================================
-       ADMIN LOGIN
-       ===================================================== -->
-
   <script>
-
     (() => {
-
       'use strict';
 
+      const client = window.supabaseClient;
 
-      /* ---------------------------------------------------
-         ELEMENTS
-         --------------------------------------------------- */
+      const $ = (id) => document.getElementById(id);
+      const form = $('loginForm');
+      const emailInput = $('email');
+      const passwordInput = $('password');
+      const button = $('loginButton');
+      const message = $('message');
+      const status = $('status');
+      const toggle = $('showPassword');
 
-      const SUPABASE =
-        window.supabaseClient;
+      const ADMIN_ROLES = ['SUPER_ADMIN', 'ADMIN', 'OPERATIONS', 'FINANCE', 'SUPPORT', 'AUDITOR'];
 
-      const form =
-        document.getElementById(
-          'adminLoginForm'
-        );
-
-      const emailInput =
-        document.getElementById(
-          'email'
-        );
-
-      const passwordInput =
-        document.getElementById(
-          'password'
-        );
-
-      const passwordToggle =
-        document.getElementById(
-          'passwordToggle'
-        );
-
-      const loginButton =
-        document.getElementById(
-          'loginButton'
-        );
-
-      const message =
-        document.getElementById(
-          'message'
-        );
-
-
-      /* ---------------------------------------------------
-         ALLOWED ADMIN ROLES
-         --------------------------------------------------- */
-
-      const ADMIN_ROLES = [
-        'SUPER_ADMIN',
-        'ADMIN',
-        'OPERATIONS',
-        'FINANCE',
-        'SUPPORT',
-        'AUDITOR'
-      ];
-
-
-      /* ---------------------------------------------------
-         HELPERS
-         --------------------------------------------------- */
-
-      function showMessage(
-        text,
-        type = 'error'
-      ) {
-
-        message.textContent =
-          text;
-
-        message.className =
-          `message ${type}`;
+      function showMessage(text, type = 'error') {
+        message.textContent = text;
+        message.className = 'message ' + type;
       }
 
-
-      function clearMessage() {
-
-        message.textContent = '';
-
-        message.className =
-          'message';
+      function setBusy(busy, label, statusText) {
+        button.disabled = busy;
+        button.textContent = label;
+        if (statusText) status.textContent = statusText;
       }
 
+      toggle.addEventListener('click', () => {
+        const visible = passwordInput.type === 'text';
+        passwordInput.type = visible ? 'password' : 'text';
+        toggle.textContent = visible ? '👁' : '🙈';
+        toggle.setAttribute('aria-label', visible ? 'Show password' : 'Hide password');
+      });
 
-      function setLoading(
-        loading
-      ) {
+      // Looks up the admin record by Auth user id (never by email).
+      async function verifyAdmin(userId) {
+        const { data, error } = await client
+          .from('admin_users')
+          .select('id,user_id,role,is_active')
+          .eq('user_id', userId)
+          .maybeSingle();
 
-        loginButton.disabled =
-          loading;
+        if (error) throw new Error('Admin check failed: ' + error.message);
+        if (!data) throw new Error('No administrator record exists for this account.');
+        if (data.is_active !== true) throw new Error('This administrator account is inactive.');
+        if (!ADMIN_ROLES.includes(data.role)) throw new Error('This account does not have an authorised administrator role.');
 
-        if (loading) {
-
-          loginButton.innerHTML =
-            `
-              <span class="spinner"></span>
-              Verifying Access...
-            `;
-
-        } else {
-
-          loginButton.textContent =
-            'Sign In to Admin';
-        }
+        return data;
       }
 
+      form.addEventListener('submit', async (event) => {
+        event.preventDefault();
+        showMessage('', '');
+        message.className = 'message';
 
-      function timeout(ms) {
-
-        return new Promise(
-          (_, reject) => {
-
-            setTimeout(
-              () => reject(
-                new Error(
-                  'Request timed out.'
-                )
-              ),
-              ms
-            );
-
-          }
-        );
-      }
-
-
-      /* ---------------------------------------------------
-         SECURE ADMIN CHECK
-         ---------------------------------------------------
-
-         IMPORTANT:
-         We do NOT query admin_users directly.
-
-         Instead we call:
-
-         get_my_admin_access()
-
-         The RPC uses auth.uid() on the
-         Supabase server.
-         --------------------------------------------------- */
-
-      async function getAdminAccess() {
-
-        if (!SUPABASE) {
-
-          console.error(
-            'Supabase client missing.'
-          );
-
-          return null;
-        }
-
-
-        try {
-
-          const result =
-            await Promise.race([
-
-              SUPABASE.rpc(
-                'get_my_admin_access'
-              ),
-
-              timeout(8000)
-
-            ]);
-
-
-          if (result.error) {
-
-            console.error(
-              'Admin RPC error:',
-              result.error
-            );
-
-            return null;
-          }
-
-
-          const rows =
-            Array.isArray(result.data)
-              ? result.data
-              : [];
-
-
-          if (!rows.length) {
-            return null;
-          }
-
-
-          return rows[0];
-
-        } catch (error) {
-
-          console.error(
-            'Admin access check failed:',
-            error
-          );
-
-          return null;
-        }
-      }
-
-
-      /* ---------------------------------------------------
-         CHECK EXISTING SESSION
-         --------------------------------------------------- */
-
-      async function checkExistingSession() {
-
-        if (!SUPABASE) {
+        if (!client) {
+          showMessage('Supabase is not initialised. Check js/config.js and js/supabase.js.');
           return;
         }
 
+        const email = emailInput.value.trim().toLowerCase();
+        const password = passwordInput.value;
+
+        if (!email || !password) {
+          showMessage('Enter your email and password.');
+          return;
+        }
+
+        setBusy(true, 'Signing in…', 'Authenticating…');
 
         try {
-
-          const result =
-            await Promise.race([
-
-              SUPABASE.auth.getSession(),
-
-              timeout(8000)
-
-            ]);
-
-
-          const session =
-            result?.data?.session;
-
-
-          if (!session?.user) {
-            return;
-          }
-
-
-          const admin =
-            await getAdminAccess();
-
-
-          if (
-            admin &&
-            admin.is_active === true &&
-            ADMIN_ROLES.includes(
-              admin.role
-            )
-          ) {
-
-            window.location.replace(
-              'admin.html'
-            );
-
-          }
-
-        } catch (error) {
-
-          console.warn(
-            'Existing session check failed:',
-            error
-          );
-        }
-      }
-
-
-      /* ---------------------------------------------------
-         ADMIN LOGIN
-         --------------------------------------------------- */
-
-      async function loginAdmin(
-        email,
-        password
-      ) {
-
-        if (!SUPABASE) {
-
-          throw new Error(
-            'Supabase is not configured correctly.'
-          );
-        }
-
-
-        const result =
-          await Promise.race([
-
-            SUPABASE.auth.signInWithPassword({
-              email,
-              password
-            }),
-
-            timeout(10000)
-
-          ]);
-
-
-        if (result.error) {
-          throw result.error;
-        }
-
-
-        const user =
-          result.data?.user;
-
-
-        if (!user) {
-
-          throw new Error(
-            'Authentication succeeded, but no user session was returned.'
-          );
-        }
-
-
-        /* -----------------------------------------------
-           NOW CHECK ADMIN ACCESS
-           ----------------------------------------------- */
-
-        const admin =
-          await getAdminAccess();
-
-
-        if (!admin) {
-
-          await SUPABASE.auth.signOut();
-
-          throw new Error(
-            'This account is not registered as an MEI One administrator.'
-          );
-        }
-
-
-        if (
-          admin.is_active !== true
-        ) {
-
-          await SUPABASE.auth.signOut();
-
-          throw new Error(
-            'This administrator account is inactive.'
-          );
-        }
-
-
-        if (
-          !ADMIN_ROLES.includes(
-            admin.role
-          )
-        ) {
-
-          await SUPABASE.auth.signOut();
-
-          throw new Error(
-            'This account does not have an authorized administrator role.'
-          );
-        }
-
-
-        return admin;
-      }
-
-
-      /* ---------------------------------------------------
-         SUBMIT
-         --------------------------------------------------- */
-
-      form.addEventListener(
-        'submit',
-        async event => {
-
-          event.preventDefault();
-
-          clearMessage();
-
-
-          const email =
-            emailInput.value
-              .trim()
-              .toLowerCase();
-
-
-          const password =
-            passwordInput.value;
-
-
-          if (!email) {
-
-            showMessage(
-              'Enter your administrator email.'
-            );
-
-            emailInput.focus();
-
-            return;
-          }
-
-
-          if (!password) {
-
-            showMessage(
-              'Enter your administrator password.'
-            );
-
-            passwordInput.focus();
-
-            return;
-          }
-
-
-          setLoading(true);
-
+          const { data, error } = await client.auth.signInWithPassword({ email, password });
+          if (error) throw error;
+          if (!data?.user) throw new Error('Sign-in finished without a user session.');
+
+          setBusy(true, 'Signing in…', 'Checking administrator access…');
 
           try {
-
-            const admin =
-              await loginAdmin(
-                email,
-                password
-              );
-
-
-            showMessage(
-              `Access verified. ${admin.role} access granted.`,
-              'success'
-            );
-
-
-            setTimeout(
-              () => {
-
-                window.location.replace(
-                  'admin.html'
-                );
-
-              },
-              350
-            );
-
-
-          } catch (error) {
-
-            console.error(
-              'Admin login:',
-              error
-            );
-
-
-            let errorMessage =
-              error?.message ||
-              'Administrator login failed.';
-
-
-            if (
-              errorMessage.includes(
-                'Invalid login credentials'
-              )
-            ) {
-
-              errorMessage =
-                'Incorrect administrator email or password.';
-            }
-
-
-            showMessage(
-              errorMessage
-            );
-
-
-            setLoading(false);
+            await verifyAdmin(data.user.id);
+          } catch (adminError) {
+            await client.auth.signOut(); // do not leave a non-admin session behind
+            throw adminError;
           }
 
+          showMessage('Administrator verified. Opening dashboard…', 'success');
+          status.textContent = 'Access granted';
+          window.location.href = 'admin.html';
+
+        } catch (error) {
+          console.error('Admin login error:', error);
+          setBusy(false, 'Sign in', 'Sign-in failed');
+          showMessage(error?.message || 'Administrator sign-in failed.');
         }
-      );
+      });
 
-
-      /* ---------------------------------------------------
-         PASSWORD VISIBILITY
-         --------------------------------------------------- */
-
-      passwordToggle.addEventListener(
-        'click',
-        () => {
-
-          const isPassword =
-            passwordInput.type ===
-            'password';
-
-
-          passwordInput.type =
-            isPassword
-              ? 'text'
-              : 'password';
-
-
-          passwordToggle.textContent =
-            isPassword
-              ? '🙈'
-              : '👁';
-
-
-          passwordToggle.setAttribute(
-            'aria-label',
-            isPassword
-              ? 'Hide password'
-              : 'Show password'
-          );
-
-        }
-      );
-
-
-      /* ---------------------------------------------------
-         INITIALIZE
-         --------------------------------------------------- */
-
-      if (!SUPABASE) {
-
-        showMessage(
-          'Supabase could not be initialized. Check js/config.js and js/supabase.js.'
-        );
-
-      } else {
-
-        checkExistingSession();
-
+      if (!client) {
+        showMessage('Supabase could not be initialised.');
+        setBusy(true, 'Unavailable', 'Configuration error');
       }
-
     })();
-
   </script>
-
 </body>
 </html>
-```
