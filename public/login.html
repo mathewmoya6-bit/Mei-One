@@ -1,0 +1,1338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <meta
+    name="description"
+    content="Sign in to MEI One — mobility, delivery, towing, roadside assistance, automotive, marketplace, home services and learning."
+  >
+
+  <meta
+    name="theme-color"
+    content="#071A2F"
+  >
+
+  <title>Sign In | MEI One</title>
+
+  <!-- =========================================================
+       MEI ONE — GLOBAL CSS
+       ========================================================= -->
+  <link
+    rel="stylesheet"
+    href="css/styles.css"
+  >
+
+  <style>
+    /* =========================================================
+       LOGIN PAGE
+       ========================================================= */
+
+    .auth-page {
+      min-height: 100vh;
+      background:
+        radial-gradient(
+          circle at top right,
+          rgba(0, 230, 118, 0.14),
+          transparent 32%
+        ),
+        radial-gradient(
+          circle at bottom left,
+          rgba(18, 61, 100, 0.30),
+          transparent 35%
+        ),
+        var(--mei-navy);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .auth-header {
+      width: 100%;
+      padding: 22px 24px;
+    }
+
+    .auth-header-inner {
+      width: min(1180px, 100%);
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+    }
+
+    .auth-brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      color: #fff;
+      text-decoration: none;
+      font-weight: 900;
+      letter-spacing: -0.02em;
+    }
+
+    .auth-brand-mark {
+      width: 44px;
+      height: 44px;
+      border-radius: 13px;
+      background: var(--mei-green);
+      color: var(--mei-navy);
+      display: grid;
+      place-items: center;
+      font-size: 1.15rem;
+      font-weight: 1000;
+      box-shadow: 0 8px 25px rgba(0, 230, 118, 0.22);
+    }
+
+    .auth-brand-name {
+      font-size: 1.35rem;
+    }
+
+    .auth-home-link {
+      color: rgba(255, 255, 255, 0.82);
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 0.92rem;
+    }
+
+    .auth-home-link:hover {
+      color: var(--mei-green);
+    }
+
+    .auth-main {
+      flex: 1;
+      width: 100%;
+      display: grid;
+      place-items: center;
+      padding: 30px 20px 70px;
+    }
+
+    .auth-layout {
+      width: min(1050px, 100%);
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(380px, 460px);
+      gap: 70px;
+      align-items: center;
+    }
+
+    .auth-intro {
+      color: #fff;
+    }
+
+    .auth-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 13px;
+      border: 1px solid rgba(0, 230, 118, 0.35);
+      border-radius: 999px;
+      color: var(--mei-green);
+      background: rgba(0, 230, 118, 0.07);
+      font-size: 0.78rem;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 22px;
+    }
+
+    .auth-eyebrow::before {
+      content: "";
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--mei-green);
+      box-shadow: 0 0 12px var(--mei-green);
+    }
+
+    .auth-intro h1 {
+      margin: 0 0 18px;
+      font-size: clamp(2.5rem, 5vw, 4.5rem);
+      line-height: 0.98;
+      letter-spacing: -0.055em;
+      font-weight: 1000;
+    }
+
+    .auth-intro h1 span {
+      color: var(--mei-green);
+    }
+
+    .auth-intro p {
+      max-width: 590px;
+      margin: 0;
+      color: rgba(255, 255, 255, 0.72);
+      font-size: 1.05rem;
+      line-height: 1.75;
+    }
+
+    .auth-features {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 30px;
+      max-width: 560px;
+    }
+
+    .auth-feature {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: rgba(255, 255, 255, 0.86);
+      font-size: 0.9rem;
+      font-weight: 700;
+    }
+
+    .auth-feature-icon {
+      width: 28px;
+      height: 28px;
+      flex: 0 0 28px;
+      border-radius: 9px;
+      display: grid;
+      place-items: center;
+      background: rgba(0, 230, 118, 0.12);
+      color: var(--mei-green);
+      font-size: 0.78rem;
+      font-weight: 1000;
+    }
+
+    .auth-card {
+      background: #fff;
+      border-radius: 24px;
+      padding: 34px;
+      box-shadow:
+        0 30px 80px rgba(0, 0, 0, 0.32),
+        0 0 0 1px rgba(255, 255, 255, 0.08);
+    }
+
+    .auth-card-header {
+      margin-bottom: 25px;
+    }
+
+    .auth-card-header h2 {
+      margin: 0 0 8px;
+      color: var(--mei-navy);
+      font-size: 1.75rem;
+      font-weight: 1000;
+      letter-spacing: -0.03em;
+    }
+
+    .auth-card-header p {
+      margin: 0;
+      color: #64748b;
+      font-size: 0.92rem;
+      line-height: 1.55;
+    }
+
+    .auth-form {
+      display: flex;
+      flex-direction: column;
+      gap: 17px;
+    }
+
+    .auth-field {
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+    }
+
+    .auth-field label {
+      color: #172033;
+      font-size: 0.83rem;
+      font-weight: 900;
+    }
+
+    .auth-field input {
+      width: 100%;
+      min-height: 50px;
+      padding: 0 14px;
+      border: 1px solid #d7dee7;
+      border-radius: 11px;
+      background: #fff;
+      color: #101827;
+      font-size: 0.95rem;
+      outline: none;
+      transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
+      box-sizing: border-box;
+    }
+
+    .auth-field input:focus {
+      border-color: var(--mei-green);
+      box-shadow: 0 0 0 4px rgba(0, 230, 118, 0.12);
+    }
+
+    .password-wrap {
+      position: relative;
+    }
+
+    .password-wrap input {
+      padding-right: 72px;
+    }
+
+    .password-toggle {
+      position: absolute;
+      right: 9px;
+      top: 50%;
+      transform: translateY(-50%);
+      border: 0;
+      background: transparent;
+      color: #526071;
+      font-size: 0.78rem;
+      font-weight: 900;
+      cursor: pointer;
+      padding: 7px;
+    }
+
+    .password-toggle:hover {
+      color: var(--mei-navy);
+    }
+
+    .auth-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 15px;
+      margin-top: -2px;
+    }
+
+    .remember-me {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: #5d6877;
+      font-size: 0.82rem;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .remember-me input {
+      accent-color: var(--mei-green-dark);
+    }
+
+    .forgot-link {
+      color: #087a47;
+      text-decoration: none;
+      font-size: 0.82rem;
+      font-weight: 900;
+      cursor: pointer;
+    }
+
+    .forgot-link:hover {
+      text-decoration: underline;
+    }
+
+    .auth-submit {
+      width: 100%;
+      min-height: 52px;
+      border: 0;
+      border-radius: 12px;
+      background: var(--mei-green);
+      color: var(--mei-navy);
+      font-weight: 1000;
+      font-size: 0.96rem;
+      cursor: pointer;
+      transition:
+        transform 0.18s ease,
+        box-shadow 0.18s ease,
+        background 0.18s ease;
+      box-shadow: 0 12px 28px rgba(0, 230, 118, 0.22);
+    }
+
+    .auth-submit:hover {
+      transform: translateY(-1px);
+      background: var(--mei-green-light);
+      box-shadow: 0 16px 34px rgba(0, 230, 118, 0.28);
+    }
+
+    .auth-submit:disabled {
+      opacity: 0.65;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .auth-message {
+      display: none;
+      padding: 11px 13px;
+      border-radius: 10px;
+      font-size: 0.83rem;
+      line-height: 1.45;
+      font-weight: 700;
+    }
+
+    .auth-message.show {
+      display: block;
+    }
+
+    .auth-message.error {
+      color: #991b1b;
+      background: #fef2f2;
+      border: 1px solid #fecaca;
+    }
+
+    .auth-message.success {
+      color: #166534;
+      background: #f0fdf4;
+      border: 1px solid #bbf7d0;
+    }
+
+    .auth-divider {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin: 23px 0;
+      color: #94a3b8;
+      font-size: 0.75rem;
+      font-weight: 800;
+    }
+
+    .auth-divider::before,
+    .auth-divider::after {
+      content: "";
+      height: 1px;
+      flex: 1;
+      background: #e2e8f0;
+    }
+
+    .signup-prompt {
+      text-align: center;
+      color: #64748b;
+      font-size: 0.87rem;
+      line-height: 1.5;
+    }
+
+    .signup-prompt a {
+      color: #087a47;
+      text-decoration: none;
+      font-weight: 1000;
+      cursor: pointer;
+    }
+
+    .signup-prompt a:hover {
+      text-decoration: underline;
+    }
+
+    .auth-security {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      margin-top: 20px;
+      color: #94a3b8;
+      font-size: 0.72rem;
+      font-weight: 700;
+    }
+
+    .auth-security-icon {
+      color: var(--mei-green-dark);
+      font-weight: 1000;
+    }
+
+    .auth-footer {
+      width: 100%;
+      padding: 20px;
+      text-align: center;
+      color: rgba(255, 255, 255, 0.48);
+      font-size: 0.75rem;
+    }
+
+    /* =========================================================
+       SIGNUP MODAL OVERRIDES
+       ========================================================= */
+
+    .auth-modal-form {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .auth-modal-form .auth-field input {
+      min-height: 46px;
+    }
+
+    .auth-modal-submit {
+      margin-top: 4px;
+    }
+
+    /* =========================================================
+       MOBILE
+       ========================================================= */
+
+    @media (max-width: 850px) {
+      .auth-layout {
+        grid-template-columns: 1fr;
+        max-width: 520px;
+      }
+
+      .auth-intro {
+        text-align: center;
+      }
+
+      .auth-intro p {
+        margin-left: auto;
+        margin-right: auto;
+      }
+
+      .auth-features {
+        margin-left: auto;
+        margin-right: auto;
+        text-align: left;
+      }
+    }
+
+    @media (max-width: 560px) {
+      .auth-header {
+        padding: 17px 16px;
+      }
+
+      .auth-brand-mark {
+        width: 40px;
+        height: 40px;
+      }
+
+      .auth-brand-name {
+        font-size: 1.15rem;
+      }
+
+      .auth-home-link {
+        font-size: 0.8rem;
+      }
+
+      .auth-main {
+        padding: 20px 14px 45px;
+      }
+
+      .auth-layout {
+        gap: 35px;
+      }
+
+      .auth-intro h1 {
+        font-size: 2.45rem;
+      }
+
+      .auth-intro p {
+        font-size: 0.92rem;
+      }
+
+      .auth-features {
+        grid-template-columns: 1fr;
+      }
+
+      .auth-card {
+        padding: 25px 19px;
+        border-radius: 19px;
+      }
+
+      .auth-card-header h2 {
+        font-size: 1.5rem;
+      }
+
+      .auth-row {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+
+<body class="auth-page">
+
+  <!-- =========================================================
+       HEADER
+       ========================================================= -->
+  <header class="auth-header">
+    <div class="auth-header-inner">
+
+      <a
+        href="index.html"
+        class="auth-brand"
+        aria-label="MEI One Home"
+      >
+        <span class="auth-brand-mark">M</span>
+        <span class="auth-brand-name">MEI One</span>
+      </a>
+
+      <a
+        href="index.html"
+        class="auth-home-link"
+      >
+        ← Back to Home
+      </a>
+
+    </div>
+  </header>
+
+
+  <!-- =========================================================
+       MAIN
+       ========================================================= -->
+  <main class="auth-main">
+
+    <div class="auth-layout">
+
+      <!-- =====================================================
+           INTRO
+           ===================================================== -->
+      <section class="auth-intro">
+
+        <div class="auth-eyebrow">
+          MEI One Platform
+        </div>
+
+        <h1>
+          Everything you need.
+          <span>One account.</span>
+        </h1>
+
+        <p>
+          Sign in to access MEI One services including rides,
+          delivery, towing, roadside assistance, automotive
+          services, marketplace, home services and learning.
+        </p>
+
+        <div class="auth-features">
+
+          <div class="auth-feature">
+            <span class="auth-feature-icon">✓</span>
+            <span>One secure account</span>
+          </div>
+
+          <div class="auth-feature">
+            <span class="auth-feature-icon">✓</span>
+            <span>Multiple MEI services</span>
+          </div>
+
+          <div class="auth-feature">
+            <span class="auth-feature-icon">✓</span>
+            <span>Track your requests</span>
+          </div>
+
+          <div class="auth-feature">
+            <span class="auth-feature-icon">✓</span>
+            <span>Manage your profile</span>
+          </div>
+
+        </div>
+
+      </section>
+
+
+      <!-- =====================================================
+           LOGIN CARD
+           ===================================================== -->
+      <section
+        class="auth-card"
+        aria-labelledby="loginTitle"
+      >
+
+        <div class="auth-card-header">
+
+          <h2 id="loginTitle">
+            Welcome back
+          </h2>
+
+          <p>
+            Sign in to continue to your MEI One account.
+          </p>
+
+        </div>
+
+
+        <!-- AUTH MESSAGE -->
+        <div
+          id="authMessage"
+          class="auth-message"
+          role="alert"
+          aria-live="polite"
+        ></div>
+
+
+        <!-- LOGIN FORM -->
+        <form
+          id="loginForm"
+          class="auth-form"
+          novalidate
+        >
+
+          <div class="auth-field">
+
+            <label for="loginEmail">
+              Email address
+            </label>
+
+            <input
+              type="email"
+              id="loginEmail"
+              name="email"
+              autocomplete="email"
+              placeholder="you@example.com"
+              required
+            >
+
+          </div>
+
+
+          <div class="auth-field">
+
+            <label for="loginPassword">
+              Password
+            </label>
+
+            <div class="password-wrap">
+
+              <input
+                type="password"
+                id="loginPassword"
+                name="password"
+                autocomplete="current-password"
+                placeholder="Enter your password"
+                minlength="6"
+                required
+              >
+
+              <button
+                type="button"
+                class="password-toggle"
+                id="passwordToggle"
+                aria-label="Show password"
+              >
+                SHOW
+              </button>
+
+            </div>
+
+          </div>
+
+
+          <div class="auth-row">
+
+            <label class="remember-me">
+              <input
+                type="checkbox"
+                id="rememberMe"
+                name="remember"
+              >
+              <span>Remember me</span>
+            </label>
+
+            <a
+              href="#"
+              class="forgot-link"
+              id="forgotPassword"
+            >
+              Forgot password?
+            </a>
+
+          </div>
+
+
+          <button
+            type="submit"
+            class="auth-submit"
+            id="loginButton"
+          >
+            Sign In
+          </button>
+
+        </form>
+
+
+        <div class="auth-divider">
+          <span>OR</span>
+        </div>
+
+
+        <div class="signup-prompt">
+          Don't have a MEI One account?
+          <a
+            href="#"
+            id="createAccountLink"
+          >
+            Create one
+          </a>
+        </div>
+
+
+        <div class="auth-security">
+          <span class="auth-security-icon">✓</span>
+          <span>Your account is protected by secure authentication.</span>
+        </div>
+
+      </section>
+
+    </div>
+
+  </main>
+
+
+  <!-- =========================================================
+       FOOTER
+       ========================================================= -->
+  <footer class="auth-footer">
+
+    <span>
+      ©
+      <span id="currentYear"></span>
+      MEI One. All rights reserved.
+    </span>
+
+  </footer>
+
+
+  <!-- =========================================================
+       GLOBAL MODAL
+       ========================================================= -->
+  <div
+    id="globalModal"
+    class="modal"
+    aria-hidden="true"
+    role="dialog"
+    aria-modal="true"
+  >
+
+    <div
+      class="modal-backdrop"
+      data-modal-close
+    ></div>
+
+    <div class="modal-dialog">
+
+      <button
+        type="button"
+        class="modal-close"
+        data-modal-close
+        aria-label="Close"
+      >
+        ×
+      </button>
+
+      <div id="modalContent"></div>
+
+    </div>
+
+  </div>
+
+
+  <!-- =========================================================
+       SUPABASE + MEI SCRIPTS
+       ========================================================= -->
+
+  <script src="js/config.js"></script>
+
+  <script
+    src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"
+  ></script>
+
+  <script src="js/supabase.js"></script>
+
+  <script src="js/site.js"></script>
+
+
+  <!-- =========================================================
+       LOGIN PAGE LOGIC
+       ========================================================= -->
+  <script>
+    (function () {
+      "use strict";
+
+      const SUPABASE = window.supabaseClient;
+
+      const loginForm =
+        document.getElementById("loginForm");
+
+      const emailInput =
+        document.getElementById("loginEmail");
+
+      const passwordInput =
+        document.getElementById("loginPassword");
+
+      const loginButton =
+        document.getElementById("loginButton");
+
+      const passwordToggle =
+        document.getElementById("passwordToggle");
+
+      const authMessage =
+        document.getElementById("authMessage");
+
+      const forgotPassword =
+        document.getElementById("forgotPassword");
+
+      const createAccountLink =
+        document.getElementById("createAccountLink");
+
+      const currentYear =
+        document.getElementById("currentYear");
+
+
+      /* =======================================================
+         YEAR
+         ======================================================= */
+
+      if (currentYear) {
+        currentYear.textContent =
+          new Date().getFullYear();
+      }
+
+
+      /* =======================================================
+         MESSAGE
+         ======================================================= */
+
+      function showMessage(message, type) {
+
+        if (!authMessage) return;
+
+        authMessage.textContent = message;
+
+        authMessage.className =
+          "auth-message show " +
+          (type || "error");
+      }
+
+
+      function clearMessage() {
+
+        if (!authMessage) return;
+
+        authMessage.textContent = "";
+
+        authMessage.className =
+          "auth-message";
+      }
+
+
+      /* =======================================================
+         PASSWORD VISIBILITY
+         ======================================================= */
+
+      if (passwordToggle && passwordInput) {
+
+        passwordToggle.addEventListener(
+          "click",
+          function () {
+
+            const isPassword =
+              passwordInput.type === "password";
+
+            passwordInput.type =
+              isPassword
+                ? "text"
+                : "password";
+
+            passwordToggle.textContent =
+              isPassword
+                ? "HIDE"
+                : "SHOW";
+
+            passwordToggle.setAttribute(
+              "aria-label",
+              isPassword
+                ? "Hide password"
+                : "Show password"
+            );
+
+          }
+        );
+
+      }
+
+
+      /* =======================================================
+         LOGIN
+         ======================================================= */
+
+      if (loginForm) {
+
+        loginForm.addEventListener(
+          "submit",
+          async function (event) {
+
+            event.preventDefault();
+
+            clearMessage();
+
+            const email =
+              emailInput.value.trim();
+
+            const password =
+              passwordInput.value;
+
+
+            if (!email) {
+
+              showMessage(
+                "Please enter your email address.",
+                "error"
+              );
+
+              emailInput.focus();
+
+              return;
+            }
+
+
+            if (!password) {
+
+              showMessage(
+                "Please enter your password.",
+                "error"
+              );
+
+              passwordInput.focus();
+
+              return;
+            }
+
+
+            if (!SUPABASE) {
+
+              showMessage(
+                "Authentication is currently unavailable. Please try again later.",
+                "error"
+              );
+
+              return;
+            }
+
+
+            const originalText =
+              loginButton.textContent;
+
+            loginButton.disabled = true;
+            loginButton.textContent =
+              "Signing in...";
+
+
+            try {
+
+              const {
+                data,
+                error
+              } = await SUPABASE.auth.signInWithPassword({
+                email: email,
+                password: password
+              });
+
+
+              if (error) {
+                throw error;
+              }
+
+
+              if (!data || !data.session) {
+
+                showMessage(
+                  "Sign in could not be completed. Please try again.",
+                  "error"
+                );
+
+                return;
+              }
+
+
+              showMessage(
+                "Sign in successful. Redirecting...",
+                "success"
+              );
+
+
+              const config =
+                window.MEI_CONFIG ||
+                window.MEIConfig ||
+                window.CONFIG ||
+                {};
+
+
+              const dashboard =
+                config.routes &&
+                config.routes.dashboard
+                  ? config.routes.dashboard
+                  : "dashboard.html";
+
+
+              setTimeout(function () {
+
+                window.location.href =
+                  dashboard;
+
+              }, 500);
+
+
+            } catch (error) {
+
+              console.error(
+                "MEI One login error:",
+                error
+              );
+
+              let message =
+                "Unable to sign in. Please check your details and try again.";
+
+
+              if (
+                error &&
+                error.message
+              ) {
+
+                const text =
+                  error.message.toLowerCase();
+
+
+                if (
+                  text.includes(
+                    "invalid login credentials"
+                  )
+                ) {
+
+                  message =
+                    "Invalid email or password.";
+
+                } else if (
+                  text.includes(
+                    "email not confirmed"
+                  )
+                ) {
+
+                  message =
+                    "Please confirm your email address before signing in.";
+
+                } else if (
+                  text.includes(
+                    "too many requests"
+                  )
+                ) {
+
+                  message =
+                    "Too many attempts. Please wait a moment and try again.";
+
+                } else if (
+                  text.includes(
+                    "network"
+                  )
+                ) {
+
+                  message =
+                    "Network error. Please check your internet connection.";
+
+                }
+
+              }
+
+
+              showMessage(
+                message,
+                "error"
+              );
+
+            } finally {
+
+              loginButton.disabled = false;
+
+              loginButton.textContent =
+                originalText;
+
+            }
+
+          }
+        );
+
+      }
+
+
+      /* =======================================================
+         FORGOT PASSWORD
+         ======================================================= */
+
+      if (forgotPassword) {
+
+        forgotPassword.addEventListener(
+          "click",
+          async function (event) {
+
+            event.preventDefault();
+
+            clearMessage();
+
+            const email =
+              emailInput.value.trim();
+
+
+            if (!email) {
+
+              showMessage(
+                "Enter your email address first, then select Forgot password.",
+                "error"
+              );
+
+              emailInput.focus();
+
+              return;
+            }
+
+
+            if (!SUPABASE) {
+
+              showMessage(
+                "Password recovery is currently unavailable.",
+                "error"
+              );
+
+              return;
+            }
+
+
+            try {
+
+              const config =
+                window.MEI_CONFIG ||
+                window.MEIConfig ||
+                window.CONFIG ||
+                {};
+
+
+              const siteUrl =
+                window.location.origin;
+
+
+              const {
+                error
+              } =
+                await SUPABASE.auth.resetPasswordForEmail(
+                  email,
+                  {
+                    redirectTo:
+                      siteUrl +
+                      "/login.html?reset=true"
+                  }
+                );
+
+
+              if (error) {
+                throw error;
+              }
+
+
+              showMessage(
+                "Password reset instructions have been sent to your email.",
+                "success"
+              );
+
+
+            } catch (error) {
+
+              console.error(
+                "MEI One password reset error:",
+                error
+              );
+
+              showMessage(
+                error.message ||
+                "Unable to send password reset instructions.",
+                "error"
+              );
+
+            }
+
+          }
+        );
+
+      }
+
+
+      /* =======================================================
+         CREATE ACCOUNT
+         ======================================================= */
+
+      if (createAccountLink) {
+
+        createAccountLink.addEventListener(
+          "click",
+          function (event) {
+
+            event.preventDefault();
+
+            if (
+              window.MEI &&
+              typeof window.MEI.openModal === "function"
+            ) {
+
+              window.MEI.openModal("signup");
+
+              return;
+            }
+
+
+            showMessage(
+              "Account registration is currently unavailable.",
+              "error"
+            );
+
+          }
+        );
+
+      }
+
+
+      /* =======================================================
+         ALREADY AUTHENTICATED
+         ======================================================= */
+
+      async function checkExistingSession() {
+
+        if (!SUPABASE) return;
+
+        try {
+
+          const {
+            data
+          } = await SUPABASE.auth.getSession();
+
+
+          if (
+            data &&
+            data.session &&
+            data.session.user
+          ) {
+
+            const config =
+              window.MEI_CONFIG ||
+              window.MEIConfig ||
+              window.CONFIG ||
+              {};
+
+
+            const dashboard =
+              config.routes &&
+              config.routes.dashboard
+                ? config.routes.dashboard
+                : "dashboard.html";
+
+
+            window.location.href =
+              dashboard;
+
+          }
+
+        } catch (error) {
+
+          console.warn(
+            "MEI One: Unable to check existing session.",
+            error
+          );
+
+        }
+
+      }
+
+
+      checkExistingSession();
+
+    })();
+  </script>
+
+</body>
+</html>
