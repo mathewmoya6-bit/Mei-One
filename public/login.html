@@ -3,31 +3,28 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
-  >
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <title>Login | MEI One</title>
 
   <meta
     name="description"
-    content="Sign in to MEI One"
+    content="Sign in to your MEI One customer account."
   >
 
   <style>
     :root {
       --navy: #06111f;
-      --navy-2: #0b1b2d;
+      --navy-2: #0a1a2b;
       --navy-3: #10263d;
       --green: #b7ff00;
-      --green-2: #8fd600;
+      --green-hover: #c8ff3d;
       --white: #ffffff;
+      --text: #e8f0f7;
       --muted: #91a4b8;
-      --border: rgba(255,255,255,.10);
-      --danger: #ff5c6c;
-      --success: #56e39f;
-      --shadow: 0 24px 70px rgba(0,0,0,.40);
+      --border: rgba(255, 255, 255, 0.10);
+      --danger: #ff6474;
+      --success: #5de3a0;
     }
 
     * {
@@ -42,6 +39,13 @@
     }
 
     body {
+      min-height: 100vh;
+      padding: 24px;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
       font-family:
         Inter,
         ui-sans-serif,
@@ -51,30 +55,20 @@
         "Segoe UI",
         sans-serif;
 
+      color: var(--white);
+
       background:
         radial-gradient(
-          circle at top right,
-          rgba(183,255,0,.10),
-          transparent 30%
+          circle at 85% 10%,
+          rgba(183, 255, 0, 0.11),
+          transparent 28%
         ),
         radial-gradient(
-          circle at bottom left,
-          rgba(0,140,255,.08),
-          transparent 35%
+          circle at 10% 90%,
+          rgba(0, 120, 255, 0.08),
+          transparent 32%
         ),
         var(--navy);
-
-      color: var(--white);
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 24px;
-    }
-
-    a {
-      color: inherit;
-      text-decoration: none;
     }
 
     button,
@@ -82,10 +76,18 @@
       font: inherit;
     }
 
+    button {
+      cursor: pointer;
+    }
+
     .page {
       width: 100%;
-      max-width: 460px;
+      max-width: 440px;
     }
+
+    /* -------------------------------------------------------
+       BRAND
+       ------------------------------------------------------- */
 
     .brand {
       text-align: center;
@@ -96,48 +98,58 @@
       width: 68px;
       height: 68px;
       margin: 0 auto 14px;
-      border-radius: 20px;
 
       display: flex;
       align-items: center;
       justify-content: center;
 
+      border-radius: 20px;
+
       background: var(--green);
       color: var(--navy);
 
-      font-size: 24px;
+      font-size: 23px;
       font-weight: 950;
       letter-spacing: -1px;
 
       box-shadow:
-        0 0 0 1px rgba(183,255,0,.25),
-        0 15px 45px rgba(183,255,0,.18);
+        0 0 0 1px rgba(183, 255, 0, 0.25),
+        0 18px 45px rgba(183, 255, 0, 0.16);
     }
 
     .brand h1 {
       font-size: 32px;
+      line-height: 1;
       font-weight: 950;
       letter-spacing: -1.5px;
     }
 
     .brand p {
+      margin-top: 8px;
       color: var(--muted);
-      margin-top: 6px;
       font-size: 14px;
     }
 
+    /* -------------------------------------------------------
+       CARD
+       ------------------------------------------------------- */
+
     .card {
-      background:
-        linear-gradient(
-          180deg,
-          rgba(16,38,61,.96),
-          rgba(7,20,34,.98)
-        );
+      padding: 30px;
 
       border: 1px solid var(--border);
       border-radius: 24px;
-      padding: 30px;
-      box-shadow: var(--shadow);
+
+      background:
+        linear-gradient(
+          180deg,
+          rgba(16, 38, 61, 0.96),
+          rgba(7, 19, 33, 0.98)
+        );
+
+      box-shadow:
+        0 25px 70px rgba(0, 0, 0, 0.40);
+
       backdrop-filter: blur(18px);
     }
 
@@ -146,17 +158,53 @@
     }
 
     .card-header h2 {
-      font-size: 24px;
+      font-size: 25px;
       font-weight: 900;
-      letter-spacing: -.7px;
+      letter-spacing: -0.8px;
     }
 
     .card-header p {
-      color: var(--muted);
       margin-top: 7px;
+      color: var(--muted);
       font-size: 14px;
       line-height: 1.5;
     }
+
+    /* -------------------------------------------------------
+       MESSAGE
+       ------------------------------------------------------- */
+
+    .message {
+      display: none;
+
+      margin-bottom: 18px;
+      padding: 13px 14px;
+
+      border-radius: 12px;
+
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .message.show {
+      display: block;
+    }
+
+    .message.error {
+      color: #ffdce0;
+      background: rgba(255, 100, 116, 0.10);
+      border: 1px solid rgba(255, 100, 116, 0.28);
+    }
+
+    .message.success {
+      color: #d9ffeb;
+      background: rgba(93, 227, 160, 0.10);
+      border: 1px solid rgba(93, 227, 160, 0.28);
+    }
+
+    /* -------------------------------------------------------
+       FORM
+       ------------------------------------------------------- */
 
     .field {
       margin-bottom: 17px;
@@ -165,7 +213,8 @@
     .field label {
       display: block;
       margin-bottom: 8px;
-      color: #dbe7f2;
+
+      color: var(--text);
       font-size: 13px;
       font-weight: 800;
     }
@@ -173,22 +222,31 @@
     .field input {
       width: 100%;
       height: 52px;
-      border-radius: 13px;
-      border: 1px solid rgba(255,255,255,.12);
-      background: rgba(0,0,0,.20);
-      color: var(--white);
+
       padding: 0 15px;
+
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 13px;
+
       outline: none;
-      transition: .2s ease;
+
+      background: rgba(0, 0, 0, 0.20);
+      color: var(--white);
+
+      transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
     }
 
     .field input::placeholder {
-      color: #60758a;
+      color: #62778b;
     }
 
     .field input:focus {
       border-color: var(--green);
-      box-shadow: 0 0 0 3px rgba(183,255,0,.10);
+
+      box-shadow:
+        0 0 0 3px rgba(183, 255, 0, 0.10);
     }
 
     .password-wrap {
@@ -196,102 +254,124 @@
     }
 
     .password-wrap input {
-      padding-right: 90px;
+      padding-right: 80px;
     }
 
-    .password-toggle {
+    .toggle-password {
       position: absolute;
-      right: 10px;
+      right: 9px;
       top: 50%;
+
       transform: translateY(-50%);
+
+      padding: 8px;
 
       border: 0;
       background: transparent;
+
       color: var(--green);
 
-      cursor: pointer;
-      font-size: 12px;
+      font-size: 11px;
       font-weight: 900;
-      padding: 8px;
     }
 
-    .forgot {
+    .forgot-row {
       display: flex;
       justify-content: flex-end;
-      margin-top: -5px;
+
+      margin-top: -4px;
       margin-bottom: 18px;
     }
 
-    .forgot button {
+    .forgot-button {
+      padding: 3px;
+
       border: 0;
       background: transparent;
+
       color: var(--green);
-      cursor: pointer;
+
       font-size: 13px;
       font-weight: 800;
     }
 
-    .primary-btn {
+    /* -------------------------------------------------------
+       BUTTONS
+       ------------------------------------------------------- */
+
+    .primary-button {
       width: 100%;
       min-height: 54px;
+
       border: 0;
       border-radius: 14px;
 
       background: var(--green);
       color: #07101b;
 
-      font-weight: 950;
       font-size: 15px;
+      font-weight: 950;
 
-      cursor: pointer;
-      transition: .2s ease;
+      transition:
+        transform 0.2s ease,
+        background 0.2s ease,
+        opacity 0.2s ease;
     }
 
-    .primary-btn:hover {
-      background: #c8ff3d;
+    .primary-button:hover:not(:disabled) {
+      background: var(--green-hover);
       transform: translateY(-1px);
     }
 
-    .primary-btn:disabled {
-      opacity: .55;
+    .primary-button:disabled {
+      opacity: 0.55;
       cursor: not-allowed;
       transform: none;
     }
 
-    .message {
-      display: none;
-      margin-bottom: 18px;
-      padding: 13px 14px;
-      border-radius: 12px;
-      font-size: 13px;
-      line-height: 1.5;
-      border: 1px solid transparent;
+    .secondary-button {
+      width: 100%;
+      min-height: 50px;
+
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 13px;
+
+      background: rgba(255, 255, 255, 0.03);
+      color: var(--white);
+
+      font-size: 14px;
+      font-weight: 850;
+
+      transition:
+        border-color 0.2s ease,
+        background 0.2s ease;
     }
 
-    .message.show {
-      display: block;
+    .secondary-button:hover:not(:disabled) {
+      border-color: rgba(183, 255, 0, 0.35);
+      background: rgba(183, 255, 0, 0.05);
     }
 
-    .message.error {
-      color: #ffd9de;
-      background: rgba(255,92,108,.10);
-      border-color: rgba(255,92,108,.28);
+    .secondary-button:disabled {
+      opacity: 0.55;
+      cursor: not-allowed;
     }
 
-    .message.success {
-      color: #d8ffeb;
-      background: rgba(86,227,159,.10);
-      border-color: rgba(86,227,159,.28);
-    }
+    /* -------------------------------------------------------
+       DIVIDER
+       ------------------------------------------------------- */
 
     .divider {
       display: flex;
       align-items: center;
       gap: 12px;
+
       margin: 23px 0;
-      color: #62778b;
-      font-size: 12px;
-      font-weight: 700;
+
+      color: #60758a;
+
+      font-size: 11px;
+      font-weight: 800;
     }
 
     .divider::before,
@@ -302,28 +382,17 @@
       background: var(--border);
     }
 
-    .secondary {
-      width: 100%;
-      min-height: 50px;
-      border: 1px solid rgba(255,255,255,.12);
-      border-radius: 13px;
-      background: rgba(255,255,255,.03);
-      color: var(--white);
-      cursor: pointer;
-      font-weight: 850;
-      transition: .2s ease;
-    }
-
-    .secondary:hover {
-      border-color: rgba(183,255,0,.35);
-      background: rgba(183,255,0,.05);
-    }
+    /* -------------------------------------------------------
+       FOOTER
+       ------------------------------------------------------- */
 
     .footer {
+      margin-top: 22px;
+
       text-align: center;
+
       color: var(--muted);
       font-size: 13px;
-      margin-top: 22px;
     }
 
     .footer a {
@@ -331,37 +400,25 @@
       font-weight: 850;
     }
 
-    .debug {
-      display: none;
-      margin-top: 18px;
-      padding: 12px;
-      border-radius: 10px;
-      background: #02070d;
-      border: 1px solid rgba(255,255,255,.08);
-      color: #8da2b6;
-      font-family: Consolas, monospace;
-      font-size: 11px;
-      line-height: 1.5;
-      white-space: pre-wrap;
-      word-break: break-word;
-    }
-
-    .debug.show {
-      display: block;
-    }
+    /* -------------------------------------------------------
+       SPINNER
+       ------------------------------------------------------- */
 
     .spinner {
       width: 17px;
       height: 17px;
+
       display: inline-block;
       vertical-align: middle;
+
       margin-right: 8px;
 
-      border: 2px solid rgba(0,0,0,.25);
+      border: 2px solid rgba(0, 0, 0, 0.22);
       border-top-color: #07101b;
+
       border-radius: 50%;
 
-      animation: spin .7s linear infinite;
+      animation: spin 0.7s linear infinite;
     }
 
     @keyframes spin {
@@ -370,12 +427,9 @@
       }
     }
 
-    .checking {
-      text-align: center;
-      padding: 14px;
-      color: var(--muted);
-      font-size: 13px;
-    }
+    /* -------------------------------------------------------
+       MOBILE
+       ------------------------------------------------------- */
 
     @media (max-width: 520px) {
       body {
@@ -388,7 +442,7 @@
       }
 
       .brand h1 {
-        font-size: 28px;
+        font-size: 29px;
       }
     }
   </style>
@@ -398,17 +452,40 @@
 
   <main class="page">
 
-    <div class="brand">
-      <div class="brand-mark">MEI</div>
+    <!-- =====================================================
+         BRAND
+         ===================================================== -->
+
+    <header class="brand">
+
+      <div class="brand-mark">
+        MEI
+      </div>
+
       <h1>MEI One</h1>
-      <p>One platform. Connected services.</p>
-    </div>
+
+      <p>
+        One platform. Connected services.
+      </p>
+
+    </header>
+
+    <!-- =====================================================
+         LOGIN CARD
+         ===================================================== -->
 
     <section class="card">
 
       <div class="card-header">
-        <h2>Welcome back</h2>
-        <p>Sign in to continue to your MEI One account.</p>
+
+        <h2>
+          Welcome back
+        </h2>
+
+        <p>
+          Sign in to access your MEI One customer dashboard.
+        </p>
+
       </div>
 
       <div
@@ -418,10 +495,18 @@
         aria-live="polite"
       ></div>
 
-      <form id="loginForm" novalidate>
+      <form
+        id="loginForm"
+        novalidate
+      >
+
+        <!-- EMAIL -->
 
         <div class="field">
-          <label for="email">Email address</label>
+
+          <label for="email">
+            Email address
+          </label>
 
           <input
             id="email"
@@ -431,12 +516,19 @@
             placeholder="you@example.com"
             required
           >
+
         </div>
 
+        <!-- PASSWORD -->
+
         <div class="field">
-          <label for="password">Password</label>
+
+          <label for="password">
+            Password
+          </label>
 
           <div class="password-wrap">
+
             <input
               id="password"
               name="password"
@@ -448,26 +540,35 @@
 
             <button
               type="button"
-              class="password-toggle"
+              class="toggle-password"
               id="togglePassword"
             >
               SHOW
             </button>
+
           </div>
+
         </div>
 
-        <div class="forgot">
+        <!-- FORGOT PASSWORD -->
+
+        <div class="forgot-row">
+
           <button
             type="button"
+            class="forgot-button"
             id="forgotPassword"
           >
             Forgot password?
           </button>
+
         </div>
+
+        <!-- SIGN IN -->
 
         <button
           type="submit"
-          class="primary-btn"
+          class="primary-button"
           id="loginButton"
         >
           Sign In
@@ -475,40 +576,43 @@
 
       </form>
 
+      <!-- DIVIDER -->
+
       <div class="divider">
         OR
       </div>
 
+      <!-- SIGN UP -->
+
       <button
         type="button"
-        class="secondary"
+        class="secondary-button"
         id="signupButton"
       >
         Create a MEI One account
       </button>
 
-      <div
-        id="debug"
-        class="debug"
-      ></div>
-
     </section>
 
-    <div class="footer">
-      <span>© </span><span id="year"></span>
-      <span> MEI One. All rights reserved.</span>
-    </div>
+    <!-- FOOTER -->
+
+    <footer class="footer">
+
+      © <span id="year"></span> MEI One.
+      All rights reserved.
+
+    </footer>
 
   </main>
 
   <!-- =========================================================
-       MEI ONE CONFIG
+       MEI ONE CONFIGURATION
        ========================================================= -->
 
   <script src="js/config.js"></script>
 
   <!-- =========================================================
-       SUPABASE
+       SUPABASE SDK
        ========================================================= -->
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
@@ -519,29 +623,30 @@
 
   <script src="js/supabase.js"></script>
 
+  <!-- =========================================================
+       LOGIN LOGIC
+       ========================================================= -->
+
   <script>
     (function () {
+
       "use strict";
 
-      const DEBUG = true;
+      /* -------------------------------------------------------
+         ELEMENTS
+         ------------------------------------------------------- */
 
-      const messageEl =
-        document.getElementById("message");
-
-      const debugEl =
-        document.getElementById("debug");
-
-      const loginForm =
+      const form =
         document.getElementById("loginForm");
-
-      const loginButton =
-        document.getElementById("loginButton");
 
       const emailInput =
         document.getElementById("email");
 
       const passwordInput =
         document.getElementById("password");
+
+      const loginButton =
+        document.getElementById("loginButton");
 
       const togglePassword =
         document.getElementById("togglePassword");
@@ -552,353 +657,170 @@
       const signupButton =
         document.getElementById("signupButton");
 
-      const yearEl =
+      const message =
+        document.getElementById("message");
+
+      const year =
         document.getElementById("year");
 
-      yearEl.textContent =
+      year.textContent =
         new Date().getFullYear();
 
-      /* ---------------------------------------------------------
-         CONFIG
-         --------------------------------------------------------- */
+      /* -------------------------------------------------------
+         SUPABASE CLIENT
+         ------------------------------------------------------- */
 
-      const config =
-        window.MEI_CONFIG || {};
-
-      const client =
+      const supabase =
         window.supabaseClient ||
-        window.MEISupabase ||
-        null;
+        window.MEISupabase;
 
-      function log() {
-        if (!DEBUG) return;
-
-        console.log.apply(
-          console,
-          ["MEI One:"].concat(
-            Array.from(arguments)
-          )
-        );
-      }
-
-      function showDebug(value) {
-        if (!DEBUG) return;
-
-        debugEl.textContent =
-          typeof value === "string"
-            ? value
-            : JSON.stringify(
-                value,
-                null,
-                2
-              );
-
-        debugEl.classList.add("show");
-      }
-
-      function clearDebug() {
-        debugEl.textContent = "";
-        debugEl.classList.remove("show");
-      }
+      /* -------------------------------------------------------
+         MESSAGE
+         ------------------------------------------------------- */
 
       function showMessage(
         text,
         type = "error"
       ) {
-        messageEl.textContent = text;
-        messageEl.className =
+
+        message.textContent =
+          text;
+
+        message.className =
           "message show " + type;
+
       }
 
       function clearMessage() {
-        messageEl.textContent = "";
-        messageEl.className = "message";
+
+        message.textContent =
+          "";
+
+        message.className =
+          "message";
+
       }
 
-      /* ---------------------------------------------------------
-         TIMEOUT HELPER
-         --------------------------------------------------------- */
+      /* -------------------------------------------------------
+         TIMEOUT
+         ------------------------------------------------------- */
 
       function withTimeout(
         promise,
-        milliseconds,
+        timeout,
         label
       ) {
+
         return Promise.race([
+
           promise,
 
-          new Promise((_, reject) => {
-            setTimeout(() => {
-              reject(
-                new Error(
-                  label +
-                  " timed out after " +
-                  milliseconds +
-                  "ms."
-                )
+          new Promise(
+            function (_, reject) {
+
+              setTimeout(
+                function () {
+
+                  reject(
+                    new Error(
+                      label +
+                      " timed out. Please check your connection and try again."
+                    )
+                  );
+
+                },
+                timeout
               );
-            }, milliseconds);
-          })
+
+            }
+          )
+
         ]);
+
       }
 
-      /* ---------------------------------------------------------
-         SUPABASE CHECK
-         --------------------------------------------------------- */
+      /* -------------------------------------------------------
+         CHECK SUPABASE
+         ------------------------------------------------------- */
 
-      function verifySupabaseClient() {
-        if (!client) {
+      function ensureSupabase() {
+
+        if (!supabase) {
+
           throw new Error(
-            "Supabase client was not created. Check js/config.js and js/supabase.js."
+            "MEI One could not connect to Supabase. Check js/config.js and js/supabase.js."
           );
+
         }
 
-        log(
-          "Supabase client detected."
-        );
       }
 
-      /* ---------------------------------------------------------
+      /* -------------------------------------------------------
          PASSWORD VISIBILITY
-         --------------------------------------------------------- */
+         ------------------------------------------------------- */
 
       togglePassword.addEventListener(
         "click",
         function () {
-          const visible =
-            passwordInput.type === "text";
+
+          const isPassword =
+            passwordInput.type === "password";
 
           passwordInput.type =
-            visible
-              ? "password"
-              : "text";
+            isPassword
+              ? "text"
+              : "password";
 
           togglePassword.textContent =
-            visible
-              ? "SHOW"
-              : "HIDE";
+            isPassword
+              ? "HIDE"
+              : "SHOW";
+
         }
       );
 
-      /* ---------------------------------------------------------
-         BUTTON STATE
-         --------------------------------------------------------- */
+      /* -------------------------------------------------------
+         LOADING STATE
+         ------------------------------------------------------- */
 
-      function setLoading(isLoading) {
+      function setLoading(
+        loading
+      ) {
+
         loginButton.disabled =
-          isLoading;
-
-        signupButton.disabled =
-          isLoading;
+          loading;
 
         forgotPassword.disabled =
-          isLoading;
+          loading;
 
-        if (isLoading) {
+        signupButton.disabled =
+          loading;
+
+        if (loading) {
+
           loginButton.innerHTML =
             '<span class="spinner"></span>Signing in...';
+
         } else {
+
           loginButton.textContent =
             "Sign In";
+
         }
+
       }
 
-      /* ---------------------------------------------------------
-         GET AUTH USER
-         --------------------------------------------------------- */
-
-      async function getUser() {
-        log(
-          "STEP 2: Checking authenticated user..."
-        );
-
-        const result =
-          await withTimeout(
-            client.auth.getUser(),
-            10000,
-            "Supabase getUser"
-          );
-
-        log(
-          "getUser result:",
-          result
-        );
-
-        if (result.error) {
-          throw result.error;
-        }
-
-        return result.data?.user || null;
-      }
-
-      /* ---------------------------------------------------------
-         CHECK ADMIN ROLE
-         --------------------------------------------------------- */
-
-      async function getAdminAccess(userId) {
-        log(
-          "STEP 3: Checking MEI One administrator access..."
-        );
-
-        /*
-         * IMPORTANT:
-         * This is only performed AFTER successful
-         * authentication.
-         */
-
-        const rpcResult =
-          await withTimeout(
-            client.rpc(
-              "get_my_admin_access"
-            ),
-            10000,
-            "Administrator access check"
-          );
-
-        log(
-          "Admin RPC result:",
-          rpcResult
-        );
-
-        if (
-          !rpcResult.error &&
-          rpcResult.data &&
-          rpcResult.data.length > 0
-        ) {
-          const record =
-            rpcResult.data[0];
-
-          return {
-            isAdmin:
-              record.is_active === true,
-
-            role:
-              record.role || null,
-
-            source:
-              "rpc"
-          };
-        }
-
-        /*
-         * Fallback direct query.
-         */
-
-        log(
-          "Admin RPC returned no active record. Trying direct query..."
-        );
-
-        const directResult =
-          await withTimeout(
-            client
-              .from("admin_users")
-              .select(
-                "id,user_id,role,is_active"
-              )
-              .eq(
-                "user_id",
-                userId
-              )
-              .maybeSingle(),
-            10000,
-            "Administrator database query"
-          );
-
-        log(
-          "Admin direct query result:",
-          directResult
-        );
-
-        if (directResult.error) {
-          throw directResult.error;
-        }
-
-        if (!directResult.data) {
-          return {
-            isAdmin: false,
-            role: null,
-            source: "none"
-          };
-        }
-
-        return {
-          isAdmin:
-            directResult.data.is_active === true,
-
-          role:
-            directResult.data.role || null,
-
-          source:
-            "direct"
-        };
-      }
-
-      /* ---------------------------------------------------------
-         DESTINATION
-         --------------------------------------------------------- */
-
-      async function determineDestination(
-        user
-      ) {
-        log(
-          "STEP 3: Determining account destination..."
-        );
-
-        const admin =
-          await getAdminAccess(
-            user.id
-          );
-
-        log(
-          "Administrator status:",
-          admin
-        );
-
-        const allowedRoles = [
-          "SUPER_ADMIN",
-          "ADMIN",
-          "OPERATIONS",
-          "FINANCE",
-          "SUPPORT",
-          "AUDITOR"
-        ];
-
-        if (
-          admin.isAdmin &&
-          allowedRoles.includes(
-            String(
-              admin.role
-            ).toUpperCase()
-          )
-        ) {
-          log(
-            "Administrator account detected."
-          );
-
-          return "admin.html";
-        }
-
-        log(
-          "Customer account detected."
-        );
-
-        return (
-          config.routes?.dashboard ||
-          "dashboard.html"
-        );
-      }
-
-      /* ---------------------------------------------------------
+      /* -------------------------------------------------------
          LOGIN
-         --------------------------------------------------------- */
+         ------------------------------------------------------- */
 
-      loginForm.addEventListener(
+      form.addEventListener(
         "submit",
         async function (event) {
+
           event.preventDefault();
 
           clearMessage();
-          clearDebug();
 
           const email =
             emailInput.value
@@ -908,41 +830,49 @@
           const password =
             passwordInput.value;
 
+          /* VALIDATION */
+
           if (!email) {
+
             showMessage(
               "Please enter your email address."
             );
+
             emailInput.focus();
+
             return;
+
           }
 
           if (!password) {
+
             showMessage(
               "Please enter your password."
             );
+
             passwordInput.focus();
+
             return;
+
           }
 
           setLoading(true);
 
           try {
-            verifySupabaseClient();
 
-            /*
-             * ---------------------------------------------------
-             * STEP 1
-             * Authenticate against Supabase.
-             * ---------------------------------------------------
-             */
+            ensureSupabase();
 
-            log(
-              "STEP 1: Authenticating with Supabase..."
+            console.log(
+              "MEI One: Starting customer login..."
             );
 
-            const authResult =
+            /* -----------------------------------------------
+               AUTHENTICATE
+               ----------------------------------------------- */
+
+            const result =
               await withTimeout(
-                client.auth.signInWithPassword({
+                supabase.auth.signInWithPassword({
                   email: email,
                   password: password
                 }),
@@ -950,85 +880,59 @@
                 "Supabase login request"
               );
 
-            log(
-              "Authentication result:",
-              authResult
+            console.log(
+              "MEI One: Login response:",
+              result
             );
 
-            if (authResult.error) {
-              throw authResult.error;
+            if (result.error) {
+
+              throw result.error;
+
             }
 
-            const user =
-              authResult.data?.user;
+            if (!result.data?.session) {
 
-            if (!user) {
               throw new Error(
-                "Supabase login succeeded but no user was returned."
+                "Login completed but no active session was returned."
               );
+
             }
 
-            log(
-              "AUTHENTICATION SUCCESS:",
-              {
-                id: user.id,
-                email: user.email
-              }
-            );
-
-            /*
-             * ---------------------------------------------------
-             * STEP 2
-             * Verify the authenticated user.
-             * ---------------------------------------------------
-             */
-
-            const verifiedUser =
-              await getUser();
-
-            if (!verifiedUser) {
-              throw new Error(
-                "Authentication completed, but Supabase could not verify the user session."
-              );
-            }
-
-            /*
-             * ---------------------------------------------------
-             * STEP 3
-             * Determine customer/admin destination.
-             * ---------------------------------------------------
-             */
-
-            const destination =
-              await determineDestination(
-                verifiedUser
-              );
-
-            log(
-              "FINAL DESTINATION:",
-              destination
+            console.log(
+              "MEI One: Customer authentication successful."
             );
 
             showMessage(
-              "Login successful. Opening your account...",
+              "Login successful. Opening your dashboard...",
               "success"
             );
 
-            /*
-             * Give the browser a moment to persist
-             * the Supabase session before navigating.
-             */
+            /* -----------------------------------------------
+               SHORT DELAY TO ALLOW SESSION PERSISTENCE
+               ----------------------------------------------- */
 
             await new Promise(
-              resolve =>
+              function (resolve) {
+
                 setTimeout(
                   resolve,
                   300
-                )
+                );
+
+              }
+            );
+
+            /* -----------------------------------------------
+               CUSTOMER DASHBOARD
+               ----------------------------------------------- */
+
+            console.log(
+              "MEI One: Redirecting to dashboard.html"
             );
 
             window.location.replace(
-              destination
+              "dashboard.html"
             );
 
           } catch (error) {
@@ -1038,77 +942,60 @@
               error
             );
 
-            const message =
+            let errorMessage =
               error?.message ||
               "Login failed. Please try again.";
 
-            /*
-             * Show the exact failing step.
-             */
-
-            showDebug({
-              message:
-                message,
-
-              name:
-                error?.name || null,
-
-              code:
-                error?.code || null,
-
-              status:
-                error?.status || null,
-
-              hint:
-                "If this says 'Supabase login request timed out', the problem is before admin authorization. If authentication succeeds but 'Administrator access check' times out, the problem is the admin RPC/database policy."
-            });
+            /* FRIENDLIER SUPABASE MESSAGES */
 
             if (
-              message.toLowerCase().includes(
-                "supabase login request timed out"
-              )
+              errorMessage
+                .toLowerCase()
+                .includes(
+                  "invalid login credentials"
+                )
             ) {
-              showMessage(
-                "The Supabase authentication request is not responding. Please check the Supabase project/API connection."
-              );
-            } else if (
-              message.toLowerCase().includes(
-                "administrator access check timed out"
-              )
-            ) {
-              showMessage(
-                "Login succeeded, but the administrator database check is not responding."
-              );
-            } else if (
-              message.toLowerCase().includes(
-                "administrator database query timed out"
-              )
-            ) {
-              showMessage(
-                "Login succeeded, but the administrator database query is not responding."
-              );
-            } else {
-              showMessage(
-                message
-              );
+
+              errorMessage =
+                "Incorrect email or password.";
+
             }
 
+            if (
+              errorMessage
+                .toLowerCase()
+                .includes(
+                  "email not confirmed"
+                )
+            ) {
+
+              errorMessage =
+                "Please confirm your email address before signing in.";
+
+            }
+
+            showMessage(
+              errorMessage
+            );
+
           } finally {
+
             setLoading(false);
+
           }
+
         }
       );
 
-      /* ---------------------------------------------------------
+      /* -------------------------------------------------------
          FORGOT PASSWORD
-         --------------------------------------------------------- */
+         ------------------------------------------------------- */
 
       forgotPassword.addEventListener(
         "click",
         async function () {
 
           clearMessage();
-          clearDebug();
 
           const email =
             emailInput.value
@@ -1116,32 +1003,35 @@
               .toLowerCase();
 
           if (!email) {
+
             showMessage(
-              "Enter your email address first, then click Forgot password."
+              "Enter your email address first."
             );
 
             emailInput.focus();
+
             return;
+
           }
 
           try {
-            verifySupabaseClient();
+
+            ensureSupabase();
 
             forgotPassword.disabled =
               true;
 
-            log(
-              "Sending password reset..."
-            );
+            const redirectUrl =
+              window.location.origin +
+              "/login.html";
 
             const result =
               await withTimeout(
-                client.auth.resetPasswordForEmail(
+                supabase.auth.resetPasswordForEmail(
                   email,
                   {
                     redirectTo:
-                      window.location.origin +
-                      "/login.html"
+                      redirectUrl
                   }
                 ),
                 15000,
@@ -1149,11 +1039,13 @@
               );
 
             if (result.error) {
+
               throw result.error;
+
             }
 
             showMessage(
-              "If that email exists, a password reset link has been sent.",
+              "If the email exists, a password reset link has been sent.",
               "success"
             );
 
@@ -1170,77 +1062,53 @@
             );
 
           } finally {
+
             forgotPassword.disabled =
               false;
+
           }
+
         }
       );
 
-      /* ---------------------------------------------------------
+      /* -------------------------------------------------------
          SIGN UP
-         --------------------------------------------------------- */
+         ------------------------------------------------------- */
 
       signupButton.addEventListener(
         "click",
         function () {
 
-          const destination =
-            config.routes?.signup ||
+          window.location.href =
             "signup.html";
 
-          window.location.href =
-            destination;
         }
       );
 
-      /* ---------------------------------------------------------
-         INITIAL PAGE CHECK
-         ---------------------------------------------------------
-         IMPORTANT:
-         We intentionally DO NOT automatically redirect an
-         existing session here.
+      /* -------------------------------------------------------
+         INITIALISE
+         ------------------------------------------------------- */
 
-         This prevents login/dashboard/admin redirect loops.
-         --------------------------------------------------------- */
+      try {
 
-      async function initialise() {
+        ensureSupabase();
 
-        log(
-          "MEI One login page loaded."
+        console.log(
+          "MEI One: Customer login ready."
         );
 
-        try {
-          verifySupabaseClient();
+      } catch (error) {
 
-          log(
-            "Supabase URL:",
-            config.supabaseUrl ||
-            config.SUPABASE_URL ||
-            "not exposed"
-          );
+        console.error(
+          "MEI One initialization error:",
+          error
+        );
 
-          log(
-            "No automatic session redirect will be performed."
-          );
+        showMessage(
+          error.message
+        );
 
-        } catch (error) {
-
-          console.error(
-            "MEI One initialization error:",
-            error
-          );
-
-          showMessage(
-            "MEI One could not initialise its connection. Check js/config.js and js/supabase.js."
-          );
-
-          showDebug(
-            error.message
-          );
-        }
       }
-
-      initialise();
 
     })();
   </script>
