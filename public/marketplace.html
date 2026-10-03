@@ -1,329 +1,336 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" dir="ltr">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="color-scheme" content="dark">
   <meta name="theme-color" content="#071A2F">
-  <meta name="description" content="MEI Marketplace — discover products and services from merchants and businesses.">
-  <title>MEI Marketplace | MEI One</title>
-  <link rel="icon" href="assets/favicon.png" type="image/png">
-  <link rel="stylesheet" href="css/styles.css">
+
+  <title>Marketplace | MEI One</title>
+  <meta name="description" content="Discover products and services from merchants and businesses on MEI One Marketplace. Browse, choose, and manage everything through your account.">
+  <link rel="canonical" href="https://meione.example/marketplace.html">
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="MEI One">
+  <meta property="og:title" content="Marketplace | MEI One">
+  <meta property="og:description" content="Discover products and services from merchants and businesses on MEI One.">
+  <meta property="og:url" content="https://meione.example/marketplace.html">
+  <meta property="og:image" content="https://meione.example/assets/og-marketplace.png">
+  <meta property="og:image:alt" content="MEI One Marketplace">
+
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Marketplace | MEI One">
+  <meta name="twitter:description" content="Discover products and services from merchants on MEI One.">
+  <meta name="twitter:image" content="https://meione.example/assets/og-marketplace.png">
+
+  <!-- Icons -->
+  <link rel="icon" href="assets/favicon.ico" sizes="any">
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+  <link rel="manifest" href="manifest.webmanifest">
+
+  <!-- Preconnect for CDN + API -->
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <link rel="preconnect" href="https://YOUR-PROJECT.supabase.co" crossorigin>
+  <link rel="dns-prefetch" href="https://YOUR-PROJECT.supabase.co">
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="css/styles.css?v=1.0.0">
+  <link rel="stylesheet" href="css/marketplace.css?v=1.0.0">
+
+  <!-- CSP -->
+  <meta http-equiv="Content-Security-Policy" content="
+    default-src 'self';
+    script-src 'self' https://cdn.jsdelivr.net 'unsafe-inline';
+    style-src 'self' 'unsafe-inline';
+    img-src 'self' data: https:;
+    font-src 'self' data:;
+    connect-src 'self' https://YOUR-PROJECT.supabase.co wss://YOUR-PROJECT.supabase.co;
+    frame-ancestors 'none';
+    base-uri 'self';
+    form-action 'self';
+    object-src 'none';
+    upgrade-insecure-requests">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+
+  <!-- Structured data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    "name": "Marketplace | MEI One",
+    "url": "https://meione.example/marketplace.html",
+    "isPartOf": {
+      "@type": "WebSite",
+      "name": "MEI One",
+      "url": "https://meione.example/"
+    },
+    "breadcrumb": {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://meione.example/index.html" },
+        { "@type": "ListItem", "position": 2, "name": "Marketplace", "item": "https://meione.example/marketplace.html" }
+      ]
+    }
+  }
+  </script>
+
+  <!-- Boot config -->
+  <script>
+    window.MEI_CONFIG = {
+      SUPABASE_URL: "https://YOUR-PROJECT.supabase.co",
+      SUPABASE_ANON_KEY: "YOUR-PUBLIC-ANON-KEY",
+      AUTH_REDIRECT: "/dashboard.html?service=marketplace",
+      ENV: "production",
+      VERSION: "1.0.0"
+    };
+  </script>
 </head>
 
 <body class="site">
 
-<header class="site-header">
+  <a class="skip-link" href="#main">Skip to content</a>
 
-  <div class="nav-container">
+  <!-- ===================== HEADER ===================== -->
+  <header class="site-header" role="banner">
+    <div class="nav-container">
 
-    <a href="index.html" class="brand">
-      <span class="brand-mark">M</span>
-      <span class="brand-name">MEI <strong>One</strong></span>
-    </a>
-
-    <button
-      id="mobileMenuButton"
-      class="mobile-menu-button"
-      type="button"
-      aria-label="Open navigation"
-      aria-expanded="false"
-      aria-controls="mainNavigation"
-    >
-      <span></span>
-      <span></span>
-      <span></span>
-    </button>
-
-    <nav id="mainNavigation" class="main-navigation">
-
-      <a href="index.html">Home</a>
-      <a href="index.html#services">Services</a>
-      <a href="index.html#how-it-works">How It Works</a>
-      <a href="index.html#business">Business</a>
-
-      <div class="nav-actions">
-
-        <button class="btn btn-outline" type="button" data-modal="login">
-          Log In
-        </button>
-
-        <button class="btn btn-primary" type="button" data-modal="signup">
-          Get Started
-        </button>
-
-      </div>
-
-    </nav>
-
-  </div>
-
-</header>
-
-
-<main>
-
-<section class="hero-section">
-
-  <div class="hero-grid">
-
-    <div class="hero-content">
-
-      <span class="eyebrow">
-        MEI MARKETPLACE
-      </span>
-
-      <h1>
-        Discover more.
-        <span>Buy from businesses.</span>
-      </h1>
-
-      <p class="hero-description">
-        Explore products and services from merchants and businesses
-        connected to the MEI One platform.
-      </p>
-
-      <div class="hero-actions">
-
-        <a
-          href="dashboard.html?service=marketplace"
-          class="btn btn-primary btn-large"
-        >
-          Explore Marketplace
-        </a>
-
-        <a
-          href="index.html#business"
-          class="btn btn-outline btn-large"
-        >
-          Become a Merchant
-        </a>
-
-      </div>
-
-    </div>
-
-
-    <div class="hero-preview">
-
-      <div class="app-preview">
-
-        <div class="preview-header">
-
-          <div>
-            <span class="preview-label">
-              MEI MARKETPLACE
-            </span>
-
-            <strong>
-              Discover
-            </strong>
-          </div>
-
-          <span class="online-badge">
-            Available
-          </span>
-
-        </div>
-
-        <div class="preview-services">
-
-          <div class="preview-service">
-            <span class="preview-service-icon">🛒</span>
-
-            <span>
-              <strong>Products</strong>
-              <small>Discover available products</small>
-            </span>
-          </div>
-
-          <div class="preview-service">
-            <span class="preview-service-icon">🏪</span>
-
-            <span>
-              <strong>Merchants</strong>
-              <small>Discover businesses</small>
-            </span>
-          </div>
-
-          <div class="preview-service">
-            <span class="preview-service-icon">🔎</span>
-
-            <span>
-              <strong>Search</strong>
-              <small>Find what you need</small>
-            </span>
-          </div>
-
-        </div>
-
-      </div>
-
-    </div>
-
-  </div>
-
-</section>
-
-
-<section class="services-section">
-
-  <div class="section-heading">
-
-    <span class="eyebrow">
-      MARKETPLACE
-    </span>
-
-    <h2>
-      Discover products and
-      <span>services.</span>
-    </h2>
-
-    <p>
-      Browse participating merchants and businesses through MEI One.
-    </p>
-
-  </div>
-
-
-  <div class="steps-grid">
-
-    <article class="step-card">
-      <div class="step-number">01</div>
-      <div class="step-icon">🔎</div>
-      <h3>Discover</h3>
-      <p>Explore available products and services.</p>
-    </article>
-
-    <article class="step-card">
-      <div class="step-number">02</div>
-      <div class="step-icon">🏪</div>
-      <h3>Choose</h3>
-      <p>Explore participating merchants and businesses.</p>
-    </article>
-
-    <article class="step-card">
-      <div class="step-number">03</div>
-      <div class="step-icon">🛒</div>
-      <h3>Continue</h3>
-      <p>Manage marketplace activity through your MEI One account.</p>
-    </article>
-
-  </div>
-
-</section>
-
-</main>
-
-
-<footer class="site-footer">
-
-  <div class="footer-grid">
-
-    <div class="footer-brand">
-
-      <a href="index.html" class="brand">
-        <span class="brand-mark">M</span>
+      <a href="index.html" class="brand" aria-label="MEI One home">
+        <span class="brand-mark" aria-hidden="true">M</span>
         <span class="brand-name">MEI <strong>One</strong></span>
       </a>
 
+      <button
+        id="mobileMenuButton"
+        class="mobile-menu-button"
+        type="button"
+        aria-label="Open navigation"
+        aria-expanded="false"
+        aria-controls="mainNavigation"
+      >
+        <span aria-hidden="true"></span>
+        <span aria-hidden="true"></span>
+        <span aria-hidden="true"></span>
+      </button>
+
+      <nav id="mainNavigation" class="main-navigation" aria-label="Primary">
+        <a href="index.html">Home</a>
+        <a href="index.html#services">Services</a>
+        <a href="index.html#how-it-works">How It Works</a>
+        <a href="index.html#business">Business</a>
+
+        <div class="nav-actions">
+          <button class="btn btn-outline" type="button" data-modal="login">Log In</button>
+          <button class="btn btn-primary" type="button" data-modal="signup">Get Started</button>
+        </div>
+      </nav>
+
+    </div>
+  </header>
+
+  <!-- ===================== MAIN ===================== -->
+  <main id="main">
+
+    <section class="hero-section" aria-labelledby="hero-title">
+      <div class="hero-grid">
+
+        <div class="hero-content">
+          <span class="eyebrow">MEI MARKETPLACE</span>
+
+          <h1 id="hero-title">
+            Discover more.
+            <span>Buy from businesses.</span>
+          </h1>
+
+          <p class="hero-description">
+            Explore products and services from merchants and businesses
+            connected to the MEI One platform.
+          </p>
+
+          <div class="hero-actions">
+            <a href="dashboard.html?service=marketplace"
+               class="btn btn-primary btn-large"
+               data-track="cta_explore_marketplace">
+              Explore Marketplace
+            </a>
+            <a href="index.html#business"
+               class="btn btn-outline btn-large"
+               data-track="cta_become_merchant">
+              Become a Merchant
+            </a>
+          </div>
+        </div>
+
+        <div class="hero-preview" aria-hidden="true">
+          <div class="app-preview">
+            <div class="preview-header">
+              <div>
+                <span class="preview-label">MEI MARKETPLACE</span>
+                <strong>Discover</strong>
+              </div>
+              <span class="online-badge">Available</span>
+            </div>
+
+            <div class="preview-services">
+              <div class="preview-service">
+                <span class="preview-service-icon">🛒</span>
+                <span>
+                  <strong>Products</strong>
+                  <small>Discover available products</small>
+                </span>
+              </div>
+              <div class="preview-service">
+                <span class="preview-service-icon">🏪</span>
+                <span>
+                  <strong>Merchants</strong>
+                  <small>Discover businesses</small>
+                </span>
+              </div>
+              <div class="preview-service">
+                <span class="preview-service-icon">🔎</span>
+                <span>
+                  <strong>Search</strong>
+                  <small>Find what you need</small>
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <section class="services-section" aria-labelledby="how-title">
+      <div class="section-heading">
+        <span class="eyebrow">MARKETPLACE</span>
+        <h2 id="how-title">Discover products and <span>services.</span></h2>
+        <p>Browse participating merchants and businesses through MEI One.</p>
+      </div>
+
+      <div class="steps-grid">
+        <article class="step-card">
+          <div class="step-number" aria-hidden="true">01</div>
+          <div class="step-icon" aria-hidden="true">🔎</div>
+          <h3>Discover</h3>
+          <p>Explore available products and services.</p>
+        </article>
+
+        <article class="step-card">
+          <div class="step-number" aria-hidden="true">02</div>
+          <div class="step-icon" aria-hidden="true">🏪</div>
+          <h3>Choose</h3>
+          <p>Explore participating merchants and businesses.</p>
+        </article>
+
+        <article class="step-card">
+          <div class="step-number" aria-hidden="true">03</div>
+          <div class="step-icon" aria-hidden="true">🛒</div>
+          <h3>Continue</h3>
+          <p>Manage marketplace activity through your MEI One account.</p>
+        </article>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ===================== FOOTER ===================== -->
+  <footer class="site-footer" role="contentinfo">
+    <div class="footer-grid">
+
+      <div class="footer-brand">
+        <a href="index.html" class="brand" aria-label="MEI One home">
+          <span class="brand-mark" aria-hidden="true">M</span>
+          <span class="brand-name">MEI <strong>One</strong></span>
+        </a>
+        <p>One connected platform for everyday services.</p>
+      </div>
+
+      <nav class="footer-column" aria-label="Services">
+        <h3>Services</h3>
+        <a href="rides.html">Rides</a>
+        <a href="delivery.html">Delivery</a>
+        <a href="towing.html">Towing</a>
+        <a href="roadside.html">Roadside Assistance</a>
+        <a href="auto.html">MEI Auto</a>
+        <a href="marketplace.html" aria-current="page">Marketplace</a>
+      </nav>
+
+      <nav class="footer-column" aria-label="Platform">
+        <h3>Platform</h3>
+        <a href="index.html#how-it-works">How It Works</a>
+        <a href="index.html#business">Business</a>
+        <a href="index.html#about">About</a>
+      </nav>
+
+      <div class="footer-column">
+        <h3>Account</h3>
+        <button type="button" data-modal="login">Log In</button>
+        <button type="button" data-modal="signup">Create Account</button>
+      </div>
+
+    </div>
+
+    <div class="footer-bottom">
       <p>
-        One connected platform for everyday services.
+        © <span data-current-year>2025</span> MEI One. All rights reserved.
+        <span class="footer-sep" aria-hidden="true">·</span>
+        <a href="privacy.html">Privacy</a>
+        <span class="footer-sep" aria-hidden="true">·</span>
+        <a href="terms.html">Terms</a>
       </p>
-
     </div>
+  </footer>
 
-    <div class="footer-column">
+  <!-- ===================== MODAL ===================== -->
+  <div
+    id="globalModal"
+    class="modal"
+    aria-hidden="true"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="modalTitle"
+  >
+    <div class="modal-backdrop" data-modal-close></div>
 
-      <h3>Services</h3>
-
-      <a href="rides.html">Rides</a>
-      <a href="delivery.html">Delivery</a>
-      <a href="towing.html">Towing</a>
-      <a href="roadside.html">Roadside Assistance</a>
-      <a href="auto.html">MEI Auto</a>
-      <a href="marketplace.html">Marketplace</a>
-
+    <div class="modal-dialog" role="document">
+      <button
+        type="button"
+        class="modal-close"
+        data-modal-close
+        aria-label="Close dialog"
+      >&times;</button>
+      <h2 id="modalTitle" class="sr-only" hidden>Dialog</h2>
+      <div id="modalContent" class="modal-content"></div>
     </div>
-
-    <div class="footer-column">
-
-      <h3>Platform</h3>
-
-      <a href="index.html#how-it-works">How It Works</a>
-      <a href="index.html#business">Business</a>
-      <a href="index.html#about">About</a>
-
-    </div>
-
-    <div class="footer-column">
-
-      <h3>Account</h3>
-
-      <button type="button" data-modal="login">
-        Log In
-      </button>
-
-      <button type="button" data-modal="signup">
-        Create Account
-      </button>
-
-    </div>
-
   </div>
 
-  <div class="footer-bottom">
+  <!-- ===================== TOASTS ===================== -->
+  <div
+    id="toastContainer"
+    class="toast-container"
+    role="region"
+    aria-label="Notifications"
+  ></div>
 
-    <p>
-      © <span data-current-year id="currentYear"></span>
-      MEI One. All rights reserved.
-    </p>
+  <!-- ===================== NOSCRIPT ===================== -->
+  <noscript>
+    <div class="noscript-banner">
+      JavaScript is disabled. You can browse this page, but
+      login, signup and marketplace features require JavaScript enabled.
+    </div>
+  </noscript>
 
-  </div>
+  <!-- ===================== SCRIPTS ===================== -->
+  <script
+    src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"
+    integrity="sha384-REPLACE_WITH_REAL_SRI_HASH"
+    crossorigin="anonymous"
+    defer></script>
 
-</footer>
-
-
-<div
-  id="globalModal"
-  class="modal"
-  aria-hidden="true"
-  role="dialog"
-  aria-modal="true"
->
-  <div class="modal-backdrop" data-modal-close></div>
-
-  <div class="modal-dialog">
-
-    <button
-      type="button"
-      class="modal-close"
-      data-modal-close
-      aria-label="Close dialog"
-    >
-      &times;
-    </button>
-
-    <div id="modalContent" class="modal-content"></div>
-
-  </div>
-</div>
-
-
-<div
-  id="toastContainer"
-  class="toast-container"
-  aria-live="polite"
-  aria-atomic="true"
-></div>
-
-
-<script src="js/config.js"></script>
-
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
-
-<script src="js/supabase.js"></script>
-
-<script src="js/site.js"></script>
+  <script src="js/site.js?v=1.0.0" defer></script>
+  <script src="js/auth.js?v=1.0.0" defer></script>
 
 </body>
 </html>
