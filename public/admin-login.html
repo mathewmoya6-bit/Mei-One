@@ -1,299 +1,761 @@
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#06111f">
-  <meta name="robots" content="noindex">
-  <title>Admin Login | MEI One</title>
+
+  <title>MEI One | Admin Login</title>
+
+  <link rel="stylesheet" href="css/styles.css">
 
   <style>
-    :root {
-      --bg: #06111f;
-      --card: #0b1c30;
-      --input: #071523;
-      --green: #39ff88;
-      --green-hover: #61ffa1;
-      --text: #fff;
-      --label: #dbe7f2;
-      --muted: #91a4b8;
-      --faint: #667b91;
-      --border: rgba(255, 255, 255, .1);
+    * {
+      box-sizing: border-box;
     }
-
-    *, *::before, *::after { box-sizing: border-box; }
 
     body {
       margin: 0;
       min-height: 100vh;
-      display: grid;
-      place-items: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       padding: 20px;
-      font-family: Inter, system-ui, -apple-system, "Segoe UI", sans-serif;
-      color: var(--text);
-      background: var(--bg);
-      -webkit-font-smoothing: antialiased;
+
+      font-family:
+        Inter,
+        system-ui,
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        sans-serif;
+
+      background: #06111f;
+      color: #fff;
     }
 
-    .login-page { width: 100%; max-width: 430px; }
+    .login-page {
+      width: 100%;
+      max-width: 430px;
+    }
 
-    /* Brand */
-    .login-brand { margin-bottom: 24px; text-align: center; }
+    .brand {
+      text-align: center;
+      margin-bottom: 24px;
+    }
 
     .logo {
-      display: grid;
-      place-items: center;
       width: 72px;
       height: 72px;
       margin: 0 auto 15px;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
       border-radius: 20px;
-      color: var(--bg);
-      background: var(--green);
+
+      background: #39ff88;
+      color: #06111f;
+
       font-size: 25px;
-      font-weight: 900;
-      box-shadow: 0 0 35px rgba(57, 255, 136, .18);
+      font-weight: 1000;
+
+      box-shadow:
+        0 0 35px rgba(57,255,136,.18);
     }
 
-    .login-brand h1 { margin: 0; font-size: 29px; font-weight: 900; letter-spacing: -.02em; }
-    .login-brand p { margin: 7px 0 0; color: var(--muted); font-size: 13px; }
+    .brand h1 {
+      margin: 0;
+      font-size: 29px;
+      font-weight: 950;
+    }
+
+    .brand p {
+      margin: 7px 0 0;
+      color: #91a4b8;
+      font-size: 13px;
+    }
 
     .badge {
       display: inline-block;
       margin-top: 13px;
       padding: 7px 12px;
-      border: 1px solid rgba(57, 255, 136, .2);
+
       border-radius: 999px;
-      color: var(--green);
-      background: rgba(57, 255, 136, .08);
-      font-size: 11px;
+
+      background: rgba(57,255,136,.08);
+      border: 1px solid rgba(57,255,136,.20);
+
+      color: #39ff88;
+
+      font-size: 10px;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: .7px;
+    }
+
+    .card {
+      padding: 28px;
+
+      border-radius: 22px;
+      border: 1px solid rgba(255,255,255,.09);
+
+      background: #0b1c30;
+
+      box-shadow:
+        0 25px 70px rgba(0,0,0,.4);
+    }
+
+    .card h2 {
+      margin: 0 0 7px;
+      font-size: 22px;
+      font-weight: 900;
+    }
+
+    .description {
+      margin: 0 0 22px;
+
+      color: #91a4b8;
+
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .message {
+      display: none;
+
+      margin-bottom: 17px;
+      padding: 12px 13px;
+
+      border-radius: 11px;
+
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .message.error {
+      display: block;
+
+      color: #ffd7dc;
+
+      background: rgba(255,92,112,.08);
+
+      border: 1px solid rgba(255,92,112,.20);
+    }
+
+    .message.success {
+      display: block;
+
+      color: #d1ffdf;
+
+      background: rgba(57,255,136,.08);
+
+      border: 1px solid rgba(57,255,136,.20);
+    }
+
+    label {
+      display: block;
+
+      margin-bottom: 7px;
+
+      color: #dbe7f2;
+
+      font-size: 12px;
       font-weight: 800;
     }
 
-    /* Card */
-    .card {
-      padding: 28px;
-      border: 1px solid var(--border);
-      border-radius: 22px;
-      background: var(--card);
-      box-shadow: 0 25px 70px rgba(0, 0, 0, .4);
+    .field {
+      margin-bottom: 17px;
     }
-
-    .card h2 { margin: 0 0 7px; font-size: 22px; font-weight: 800; }
-    .description { margin: 0 0 22px; color: var(--muted); font-size: 13px; line-height: 1.5; }
-
-    /* Message */
-    .message { display: none; margin-bottom: 17px; padding: 12px 13px; border-radius: 11px; font-size: 13px; line-height: 1.5; }
-    .message.error   { display: block; color: #ffd7dc; background: rgba(255, 92, 112, .08); border: 1px solid rgba(255, 92, 112, .2); }
-    .message.success { display: block; color: #d1ffdf; background: rgba(57, 255, 136, .08); border: 1px solid rgba(57, 255, 136, .2); }
-
-    /* Form */
-    .field { margin-bottom: 17px; }
-    label { display: block; margin-bottom: 7px; color: var(--label); font-size: 12px; font-weight: 700; }
 
     input {
       width: 100%;
       height: 52px;
+
       padding: 0 14px;
-      border: 1px solid var(--border);
+
+      border: 1px solid rgba(255,255,255,.10);
       border-radius: 12px;
+
       outline: none;
-      color: var(--text);
-      background: var(--input);
-      font: inherit;
+
+      background: #071523;
+      color: #fff;
+
+      font-family: inherit;
       font-size: 14px;
     }
-    input:focus { border-color: var(--green); box-shadow: 0 0 0 3px rgba(57, 255, 136, .1); }
 
-    .password-box { position: relative; }
-    .password-box input { padding-right: 52px; }
+    input:focus {
+      border-color: #39ff88;
+
+      box-shadow:
+        0 0 0 3px rgba(57,255,136,.07);
+    }
+
+    .password-box {
+      position: relative;
+    }
+
+    .password-box input {
+      padding-right: 50px;
+    }
 
     .show-password {
       position: absolute;
+
       top: 50%;
       right: 7px;
+
       width: 38px;
       height: 38px;
+
       transform: translateY(-50%);
+
       border: 0;
       border-radius: 9px;
-      color: var(--muted);
+
       background: transparent;
+      color: #91a4b8;
+
       cursor: pointer;
     }
-    .show-password:hover { color: var(--green); background: rgba(255, 255, 255, .05); }
+
+    .show-password:hover {
+      background: rgba(255,255,255,.05);
+      color: #39ff88;
+    }
 
     .login-button {
       width: 100%;
       height: 53px;
+
       margin-top: 2px;
+
       border: 0;
       border-radius: 13px;
-      color: var(--bg);
-      background: var(--green);
-      font: inherit;
+
+      background: #39ff88;
+      color: #06111f;
+
+      font-family: inherit;
       font-size: 14px;
-      font-weight: 900;
+      font-weight: 950;
+
       cursor: pointer;
-      transition: background 180ms ease;
     }
-    .login-button:hover { background: var(--green-hover); }
-    .login-button:disabled { opacity: .7; cursor: wait; }
 
-    :focus-visible { outline: 3px solid rgba(57, 255, 136, .45); outline-offset: 2px; }
+    .login-button:hover {
+      background: #61ffa1;
+    }
 
-    .back { display: block; margin-top: 19px; color: var(--muted); font-size: 12px; text-align: center; text-decoration: none; }
-    .back:hover { color: var(--green); }
+    .login-button:disabled {
+      opacity: .7;
+      cursor: wait;
+    }
 
-    .status { margin-top: 18px; color: var(--faint); font-size: 11px; text-align: center; }
+    .back {
+      display: block;
+
+      margin-top: 19px;
+
+      text-align: center;
+
+      color: #91a4b8;
+
+      text-decoration: none;
+
+      font-size: 12px;
+    }
+
+    .back:hover {
+      color: #39ff88;
+    }
+
+    .status {
+      margin-top: 18px;
+
+      text-align: center;
+
+      color: #667b91;
+
+      font-size: 10px;
+    }
   </style>
 </head>
 
 <body>
+
   <main class="login-page">
 
-    <div class="login-brand">
-      <div class="logo">MEI</div>
+    <div class="brand">
+
+      <div class="logo">
+        MEI
+      </div>
+
       <h1>MEI One</h1>
+
       <p>Administration Portal</p>
-      <div class="badge">🔐 Administrator access</div>
+
+      <div class="badge">
+        🔐 Administrator Access
+      </div>
+
     </div>
 
+
     <section class="card">
-      <h2>Admin login</h2>
-      <p class="description">Sign in with your authorised MEI One administrator account.</p>
 
-      <div id="message" class="message" role="alert"></div>
+      <h2>Admin Login</h2>
 
-      <form id="loginForm" novalidate>
+      <p class="description">
+        Sign in using your authorized MEI One administrator account.
+      </p>
+
+
+      <div
+        id="message"
+        class="message"
+        role="alert"
+      ></div>
+
+
+      <form id="loginForm">
+
         <div class="field">
-          <label for="email">Administrator email</label>
-          <input id="email" type="email" autocomplete="username"
-                 value="admin@mei-one.meipressgroup.com" required>
+
+          <label for="email">
+            Administrator Email
+          </label>
+
+          <input
+            id="email"
+            type="email"
+            autocomplete="username"
+            value="admin@mei-one.meipressgroup.com"
+            required
+          >
+
         </div>
 
+
         <div class="field">
-          <label for="password">Password</label>
+
+          <label for="password">
+            Password
+          </label>
+
           <div class="password-box">
-            <input id="password" type="password" autocomplete="current-password"
-                   placeholder="Enter password" required>
-            <button type="button" id="showPassword" class="show-password" aria-label="Show password">👁</button>
+
+            <input
+              id="password"
+              type="password"
+              autocomplete="current-password"
+              placeholder="Enter password"
+              required
+            >
+
+            <button
+              type="button"
+              id="showPassword"
+              class="show-password"
+            >
+              👁
+            </button>
+
           </div>
+
         </div>
 
-        <button id="loginButton" class="login-button" type="submit">Sign in</button>
+
+        <button
+          id="loginButton"
+          class="login-button"
+          type="submit"
+        >
+          Sign In
+        </button>
+
       </form>
 
-      <a class="back" href="login.html">← Customer login</a>
-      <div id="status" class="status" aria-live="polite">MEI One secure administrator authentication</div>
+
+      <a
+        class="back"
+        href="login.html"
+      >
+        ← Customer Login
+      </a>
+
+
+      <div
+        id="status"
+        class="status"
+      >
+        MEI One secure administrator authentication
+      </div>
+
     </section>
 
   </main>
 
+
+  <!-- SUPABASE -->
+
   <script src="js/config.js"></script>
+
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+
   <script src="js/supabase.js"></script>
 
+
   <script>
+
     (() => {
+
       'use strict';
 
-      const client = window.supabaseClient;
 
-      const $ = (id) => document.getElementById(id);
-      const form = $('loginForm');
-      const emailInput = $('email');
-      const passwordInput = $('password');
-      const button = $('loginButton');
-      const message = $('message');
-      const status = $('status');
-      const toggle = $('showPassword');
+      const client =
+        window.supabaseClient;
 
-      const ADMIN_ROLES = ['SUPER_ADMIN', 'ADMIN', 'OPERATIONS', 'FINANCE', 'SUPPORT', 'AUDITOR'];
 
-      function showMessage(text, type = 'error') {
-        message.textContent = text;
-        message.className = 'message ' + type;
+      const form =
+        document.getElementById(
+          'loginForm'
+        );
+
+      const email =
+        document.getElementById(
+          'email'
+        );
+
+      const password =
+        document.getElementById(
+          'password'
+        );
+
+      const button =
+        document.getElementById(
+          'loginButton'
+        );
+
+      const message =
+        document.getElementById(
+          'message'
+        );
+
+      const status =
+        document.getElementById(
+          'status'
+        );
+
+      const showPassword =
+        document.getElementById(
+          'showPassword'
+        );
+
+
+      const ADMIN_ROLES = [
+        'SUPER_ADMIN',
+        'ADMIN',
+        'OPERATIONS',
+        'FINANCE',
+        'SUPPORT',
+        'AUDITOR'
+      ];
+
+
+      /* -----------------------------------------------------
+         MESSAGE
+         ----------------------------------------------------- */
+
+      function showMessage(
+        text,
+        type = 'error'
+      ) {
+
+        message.textContent =
+          text;
+
+        message.className =
+          'message ' + type;
       }
 
-      function setBusy(busy, label, statusText) {
-        button.disabled = busy;
-        button.textContent = label;
-        if (statusText) status.textContent = statusText;
-      }
 
-      toggle.addEventListener('click', () => {
-        const visible = passwordInput.type === 'text';
-        passwordInput.type = visible ? 'password' : 'text';
-        toggle.textContent = visible ? '👁' : '🙈';
-        toggle.setAttribute('aria-label', visible ? 'Show password' : 'Hide password');
-      });
+      /* -----------------------------------------------------
+         PASSWORD
+         ----------------------------------------------------- */
 
-      // Looks up the admin record by Auth user id (never by email).
+      showPassword.addEventListener(
+        'click',
+        () => {
+
+          const visible =
+            password.type === 'text';
+
+          password.type =
+            visible
+              ? 'password'
+              : 'text';
+
+          showPassword.textContent =
+            visible
+              ? '👁'
+              : '🙈';
+
+        }
+      );
+
+
+      /* -----------------------------------------------------
+         ADMIN CHECK
+         -----------------------------------------------------
+
+         IMPORTANT:
+         This uses the already authenticated user's
+         UUID. It does NOT search by email.
+         ----------------------------------------------------- */
+
       async function verifyAdmin(userId) {
-        const { data, error } = await client
-          .from('admin_users')
-          .select('id,user_id,role,is_active')
-          .eq('user_id', userId)
-          .maybeSingle();
 
-        if (error) throw new Error('Admin check failed: ' + error.message);
-        if (!data) throw new Error('No administrator record exists for this account.');
-        if (data.is_active !== true) throw new Error('This administrator account is inactive.');
-        if (!ADMIN_ROLES.includes(data.role)) throw new Error('This account does not have an authorised administrator role.');
+        console.log(
+          'Checking MEI One administrator:',
+          userId
+        );
 
-        return data;
+
+        const result =
+          await client
+            .from('admin_users')
+            .select(
+              'id,user_id,role,is_active'
+            )
+            .eq(
+              'user_id',
+              userId
+            )
+            .maybeSingle();
+
+
+        console.log(
+          'Admin lookup result:',
+          result
+        );
+
+
+        if (result.error) {
+
+          throw new Error(
+            'Admin database check failed: ' +
+            result.error.message
+          );
+        }
+
+
+        if (!result.data) {
+
+          throw new Error(
+            'No administrator record was found for this Auth account.'
+          );
+        }
+
+
+        if (
+          result.data.is_active !== true
+        ) {
+
+          throw new Error(
+            'This administrator account is inactive.'
+          );
+        }
+
+
+        if (
+          !ADMIN_ROLES.includes(
+            result.data.role
+          )
+        ) {
+
+          throw new Error(
+            'This account does not have an authorized administrator role.'
+          );
+        }
+
+
+        return result.data;
       }
 
-      form.addEventListener('submit', async (event) => {
-        event.preventDefault();
-        showMessage('', '');
-        message.className = 'message';
 
-        if (!client) {
-          showMessage('Supabase is not initialised. Check js/config.js and js/supabase.js.');
-          return;
-        }
+      /* -----------------------------------------------------
+         LOGIN
+         ----------------------------------------------------- */
 
-        const email = emailInput.value.trim().toLowerCase();
-        const password = passwordInput.value;
+      form.addEventListener(
+        'submit',
+        async event => {
 
-        if (!email || !password) {
-          showMessage('Enter your email and password.');
-          return;
-        }
+          event.preventDefault();
 
-        setBusy(true, 'Signing in…', 'Authenticating…');
 
-        try {
-          const { data, error } = await client.auth.signInWithPassword({ email, password });
-          if (error) throw error;
-          if (!data?.user) throw new Error('Sign-in finished without a user session.');
+          if (!client) {
 
-          setBusy(true, 'Signing in…', 'Checking administrator access…');
+            showMessage(
+              'Supabase is not initialized. Check config.js and supabase.js.'
+            );
 
-          try {
-            await verifyAdmin(data.user.id);
-          } catch (adminError) {
-            await client.auth.signOut(); // do not leave a non-admin session behind
-            throw adminError;
+            return;
           }
 
-          showMessage('Administrator verified. Opening dashboard…', 'success');
-          status.textContent = 'Access granted';
-          window.location.href = 'admin.html';
 
-        } catch (error) {
-          console.error('Admin login error:', error);
-          setBusy(false, 'Sign in', 'Sign-in failed');
-          showMessage(error?.message || 'Administrator sign-in failed.');
+          button.disabled = true;
+
+          button.textContent =
+            'Signing in...';
+
+          status.textContent =
+            'Authenticating with MEI One...';
+
+
+          try {
+
+            /* ---------------------------------------------
+               AUTHENTICATE
+               --------------------------------------------- */
+
+            const auth =
+              await client.auth.signInWithPassword({
+
+                email:
+                  email.value
+                    .trim()
+                    .toLowerCase(),
+
+                password:
+                  password.value
+
+              });
+
+
+            if (auth.error) {
+              throw auth.error;
+            }
+
+
+            const user =
+              auth.data?.user;
+
+
+            if (!user) {
+
+              throw new Error(
+                'Authentication completed without a user session.'
+              );
+            }
+
+
+            console.log(
+              'Authenticated:',
+              user.email,
+              user.id
+            );
+
+
+            status.textContent =
+              'Checking administrator access...';
+
+
+            /* ---------------------------------------------
+               ADMIN RECORD
+               --------------------------------------------- */
+
+            const admin =
+              await verifyAdmin(
+                user.id
+              );
+
+
+            console.log(
+              'Administrator verified:',
+              admin
+            );
+
+
+            showMessage(
+              'Administrator verified. Opening dashboard...',
+              'success'
+            );
+
+
+            status.textContent =
+              'Access granted';
+
+
+            /* ---------------------------------------------
+               REDIRECT
+               --------------------------------------------- */
+
+            window.location.href =
+              'admin.html';
+
+
+          } catch (error) {
+
+            console.error(
+              'ADMIN LOGIN ERROR:',
+              error
+            );
+
+
+            /*
+             * Always stop the loading state.
+             */
+
+            button.disabled =
+              false;
+
+            button.textContent =
+              'Sign In';
+
+
+            status.textContent =
+              'Authentication failed';
+
+
+            showMessage(
+              error?.message ||
+              'Administrator login failed.'
+            );
+
+          }
+
         }
-      });
+      );
+
+
+      /* -----------------------------------------------------
+         STARTUP
+         ----------------------------------------------------- */
 
       if (!client) {
-        showMessage('Supabase could not be initialised.');
-        setBusy(true, 'Unavailable', 'Configuration error');
+
+        showMessage(
+          'Supabase could not be initialized.'
+        );
+
+        button.disabled =
+          true;
+
+        status.textContent =
+          'Configuration error';
+
       }
+
     })();
+
   </script>
+
 </body>
 </html>
+```
