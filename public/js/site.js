@@ -1,22 +1,47 @@
 /* ============================================================
-   MEI ONE
-   GLOBAL SITE JAVASCRIPT
+   MEI ONE — GLOBAL SITE JAVASCRIPT
+   File: public/js/site.js
    ============================================================ */
 
-(() => {
+(function (window, document) {
   "use strict";
 
-  const MEI = {
-    appName: "MEI One",
-    version: "1.0.0"
-  };
+  /* ==========================================================
+     MEI NAMESPACE
+     ========================================================== */
+
+  const MEI = window.MEI || {};
 
   window.MEI = MEI;
 
+  /* ==========================================================
+     CONFIGURATION
+     ========================================================== */
 
-  /* ============================================================
-     DOM READY
-     ============================================================ */
+  const CONFIG =
+    window.MEI_CONFIG ||
+    window.MEIConfig ||
+    window.CONFIG ||
+    {};
+
+  const SUPABASE =
+    window.supabaseClient ||
+    window.MEISupabase ||
+    null;
+
+  /* ==========================================================
+     DOM HELPERS
+     ========================================================== */
+
+  const $ = (selector, parent = document) =>
+    parent.querySelector(selector);
+
+  const $$ = (selector, parent = document) =>
+    Array.from(parent.querySelectorAll(selector));
+
+  /* ==========================================================
+     INITIALIZATION
+     ========================================================== */
 
   document.addEventListener("DOMContentLoaded", () => {
     initMobileNavigation();
@@ -24,122 +49,121 @@
     initServiceButtons();
     initSmoothScrolling();
     initCurrentYear();
-    initKeyboardHandling();
+    initAuthState();
+    initEscapeKey();
+    initGlobalLinks();
+
+    console.log(
+      `${CONFIG.appName || "MEI One"} initialized successfully.`
+    );
   });
 
-
-  /* ============================================================
+  /* ==========================================================
      MOBILE NAVIGATION
-     Matches:
-     #mobileMenuButton
-     #mainNavigation
-     ============================================================ */
+     ========================================================== */
 
   function initMobileNavigation() {
-    const button = document.getElementById("mobileMenuButton");
-    const navigation = document.getElementById("mainNavigation");
+    const menuButton = $("#mobileMenuButton");
+    const navigation = $("#mainNavigation");
 
-    if (!button || !navigation) {
+    if (!menuButton || !navigation) {
       return;
     }
 
-    button.addEventListener("click", () => {
+    menuButton.addEventListener("click", () => {
       const isOpen = navigation.classList.toggle("open");
 
-      button.classList.toggle("active", isOpen);
-
-      button.setAttribute(
+      menuButton.setAttribute(
         "aria-expanded",
         String(isOpen)
       );
 
-      button.setAttribute(
+      menuButton.setAttribute(
         "aria-label",
-        isOpen ? "Close navigation" : "Open navigation"
+        isOpen
+          ? "Close navigation menu"
+          : "Open navigation menu"
       );
     });
 
-    navigation.querySelectorAll("a").forEach((link) => {
+    /* Close menu after clicking navigation link */
+
+    $$("#mainNavigation a").forEach((link) => {
       link.addEventListener("click", () => {
-        closeMobileNavigation();
+        navigation.classList.remove("open");
+
+        menuButton.setAttribute(
+          "aria-expanded",
+          "false"
+        );
+
+        menuButton.setAttribute(
+          "aria-label",
+          "Open navigation menu"
+        );
       });
     });
 
-    window.addEventListener("resize", () => {
-      if (window.innerWidth > 820) {
-        closeMobileNavigation();
-      }
-    });
-  }
-
-
-  function closeMobileNavigation() {
-    const button = document.getElementById("mobileMenuButton");
-    const navigation = document.getElementById("mainNavigation");
-
-    if (!button || !navigation) {
-      return;
-    }
-
-    navigation.classList.remove("open");
-    button.classList.remove("active");
-
-    button.setAttribute("aria-expanded", "false");
-    button.setAttribute("aria-label", "Open navigation");
-  }
-
-
-  /* ============================================================
-     MODAL SYSTEM
-     Matches:
-     data-modal="login"
-     data-modal="signup"
-     data-modal="emergency"
-     data-modal="partner"
-
-     Modal:
-     #globalModal
-     #modalContent
-     ============================================================ */
-
-  function initModalSystem() {
-    const modal = document.getElementById("globalModal");
-
-    if (!modal) {
-      return;
-    }
+    /* Close menu when clicking outside */
 
     document.addEventListener("click", (event) => {
-      const trigger = event.target.closest("[data-modal]");
+      if (
+        navigation.classList.contains("open") &&
+        !navigation.contains(event.target) &&
+        !menuButton.contains(event.target)
+      ) {
+        navigation.classList.remove("open");
 
-      if (trigger) {
-        event.preventDefault();
-
-        const modalName = trigger.getAttribute("data-modal");
-
-        openModal(modalName);
-
-        return;
-      }
-
-      const closeButton = event.target.closest("[data-modal-close]");
-
-      if (closeButton) {
-        closeModal();
-
-        return;
-      }
-
-      if (event.target.classList.contains("modal-backdrop")) {
-        closeModal();
+        menuButton.setAttribute(
+          "aria-expanded",
+          "false"
+        );
       }
     });
   }
 
+  /* ==========================================================
+     MODAL SYSTEM
+     ========================================================== */
+
+  function initModalSystem() {
+    $$("[data-modal]").forEach((trigger) => {
+      trigger.addEventListener("click", (event) => {
+        event.preventDefault();
+
+        const modalName =
+          trigger.getAttribute("data-modal");
+
+        if (modalName) {
+          openModal(modalName);
+        }
+      });
+    });
+
+    $$("[data-modal-close]").forEach((button) => {
+      button.addEventListener("click", () => {
+        closeModal();
+      });
+    });
+
+    const modal = $("#globalModal");
+
+    if (modal) {
+      modal.addEventListener("click", (event) => {
+        if (
+          event.target.classList.contains(
+            "modal-backdrop"
+          )
+        ) {
+          closeModal();
+        }
+      });
+    }
+  }
 
   function openModal(name) {
-    const modal = document.getElementById("globalModal");
-    const content = document.getElementById("modalContent");
+    const modal = $("#globalModal");
+    const content = $("#modalContent");
 
     if (!modal || !content) {
       return;
@@ -148,439 +172,608 @@
     content.innerHTML = getModalContent(name);
 
     modal.classList.add("open");
+
     modal.setAttribute("aria-hidden", "false");
 
-    document.body.style.overflow = "hidden";
+    document.body.classList.add("modal-open");
 
-    const firstInput = content.querySelector(
-      "input, select, textarea, button"
-    );
+    bindModalActions(name);
+
+    const firstInput =
+      content.querySelector(
+        "input, textarea, select, button"
+      );
 
     if (firstInput) {
       setTimeout(() => {
         firstInput.focus();
-      }, 50);
+      }, 100);
     }
-
-    bindModalActions(name);
   }
 
-
   function closeModal() {
-    const modal = document.getElementById("globalModal");
-    const content = document.getElementById("modalContent");
+    const modal = $("#globalModal");
 
     if (!modal) {
       return;
     }
 
     modal.classList.remove("open");
+
     modal.setAttribute("aria-hidden", "true");
 
-    document.body.style.overflow = "";
-
-    if (content) {
-      content.innerHTML = "";
-    }
+    document.body.classList.remove("modal-open");
   }
 
-
-  /* ============================================================
+  /* ==========================================================
      MODAL CONTENT
-     ============================================================ */
+     ========================================================== */
 
   function getModalContent(name) {
     switch (name) {
-
       case "login":
         return `
-          <h2 id="modalTitle">Welcome back</h2>
+          <h2>Welcome Back</h2>
 
-          <p>
+          <p class="modal-description">
             Sign in to your MEI One account.
           </p>
 
           <form id="modalLoginForm">
 
-            <label for="modalLoginEmail">
-              Email address
-            </label>
+            <div class="form-group">
+              <label for="loginEmail">
+                Email
+              </label>
 
-            <input
-              id="modalLoginEmail"
-              name="email"
-              type="email"
-              autocomplete="email"
-              placeholder="you@example.com"
-              required
-            >
+              <input
+                id="loginEmail"
+                name="email"
+                type="email"
+                placeholder="you@example.com"
+                autocomplete="email"
+                required
+              >
+            </div>
 
-            <label for="modalLoginPassword">
-              Password
-            </label>
+            <div class="form-group">
+              <label for="loginPassword">
+                Password
+              </label>
 
-            <input
-              id="modalLoginPassword"
-              name="password"
-              type="password"
-              autocomplete="current-password"
-              placeholder="Your password"
-              required
-            >
+              <input
+                id="loginPassword"
+                name="password"
+                type="password"
+                placeholder="Enter your password"
+                autocomplete="current-password"
+                required
+              >
+            </div>
+
+            <div
+              id="loginMessage"
+              class="form-message"
+              aria-live="polite"
+            ></div>
 
             <button
               type="submit"
-              class="btn btn-primary btn-block"
+              class="btn btn-primary"
+              style="width:100%;"
             >
               Sign In
             </button>
 
-            <div
-              id="modalLoginMessage"
-              class="form-msg"
-              role="status"
-              aria-live="polite"
-            ></div>
-
           </form>
 
-          <button
-            type="button"
-            class="link"
-            data-modal-switch="signup"
-          >
-            Don't have an account? Create one
-          </button>
+          <p style="margin-top:18px;text-align:center;">
+            Don't have an account?
+            <button
+              type="button"
+              class="service-link"
+              data-switch-modal="signup"
+            >
+              Create one
+            </button>
+          </p>
         `;
-
 
       case "signup":
         return `
-          <h2 id="modalTitle">Create your account</h2>
+          <h2>Create Your MEI Account</h2>
 
-          <p>
-            Create one MEI One account for connected services.
+          <p class="modal-description">
+            Join MEI One and access our growing range
+            of services.
           </p>
 
           <form id="modalSignupForm">
 
-            <label for="modalSignupName">
-              Full name
-            </label>
+            <div class="form-group">
+              <label for="signupName">
+                Full Name
+              </label>
 
-            <input
-              id="modalSignupName"
-              name="full_name"
-              type="text"
-              autocomplete="name"
-              placeholder="Your full name"
-              required
-            >
+              <input
+                id="signupName"
+                name="full_name"
+                type="text"
+                placeholder="Your full name"
+                autocomplete="name"
+                required
+              >
+            </div>
 
-            <label for="modalSignupPhone">
-              Phone number
-            </label>
+            <div class="form-group">
+              <label for="signupPhone">
+                Phone Number
+              </label>
 
-            <input
-              id="modalSignupPhone"
-              name="phone"
-              type="tel"
-              autocomplete="tel"
-              placeholder="07XXXXXXXX"
-              required
-            >
+              <input
+                id="signupPhone"
+                name="phone"
+                type="tel"
+                placeholder="07XXXXXXXX"
+                autocomplete="tel"
+                required
+              >
+            </div>
 
-            <label for="modalSignupEmail">
-              Email address
-            </label>
+            <div class="form-group">
+              <label for="signupEmail">
+                Email
+              </label>
 
-            <input
-              id="modalSignupEmail"
-              name="email"
-              type="email"
-              autocomplete="email"
-              placeholder="you@example.com"
-              required
-            >
+              <input
+                id="signupEmail"
+                name="email"
+                type="email"
+                placeholder="you@example.com"
+                autocomplete="email"
+                required
+              >
+            </div>
 
-            <label for="modalSignupPassword">
-              Password
-            </label>
+            <div class="form-group">
+              <label for="signupPassword">
+                Password
+              </label>
 
-            <input
-              id="modalSignupPassword"
-              name="password"
-              type="password"
-              autocomplete="new-password"
-              minlength="6"
-              placeholder="Minimum 6 characters"
-              required
-            >
+              <input
+                id="signupPassword"
+                name="password"
+                type="password"
+                placeholder="Minimum 6 characters"
+                autocomplete="new-password"
+                minlength="6"
+                required
+              >
+            </div>
+
+            <div
+              id="signupMessage"
+              class="form-message"
+              aria-live="polite"
+            ></div>
 
             <button
               type="submit"
-              class="btn btn-primary btn-block"
+              class="btn btn-primary"
+              style="width:100%;"
             >
               Create Account
             </button>
 
-            <div
-              id="modalSignupMessage"
-              class="form-msg"
-              role="status"
-              aria-live="polite"
-            ></div>
-
           </form>
 
-          <button
-            type="button"
-            class="link"
-            data-modal-switch="login"
-          >
-            Already have an account? Sign in
-          </button>
+          <p style="margin-top:18px;text-align:center;">
+            Already have an account?
+            <button
+              type="button"
+              class="service-link"
+              data-switch-modal="login"
+            >
+              Sign in
+            </button>
+          </p>
         `;
-
 
       case "emergency":
         return `
-          <h2 id="modalTitle">Vehicle Emergency</h2>
+          <h2>Emergency Assistance</h2>
 
-          <p>
-            Request towing or roadside assistance.
+          <p class="modal-description">
+            Tell us what assistance you need.
+            If you are in immediate danger, contact
+            the appropriate emergency services first.
           </p>
 
           <form id="emergencyForm">
 
-            <label for="emergencyPhone">
-              Phone number
-            </label>
+            <div class="form-group">
+              <label for="emergencyName">
+                Name
+              </label>
 
-            <input
-              id="emergencyPhone"
-              name="phone"
-              type="tel"
-              placeholder="07XXXXXXXX"
-              required
-            >
+              <input
+                id="emergencyName"
+                name="name"
+                type="text"
+                placeholder="Your name"
+                required
+              >
+            </div>
 
-            <label for="emergencyType">
-              What do you need?
-            </label>
+            <div class="form-group">
+              <label for="emergencyPhone">
+                Phone
+              </label>
 
-            <select
-              id="emergencyType"
-              name="service"
-              required
-            >
-              <option value="">Select service</option>
-              <option value="towing">Towing & Recovery</option>
-              <option value="roadside">Roadside Assistance</option>
-              <option value="battery">Battery Assistance</option>
-              <option value="puncture">Puncture Assistance</option>
-              <option value="fuel">Fuel Assistance</option>
-              <option value="other">Other</option>
-            </select>
+              <input
+                id="emergencyPhone"
+                name="phone"
+                type="tel"
+                placeholder="07XXXXXXXX"
+                required
+              >
+            </div>
 
-            <label for="emergencyLocation">
-              Location
-            </label>
+            <div class="form-group">
+              <label for="emergencyType">
+                Assistance Required
+              </label>
 
-            <textarea
-              id="emergencyLocation"
-              name="location"
-              placeholder="Tell us where you are..."
-              required
-            ></textarea>
+              <select
+                id="emergencyType"
+                name="type"
+                required
+              >
+                <option value="">
+                  Select assistance
+                </option>
+
+                <option value="accident">
+                  Accident
+                </option>
+
+                <option value="medical">
+                  Medical Emergency
+                </option>
+
+                <option value="roadside">
+                  Roadside Assistance
+                </option>
+
+                <option value="towing">
+                  Emergency Towing
+                </option>
+
+                <option value="other">
+                  Other
+                </option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="emergencyLocation">
+                Location
+              </label>
+
+              <input
+                id="emergencyLocation"
+                name="location"
+                type="text"
+                placeholder="Current location"
+                required
+              >
+            </div>
+
+            <div class="form-group">
+              <label for="emergencyMessage">
+                Details
+              </label>
+
+              <textarea
+                id="emergencyMessage"
+                name="message"
+                placeholder="Briefly describe the situation"
+              ></textarea>
+            </div>
+
+            <div
+              id="emergencyMessageBox"
+              class="form-message"
+              aria-live="polite"
+            ></div>
 
             <button
               type="submit"
-              class="btn btn-sos btn-block"
+              class="btn"
+              style="
+                width:100%;
+                background:#e53935;
+                color:#fff;
+              "
             >
-              Request Emergency Help
+              Request Assistance
             </button>
-
-            <div
-              id="emergencyMessage"
-              class="form-msg"
-              role="status"
-              aria-live="polite"
-            ></div>
 
           </form>
         `;
 
-
       case "partner":
         return `
-          <h2 id="modalTitle">Become an MEI One Partner</h2>
+          <h2>Become a MEI Partner</h2>
 
-          <p>
-            Join the MEI One partner network.
+          <p class="modal-description">
+            Tell us about your business and the services
+            you would like to provide through MEI One.
           </p>
 
           <form id="partnerForm">
 
-            <label for="partnerName">
-              Full name / Business name
-            </label>
+            <div class="form-group">
+              <label for="partnerName">
+                Full Name
+              </label>
 
-            <input
-              id="partnerName"
-              name="name"
-              type="text"
-              required
-            >
+              <input
+                id="partnerName"
+                name="name"
+                type="text"
+                placeholder="Your full name"
+                required
+              >
+            </div>
 
-            <label for="partnerPhone">
-              Phone number
-            </label>
+            <div class="form-group">
+              <label for="partnerBusiness">
+                Business Name
+              </label>
 
-            <input
-              id="partnerPhone"
-              name="phone"
-              type="tel"
-              required
-            >
+              <input
+                id="partnerBusiness"
+                name="business"
+                type="text"
+                placeholder="Business name"
+                required
+              >
+            </div>
 
-            <label for="partnerType">
-              Partner type
-            </label>
+            <div class="form-group">
+              <label for="partnerPhone">
+                Phone
+              </label>
 
-            <select
-              id="partnerType"
-              name="partner_type"
-              required
-            >
-              <option value="">Select type</option>
-              <option value="driver">Driver / Rider</option>
-              <option value="towing">Towing / Recovery Operator</option>
-              <option value="merchant">Merchant</option>
-              <option value="service_provider">Service Provider</option>
-            </select>
+              <input
+                id="partnerPhone"
+                name="phone"
+                type="tel"
+                placeholder="07XXXXXXXX"
+                required
+              >
+            </div>
+
+            <div class="form-group">
+              <label for="partnerEmail">
+                Email
+              </label>
+
+              <input
+                id="partnerEmail"
+                name="email"
+                type="email"
+                placeholder="business@example.com"
+              >
+            </div>
+
+            <div class="form-group">
+              <label for="partnerService">
+                Service Category
+              </label>
+
+              <select
+                id="partnerService"
+                name="service"
+                required
+              >
+                <option value="">
+                  Select category
+                </option>
+
+                <option value="rides">
+                  Rides / Transport
+                </option>
+
+                <option value="delivery">
+                  Delivery
+                </option>
+
+                <option value="towing">
+                  Towing
+                </option>
+
+                <option value="roadside">
+                  Roadside Assistance
+                </option>
+
+                <option value="auto">
+                  Automotive
+                </option>
+
+                <option value="marketplace">
+                  Marketplace
+                </option>
+
+                <option value="home-services">
+                  Home Services
+                </option>
+
+                <option value="learn">
+                  Learning
+                </option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="partnerMessage">
+                Message
+              </label>
+
+              <textarea
+                id="partnerMessage"
+                name="message"
+                placeholder="Tell us about your business..."
+              ></textarea>
+            </div>
+
+            <div
+              id="partnerMessageBox"
+              class="form-message"
+              aria-live="polite"
+            ></div>
 
             <button
               type="submit"
-              class="btn btn-primary btn-block"
+              class="btn btn-primary"
+              style="width:100%;"
             >
-              Apply as Partner
+              Submit Partnership Request
             </button>
-
-            <div
-              id="partnerMessage"
-              class="form-msg"
-              role="status"
-              aria-live="polite"
-            ></div>
 
           </form>
         `;
 
-
       default:
         return `
-          <h2 id="modalTitle">MEI One</h2>
-          <p>This service is coming soon.</p>
+          <h2>MEI One</h2>
+          <p>
+            Please select an available MEI One option.
+          </p>
         `;
     }
   }
 
-
-  /* ============================================================
+  /* ==========================================================
      MODAL ACTIONS
-     ============================================================ */
+     ========================================================== */
 
   function bindModalActions(name) {
 
-    document.querySelectorAll("[data-modal-switch]").forEach((button) => {
+    /* Switch between login/signup */
+
+    $$("[data-switch-modal]").forEach((button) => {
       button.addEventListener("click", () => {
-        const target = button.getAttribute("data-modal-switch");
+        const target =
+          button.getAttribute("data-switch-modal");
 
         openModal(target);
       });
     });
 
+    /* Login */
 
-    if (name === "login") {
-      const form = document.getElementById("modalLoginForm");
+    const loginForm = $("#modalLoginForm");
 
-      if (form) {
-        form.addEventListener("submit", handleLogin);
-      }
+    if (loginForm) {
+      loginForm.addEventListener(
+        "submit",
+        handleLogin
+      );
     }
 
+    /* Signup */
 
-    if (name === "signup") {
-      const form = document.getElementById("modalSignupForm");
+    const signupForm = $("#modalSignupForm");
 
-      if (form) {
-        form.addEventListener("submit", handleSignup);
-      }
+    if (signupForm) {
+      signupForm.addEventListener(
+        "submit",
+        handleSignup
+      );
     }
 
+    /* Emergency */
 
-    if (name === "emergency") {
-      const form = document.getElementById("emergencyForm");
+    const emergencyForm = $("#emergencyForm");
 
-      if (form) {
-        form.addEventListener("submit", handleEmergency);
-      }
+    if (emergencyForm) {
+      emergencyForm.addEventListener(
+        "submit",
+        handleEmergency
+      );
     }
 
+    /* Partner */
 
-    if (name === "partner") {
-      const form = document.getElementById("partnerForm");
+    const partnerForm = $("#partnerForm");
 
-      if (form) {
-        form.addEventListener("submit", handlePartner);
-      }
+    if (partnerForm) {
+      partnerForm.addEventListener(
+        "submit",
+        handlePartner
+      );
     }
   }
 
-
-  /* ============================================================
+  /* ==========================================================
      LOGIN
-     ============================================================ */
+     ========================================================== */
 
   async function handleLogin(event) {
     event.preventDefault();
 
     const form = event.currentTarget;
-    const message = document.getElementById("modalLoginMessage");
-    const button = form.querySelector("button[type='submit']");
 
-    const email = form.email.value.trim();
-    const password = form.password.value;
+    const email =
+      form.email.value.trim();
 
-    if (!email || !password) {
+    const password =
+      form.password.value;
+
+    const message =
+      $("#loginMessage");
+
+    const button =
+      form.querySelector(
+        'button[type="submit"]'
+      );
+
+    if (!SUPABASE) {
       showFormMessage(
         message,
-        "Please enter your email and password.",
+        "Authentication is not available. Check Supabase configuration.",
         "error"
       );
 
       return;
     }
 
-    setButtonLoading(button, true, "Signing in...");
+    setButtonLoading(
+      button,
+      true,
+      "Signing In..."
+    );
 
     try {
-
-      if (!window.supabaseClient) {
-        throw new Error(
-          "Supabase is not initialized."
-        );
-      }
-
-      const { data, error } =
-        await window.supabaseClient.auth.signInWithPassword({
+      const {
+        data,
+        error
+      } =
+        await SUPABASE.auth.signInWithPassword({
           email,
           password
         });
 
       if (error) {
         throw error;
+      }
+
+      if (!data || !data.session) {
+        throw new Error(
+          "Login completed but no session was created."
+        );
       }
 
       showFormMessage(
@@ -590,44 +783,65 @@
       );
 
       setTimeout(() => {
-        window.location.href = "dashboard.html";
+        window.location.href =
+          CONFIG.routes?.dashboard ||
+          "dashboard.html";
       }, 500);
 
     } catch (error) {
 
-      console.error("MEI One login error:", error);
+      console.error(
+        "MEI One login error:",
+        error
+      );
 
       showFormMessage(
         message,
-        getAuthErrorMessage(error),
+        getFriendlyAuthError(error),
         "error"
       );
 
-      setButtonLoading(button, false);
+      setButtonLoading(
+        button,
+        false,
+        "Sign In"
+      );
     }
   }
 
-
-  /* ============================================================
-     SIGN UP
-     ============================================================ */
+  /* ==========================================================
+     SIGNUP
+     ========================================================== */
 
   async function handleSignup(event) {
     event.preventDefault();
 
     const form = event.currentTarget;
-    const message = document.getElementById("modalSignupMessage");
-    const button = form.querySelector("button[type='submit']");
 
-    const fullName = form.full_name.value.trim();
-    const phone = form.phone.value.trim();
-    const email = form.email.value.trim();
-    const password = form.password.value;
+    const fullName =
+      form.full_name.value.trim();
 
-    if (!fullName || !phone || !email || !password) {
+    const phone =
+      form.phone.value.trim();
+
+    const email =
+      form.email.value.trim();
+
+    const password =
+      form.password.value;
+
+    const message =
+      $("#signupMessage");
+
+    const button =
+      form.querySelector(
+        'button[type="submit"]'
+      );
+
+    if (!SUPABASE) {
       showFormMessage(
         message,
-        "Please complete all fields.",
+        "Authentication is not available. Check Supabase configuration.",
         "error"
       );
 
@@ -644,24 +858,25 @@
       return;
     }
 
-    setButtonLoading(button, true, "Creating account...");
+    setButtonLoading(
+      button,
+      true,
+      "Creating Account..."
+    );
 
     try {
-
-      if (!window.supabaseClient) {
-        throw new Error(
-          "Supabase is not initialized."
-        );
-      }
-
-      const { data, error } =
-        await window.supabaseClient.auth.signUp({
+      const {
+        data,
+        error
+      } =
+        await SUPABASE.auth.signUp({
           email,
           password,
+
           options: {
             data: {
               full_name: fullName,
-              phone
+              phone: phone
             }
           }
         });
@@ -670,8 +885,7 @@
         throw error;
       }
 
-      if (data.session) {
-
+      if (data?.session) {
         showFormMessage(
           message,
           "Account created successfully. Redirecting...",
@@ -679,249 +893,294 @@
         );
 
         setTimeout(() => {
-          window.location.href = "dashboard.html";
-        }, 500);
+          window.location.href =
+            CONFIG.routes?.dashboard ||
+            "dashboard.html";
+        }, 700);
 
       } else {
-
         showFormMessage(
           message,
-          "Account created. Check your email to confirm your account.",
+          "Account created. Check your email to confirm your account before signing in.",
           "success"
         );
 
-        setButtonLoading(button, false);
+        setButtonLoading(
+          button,
+          false,
+          "Create Account"
+        );
       }
 
     } catch (error) {
 
-      console.error("MEI One signup error:", error);
+      console.error(
+        "MEI One signup error:",
+        error
+      );
 
       showFormMessage(
         message,
-        getAuthErrorMessage(error),
+        getFriendlyAuthError(error),
         "error"
       );
 
-      setButtonLoading(button, false);
+      setButtonLoading(
+        button,
+        false,
+        "Create Account"
+      );
     }
   }
 
-
-  /* ============================================================
+  /* ==========================================================
      SERVICE BUTTONS
-     ============================================================ */
+     ========================================================== */
 
   function initServiceButtons() {
-    document.addEventListener("click", (event) => {
+    $$("[data-service]").forEach((button) => {
+      button.addEventListener("click", () => {
 
-      const button = event.target.closest("[data-service]");
+        const service =
+          button.getAttribute("data-service");
 
-      if (!button) {
-        return;
-      }
+        if (!service) {
+          return;
+        }
 
-      event.preventDefault();
-
-      const service = button.getAttribute("data-service");
-
-      handleService(service);
+        handleService(service);
+      });
     });
   }
 
-
   function handleService(service) {
+    const serviceConfig =
+      CONFIG.services?.[service];
 
-    const routes = {
-      rides: "dashboard.html?service=rides",
-      delivery: "dashboard.html?service=delivery",
-      towing: "dashboard.html?service=towing",
-      roadside: "dashboard.html?service=roadside",
-      auto: "dashboard.html?service=auto",
-      marketplace: "dashboard.html?service=marketplace",
-      "home-services": "dashboard.html?service=home-services",
-      learn: "dashboard.html?service=learn"
-    };
-
-    if (!service) {
-      return;
-    }
-
-    const route = routes[service];
-
-    if (!route) {
-      showToast(
-        "This service is coming soon.",
-        "info"
-      );
-
-      return;
-    }
-
-    /*
-     * For services that require authentication,
-     * take the user to dashboard.
-     *
-     * The dashboard can then verify the session.
-     */
+    const route =
+      serviceConfig?.route ||
+      `dashboard.html?service=${encodeURIComponent(
+        service
+      )}`;
 
     window.location.href = route;
   }
 
+  MEI.handleService = handleService;
 
-  /* ============================================================
-     EMERGENCY FORM
-     ============================================================ */
+  /* ==========================================================
+     EMERGENCY REQUEST
+     ========================================================== */
 
-  async function handleEmergency(event) {
+  function handleEmergency(event) {
     event.preventDefault();
 
     const form = event.currentTarget;
-    const message = document.getElementById("emergencyMessage");
-    const button = form.querySelector("button[type='submit']");
 
-    const phone = form.phone.value.trim();
-    const service = form.service.value;
-    const location = form.location.value.trim();
+    const request = {
+      id: generateId(),
 
-    if (!phone || !service || !location) {
-      showFormMessage(
-        message,
-        "Please complete all emergency details.",
-        "error"
-      );
+      name: form.name.value.trim(),
 
-      return;
-    }
+      phone: form.phone.value.trim(),
 
-    setButtonLoading(button, true, "Sending request...");
+      type: form.type.value,
+
+      location:
+        form.location.value.trim(),
+
+      message:
+        form.message.value.trim(),
+
+      created_at:
+        new Date().toISOString(),
+
+      status: "pending"
+    };
 
     try {
+      const existing =
+        JSON.parse(
+          localStorage.getItem(
+            "mei_emergency_requests"
+          ) || "[]"
+        );
 
-      /*
-       * Database table can be connected here once
-       * the emergency_requests table is confirmed.
-       *
-       * For now, preserve the request locally so
-       * the frontend works without assuming a table
-       * that may not yet exist.
-       */
-
-      const request = {
-        phone,
-        service,
-        location,
-        created_at: new Date().toISOString()
-      };
+      existing.push(request);
 
       localStorage.setItem(
-        "mei_pending_emergency",
-        JSON.stringify(request)
+        "mei_emergency_requests",
+        JSON.stringify(existing)
       );
 
       showFormMessage(
-        message,
-        "Emergency request captured. We will connect this to the live dispatch system next.",
+        $("#emergencyMessageBox"),
+        "Your request has been recorded. MEI assistance workflow will be connected to the backend next.",
         "success"
       );
 
-      setButtonLoading(button, false);
+      form.reset();
 
     } catch (error) {
 
       console.error(error);
 
       showFormMessage(
-        message,
-        "Unable to process the request.",
+        $("#emergencyMessageBox"),
+        "Unable to record the request on this device.",
         "error"
       );
-
-      setButtonLoading(button, false);
     }
   }
 
+  /* ==========================================================
+     PARTNER REQUEST
+     ========================================================== */
 
-  /* ============================================================
-     PARTNER FORM
-     ============================================================ */
-
-  async function handlePartner(event) {
+  function handlePartner(event) {
     event.preventDefault();
 
     const form = event.currentTarget;
-    const message = document.getElementById("partnerMessage");
-    const button = form.querySelector("button[type='submit']");
 
-    const name = form.name.value.trim();
-    const phone = form.phone.value.trim();
-    const partnerType = form.partner_type.value;
+    const request = {
+      id: generateId(),
 
-    if (!name || !phone || !partnerType) {
-      showFormMessage(
-        message,
-        "Please complete all fields.",
-        "error"
-      );
+      name: form.name.value.trim(),
 
-      return;
-    }
+      business:
+        form.business.value.trim(),
 
-    setButtonLoading(button, true, "Submitting...");
+      phone:
+        form.phone.value.trim(),
+
+      email:
+        form.email.value.trim(),
+
+      service:
+        form.service.value,
+
+      message:
+        form.message.value.trim(),
+
+      created_at:
+        new Date().toISOString(),
+
+      status: "pending"
+    };
 
     try {
 
-      const application = {
-        name,
-        phone,
-        partner_type: partnerType,
-        created_at: new Date().toISOString()
-      };
+      const existing =
+        JSON.parse(
+          localStorage.getItem(
+            "mei_partner_requests"
+          ) || "[]"
+        );
+
+      existing.push(request);
 
       localStorage.setItem(
-        "mei_partner_application",
-        JSON.stringify(application)
+        "mei_partner_requests",
+        JSON.stringify(existing)
       );
 
       showFormMessage(
-        message,
-        "Partner application received. We will connect this to the partner database next.",
+        $("#partnerMessageBox"),
+        "Thank you. Your partnership request has been recorded.",
         "success"
       );
 
-      setButtonLoading(button, false);
+      form.reset();
 
     } catch (error) {
 
       console.error(error);
 
       showFormMessage(
-        message,
-        "Unable to submit your application.",
+        $("#partnerMessageBox"),
+        "Unable to submit the request on this device.",
         "error"
       );
-
-      setButtonLoading(button, false);
     }
   }
 
+  /* ==========================================================
+     AUTH STATE
+     ========================================================== */
 
-  /* ============================================================
-     SMOOTH SCROLL
-     ============================================================ */
+  async function initAuthState() {
+    if (!SUPABASE) {
+      return;
+    }
+
+    try {
+
+      const {
+        data: {
+          session
+        }
+      } =
+        await SUPABASE.auth.getSession();
+
+      updateAuthUI(session);
+
+      SUPABASE.auth.onAuthStateChange(
+        (_event, newSession) => {
+          updateAuthUI(newSession);
+        }
+      );
+
+    } catch (error) {
+
+      console.error(
+        "MEI One auth state error:",
+        error
+      );
+    }
+  }
+
+  function updateAuthUI(session) {
+
+    $$("[data-auth='login']").forEach(
+      (element) => {
+        element.hidden = Boolean(session);
+      }
+    );
+
+    $$("[data-auth='logout']").forEach(
+      (element) => {
+        element.hidden = !session;
+      }
+    );
+
+    $$("[data-auth='dashboard']").forEach(
+      (element) => {
+        element.hidden = !session;
+      }
+    );
+  }
+
+  /* ==========================================================
+     SMOOTH SCROLLING
+     ========================================================== */
 
   function initSmoothScrolling() {
-    document.querySelectorAll('a[href^="#"]').forEach((link) => {
+    $$('a[href^="#"]').forEach((link) => {
 
       link.addEventListener("click", (event) => {
 
-        const href = link.getAttribute("href");
+        const targetId =
+          link.getAttribute("href");
 
-        if (!href || href === "#") {
+        if (
+          !targetId ||
+          targetId === "#"
+        ) {
           return;
         }
 
-        const target = document.querySelector(href);
+        const target =
+          $(targetId);
 
         if (!target) {
           return;
@@ -933,102 +1192,114 @@
           behavior: "smooth",
           block: "start"
         });
-
-        closeMobileNavigation();
       });
     });
   }
 
-
-  /* ============================================================
+  /* ==========================================================
      CURRENT YEAR
-     ============================================================ */
+     ========================================================== */
 
   function initCurrentYear() {
-    const yearElement =
-      document.getElementById("currentYear");
+    const year =
+      new Date().getFullYear();
 
-    if (yearElement) {
-      yearElement.textContent =
-        new Date().getFullYear();
-    }
-  }
-
-
-  /* ============================================================
-     ESCAPE KEY
-     ============================================================ */
-
-  function initKeyboardHandling() {
-    document.addEventListener("keydown", (event) => {
-
-      if (event.key !== "Escape") {
-        return;
+    $$("[data-current-year]").forEach(
+      (element) => {
+        element.textContent = year;
       }
+    );
 
-      closeModal();
-      closeMobileNavigation();
-    });
-  }
+    const footerYear =
+      $("#currentYear");
 
-
-  /* ============================================================
-     TOAST
-     ============================================================ */
-
-  function showToast(message, type = "info") {
-
-    let toast =
-      document.getElementById("meiToast");
-
-    if (!toast) {
-
-      toast = document.createElement("div");
-
-      toast.id = "meiToast";
-
-      toast.style.position = "fixed";
-      toast.style.left = "50%";
-      toast.style.bottom = "30px";
-      toast.style.transform = "translateX(-50%)";
-      toast.style.zIndex = "9999";
-      toast.style.padding = "12px 18px";
-      toast.style.borderRadius = "999px";
-      toast.style.fontWeight = "700";
-      toast.style.maxWidth = "90vw";
-      toast.style.textAlign = "center";
-      toast.style.boxShadow =
-        "0 10px 30px rgba(0,0,0,.20)";
-
-      document.body.appendChild(toast);
+    if (footerYear) {
+      footerYear.textContent = year;
     }
-
-    toast.textContent = message;
-
-    toast.style.background =
-      type === "error"
-        ? "#d7263d"
-        : type === "success"
-          ? "#2f6f5e"
-          : "#10231f";
-
-    toast.style.color = "#ffffff";
-
-    toast.style.opacity = "1";
-
-    clearTimeout(toast._timer);
-
-    toast._timer = setTimeout(() => {
-      toast.style.opacity = "0";
-    }, 3500);
   }
 
+  /* ==========================================================
+     GLOBAL LINKS
+     ========================================================== */
 
-  /* ============================================================
+  function initGlobalLinks() {
+
+    $$("[data-dashboard]").forEach(
+      (element) => {
+
+        element.addEventListener(
+          "click",
+          (event) => {
+
+            event.preventDefault();
+
+            window.location.href =
+              CONFIG.routes?.dashboard ||
+              "dashboard.html";
+          }
+        );
+      }
+    );
+  }
+
+  /* ==========================================================
+     ESCAPE KEY
+     ========================================================== */
+
+  function initEscapeKey() {
+
+    document.addEventListener(
+      "keydown",
+      (event) => {
+
+        if (event.key === "Escape") {
+
+          const modal =
+            $("#globalModal");
+
+          if (
+            modal &&
+            modal.classList.contains("open")
+          ) {
+            closeModal();
+          }
+
+          const navigation =
+            $("#mainNavigation");
+
+          const menuButton =
+            $("#mobileMenuButton");
+
+          if (
+            navigation &&
+            navigation.classList.contains("open")
+          ) {
+
+            navigation.classList.remove(
+              "open"
+            );
+
+            if (menuButton) {
+              menuButton.setAttribute(
+                "aria-expanded",
+                "false"
+              );
+            }
+          }
+        }
+      }
+    );
+  }
+
+  /* ==========================================================
      FORM MESSAGE
-     ============================================================ */
+     ========================================================== */
 
-  function showFormMessage(element, message, type) {
+  function showFormMessage(
+    element,
+    message,
+    type = "info"
+  ) {
 
     if (!element) {
       return;
@@ -1036,23 +1307,46 @@
 
     element.textContent = message;
 
-    element.style.color =
-      type === "error"
-        ? "#d7263d"
-        : type === "success"
-          ? "#2f6f5e"
-          : "inherit";
+    element.style.marginTop = "12px";
+    element.style.padding = "10px 12px";
+    element.style.borderRadius = "8px";
+    element.style.fontSize = "0.85rem";
+    element.style.fontWeight = "600";
+
+    if (type === "success") {
+
+      element.style.background =
+        "rgba(0, 230, 118, 0.10)";
+
+      element.style.color =
+        "#008f48";
+
+    } else if (type === "error") {
+
+      element.style.background =
+        "rgba(229, 57, 53, 0.10)";
+
+      element.style.color =
+        "#b71c1c";
+
+    } else {
+
+      element.style.background =
+        "#eef3f5";
+
+      element.style.color =
+        "#334155";
+    }
   }
 
-
-  /* ============================================================
+  /* ==========================================================
      BUTTON LOADING
-     ============================================================ */
+     ========================================================== */
 
   function setButtonLoading(
     button,
     loading,
-    text = "Processing..."
+    text
   ) {
 
     if (!button) {
@@ -1061,51 +1355,75 @@
 
     if (loading) {
 
-      if (!button.dataset.originalText) {
-        button.dataset.originalText =
-          button.innerHTML;
-      }
+      button.dataset.originalText =
+        button.innerHTML;
 
       button.disabled = true;
+
       button.innerHTML = text;
 
     } else {
 
       button.disabled = false;
 
-      if (button.dataset.originalText) {
-        button.innerHTML =
-          button.dataset.originalText;
-
-        delete button.dataset.originalText;
-      }
+      button.innerHTML =
+        button.dataset.originalText ||
+        text;
     }
   }
 
+  /* ==========================================================
+     FRIENDLY AUTH ERRORS
+     ========================================================== */
 
-  /* ============================================================
-     AUTH ERROR MESSAGE
-     ============================================================ */
-
-  function getAuthErrorMessage(error) {
+  function getFriendlyAuthError(error) {
 
     const message =
-      String(error?.message || "").toLowerCase();
+      String(
+        error?.message || ""
+      ).toLowerCase();
 
-    if (message.includes("invalid login credentials")) {
+    if (
+      message.includes(
+        "invalid login credentials"
+      )
+    ) {
       return "Incorrect email or password.";
     }
 
-    if (message.includes("email not confirmed")) {
-      return "Please confirm your email before signing in.";
+    if (
+      message.includes(
+        "email not confirmed"
+      )
+    ) {
+      return "Please confirm your email address before signing in.";
     }
 
-    if (message.includes("user already registered")) {
+    if (
+      message.includes(
+        "user already registered"
+      )
+    ) {
       return "An account with this email already exists.";
     }
 
-    if (message.includes("password")) {
-      return error.message;
+    if (
+      message.includes(
+        "password"
+      ) &&
+      message.includes(
+        "characters"
+      )
+    ) {
+      return "Your password does not meet the minimum requirements.";
+    }
+
+    if (
+      message.includes(
+        "rate limit"
+      )
+    ) {
+      return "Too many attempts. Please wait a moment and try again.";
     }
 
     return (
@@ -1114,14 +1432,90 @@
     );
   }
 
+  /* ==========================================================
+     TOAST
+     ========================================================== */
 
-  /* ============================================================
+  function showToast(
+    message,
+    duration = 3500
+  ) {
+
+    let toast =
+      $("#meiToast");
+
+    if (!toast) {
+
+      toast =
+        document.createElement(
+          "div"
+        );
+
+      toast.id = "meiToast";
+
+      toast.className =
+        "toast";
+
+      toast.setAttribute(
+        "role",
+        "status"
+      );
+
+      document.body.appendChild(
+        toast
+      );
+    }
+
+    toast.textContent = message;
+
+    toast.classList.add("show");
+
+    clearTimeout(
+      toast._timeout
+    );
+
+    toast._timeout =
+      setTimeout(() => {
+        toast.classList.remove(
+          "show"
+        );
+      }, duration);
+  }
+
+  /* ==========================================================
+     ID GENERATOR
+     ========================================================== */
+
+  function generateId() {
+
+    if (
+      window.crypto &&
+      typeof window.crypto.randomUUID ===
+        "function"
+    ) {
+      return window.crypto.randomUUID();
+    }
+
+    return (
+      Date.now().toString(36) +
+      Math.random()
+        .toString(36)
+        .substring(2)
+    );
+  }
+
+  /* ==========================================================
      PUBLIC API
-     ============================================================ */
+     ========================================================== */
 
   MEI.openModal = openModal;
-  MEI.closeModal = closeModal;
-  MEI.showToast = showToast;
-  MEI.handleService = handleService;
 
-})();
+  MEI.closeModal = closeModal;
+
+  MEI.showToast = showToast;
+
+  MEI.config = CONFIG;
+
+  MEI.supabase = SUPABASE;
+
+})(window, document);
