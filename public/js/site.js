@@ -1,16 +1,1331 @@
-:root{--navy:#071a2f;--navy2:#0c2948;--navy3:#123d64;--green:#00e676;--green2:#00b85c;--green3:#66ffb0;--white:#fff;--text:#14263a;--muted:#687a8d;--bg:#f5f8fb;--border:#dce5ed;--darkborder:rgba(255,255,255,.11);--container:1240px;--radius:18px;--shadow:0 20px 55px rgba(5,22,40,.13);--transition:180ms ease}*{box-sizing:border-box}html{scroll-behavior:smooth;scroll-padding-top:88px}body{margin:0;min-width:320px;font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;color:var(--text);background:var(--bg);line-height:1.6;-webkit-font-smoothing:antialiased}button,input,textarea,select{font:inherit}button{cursor:pointer}a{color:inherit;text-decoration:none}h1,h2,h3{margin-top:0;line-height:1.12;letter-spacing:-.025em}.container{width:min(calc(100% - 40px),var(--container));margin:auto}.section{padding:100px 0}
-.site-header{position:sticky;top:0;z-index:1000;background:rgba(7,26,47,.97);border-bottom:1px solid rgba(255,255,255,.08);backdrop-filter:blur(16px)}.nav-container{min-height:76px;display:flex;align-items:center;justify-content:space-between;gap:30px}.brand{display:inline-flex;align-items:center;gap:8px;color:#fff;font-weight:900;letter-spacing:-.04em}.brand-mark{display:grid;place-items:center;min-width:49px;height:32px;padding:0 9px;border-radius:8px;color:var(--navy);background:var(--green);font-size:.86rem;font-weight:950}.brand-name{font-size:1.35rem;font-weight:900}.main-navigation{display:flex;align-items:center;gap:26px}.main-navigation>a{color:#dbe7f1;font-size:.93rem;font-weight:700}.main-navigation>a:hover{color:var(--green)}.nav-dashboard{display:none}.mobile-menu-button{display:none;width:44px;height:44px;padding:10px;border:1px solid var(--darkborder);border-radius:10px;background:transparent}.mobile-menu-button span{display:block;height:2px;margin:5px 0;background:#fff}
-.button{display:inline-flex;align-items:center;justify-content:center;gap:11px;min-height:46px;padding:0 19px;border:1px solid transparent;border-radius:11px;font-weight:850;line-height:1;transition:transform var(--transition),box-shadow var(--transition),background var(--transition),border-color var(--transition)}.button:hover{transform:translateY(-2px)}.button:focus-visible,a:focus-visible,button:focus-visible{outline:3px solid rgba(0,230,118,.42);outline-offset:3px}.button-primary{color:var(--navy);background:var(--green);box-shadow:0 10px 26px rgba(0,230,118,.2)}.button-primary:hover{background:var(--green3)}.button-secondary{color:#fff;background:transparent;border-color:rgba(255,255,255,.25)}.button-secondary:hover{background:rgba(255,255,255,.07)}.button-small{min-height:40px;padding:0 15px;font-size:.86rem}.button-large{min-height:54px;padding:0 22px}.button-emergency{color:#fff;background:#b91c1c}.button-emergency:hover{background:#991b1b}
-.hero-section{position:relative;overflow:hidden;padding:90px 0 80px;color:#fff;background:radial-gradient(circle at 80% 20%,rgba(0,230,118,.12),transparent 30%),radial-gradient(circle at 15% 80%,rgba(18,61,100,.48),transparent 35%),linear-gradient(135deg,var(--navy),#041321 75%)}.hero-glow{position:absolute;width:430px;height:430px;border-radius:50%;filter:blur(80px);pointer-events:none;opacity:.15}.hero-glow-one{top:-250px;right:-120px;background:var(--green)}.hero-glow-two{bottom:-320px;left:-180px;background:#1d70b8}.hero-grid{position:relative;z-index:1;display:grid;grid-template-columns:minmax(0,1fr) minmax(440px,.92fr);gap:70px;align-items:center}.hero-content{max-width:650px}.eyebrow,.section-label{display:inline-flex;align-items:center;gap:9px;color:var(--green);font-size:.76rem;font-weight:900;letter-spacing:.13em}.eyebrow{margin-bottom:24px}.eyebrow-dot{width:8px;height:8px;border-radius:50%;background:var(--green);box-shadow:0 0 0 5px rgba(0,230,118,.1)}.eyebrow-line{width:28px;height:1px;background:rgba(255,255,255,.3)}.hero-content h1{margin-bottom:25px;font-size:clamp(3.2rem,6vw,5.5rem);font-weight:950;line-height:.98;letter-spacing:-.055em}.hero-content h1 span{color:var(--green)}.hero-text{max-width:600px;margin-bottom:31px;color:#b9c8d6;font-size:1.12rem;line-height:1.75}.hero-actions{display:flex;flex-wrap:wrap;gap:13px}.hero-trust{display:flex;align-items:center;gap:23px;margin-top:42px}.hero-trust div{display:flex;flex-direction:column}.hero-trust strong{font-size:1.35rem}.hero-trust span{color:#8fa2b5;font-size:.75rem;font-weight:700}.hero-trust i{width:1px;height:34px;background:rgba(255,255,255,.14)}
-.hero-preview{padding:23px;border:1px solid rgba(255,255,255,.13);border-radius:28px;background:linear-gradient(180deg,rgba(17,48,79,.94),rgba(5,18,31,.96));box-shadow:0 30px 80px rgba(0,0,0,.22)}.preview-heading{display:flex;align-items:flex-start;justify-content:space-between;gap:18px;margin-bottom:20px}.preview-heading small{display:block;margin-bottom:5px;color:var(--green);font-size:.67rem;font-weight:900;letter-spacing:.14em}.preview-heading h2{margin:0;color:#fff;font-size:1.32rem}.status-pill{display:inline-flex;align-items:center;gap:7px;padding:7px 10px;border:1px solid rgba(0,230,118,.2);border-radius:999px;color:var(--green3);background:rgba(0,230,118,.08);font-size:.72rem;font-weight:800}.status-pill b{width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 9px rgba(0,230,118,.8)}.preview-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.preview-service{display:grid;grid-template-columns:40px minmax(0,1fr) 16px;align-items:center;gap:10px;min-height:67px;padding:10px;border:1px solid rgba(255,255,255,.09);border-radius:13px;background:rgba(255,255,255,.035);transition:transform var(--transition),border-color var(--transition),background var(--transition)}.preview-service:hover{transform:translateY(-2px);border-color:rgba(0,230,118,.38);background:rgba(0,230,118,.065)}.preview-service>span:first-child{display:grid;place-items:center;width:40px;height:40px;border-radius:11px;background:rgba(0,230,118,.1);font-size:1.15rem}.preview-service strong,.preview-service small{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.preview-service strong{color:#fff;font-size:.8rem}.preview-service small{margin-top:2px;color:#91a5b8;font-size:.68rem}.preview-service>b{color:var(--green)}.preview-emergency{width:100%;display:grid;grid-template-columns:46px minmax(0,1fr) 18px;align-items:center;gap:12px;margin-top:12px;padding:13px;border:1px solid rgba(248,113,113,.22);border-radius:13px;color:#fff;background:rgba(185,28,28,.12);text-align:left}.preview-emergency>span{display:grid;place-items:center;width:46px;height:40px;border-radius:10px;color:#fecaca;background:rgba(185,28,28,.26);font-size:.73rem;font-weight:950}.preview-emergency strong,.preview-emergency small{display:block}.preview-emergency strong{font-size:.82rem}.preview-emergency small{margin-top:2px;color:#c8a4a4;font-size:.68rem}.preview-emergency>b{color:#fecaca}.preview-footer{display:flex;justify-content:space-between;margin-top:17px;padding-top:14px;border-top:1px solid rgba(255,255,255,.08);color:#778da1;font-size:.66rem;font-weight:700}
-.section-heading{max-width:720px;margin-bottom:50px}.section-heading.centered{margin-inline:auto;text-align:center}.section-heading .section-label{margin-bottom:14px}.section-heading h2,.business-section h2,.about-section h2{margin-bottom:17px;color:var(--navy);font-size:clamp(2.1rem,4vw,3.25rem);font-weight:950}.section-heading p,.business-section>div>div>p,.about-section p{color:var(--muted);line-height:1.8}.services-section{background:#fff}.services-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:17px}.service-card{position:relative;display:flex;min-height:280px;flex-direction:column;padding:26px;overflow:hidden;border:1px solid var(--border);border-radius:var(--radius);background:#fff;box-shadow:0 4px 18px rgba(5,22,40,.03);transition:transform var(--transition),border-color var(--transition),box-shadow var(--transition)}.service-card:hover{transform:translateY(-5px);border-color:rgba(0,184,92,.45);box-shadow:var(--shadow)}.service-card em{align-self:flex-end;color:#a8b6c3;font-size:.7rem;font-style:normal;font-weight:900}.service-icon{display:grid;place-items:center;width:52px;height:52px;margin:13px 0 20px;border-radius:14px;background:#eafff4;font-size:1.4rem}.service-card h3{margin-bottom:9px;color:var(--navy);font-size:1.12rem}.service-card p{margin-bottom:20px;color:var(--muted);font-size:.9rem;line-height:1.65}.service-card>strong{margin-top:auto;color:var(--green2);font-size:.82rem}
-.how-section{background:var(--bg)}.steps-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;max-width:1000px;margin:auto}.step-card{padding:30px;border:1px solid var(--border);border-radius:var(--radius);background:#fff;box-shadow:0 8px 24px rgba(5,22,40,.08)}.step-card em{display:block;color:#b5c1cc;font-size:.72rem;font-style:normal;font-weight:950}.step-card span{display:grid;place-items:center;width:54px;height:54px;margin:25px 0 22px;border-radius:15px;color:var(--navy);background:var(--green);font-weight:950}.step-card h3{margin-bottom:10px;color:var(--navy)}.step-card p{margin:0;color:var(--muted)}
-.emergency-section{padding:0 0 100px;background:var(--bg)}.emergency-panel{display:flex;align-items:center;justify-content:space-between;gap:35px;padding:40px 45px;border-radius:28px;color:#fff;background:radial-gradient(circle at 100% 0%,rgba(248,113,113,.2),transparent 38%),linear-gradient(120deg,#071a2f,#0d2944);box-shadow:var(--shadow)}.emergency-panel small{display:block;margin-bottom:11px;color:#fca5a5;font-size:.72rem;font-weight:950;letter-spacing:.12em}.emergency-panel h2{margin-bottom:9px;font-size:clamp(1.8rem,3vw,2.55rem)}.emergency-panel p{max-width:650px;margin:0;color:#aebdcc}
-.business-section{background:#fff}.business-grid{display:grid;grid-template-columns:.85fr 1.15fr;gap:70px;align-items:center}.business-section .section-label,.about-section .section-label{margin-bottom:15px}.business-section>div>div>p{max-width:570px;margin-bottom:28px}.partner-cards{display:grid;grid-template-columns:1fr 1fr;gap:14px}.partner-cards article{padding:25px;border:1px solid var(--border);border-radius:16px;background:var(--bg)}.partner-cards b{color:var(--green2);font-size:.68rem}.partner-cards h3{margin:17px 0 8px;color:var(--navy);font-size:1rem}.partner-cards p{margin:0;color:var(--muted);font-size:.84rem}
-.about-section{background:var(--bg)}.about-grid{display:grid;grid-template-columns:.7fr 1.3fr;gap:75px;align-items:center}.about-mark{display:flex;align-items:center;justify-content:center;width:300px;aspect-ratio:1;margin:auto;border:1px solid rgba(0,184,92,.25);border-radius:50%;background:radial-gradient(circle,rgba(0,230,118,.13),transparent 57%),var(--navy);box-shadow:0 30px 70px rgba(7,26,47,.18)}.about-mark b{color:var(--green);font-size:2rem}.about-mark strong{margin-left:7px;color:#fff;font-size:2rem}
-.site-footer{color:#aab9c8;background:#04111e}.footer-grid{display:grid;grid-template-columns:1.5fr repeat(3,1fr);gap:50px;padding:70px 0 55px}.footer-brand p{max-width:260px;color:#75899c;font-size:.86rem}.footer-column{display:flex;flex-direction:column;align-items:flex-start;gap:11px}.footer-column h3{margin-bottom:8px;color:#fff;font-size:.83rem;text-transform:uppercase;letter-spacing:.09em}.footer-column a{color:#8195a8;font-size:.82rem}.footer-column a:hover{color:var(--green)}.footer-bottom{display:flex;justify-content:space-between;gap:20px;padding:20px 0;border-top:1px solid rgba(255,255,255,.08);color:#627689;font-size:.72rem}
-.modal{position:fixed;inset:0;z-index:2000;display:none}.modal.open{display:block}.modal-backdrop{position:absolute;inset:0;background:rgba(2,9,16,.76);backdrop-filter:blur(5px)}.modal-dialog{position:relative;z-index:1;width:min(calc(100% - 30px),560px);max-height:calc(100vh - 30px);margin:15px auto;overflow:auto;padding:32px;border:1px solid var(--border);border-radius:20px;background:#fff;box-shadow:0 30px 80px rgba(0,0,0,.22)}.modal-close{position:absolute;top:12px;right:12px;width:36px;height:36px;border:0;border-radius:10px;color:var(--muted);background:#f1f4f7;font-size:1.35rem}.modal-dialog form{display:grid;gap:14px}.modal-dialog h2{color:var(--navy)}.modal-dialog p{color:var(--muted)}.modal-dialog label{display:grid;gap:6px;color:var(--navy);font-size:.82rem;font-weight:800}.modal-dialog input,.modal-dialog textarea,.modal-dialog select{width:100%;padding:12px 13px;border:1px solid var(--border);border-radius:10px;outline:0;color:var(--text);background:#fff}.modal-dialog textarea{min-height:110px;resize:vertical}.modal-dialog input:focus,.modal-dialog textarea:focus,.modal-dialog select:focus{border-color:var(--green2);box-shadow:0 0 0 3px rgba(0,230,118,.1)}.toast-container{position:fixed;right:20px;bottom:20px;z-index:3000;display:grid;gap:10px;width:min(380px,calc(100% - 40px))}.toast{padding:13px 16px;border:1px solid var(--border);border-radius:12px;color:var(--text);background:#fff;box-shadow:var(--shadow);font-size:.85rem;font-weight:700}
-@media(max-width:1100px){.hero-grid{grid-template-columns:1fr;gap:55px}.hero-preview{max-width:720px}.services-grid{grid-template-columns:repeat(2,1fr)}.business-grid,.about-grid{grid-template-columns:1fr;gap:45px}.about-mark{width:220px}.footer-grid{grid-template-columns:1.4fr repeat(3,1fr);gap:28px}}
-@media(max-width:820px){.container{width:min(calc(100% - 30px),var(--container))}.mobile-menu-button{display:block}.main-navigation{position:absolute;top:calc(100% + 1px);left:0;right:0;display:none;flex-direction:column;align-items:stretch;gap:0;padding:14px 15px 18px;border-bottom:1px solid var(--darkborder);background:rgba(7,26,47,.99)}.main-navigation.open{display:flex}.main-navigation>a,.main-navigation>button{width:100%;padding:13px 10px}.main-navigation .button{margin-top:8px}.hero-section{padding:70px 0}.hero-content h1{font-size:clamp(2.8rem,12vw,4.5rem)}.preview-grid{grid-template-columns:1fr}.steps-grid{grid-template-columns:1fr}.emergency-panel{align-items:flex-start;flex-direction:column;padding:32px}.footer-grid{grid-template-columns:1fr 1fr}}
-@media(max-width:560px){.section{padding:75px 0}.hero-section{padding:58px 0 65px}.hero-text{font-size:1rem}.hero-actions{flex-direction:column}.hero-actions .button{width:100%}.hero-trust{gap:12px;justify-content:space-between}.hero-trust strong{font-size:1.05rem}.hero-trust span{font-size:.66rem}.preview-heading{flex-direction:column}.services-grid,.partner-cards{grid-template-columns:1fr}.service-card{min-height:245px}.emergency-section{padding-bottom:75px}.emergency-panel{padding:26px}.emergency-panel .button{width:100%}.footer-grid{grid-template-columns:1fr;gap:34px;padding:55px 0 40px}.footer-bottom{align-items:flex-start;flex-direction:column;gap:8px}.modal-dialog{padding:25px 20px}}
-@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{transition-duration:.01ms!important;animation-duration:.01ms!important;animation-iteration-count:1!important}}
+/* ============================================================
+MEI ONE — GLOBAL SITE JAVASCRIPT
+public/js/site.js
+============================================================ */
+
+(function (window, document) {
+"use strict";
+
+/* ----------------------------------------------------------
+CONFIG
+---------------------------------------------------------- */
+
+const CONFIG =
+window.MEI_CONFIG ||
+window.MEIConfig ||
+window.CONFIG ||
+{};
+
+const supabase = window.supabaseClient || null;
+
+/* ----------------------------------------------------------
+HELPERS
+---------------------------------------------------------- */
+
+const $ = (selector, parent = document) =>
+parent.querySelector(selector);
+
+const $$ = (selector, parent = document) =>
+Array.from(parent.querySelectorAll(selector));
+
+const escapeHTML = (value) => {
+const div = document.createElement("div");
+div.textContent = value ?? "";
+return div.innerHTML;
+};
+
+const getService = (name) => {
+return CONFIG.services && CONFIG.services[name]
+? CONFIG.services[name]
+: null;
+};
+
+/* ----------------------------------------------------------
+TOAST
+---------------------------------------------------------- */
+
+function showToast(message, type = "info", duration = 4000) {
+const container = $("#toastContainer");
+
+```
+if (!container) {
+  console.log(message);
+  return;
+}
+
+const toast = document.createElement("div");
+
+toast.className = `toast toast-${type}`;
+toast.setAttribute("role", "status");
+
+toast.innerHTML = escapeHTML(message);
+
+container.appendChild(toast);
+
+window.setTimeout(() => {
+  toast.style.opacity = "0";
+  toast.style.transform = "translateY(8px)";
+
+  window.setTimeout(() => {
+    toast.remove();
+  }, 200);
+}, duration);
+```
+
+}
+
+/* ----------------------------------------------------------
+MOBILE NAVIGATION
+---------------------------------------------------------- */
+
+function initMobileNavigation() {
+const button = $("#mobileMenuButton");
+const navigation = $("#mainNavigation");
+
+```
+if (!button || !navigation) return;
+
+button.addEventListener("click", () => {
+  const isOpen = navigation.classList.toggle("open");
+
+  button.setAttribute(
+    "aria-expanded",
+    String(isOpen)
+  );
+
+  button.setAttribute(
+    "aria-label",
+    isOpen ? "Close navigation" : "Open navigation"
+  );
+});
+
+$$("#mainNavigation a, #mainNavigation button").forEach(
+  (element) => {
+    element.addEventListener("click", () => {
+      navigation.classList.remove("open");
+
+      button.setAttribute(
+        "aria-expanded",
+        "false"
+      );
+
+      button.setAttribute(
+        "aria-label",
+        "Open navigation"
+      );
+    });
+  }
+);
+```
+
+}
+
+/* ----------------------------------------------------------
+MODAL
+---------------------------------------------------------- */
+
+const modal = {
+element: null,
+content: null,
+
+```
+init() {
+  this.element = $("#globalModal");
+  this.content = $("#modalContent");
+
+  if (!this.element || !this.content) return;
+
+  $$("[data-modal-close]").forEach((element) => {
+    element.addEventListener("click", () => {
+      this.close();
+    });
+  });
+
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape") {
+      this.close();
+    }
+  });
+},
+
+open(type) {
+  if (!this.element || !this.content) return;
+
+  let content = "";
+
+  switch (type) {
+    case "signup":
+      content = this.signupTemplate();
+      break;
+
+    case "login":
+      content = this.loginTemplate();
+      break;
+
+    case "emergency":
+      content = this.emergencyTemplate();
+      break;
+
+    case "partner":
+      content = this.partnerTemplate();
+      break;
+
+    default:
+      return;
+  }
+
+  this.content.innerHTML = content;
+
+  this.element.classList.add("open");
+  this.element.setAttribute("aria-hidden", "false");
+
+  document.body.style.overflow = "hidden";
+
+  this.bindForm(type);
+
+  const firstInput = this.content.querySelector(
+    "input, textarea, select, button"
+  );
+
+  if (firstInput) {
+    window.setTimeout(() => firstInput.focus(), 50);
+  }
+},
+
+close() {
+  if (!this.element) return;
+
+  this.element.classList.remove("open");
+  this.element.setAttribute("aria-hidden", "true");
+
+  document.body.style.overflow = "";
+
+  if (this.content) {
+    this.content.innerHTML = "";
+  }
+},
+
+signupTemplate() {
+  return `
+    <div class="modal-content">
+      <span class="section-label">MEI ONE</span>
+      <h2 id="modalTitle">Create your account</h2>
+      <p>
+        Create one MEI One account to access connected services.
+      </p>
+
+      <form id="signupForm" novalidate>
+
+        <label>
+          Full Name
+          <input
+            type="text"
+            name="full_name"
+            autocomplete="name"
+            required
+            placeholder="Your full name"
+          >
+        </label>
+
+        <label>
+          Phone
+          <input
+            type="tel"
+            name="phone"
+            autocomplete="tel"
+            required
+            placeholder="07XXXXXXXX"
+          >
+        </label>
+
+        <label>
+          Email
+          <input
+            type="email"
+            name="email"
+            autocomplete="email"
+            required
+            placeholder="you@example.com"
+          >
+        </label>
+
+        <label>
+          Password
+          <input
+            type="password"
+            name="password"
+            autocomplete="new-password"
+            minlength="6"
+            required
+            placeholder="Minimum 6 characters"
+          >
+        </label>
+
+        <div
+          class="form-message"
+          id="signupMessage"
+          aria-live="polite"
+        ></div>
+
+        <button
+          type="submit"
+          class="button button-primary button-large"
+        >
+          Create Account
+        </button>
+      </form>
+
+      <p class="modal-switch">
+        Already have an account?
+        <button type="button" data-switch-modal="login">
+          Sign in
+        </button>
+      </p>
+    </div>
+  `;
+},
+
+loginTemplate() {
+  return `
+    <div class="modal-content">
+      <span class="section-label">MEI ONE</span>
+      <h2 id="modalTitle">Welcome back</h2>
+      <p>
+        Sign in to continue to your MEI One account.
+      </p>
+
+      <form id="loginForm" novalidate>
+
+        <label>
+          Email
+          <input
+            type="email"
+            name="email"
+            autocomplete="email"
+            required
+            placeholder="you@example.com"
+          >
+        </label>
+
+        <label>
+          Password
+          <input
+            type="password"
+            name="password"
+            autocomplete="current-password"
+            required
+            placeholder="Your password"
+          >
+        </label>
+
+        <div
+          class="form-message"
+          id="loginMessage"
+          aria-live="polite"
+        ></div>
+
+        <button
+          type="submit"
+          class="button button-primary button-large"
+        >
+          Sign In
+        </button>
+      </form>
+
+      <p class="modal-switch">
+        Don't have an account?
+        <button type="button" data-switch-modal="signup">
+          Create one
+        </button>
+      </p>
+    </div>
+  `;
+},
+
+emergencyTemplate() {
+  return `
+    <div class="modal-content">
+      <span class="section-label">EMERGENCY SUPPORT</span>
+      <h2 id="modalTitle">Request emergency help</h2>
+      <p>
+        Provide your details and describe the assistance you need.
+      </p>
+
+      <form id="emergencyForm" novalidate>
+
+        <label>
+          Full Name
+          <input
+            type="text"
+            name="name"
+            autocomplete="name"
+            required
+            placeholder="Your full name"
+          >
+        </label>
+
+        <label>
+          Phone
+          <input
+            type="tel"
+            name="phone"
+            autocomplete="tel"
+            required
+            placeholder="07XXXXXXXX"
+          >
+        </label>
+
+        <label>
+          Service Needed
+          <select name="service" required>
+            <option value="">Select assistance</option>
+            <option value="towing">Vehicle Towing</option>
+            <option value="roadside">Roadside Assistance</option>
+            <option value="vehicle-recovery">
+              Vehicle Recovery
+            </option>
+            <option value="other">Other Emergency Assistance</option>
+          </select>
+        </label>
+
+        <label>
+          Location
+          <input
+            type="text"
+            name="location"
+            required
+            placeholder="Area / town / landmark"
+          >
+        </label>
+
+        <label>
+          What do you need help with?
+          <textarea
+            name="message"
+            required
+            placeholder="Briefly describe the situation..."
+          ></textarea>
+        </label>
+
+        <div
+          class="form-message"
+          id="emergencyMessage"
+          aria-live="polite"
+        ></div>
+
+        <button
+          type="submit"
+          class="button button-emergency button-large"
+        >
+          Submit Emergency Request
+        </button>
+      </form>
+    </div>
+  `;
+},
+
+partnerTemplate() {
+  return `
+    <div class="modal-content">
+      <span class="section-label">FOR BUSINESS</span>
+      <h2 id="modalTitle">Become a MEI One partner</h2>
+      <p>
+        Tell us about your business or service and our team can
+        review your partnership enquiry.
+      </p>
+
+      <form id="partnerForm" novalidate>
+
+        <label>
+          Business / Organisation Name
+          <input
+            type="text"
+            name="business_name"
+            required
+            placeholder="Business name"
+          >
+        </label>
+
+        <label>
+          Contact Person
+          <input
+            type="text"
+            name="contact_name"
+            required
+            placeholder="Full name"
+          >
+        </label>
+
+        <label>
+          Phone
+          <input
+            type="tel"
+            name="phone"
+            required
+            placeholder="07XXXXXXXX"
+          >
+        </label>
+
+        <label>
+          Email
+          <input
+            type="email"
+            name="email"
+            required
+            placeholder="business@example.com"
+          >
+        </label>
+
+        <label>
+          Partnership Area
+          <select name="partnership_type" required>
+            <option value="">Select an area</option>
+            <option value="service-provider">
+              Service Provider
+            </option>
+            <option value="merchant">
+              Merchant
+            </option>
+            <option value="business-partner">
+              Business Partner
+            </option>
+            <option value="driver-operator">
+              Driver / Operator
+            </option>
+            <option value="other">
+              Other
+            </option>
+          </select>
+        </label>
+
+        <label>
+          Message
+          <textarea
+            name="message"
+            required
+            placeholder="Tell us about your partnership proposal..."
+          ></textarea>
+        </label>
+
+        <div
+          class="form-message"
+          id="partnerMessage"
+          aria-live="polite"
+        ></div>
+
+        <button
+          type="submit"
+          class="button button-primary button-large"
+        >
+          Submit Partnership Enquiry
+        </button>
+      </form>
+    </div>
+  `;
+}
+```
+
+};
+
+/* ----------------------------------------------------------
+FORM HELPERS
+---------------------------------------------------------- */
+
+function showFormMessage(element, message, type = "info") {
+if (!element) return;
+
+```
+element.textContent = message;
+element.dataset.type = type;
+```
+
+}
+
+function setButtonLoading(button, loading, loadingText = "Please wait...") {
+if (!button) return;
+
+```
+if (loading) {
+  button.dataset.originalText = button.textContent;
+  button.disabled = true;
+  button.textContent = loadingText;
+} else {
+  button.disabled = false;
+
+  if (button.dataset.originalText) {
+    button.textContent = button.dataset.originalText;
+    delete button.dataset.originalText;
+  }
+}
+```
+
+}
+
+/* ----------------------------------------------------------
+AUTHENTICATION
+---------------------------------------------------------- */
+
+async function signUp(form) {
+if (!supabase) {
+showFormMessage(
+$("#signupMessage"),
+"Authentication is temporarily unavailable.",
+"error"
+);
+return;
+}
+
+```
+const formData = new FormData(form);
+
+const fullName =
+  String(formData.get("full_name") || "").trim();
+
+const phone =
+  String(formData.get("phone") || "").trim();
+
+const email =
+  String(formData.get("email") || "").trim();
+
+const password =
+  String(formData.get("password") || "");
+
+const message = $("#signupMessage");
+const button = form.querySelector("button[type='submit']");
+
+if (!fullName || !phone || !email || !password) {
+  showFormMessage(
+    message,
+    "Please complete all required fields.",
+    "error"
+  );
+  return;
+}
+
+if (password.length < 6) {
+  showFormMessage(
+    message,
+    "Password must contain at least 6 characters.",
+    "error"
+  );
+  return;
+}
+
+setButtonLoading(button, true, "Creating account...");
+
+try {
+  const { data, error } = await supabase.auth.signUp({
+    email,
+    password,
+    options: {
+      data: {
+        full_name: fullName,
+        phone
+      }
+    }
+  });
+
+  if (error) throw error;
+
+  if (data.session) {
+    showToast(
+      "Account created successfully.",
+      "success"
+    );
+
+    modal.close();
+
+    window.setTimeout(() => {
+      window.location.href =
+        CONFIG.routes?.dashboard || "dashboard.html";
+    }, 400);
+  } else {
+    showFormMessage(
+      message,
+      "Account created. Check your email to confirm your account.",
+      "success"
+    );
+
+    form.reset();
+  }
+} catch (error) {
+  showFormMessage(
+    message,
+    friendlyAuthError(error),
+    "error"
+  );
+} finally {
+  setButtonLoading(button, false);
+}
+```
+
+}
+
+async function signIn(form) {
+if (!supabase) {
+showFormMessage(
+$("#loginMessage"),
+"Authentication is temporarily unavailable.",
+"error"
+);
+return;
+}
+
+```
+const formData = new FormData(form);
+
+const email =
+  String(formData.get("email") || "").trim();
+
+const password =
+  String(formData.get("password") || "");
+
+const message = $("#loginMessage");
+const button = form.querySelector("button[type='submit']");
+
+if (!email || !password) {
+  showFormMessage(
+    message,
+    "Please enter your email and password.",
+    "error"
+  );
+  return;
+}
+
+setButtonLoading(button, true, "Signing in...");
+
+try {
+  const { error } =
+    await supabase.auth.signInWithPassword({
+      email,
+      password
+    });
+
+  if (error) throw error;
+
+  showToast("Signed in successfully.", "success");
+
+  modal.close();
+
+  window.setTimeout(() => {
+    window.location.href =
+      CONFIG.routes?.dashboard || "dashboard.html";
+  }, 300);
+
+} catch (error) {
+  showFormMessage(
+    message,
+    friendlyAuthError(error),
+    "error"
+  );
+} finally {
+  setButtonLoading(button, false);
+}
+```
+
+}
+
+async function signOut() {
+if (!supabase) return;
+
+```
+try {
+  const { error } =
+    await supabase.auth.signOut();
+
+  if (error) throw error;
+
+  showToast("You have been signed out.", "success");
+
+  window.setTimeout(() => {
+    window.location.href =
+      CONFIG.routes?.home || "index.html";
+  }, 500);
+
+} catch (error) {
+  console.error(error);
+  showToast(
+    "Unable to sign out. Please try again.",
+    "error"
+  );
+}
+```
+
+}
+
+function friendlyAuthError(error) {
+const message =
+String(error?.message || "").toLowerCase();
+
+```
+if (message.includes("invalid login credentials")) {
+  return "Incorrect email or password.";
+}
+
+if (message.includes("email not confirmed")) {
+  return "Please confirm your email before signing in.";
+}
+
+if (message.includes("user already registered")) {
+  return "An account with this email already exists.";
+}
+
+if (message.includes("password")) {
+  return error.message;
+}
+
+if (message.includes("rate limit")) {
+  return "Too many attempts. Please wait and try again.";
+}
+
+return error?.message ||
+  "Something went wrong. Please try again.";
+```
+
+}
+
+/* ----------------------------------------------------------
+AUTH UI
+---------------------------------------------------------- */
+
+async function updateAuthUI() {
+if (!supabase) return;
+
+```
+try {
+  const { data } =
+    await supabase.auth.getSession();
+
+  const session = data?.session || null;
+
+  $$("[data-auth='login']").forEach((element) => {
+    element.style.display =
+      session ? "none" : "";
+  });
+
+  $$("[data-auth='dashboard']").forEach((element) => {
+    element.style.display =
+      session ? "" : "none";
+  });
+
+  $$("[data-auth='logout']").forEach((element) => {
+    element.style.display =
+      session ? "" : "none";
+  });
+
+  $$("[data-auth='guest']").forEach((element) => {
+    element.style.display =
+      session ? "none" : "";
+  });
+
+} catch (error) {
+  console.error(
+    "MEI One: Unable to read authentication state.",
+    error
+  );
+}
+```
+
+}
+
+function initAuthListener() {
+if (!supabase) return;
+
+```
+supabase.auth.onAuthStateChange(() => {
+  updateAuthUI();
+});
+```
+
+}
+
+/* ----------------------------------------------------------
+SERVICE NAVIGATION
+---------------------------------------------------------- */
+
+function handleService(serviceName) {
+const service = getService(serviceName);
+
+```
+if (!service || !service.route) {
+  showToast(
+    "This service is not currently available.",
+    "error"
+  );
+  return;
+}
+
+if (service.external) {
+  window.location.href = service.route;
+  return;
+}
+
+window.location.href = service.route;
+```
+
+}
+
+function initServiceButtons() {
+$$("[data-service]").forEach((element) => {
+element.addEventListener("click", (event) => {
+event.preventDefault();
+
+```
+    const service =
+      element.dataset.service;
+
+    handleService(service);
+  });
+});
+```
+
+}
+
+/* ----------------------------------------------------------
+SMOOTH SCROLL
+---------------------------------------------------------- */
+
+function initSmoothScrolling() {
+$$('a[href^="#"]').forEach((link) => {
+link.addEventListener("click", (event) => {
+const targetId =
+link.getAttribute("href");
+
+```
+    if (!targetId || targetId === "#") return;
+
+    const target =
+      document.querySelector(targetId);
+
+    if (!target) return;
+
+    event.preventDefault();
+
+    target.scrollIntoView({
+      behavior: "smooth",
+      block: "start"
+    });
+  });
+});
+```
+
+}
+
+/* ----------------------------------------------------------
+CURRENT YEAR
+---------------------------------------------------------- */
+
+function updateCurrentYear() {
+const year =
+String(new Date().getFullYear());
+
+```
+$$("[data-current-year]").forEach((element) => {
+  element.textContent = year;
+});
+
+const currentYear = $("#currentYear");
+
+if (currentYear) {
+  currentYear.textContent = year;
+}
+```
+
+}
+
+/* ----------------------------------------------------------
+GLOBAL DASHBOARD LINKS
+---------------------------------------------------------- */
+
+function initDashboardLinks() {
+$$("[data-dashboard]").forEach((element) => {
+element.addEventListener("click", () => {
+window.location.href =
+CONFIG.routes?.dashboard ||
+"dashboard.html";
+});
+});
+}
+
+/* ----------------------------------------------------------
+FORM SUBMISSIONS
+---------------------------------------------------------- */
+
+async function submitEmergency(form) {
+const formData = new FormData(form);
+
+```
+const data = {
+  id: `EMG-${Date.now()}`,
+  name: String(formData.get("name") || "").trim(),
+  phone: String(formData.get("phone") || "").trim(),
+  service: String(formData.get("service") || "").trim(),
+  location: String(formData.get("location") || "").trim(),
+  message: String(formData.get("message") || "").trim(),
+  created_at: new Date().toISOString()
+};
+
+const message = $("#emergencyMessage");
+const button = form.querySelector("button[type='submit']");
+
+if (
+  !data.name ||
+  !data.phone ||
+  !data.service ||
+  !data.location ||
+  !data.message
+) {
+  showFormMessage(
+    message,
+    "Please complete all required fields.",
+    "error"
+  );
+  return;
+}
+
+setButtonLoading(
+  button,
+  true,
+  "Submitting request..."
+);
+
+try {
+  /*
+   * No database table is assumed here.
+   * Store temporarily in the browser until a dedicated
+   * Supabase emergency_requests table is created.
+   */
+
+  const existing =
+    JSON.parse(
+      localStorage.getItem("mei_emergency_requests") ||
+      "[]"
+    );
+
+  existing.push(data);
+
+  localStorage.setItem(
+    "mei_emergency_requests",
+    JSON.stringify(existing)
+  );
+
+  showFormMessage(
+    message,
+    "Your emergency request has been recorded. Please remain reachable on the phone number provided.",
+    "success"
+  );
+
+  form.reset();
+
+  showToast(
+    "Emergency request submitted.",
+    "success"
+  );
+
+} catch (error) {
+  console.error(error);
+
+  showFormMessage(
+    message,
+    "Unable to submit the request. Please try again.",
+    "error"
+  );
+} finally {
+  setButtonLoading(button, false);
+}
+```
+
+}
+
+async function submitPartner(form) {
+const formData = new FormData(form);
+
+```
+const data = {
+  id: `PARTNER-${Date.now()}`,
+  business_name:
+    String(
+      formData.get("business_name") || ""
+    ).trim(),
+
+  contact_name:
+    String(
+      formData.get("contact_name") || ""
+    ).trim(),
+
+  phone:
+    String(
+      formData.get("phone") || ""
+    ).trim(),
+
+  email:
+    String(
+      formData.get("email") || ""
+    ).trim(),
+
+  partnership_type:
+    String(
+      formData.get("partnership_type") || ""
+    ).trim(),
+
+  message:
+    String(
+      formData.get("message") || ""
+    ).trim(),
+
+  created_at:
+    new Date().toISOString()
+};
+
+const message = $("#partnerMessage");
+const button =
+  form.querySelector("button[type='submit']");
+
+if (
+  !data.business_name ||
+  !data.contact_name ||
+  !data.phone ||
+  !data.email ||
+  !data.partnership_type ||
+  !data.message
+) {
+  showFormMessage(
+    message,
+    "Please complete all required fields.",
+    "error"
+  );
+  return;
+}
+
+setButtonLoading(
+  button,
+  true,
+  "Submitting..."
+);
+
+try {
+  /*
+   * No database table is assumed here.
+   * Store temporarily in the browser until a dedicated
+   * Supabase partner_requests table is created.
+   */
+
+  const existing =
+    JSON.parse(
+      localStorage.getItem("mei_partner_requests") ||
+      "[]"
+    );
+
+  existing.push(data);
+
+  localStorage.setItem(
+    "mei_partner_requests",
+    JSON.stringify(existing)
+  );
+
+  showFormMessage(
+    message,
+    "Thank you. Your partnership enquiry has been submitted.",
+    "success"
+  );
+
+  form.reset();
+
+  showToast(
+    "Partnership enquiry submitted.",
+    "success"
+  );
+
+} catch (error) {
+  console.error(error);
+
+  showFormMessage(
+    message,
+    "Unable to submit the enquiry. Please try again.",
+    "error"
+  );
+} finally {
+  setButtonLoading(button, false);
+}
+```
+
+}
+
+/* ----------------------------------------------------------
+MODAL FORM BINDING
+---------------------------------------------------------- */
+
+function bindModalSwitches() {
+$$("[data-switch-modal]").forEach((button) => {
+button.addEventListener("click", () => {
+const target =
+button.dataset.switchModal;
+
+```
+    modal.open(target);
+  });
+});
+```
+
+}
+
+function bindForms(type) {
+bindModalSwitches();
+
+```
+if (type === "signup") {
+  const form = $("#signupForm");
+
+  if (form) {
+    form.addEventListener("submit", (event) => {
+      event.preventDefault();
+      signUp(form);
+    });
+  }
+}
+
+if (type === "login") {
+  const form = $("#loginForm");
+
+  if (form) {
+    form.addEventListener("submit", (event) => {
+      event.preventDefault();
+      signIn(form);
+    });
+  }
+}
+
+if (type === "emergency") {
+  const form = $("#emergencyForm");
+
+  if (form) {
+    form.addEventListener("submit", (event) => {
+      event.preventDefault();
+      submitEmergency(form);
+    });
+  }
+}
+
+if (type === "partner") {
+  const form = $("#partnerForm");
+
+  if (form) {
+    form.addEventListener("submit", (event) => {
+      event.preventDefault();
+      submitPartner(form);
+    });
+  }
+}
+```
+
+}
+
+modal.bindForm = bindForms;
+
+/* ----------------------------------------------------------
+DATA-MODAL BUTTONS
+---------------------------------------------------------- */
+
+function initModalButtons() {
+$$("[data-modal]").forEach((button) => {
+button.addEventListener("click", () => {
+const type = button.dataset.modal;
+
+```
+    modal.open(type);
+  });
+});
+```
+
+}
+
+/* ----------------------------------------------------------
+LOGOUT BUTTONS
+---------------------------------------------------------- */
+
+function initLogoutButtons() {
+$$("[data-auth='logout']").forEach((button) => {
+button.addEventListener("click", (event) => {
+event.preventDefault();
+signOut();
+});
+});
+}
+
+/* ----------------------------------------------------------
+GLOBAL API
+---------------------------------------------------------- */
+
+window.MEI = {
+config: CONFIG,
+supabase,
+
+```
+openModal(type) {
+  modal.open(type);
+},
+
+closeModal() {
+  modal.close();
+},
+
+showToast,
+
+handleService,
+
+signIn,
+
+signUp,
+
+signOut
+```
+
+};
+
+/* ----------------------------------------------------------
+INITIALIZATION
+---------------------------------------------------------- */
+
+function init() {
+initMobileNavigation();
+
+```
+modal.init();
+
+initModalButtons();
+
+initModalButtons();
+
+initServiceButtons();
+
+initSmoothScrolling();
+
+initDashboardLinks();
+
+initLogoutButtons();
+
+updateCurrentYear();
+
+updateAuthUI();
+
+initAuthListener();
+
+bindModalSwitches();
+
+console.log(
+  "MEI One initialized successfully."
+);
+```
+
+}
+
+if (document.readyState === "loading") {
+document.addEventListener(
+"DOMContentLoaded",
+init
+);
+} else {
+init();
+}
+
+})(window, document);
