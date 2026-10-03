@@ -1,245 +1,171 @@
 /* ============================================================
    MEI ONE — GLOBAL CONFIGURATION
-   File: public/js/config.js
+   public/js/config.js
    ============================================================ */
 
 (function (window) {
   "use strict";
 
   const MEI_CONFIG = {
-
-    /* ==========================================================
-       APPLICATION
-       ========================================================== */
-
     appName: "MEI One",
-
     appShortName: "MEI",
-
     appVersion: "1.0.0",
 
-
-    /* ==========================================================
+    /* --------------------------------------------------------
        SUPABASE
-       ========================================================== */
-
-    supabaseUrl:
-      "https://tsvejnzxrxrrecgquxbq.supabase.co",
+       -------------------------------------------------------- */
+    supabaseUrl: "https://tsvejnzxrxrrecgquxbq.supabase.co",
 
     supabaseKey:
       "sb_publishable_P8gaG4CyyHuiKJJbW3t6Dw_we4UODZ_",
 
-
-    /* ==========================================================
-       WEBSITE
-       ========================================================== */
-
+    /* --------------------------------------------------------
+       SITE
+       -------------------------------------------------------- */
     siteName: "MEI One",
 
     siteDescription:
-      "One connected platform for mobility, delivery, towing, roadside assistance, automotive services, marketplace, home services and learning.",
+      "One platform for mobility, delivery, towing, roadside assistance, automotive, marketplace, home services and learning.",
 
-
-    /* ==========================================================
-       INTERNAL ROUTES
-       ========================================================== */
-
+    /* --------------------------------------------------------
+       MAIN ROUTES
+       -------------------------------------------------------- */
     routes: {
-
-      home:
-        "index.html",
-
-      login:
-        "login.html",
-
-      dashboard:
-        "dashboard.html"
-
+      home: "index.html",
+      login: "login.html",
+      dashboard: "dashboard.html"
     },
 
-
-    /* ==========================================================
+    /* --------------------------------------------------------
        SERVICES
-       ========================================================== */
-
+       -------------------------------------------------------- */
     services: {
-
       rides: {
         name: "MEI Rides",
-        type: "internal",
-        route: "dashboard.html?service=rides"
+        shortName: "Rides",
+        description: "Move with ease.",
+        icon: "🚗",
+        route: "rides.html"
       },
-
 
       delivery: {
         name: "MEI Delivery",
-        type: "internal",
-        route: "dashboard.html?service=delivery"
+        shortName: "Delivery",
+        description: "Send and receive.",
+        icon: "📦",
+        route: "delivery.html"
       },
-
 
       towing: {
         name: "MEI Towing",
-        type: "internal",
-        route: "dashboard.html?service=towing"
+        shortName: "Towing",
+        description: "Vehicle recovery.",
+        icon: "🚙",
+        route: "towing.html"
       },
-
 
       roadside: {
         name: "MEI Roadside Assistance",
-        type: "internal",
-        route: "dashboard.html?service=roadside"
+        shortName: "Roadside",
+        description: "Help when needed.",
+        icon: "🛠️",
+        route: "roadside.html"
       },
-
 
       auto: {
         name: "MEI Auto",
-        type: "internal",
-        route: "dashboard.html?service=auto"
+        shortName: "Auto",
+        description: "Automotive services.",
+        icon: "🔧",
+        route: "auto.html"
       },
-
 
       marketplace: {
         name: "MEI Marketplace",
-        type: "internal",
-        route: "dashboard.html?service=marketplace"
+        shortName: "Marketplace",
+        description: "Shop and discover.",
+        icon: "🛍️",
+        route: "marketplace.html"
       },
-
 
       "home-services": {
         name: "MEI Home Services",
-        type: "internal",
-        route: "dashboard.html?service=home-services"
+        shortName: "Home Services",
+        description: "Services at home.",
+        icon: "🏠",
+        route: "home-services.html"
       },
-
-
-      /* ========================================================
-         MEI LEARN
-         External live platform
-         ======================================================== */
 
       learn: {
         name: "MEI Learn",
-        type: "external",
+        shortName: "Learn",
+        description: "Learn and practise.",
+        icon: "🎓",
         route: "https://www.meidriveafrica.com",
-        target: "_blank"
+        external: true
       }
-
     },
 
-
-    /* ==========================================================
+    /* --------------------------------------------------------
        BRANDING
-       ========================================================== */
-
+       -------------------------------------------------------- */
     branding: {
-
-      primary:
-        "#071A2F",
-
-      secondary:
-        "#0B2A4A",
-
-      accent:
-        "#00E676",
-
-      accentDark:
-        "#00B85C",
-
-      white:
-        "#FFFFFF",
-
-      black:
-        "#050A10"
-
+      primary: "#071A2F",
+      secondary: "#0B2A4A",
+      accent: "#00E676",
+      accentDark: "#00B85C",
+      white: "#FFFFFF",
+      black: "#050A10"
     },
 
-
-    /* ==========================================================
-       FEATURES
-       ========================================================== */
-
+    /* --------------------------------------------------------
+       PLATFORM FEATURES
+       -------------------------------------------------------- */
     features: {
-
       authentication: true,
-
       rides: true,
-
       delivery: true,
-
       towing: true,
-
       roadside: true,
-
       automotive: true,
-
       marketplace: true,
-
       homeServices: true,
-
       learning: true
-
     },
 
-
-    /* ==========================================================
-       PLATFORM SETTINGS
-       ========================================================== */
-
+    /* --------------------------------------------------------
+       LOCATION / LOCALIZATION
+       -------------------------------------------------------- */
     settings: {
-
-      currency:
-        "KES",
-
-      currencySymbol:
-        "KSh",
-
-      country:
-        "KE",
-
-      countryName:
-        "Kenya",
-
-      timezone:
-        "Africa/Nairobi",
-
-      language:
-        "en"
-
+      currency: "KES",
+      currencySymbol: "KSh",
+      country: "KE",
+      countryName: "Kenya",
+      timezone: "Africa/Nairobi",
+      language: "en"
     },
 
-
-    /* ==========================================================
-       EXTERNAL PLATFORMS
-       ========================================================== */
-
-    externalPlatforms: {
-
-      meiLearn:
-        "https://www.meidriveafrica.com"
-
+    /* --------------------------------------------------------
+       EMERGENCY
+       -------------------------------------------------------- */
+    emergency: {
+      enabled: true,
+      service: "MEI Emergency Assistance",
+      country: "Kenya"
     },
 
-
-    /* ==========================================================
+    /* --------------------------------------------------------
        DEBUG
-       ========================================================== */
-
-    debug:
-      false
-
+       -------------------------------------------------------- */
+    debug: false
   };
 
-
-  /* ============================================================
+  /* ----------------------------------------------------------
      GLOBAL CONFIG ALIASES
-     ============================================================ */
+     ---------------------------------------------------------- */
 
   window.MEI_CONFIG = MEI_CONFIG;
-
   window.MEIConfig = MEI_CONFIG;
-
   window.CONFIG = MEI_CONFIG;
-
 
 })(window);
