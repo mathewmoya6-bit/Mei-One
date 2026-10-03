@@ -9,342 +9,667 @@
   >
 
   <meta
-    name="description"
-    content="MEI One — connected mobility, delivery, towing and learning services across Kenya."
+    name="theme-color"
+    content="#071A2F"
   >
 
-  <meta name="theme-color" content="#071a33">
+  <meta
+    name="description"
+    content="MEI One connects customers, merchants, service providers and partners through one platform for mobility, delivery, towing, roadside assistance, automotive services, marketplace, home services and learning."
+  >
 
-  <title>MEI One | Move. Send. Learn.</title>
+  <meta
+    name="keywords"
+    content="MEI One, Kenya, rides, delivery, towing, roadside assistance, automotive, marketplace, home services, learning"
+  >
 
-  <!-- Global stylesheet -->
-  <link rel="stylesheet" href="css/style.css">
+  <meta
+    name="author"
+    content="MEI One"
+  >
+
+  <title>MEI One | One Platform. Everything You Need.</title>
+
+  <link
+    rel="icon"
+    href="assets/favicon.png"
+    type="image/png"
+  >
+
+  <link
+    rel="stylesheet"
+    href="css/styles.css"
+  >
 </head>
 
-<body>
+<body class="site">
 
   <!-- =========================================================
        HEADER
        ========================================================= -->
-  <header class="site-header">
-    <div class="container nav-container">
 
-      <a href="index.html" class="brand">
-        <span class="brand-mark">MEI</span>
-        <span class="brand-name">ONE</span>
+  <header class="site-header">
+
+    <div class="nav-container">
+
+      <a
+        href="index.html"
+        class="brand"
+        aria-label="MEI One Home"
+      >
+        <span
+          class="brand-mark"
+          aria-hidden="true"
+        >
+          M
+        </span>
+
+        <span class="brand-name">
+          MEI <strong>One</strong>
+        </span>
       </a>
 
-      <nav class="main-nav" aria-label="Main navigation">
-        <a href="#services">Services</a>
-        <a href="#how-it-works">How It Works</a>
-        <a href="#learn">MEI Learn</a>
-        <a href="#partners">Partners</a>
-      </nav>
-
-      <div class="nav-actions">
-        <a href="login.html" class="nav-login">Log in</a>
-        <a href="register.html" class="btn btn-primary">Get Started</a>
-      </div>
 
       <button
-        class="menu-toggle"
+        id="mobileMenuButton"
+        class="mobile-menu-button"
         type="button"
         aria-label="Open navigation menu"
         aria-expanded="false"
-        id="menuToggle"
+        aria-controls="mainNavigation"
       >
         <span></span>
         <span></span>
         <span></span>
       </button>
 
+
+      <nav
+        id="mainNavigation"
+        class="main-navigation"
+        aria-label="Main navigation"
+      >
+
+        <a href="#home">
+          Home
+        </a>
+
+        <a href="#services">
+          Services
+        </a>
+
+        <a href="#how-it-works">
+          How It Works
+        </a>
+
+        <a href="#business">
+          Business
+        </a>
+
+        <a href="#about">
+          About
+        </a>
+
+        <div class="nav-actions">
+
+          <button
+            type="button"
+            class="btn btn-outline"
+            data-modal="login"
+          >
+            Log In
+          </button>
+
+          <button
+            type="button"
+            class="btn btn-primary"
+            data-modal="signup"
+          >
+            Get Started
+          </button>
+
+        </div>
+
+      </nav>
+
     </div>
+
   </header>
 
 
   <!-- =========================================================
-       MOBILE NAVIGATION
+       MAIN
        ========================================================= -->
-  <div class="mobile-nav" id="mobileNav">
 
-    <a href="#services">Services</a>
-    <a href="#how-it-works">How It Works</a>
-    <a href="#learn">MEI Learn</a>
-    <a href="#partners">Partners</a>
+  <main id="home">
 
-    <div class="mobile-nav-actions">
-      <a href="login.html" class="btn btn-outline">Log in</a>
-      <a href="register.html" class="btn btn-primary">Get Started</a>
-    </div>
+    <!-- =======================================================
+         HERO
+         ======================================================= -->
 
-  </div>
+    <section class="hero-section">
 
-
-  <!-- =========================================================
-       HERO
-       ========================================================= -->
-  <main>
-
-    <section class="hero">
-
-      <div class="hero-glow hero-glow-one"></div>
-      <div class="hero-glow hero-glow-two"></div>
-
-      <div class="container hero-grid">
+      <div class="hero-grid">
 
         <div class="hero-content">
 
-          <div class="status-pill">
+          <span class="eyebrow">
             <span class="status-dot"></span>
-            Available in Kenya
-          </div>
+            One connected service platform
+          </span>
 
           <h1>
-            One platform.
-            <span>Many possibilities.</span>
+            One Platform.
+            <span>Everything You Need.</span>
           </h1>
 
-          <p class="hero-text">
-            MEI One connects everyday services in one simple digital
-            experience — from rides and delivery to towing and practical
-            learning.
+          <p class="hero-description">
+            Access mobility, delivery, towing, roadside assistance,
+            automotive services, marketplace, home services and
+            learning — all from one connected platform.
           </p>
 
           <div class="hero-actions">
-            <a href="register.html" class="btn btn-primary btn-large">
-              Get Started
-            </a>
 
-            <a href="#services" class="btn btn-outline btn-large">
+            <button
+              type="button"
+              class="btn btn-primary btn-large"
+              data-modal="signup"
+            >
+              Get Started
+            </button>
+
+            <a
+              href="#services"
+              class="btn btn-outline btn-large"
+            >
               Explore Services
             </a>
+
           </div>
 
-          <div class="hero-note">
-            <span>✓</span>
-            Built website-first. Ready to evolve into an app.
+          <div class="hero-trust">
+
+            <div class="trust-item">
+              <strong>8+</strong>
+              <span>Core Services</span>
+            </div>
+
+            <div class="trust-item">
+              <strong>24/7</strong>
+              <span>Emergency Access</span>
+            </div>
+
+            <div class="trust-item">
+              <strong>1</strong>
+              <span>Connected Platform</span>
+            </div>
+
           </div>
 
         </div>
 
 
-        <!-- HERO CARD -->
-        <div class="hero-card-wrapper">
+        <!-- PLATFORM PREVIEW -->
 
-          <div class="hero-card">
+        <div class="hero-preview">
 
-            <div class="hero-card-top">
-              <div>
-                <small>MEI ONE</small>
-                <strong>Your services, connected.</strong>
-              </div>
+          <div class="app-preview">
 
-              <div class="available-badge">
-                <span></span>
-                Online
-              </div>
-            </div>
-
-            <div class="location-card">
-              <span class="location-icon">●</span>
+            <div class="preview-header">
 
               <div>
-                <small>Service Area</small>
-                <strong>Kenya</strong>
+                <span class="preview-label">
+                  MEI ONE
+                </span>
+
+                <strong>
+                  Services
+                </strong>
               </div>
+
+              <span class="online-badge">
+                Available
+              </span>
+
             </div>
 
-            <div class="mini-services">
 
-              <a href="services/rides.html" class="mini-service">
-                <div class="service-icon rides-icon">🚗</div>
-                <div>
+            <div class="preview-location">
+
+              <span class="location-icon">
+                ●
+              </span>
+
+              <div>
+                <small>
+                  Service Area
+                </small>
+
+                <strong>
+                  Kenya
+                </strong>
+              </div>
+
+            </div>
+
+
+            <div class="preview-services">
+
+              <button
+                type="button"
+                class="preview-service"
+                data-service="rides"
+              >
+                <span class="preview-service-icon">
+                  🚗
+                </span>
+
+                <span>
                   <strong>Rides</strong>
-                  <span>Move with ease</span>
-                </div>
-              </a>
+                  <small>Move with ease</small>
+                </span>
+              </button>
 
-              <a href="services/delivery.html" class="mini-service">
-                <div class="service-icon delivery-icon">📦</div>
-                <div>
+
+              <button
+                type="button"
+                class="preview-service"
+                data-service="delivery"
+              >
+                <span class="preview-service-icon">
+                  📦
+                </span>
+
+                <span>
                   <strong>Delivery</strong>
-                  <span>Send &amp; receive</span>
-                </div>
-              </a>
+                  <small>Send &amp; receive</small>
+                </span>
+              </button>
 
-              <a href="services/towing.html" class="mini-service">
-                <div class="service-icon towing-icon">🚙</div>
-                <div>
+
+              <button
+                type="button"
+                class="preview-service"
+                data-service="towing"
+              >
+                <span class="preview-service-icon">
+                  🚙
+                </span>
+
+                <span>
                   <strong>Towing</strong>
-                  <span>Help when needed</span>
-                </div>
-              </a>
+                  <small>Vehicle recovery</small>
+                </span>
+              </button>
 
-              <a href="https://www.meidriveafrica.com" class="mini-service">
-                <div class="service-icon learn-icon">🎓</div>
-                <div>
-                  <strong>MEI Learn</strong>
-                  <span>Learn &amp; practise</span>
-                </div>
-              </a>
+
+              <button
+                type="button"
+                class="preview-service"
+                data-service="auto"
+              >
+                <span class="preview-service-icon">
+                  🔧
+                </span>
+
+                <span>
+                  <strong>MEI Auto</strong>
+                  <small>Automotive services</small>
+                </span>
+              </button>
 
             </div>
+
+
+            <button
+              type="button"
+              class="preview-emergency"
+              data-modal="emergency"
+            >
+              <span>SOS</span>
+
+              <span>
+                Emergency Assistance
+              </span>
+
+              <strong>→</strong>
+            </button>
 
           </div>
 
         </div>
 
       </div>
+
+    </section>
+
+
+    <!-- =======================================================
+         PLATFORM STATS
+         ======================================================= -->
+
+    <section class="platform-stats">
+
+      <div class="stats-grid">
+
+        <div class="stat-item">
+          <strong>8+</strong>
+          <span>Integrated Services</span>
+        </div>
+
+        <div class="stat-item">
+          <strong>24/7</strong>
+          <span>Emergency Access</span>
+        </div>
+
+        <div class="stat-item">
+          <strong>1</strong>
+          <span>Connected Account</span>
+        </div>
+
+        <div class="stat-item">
+          <strong>∞</strong>
+          <span>Possibilities</span>
+        </div>
+
+      </div>
+
     </section>
 
 
     <!-- =======================================================
          SERVICES
          ======================================================= -->
-    <section class="section services-section" id="services">
 
-      <div class="container">
+    <section
+      id="services"
+      class="services-section"
+    >
 
-        <div class="section-heading">
+      <div class="section-heading">
 
-          <div class="eyebrow">
-            MEI ONE
+        <span class="eyebrow">
+          MEI SERVICES
+        </span>
+
+        <h2>
+          Everything in <span>One Place</span>
+        </h2>
+
+        <p>
+          Access the services you need without switching between
+          multiple platforms.
+        </p>
+
+      </div>
+
+
+      <div class="services-grid">
+
+        <!-- 01 RIDES -->
+
+        <article class="service-card">
+
+          <div class="service-icon">
+            🚗
           </div>
 
-          <h2>
-            Services that work
-            <span>together.</span>
-          </h2>
+          <span class="service-number">
+            01
+          </span>
+
+          <h3>
+            MEI Rides
+          </h3>
 
           <p>
-            Start with what you need today. More connected services
-            are being built into the MEI One ecosystem.
+            Convenient mobility services for getting where you
+            need to go.
           </p>
 
-        </div>
+          <button
+            type="button"
+            class="service-link"
+            data-service="rides"
+          >
+            Explore Rides
+            <span>→</span>
+          </button>
+
+        </article>
 
 
-        <div class="services-grid">
+        <!-- 02 DELIVERY -->
 
-          <!-- RIDES -->
-          <a href="services/rides.html" class="service-card">
+        <article class="service-card">
 
-            <div class="service-card-icon rides-bg">
-              🚗
-            </div>
+          <div class="service-icon">
+            📦
+          </div>
 
-            <div class="service-card-content">
+          <span class="service-number">
+            02
+          </span>
 
-              <span class="service-label">
-                Mobility
-              </span>
+          <h3>
+            MEI Delivery
+          </h3>
 
-              <h3>Rides</h3>
+          <p>
+            Send packages, documents, goods and other items through
+            convenient delivery services.
+          </p>
 
-              <p>
-                Move around Kenya with convenient and connected
-                transportation services.
-              </p>
+          <button
+            type="button"
+            class="service-link"
+            data-service="delivery"
+          >
+            Explore Delivery
+            <span>→</span>
+          </button>
 
-              <span class="service-link">
-                Explore Rides →
-              </span>
-
-            </div>
-
-          </a>
-
-
-          <!-- DELIVERY -->
-          <a href="services/delivery.html" class="service-card">
-
-            <div class="service-card-icon delivery-bg">
-              📦
-            </div>
-
-            <div class="service-card-content">
-
-              <span class="service-label">
-                Logistics
-              </span>
-
-              <h3>Delivery</h3>
-
-              <p>
-                Send and receive packages through simple,
-                connected delivery services.
-              </p>
-
-              <span class="service-link">
-                Explore Delivery →
-              </span>
-
-            </div>
-
-          </a>
+        </article>
 
 
-          <!-- TOWING -->
-          <a href="services/towing.html" class="service-card">
+        <!-- 03 TOWING -->
 
-            <div class="service-card-icon towing-bg">
-              🚙
-            </div>
+        <article class="service-card service-emergency">
 
-            <div class="service-card-content">
+          <div class="service-icon">
+            🚙
+          </div>
 
-              <span class="service-label">
-                Vehicle Support
-              </span>
+          <span class="service-number">
+            03
+          </span>
 
-              <h3>Towing</h3>
+          <h3>
+            MEI Towing
+          </h3>
 
-              <p>
-                Get vehicle recovery and towing assistance when
-                you need it.
-              </p>
+          <p>
+            Request vehicle towing and recovery assistance when
+            you need it.
+          </p>
 
-              <span class="service-link">
-                Explore Towing →
-              </span>
+          <button
+            type="button"
+            class="service-link"
+            data-service="towing"
+          >
+            Request Towing
+            <span>→</span>
+          </button>
 
-            </div>
-
-          </a>
+        </article>
 
 
-          <!-- LEARN -->
+        <!-- 04 ROADSIDE -->
+
+        <article class="service-card service-emergency">
+
+          <div class="service-icon">
+            🆘
+          </div>
+
+          <span class="service-number">
+            04
+          </span>
+
+          <h3>
+            Roadside Assistance
+          </h3>
+
+          <p>
+            Get roadside support for vehicle breakdowns and
+            road-related emergencies.
+          </p>
+
+          <button
+            type="button"
+            class="service-link"
+            data-service="roadside"
+          >
+            Get Assistance
+            <span>→</span>
+          </button>
+
+        </article>
+
+
+        <!-- 05 AUTO -->
+
+        <article class="service-card">
+
+          <div class="service-icon">
+            🔧
+          </div>
+
+          <span class="service-number">
+            05
+          </span>
+
+          <h3>
+            MEI Auto
+          </h3>
+
+          <p>
+            Access automotive information, tools, services and
+            vehicle ownership solutions.
+          </p>
+
+          <button
+            type="button"
+            class="service-link"
+            data-service="auto"
+          >
+            Explore Auto
+            <span>→</span>
+          </button>
+
+        </article>
+
+
+        <!-- 06 MARKETPLACE -->
+
+        <article class="service-card">
+
+          <div class="service-icon">
+            🛒
+          </div>
+
+          <span class="service-number">
+            06
+          </span>
+
+          <h3>
+            MEI Marketplace
+          </h3>
+
+          <p>
+            Discover products and services from merchants and
+            businesses.
+          </p>
+
+          <button
+            type="button"
+            class="service-link"
+            data-service="marketplace"
+          >
+            Visit Marketplace
+            <span>→</span>
+          </button>
+
+        </article>
+
+
+        <!-- 07 HOME SERVICES -->
+
+        <article class="service-card">
+
+          <div class="service-icon">
+            🏠
+          </div>
+
+          <span class="service-number">
+            07
+          </span>
+
+          <h3>
+            MEI Home Services
+          </h3>
+
+          <p>
+            Connect with service providers for repairs, maintenance
+            and everyday home services.
+          </p>
+
+          <button
+            type="button"
+            class="service-link"
+            data-service="home-services"
+          >
+            Explore Services
+            <span>→</span>
+          </button>
+
+        </article>
+
+
+        <!-- 08 MEI LEARN -->
+
+        <article class="service-card">
+
+          <div class="service-icon">
+            🎓
+          </div>
+
+          <span class="service-number">
+            08
+          </span>
+
+          <h3>
+            MEI Learn
+          </h3>
+
+          <p>
+            Learn, practise and build practical skills through
+            connected learning services.
+          </p>
+
           <a
             href="https://www.meidriveafrica.com"
-            class="service-card service-card-featured"
+            class="service-link"
+            target="_blank"
+            rel="noopener noreferrer"
           >
-
-            <div class="service-card-icon learn-bg">
-              🎓
-            </div>
-
-            <div class="service-card-content">
-
-              <span class="service-label">
-                Education
-              </span>
-
-              <h3>MEI Learn</h3>
-
-              <p>
-                Learn, practise and build practical skills through
-                connected learning services.
-              </p>
-
-              <span class="service-link">
-                Start Learning →
-              </span>
-
-            </div>
-
+            Start Learning
+            <span>→</span>
           </a>
 
-        </div>
+        </article>
 
       </div>
 
@@ -354,71 +679,93 @@
     <!-- =======================================================
          HOW IT WORKS
          ======================================================= -->
-    <section class="section how-section" id="how-it-works">
 
-      <div class="container">
+    <section
+      id="how-it-works"
+      class="how-section"
+    >
 
-        <div class="section-heading centered">
+      <div class="section-heading">
 
-          <div class="eyebrow">
-            SIMPLE BY DESIGN
+        <span class="eyebrow">
+          HOW IT WORKS
+        </span>
+
+        <h2>
+          Simple. Connected. <span>Convenient.</span>
+        </h2>
+
+        <p>
+          One account gives you access to the MEI One platform
+          and its connected services.
+        </p>
+
+      </div>
+
+
+      <div class="steps-grid">
+
+        <article class="step-card">
+
+          <div class="step-number">
+            01
           </div>
 
-          <h2>
-            One account.
-            <span>Multiple services.</span>
-          </h2>
+          <div class="step-icon">
+            👤
+          </div>
+
+          <h3>
+            Create Your Account
+          </h3>
 
           <p>
-            MEI One is designed to make everyday services easier
-            to discover, access and manage.
+            Register once and create your MEI One account.
           </p>
 
-        </div>
+        </article>
 
 
-        <div class="steps-grid">
+        <article class="step-card">
 
-          <div class="step-card">
-
-            <div class="step-number">01</div>
-
-            <h3>Create your account</h3>
-
-            <p>
-              Register once and build your MEI One profile.
-            </p>
-
+          <div class="step-number">
+            02
           </div>
 
-
-          <div class="step-card">
-
-            <div class="step-number">02</div>
-
-            <h3>Choose a service</h3>
-
-            <p>
-              Select the service that matches what you need.
-            </p>
-
+          <div class="step-icon">
+            📱
           </div>
 
+          <h3>
+            Choose a Service
+          </h3>
 
-          <div class="step-card">
+          <p>
+            Select the service you need from the MEI One platform.
+          </p>
 
-            <div class="step-number">03</div>
+        </article>
 
-            <h3>Get things done</h3>
 
-            <p>
-              Request, manage and track your service through
-              one connected experience.
-            </p>
+        <article class="step-card">
 
+          <div class="step-number">
+            03
           </div>
 
-        </div>
+          <div class="step-icon">
+            ⚡
+          </div>
+
+          <h3>
+            Get Things Done
+          </h3>
+
+          <p>
+            Request, manage and track your services from one place.
+          </p>
+
+        </article>
 
       </div>
 
@@ -426,51 +773,38 @@
 
 
     <!-- =======================================================
-         MEI LEARN
+         EMERGENCY
          ======================================================= -->
-    <section class="learn-section" id="learn">
 
-      <div class="container">
+    <section class="emergency-section">
 
-        <div class="learn-card">
+      <div class="emergency-content">
 
-          <div class="learn-content">
+        <div>
 
-            <div class="eyebrow">
-              MEI LEARN
-            </div>
+          <span class="eyebrow">
+            EMERGENCY SERVICES
+          </span>
 
-            <h2>
-              Learn, practise
-              <span>and build.</span>
-            </h2>
+          <h2>
+            Need Roadside Help?
+            <span>Get Assistance.</span>
+          </h2>
 
-            <p>
-              Learn, practise and build practical skills through
-              connected learning services.
-            </p>
-
-            <a
-              href="https://www.meidriveafrica.com"
-              class="btn btn-primary"
-            >
-              Start Learning
-            </a>
-
-          </div>
-
-          <div class="learn-visual">
-
-            <div class="learn-orbit orbit-one"></div>
-            <div class="learn-orbit orbit-two"></div>
-
-            <div class="learn-icon-large">
-              🎓
-            </div>
-
-          </div>
+          <p>
+            Request towing or roadside assistance through MEI One
+            when your vehicle needs help.
+          </p>
 
         </div>
+
+        <button
+          type="button"
+          class="btn btn-primary btn-large"
+          data-modal="emergency"
+        >
+          Request Assistance
+        </button>
 
       </div>
 
@@ -478,30 +812,67 @@
 
 
     <!-- =======================================================
-         PARTNERS
+         BUSINESS
          ======================================================= -->
-    <section class="section partners-section" id="partners">
 
-      <div class="container">
+    <section
+      id="business"
+      class="partners-section"
+    >
 
-        <div class="section-heading centered">
+      <div class="partners-grid">
 
-          <div class="eyebrow">
-            PARTNER WITH MEI ONE
-          </div>
+        <div class="partners-content">
+
+          <span class="eyebrow">
+            FOR BUSINESS
+          </span>
 
           <h2>
-            Build with us.
+            Grow With <span>MEI One</span>
           </h2>
 
           <p>
-            Businesses, drivers, delivery partners and service
-            providers can become part of the MEI One ecosystem.
+            MEI One connects customers with businesses, merchants,
+            service providers and partners across the platform.
           </p>
 
-          <a href="partners.html" class="btn btn-primary">
+          <button
+            type="button"
+            class="btn btn-primary"
+            data-modal="partner"
+          >
             Become a Partner
-          </a>
+          </button>
+
+        </div>
+
+
+        <div class="partner-types">
+
+          <div class="partner-card">
+            <span>🚗</span>
+            <strong>Drivers</strong>
+            <small>Mobility partners</small>
+          </div>
+
+          <div class="partner-card">
+            <span>🔧</span>
+            <strong>Auto Experts</strong>
+            <small>Automotive services</small>
+          </div>
+
+          <div class="partner-card">
+            <span>🏠</span>
+            <strong>Service Providers</strong>
+            <small>Home &amp; local services</small>
+          </div>
+
+          <div class="partner-card">
+            <span>🏪</span>
+            <strong>Merchants</strong>
+            <small>Products &amp; services</small>
+          </div>
 
         </div>
 
@@ -511,34 +882,42 @@
 
 
     <!-- =======================================================
-         CTA
+         ABOUT
          ======================================================= -->
-    <section class="cta-section">
 
-      <div class="container">
+    <section
+      id="about"
+      class="about-section"
+    >
 
-        <div class="cta-card">
+      <div class="about-grid">
 
-          <div>
+        <div>
 
-            <span class="eyebrow">
-              MEI ONE
-            </span>
+          <span class="eyebrow">
+            ABOUT MEI ONE
+          </span>
 
-            <h2>
-              Start with one service.
-              <span>Discover more.</span>
-            </h2>
+          <h2>
+            Connecting
+            <span>Everyday Services.</span>
+          </h2>
 
-            <p>
-              Your MEI One journey starts here.
-            </p>
+        </div>
 
-          </div>
+        <div>
 
-          <a href="register.html" class="btn btn-light btn-large">
-            Get Started
-          </a>
+          <p>
+            MEI One is a connected digital platform designed to
+            bring essential services together in one place.
+          </p>
+
+          <p>
+            Customers, merchants, service providers and business
+            partners can use the platform to discover, request,
+            provide and manage services through one connected
+            experience.
+          </p>
 
         </div>
 
@@ -552,74 +931,160 @@
   <!-- =========================================================
        FOOTER
        ========================================================= -->
+
   <footer class="site-footer">
 
-    <div class="container footer-grid">
+    <div class="footer-grid">
 
       <div class="footer-brand">
 
-        <a href="index.html" class="brand footer-logo">
-          <span class="brand-mark">MEI</span>
-          <span class="brand-name">ONE</span>
+        <a
+          href="index.html"
+          class="brand"
+          aria-label="MEI One Home"
+        >
+
+          <span
+            class="brand-mark"
+            aria-hidden="true"
+          >
+            M
+          </span>
+
+          <span class="brand-name">
+            MEI <strong>One</strong>
+          </span>
+
         </a>
 
         <p>
-          Connected services for everyday life.
+          One connected platform for the services that keep
+          people and businesses moving.
         </p>
 
-        <span class="footer-location">
-          🇰🇪 Kenya
-        </span>
+      </div>
+
+
+      <div class="footer-column">
+
+        <h3>
+          Services
+        </h3>
+
+        <a href="#services">
+          Rides
+        </a>
+
+        <a href="#services">
+          Delivery
+        </a>
+
+        <a href="#services">
+          Towing
+        </a>
+
+        <a href="#services">
+          Roadside Assistance
+        </a>
+
+        <a href="#services">
+          MEI Auto
+        </a>
+
+        <a
+          href="https://www.meidriveafrica.com"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          MEI Learn
+        </a>
 
       </div>
 
 
       <div class="footer-column">
 
-        <h4>Services</h4>
+        <h3>
+          Platform
+        </h3>
 
-        <a href="services/rides.html">Rides</a>
-        <a href="services/delivery.html">Delivery</a>
-        <a href="services/towing.html">Towing</a>
-        <a href="https://www.meidriveafrica.com">MEI Learn</a>
+        <a href="#how-it-works">
+          How It Works
+        </a>
+
+        <a href="#business">
+          Business
+        </a>
+
+        <a href="#about">
+          About MEI One
+        </a>
+
+        <a
+          href="dashboard.html"
+          data-dashboard
+        >
+          Dashboard
+        </a>
 
       </div>
 
 
       <div class="footer-column">
 
-        <h4>Company</h4>
+        <h3>
+          Account
+        </h3>
 
-        <a href="#how-it-works">How It Works</a>
-        <a href="#partners">Partners</a>
-        <a href="about.html">About MEI</a>
-        <a href="contact.html">Contact</a>
+        <button
+          type="button"
+          data-modal="login"
+          data-auth="login"
+        >
+          Log In
+        </button>
 
-      </div>
+        <button
+          type="button"
+          data-modal="signup"
+        >
+          Create Account
+        </button>
 
-
-      <div class="footer-column">
-
-        <h4>Account</h4>
-
-        <a href="login.html">Log in</a>
-        <a href="register.html">Create Account</a>
-        <a href="dashboard.html">Dashboard</a>
+        <a
+          href="dashboard.html"
+          data-auth="dashboard"
+          hidden
+        >
+          My Dashboard
+        </a>
 
       </div>
 
     </div>
 
 
-    <div class="container footer-bottom">
+    <div class="footer-bottom">
 
-      <span>
-        © 2026 MEI One. All rights reserved.
-      </span>
+      <p>
+        ©
+        <span
+          data-current-year
+          id="currentYear"
+        ></span>
+        MEI One. All rights reserved.
+      </p>
 
       <div>
-        <a href="privacy.html">Privacy</a>
-        <a href="terms.html">Terms</a>
+
+        <a href="#home">
+          Privacy
+        </a>
+
+        <a href="#home">
+          Terms
+        </a>
+
       </div>
 
     </div>
@@ -628,29 +1093,69 @@
 
 
   <!-- =========================================================
-       MINIMAL NAVIGATION JAVASCRIPT
+       GLOBAL MODAL
        ========================================================= -->
-  <script>
-    const menuToggle = document.getElementById("menuToggle");
-    const mobileNav = document.getElementById("mobileNav");
 
-    if (menuToggle && mobileNav) {
-      menuToggle.addEventListener("click", () => {
-        const isOpen = mobileNav.classList.toggle("open");
+  <div
+    id="globalModal"
+    class="modal"
+    aria-hidden="true"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="modalTitle"
+  >
 
-        menuToggle.classList.toggle("active", isOpen);
-        menuToggle.setAttribute("aria-expanded", String(isOpen));
-      });
+    <div
+      class="modal-backdrop"
+      data-modal-close
+    ></div>
 
-      mobileNav.querySelectorAll("a").forEach(link => {
-        link.addEventListener("click", () => {
-          mobileNav.classList.remove("open");
-          menuToggle.classList.remove("active");
-          menuToggle.setAttribute("aria-expanded", "false");
-        });
-      });
-    }
-  </script>
+    <div class="modal-dialog">
+
+      <button
+        type="button"
+        class="modal-close"
+        data-modal-close
+        aria-label="Close dialog"
+      >
+        &times;
+      </button>
+
+      <div
+        id="modalContent"
+        class="modal-content"
+      ></div>
+
+    </div>
+
+  </div>
+
+
+  <!-- =========================================================
+       TOAST
+       ========================================================= -->
+
+  <div
+    id="toastContainer"
+    class="toast-container"
+    aria-live="polite"
+    aria-atomic="true"
+  ></div>
+
+
+  <!-- =========================================================
+       JAVASCRIPT
+       ========================================================= -->
+
+  <script src="js/config.js"></script>
+
+  <script
+    src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"
+  ></script>
+
+  <script src="js/supabase.js"></script>
+
+  <script src="js/site.js"></script>
 
 </body>
 </html>
