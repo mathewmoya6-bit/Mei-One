@@ -1,51 +1,473 @@
+/* ============================================================
+   MEI SUPER APP
+   GLOBAL SITE JAVASCRIPT
+   ============================================================ */
+
 (() => {
-const $ = (s, r = document) => r.querySelector(s), $$ = (s, r = document) => [...r.querySelectorAll(s)];
-const sb = window.meiSupabase;
-$('#currentYear').textContent = new Date().getFullYear();
+  "use strict";
 
-const menuBtn = $('#mobileMenuButton'), nav = $('#mainNavigation');
-const setMenu = o => { nav.classList.toggle('open', o); menuBtn.setAttribute('aria-expanded', o); };
-menuBtn.onclick = () => setMenu(!nav.classList.contains('open'));
-$$('#mainNavigation a').forEach(a => a.addEventListener('click', () => setMenu(false)));
+  /* ------------------------------------------------------------
+     GLOBAL CONFIG
+     ------------------------------------------------------------ */
 
-// Landing service names -> app service keys. null = not live yet.
-const APP_KEY = { rides: 'ride', delivery: 'delivery', towing: 'towing', roadside: 'roadside', auto: 'auto', marketplace: null, 'home-services': null, learn: null };
-const field = (id, l, t, ac) => `<label for="${id}">${l}</label><input id="${id}" type="${t || 'text'}" required autocomplete="${ac || 'off'}">`;
-const form = (title, sub, fields, cta) => `<h2 id="modalTitle">${title}</h2><p>${sub}</p><form id="mf">${fields}<p class="form-msg" id="msg" role="alert"></p><button class="btn btn-primary btn-block" id="go">${cta}</button></form>`;
-const VIEWS = {
-  login: () => form('Sign in', 'Welcome back to MEI One.', field('e', 'Email', 'email', 'email') + field('w', 'Password', 'password', 'current-password'), 'Sign in'),
-  signup: () => form('Create your account', 'One account for every MEI One service.', field('n', 'Full name', 'text', 'name') + field('p', 'Phone', 'tel', 'tel') + field('e', 'Email', 'email', 'email') + field('w', 'Password (8+ characters)', 'password', 'new-password'), 'Create account'),
-  emergency: () => `<h2 id="modalTitle">Vehicle emergency</h2><p>If anyone is in danger or hurt, call <b>999</b> or <b>112</b> first.</p><p>Then request towing or roadside help and we will connect you with an operator.</p><a class="btn btn-primary btn-block" href="app.html#towing">Request towing</a><a class="btn btn-outline btn-block" href="app.html#roadside">Request roadside help</a>`,
-  partner: () => `<h2 id="modalTitle">Become a partner</h2><p>Sign in, then submit your details and documents. We verify them before you can take jobs or sell.</p><a class="btn btn-primary btn-block" href="partner.html">Partner sign in and application</a><a class="btn btn-outline btn-block" href="business.html">Merchant sign in and application</a>`,
-  soon: name => `<h2 id="modalTitle">Coming soon</h2><p>${name} is not live yet. Create an account and you will see it as soon as it opens.</p><button class="btn btn-primary btn-block" data-modal="signup" type="button">Create account</button>`
-};
+  window.MEISite = {
+    name: "MEI Super App",
+    version: "1.0.0"
+  };
 
-const modal = $('#globalModal'), box = $('#modalContent'); let opener = null;
-function open(name, arg) {
-  box.innerHTML = VIEWS[name](arg);
-  modal.classList.add('open'); modal.setAttribute('aria-hidden', 'false');
-  const f = $('#mf'); if (f) { $('input', f).focus(); f.onsubmit = ev => submit(ev, name); }
-  box.querySelectorAll('[data-modal]').forEach(b => b.onclick = () => open(b.dataset.modal));
-}
-function close() { modal.classList.remove('open'); modal.setAttribute('aria-hidden', 'true'); opener && opener.focus(); }
-async function submit(ev, name) {
-  ev.preventDefault(); const msg = $('#msg'), go = $('#go'); msg.textContent = '';
-  if (!sb) return msg.textContent = 'Could not load required files. Check your connection and reload.';
-  go.disabled = true;
-  const email = $('#e').value.trim(), password = $('#w').value;
-  const r = name === 'signup'
-    ? await sb.auth.signUp({ email, password, options: { data: { full_name: $('#n').value.trim(), phone: $('#p').value.trim() } } })
-    : await sb.auth.signInWithPassword({ email, password });
-  go.disabled = false;
-  if (r.error) return msg.textContent = r.error.message;
-  if (name === 'signup' && !r.data.session) return msg.textContent = 'Check your email to confirm your account, then sign in.';
-  location.href = 'app.html';
-}
-document.addEventListener('click', e => {
-  const m = e.target.closest('[data-modal]'), s = e.target.closest('[data-service]');
-  if (e.target.closest('[data-modal-close]')) return close();
-  if (m && !box.contains(m)) { opener = m; open(m.dataset.modal); }
-  if (s) { const k = APP_KEY[s.dataset.service]; k ? location.href = 'app.html#' + k : (opener = s, open('soon', s.closest('.service-card')?.querySelector('h3')?.textContent || 'This service')); }
-});
-document.addEventListener('keydown', e => { if (e.key === 'Escape' && modal.classList.contains('open')) close(); });
+
+  /* ------------------------------------------------------------
+     DOM READY
+     ------------------------------------------------------------ */
+
+  document.addEventListener("DOMContentLoaded", () => {
+    initMobileMenu();
+    initPasswordToggles();
+    initModals();
+    initGlobalButtons();
+    setCurrentYear();
+  });
+
+
+  /* ------------------------------------------------------------
+     MOBILE MENU
+     ------------------------------------------------------------ */
+
+  function initMobileMenu() {
+    const menuButtons = document.querySelectorAll(
+      "[data-menu-toggle], .menu-toggle, #menuToggle"
+    );
+
+    const nav = document.querySelector(
+      "[data-mobile-menu], .mobile-menu, #mobileMenu"
+    );
+
+    if (!nav) return;
+
+    menuButtons.forEach((button) => {
+      button.addEventListener("click", () => {
+        nav.classList.toggle("active");
+        button.classList.toggle("active");
+
+        const expanded = nav.classList.contains("active");
+        button.setAttribute("aria-expanded", String(expanded));
+      });
+    });
+
+    nav.querySelectorAll("a").forEach((link) => {
+      link.addEventListener("click", () => {
+        nav.classList.remove("active");
+
+        menuButtons.forEach((button) => {
+          button.classList.remove("active");
+          button.setAttribute("aria-expanded", "false");
+        });
+      });
+    });
+  }
+
+
+  /* ------------------------------------------------------------
+     PASSWORD VISIBILITY
+     ------------------------------------------------------------ */
+
+  function initPasswordToggles() {
+    const toggles = document.querySelectorAll(
+      "[data-password-toggle], .password-toggle"
+    );
+
+    toggles.forEach((toggle) => {
+      toggle.addEventListener("click", () => {
+        const targetId = toggle.dataset.target;
+
+        if (!targetId) return;
+
+        const input = document.getElementById(targetId);
+
+        if (!input) return;
+
+        const isPassword = input.type === "password";
+
+        input.type = isPassword ? "text" : "password";
+
+        toggle.setAttribute(
+          "aria-label",
+          isPassword ? "Hide password" : "Show password"
+        );
+
+        toggle.classList.toggle("active", isPassword);
+      });
+    });
+  }
+
+
+  /* ------------------------------------------------------------
+     MODALS
+     ------------------------------------------------------------ */
+
+  function initModals() {
+    document.querySelectorAll("[data-modal-open]").forEach((button) => {
+      button.addEventListener("click", () => {
+        const modalId = button.dataset.modalOpen;
+        const modal = document.getElementById(modalId);
+
+        if (modal) {
+          modal.classList.add("active");
+          document.body.classList.add("modal-open");
+        }
+      });
+    });
+
+    document.querySelectorAll("[data-modal-close]").forEach((button) => {
+      button.addEventListener("click", () => {
+        closeModal(button.closest(".modal"));
+      });
+    });
+
+    document.querySelectorAll(".modal").forEach((modal) => {
+      modal.addEventListener("click", (event) => {
+        if (event.target === modal) {
+          closeModal(modal);
+        }
+      });
+    });
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key !== "Escape") return;
+
+      const modal = document.querySelector(".modal.active");
+
+      if (modal) {
+        closeModal(modal);
+      }
+    });
+  }
+
+  function closeModal(modal) {
+    if (!modal) return;
+
+    modal.classList.remove("active");
+    document.body.classList.remove("modal-open");
+  }
+
+
+  /* ------------------------------------------------------------
+     GLOBAL BUTTON FEEDBACK
+     ------------------------------------------------------------ */
+
+  function initGlobalButtons() {
+    document.querySelectorAll("[data-loading-button]").forEach((button) => {
+      button.addEventListener("click", () => {
+        setButtonLoading(button, true);
+      });
+    });
+  }
+
+
+  /* ------------------------------------------------------------
+     BUTTON LOADING
+     ------------------------------------------------------------ */
+
+  function setButtonLoading(button, loading = true) {
+    if (!button) return;
+
+    if (loading) {
+      if (!button.dataset.originalText) {
+        button.dataset.originalText = button.innerHTML;
+      }
+
+      button.disabled = true;
+
+      button.innerHTML = `
+        <span class="button-spinner" aria-hidden="true"></span>
+        <span>Processing...</span>
+      `;
+    } else {
+      button.disabled = false;
+
+      if (button.dataset.originalText) {
+        button.innerHTML = button.dataset.originalText;
+      }
+    }
+  }
+
+
+  /* ------------------------------------------------------------
+     TOAST NOTIFICATIONS
+     ------------------------------------------------------------ */
+
+  function showToast(message, type = "info", duration = 3500) {
+    let container = document.getElementById("toastContainer");
+
+    if (!container) {
+      container = document.createElement("div");
+      container.id = "toastContainer";
+      container.className = "toast-container";
+
+      document.body.appendChild(container);
+    }
+
+    const toast = document.createElement("div");
+
+    toast.className = `toast toast-${type}`;
+
+    toast.innerHTML = `
+      <div class="toast-content">
+        <span class="toast-message"></span>
+      </div>
+      <button
+        type="button"
+        class="toast-close"
+        aria-label="Close notification"
+      >
+        &times;
+      </button>
+    `;
+
+    toast.querySelector(".toast-message").textContent = message;
+
+    toast
+      .querySelector(".toast-close")
+      .addEventListener("click", () => {
+        removeToast(toast);
+      });
+
+    container.appendChild(toast);
+
+    requestAnimationFrame(() => {
+      toast.classList.add("show");
+    });
+
+    setTimeout(() => {
+      removeToast(toast);
+    }, duration);
+  }
+
+  function removeToast(toast) {
+    if (!toast) return;
+
+    toast.classList.remove("show");
+
+    setTimeout(() => {
+      toast.remove();
+    }, 250);
+  }
+
+
+  /* ------------------------------------------------------------
+     PAGE LOADING
+     ------------------------------------------------------------ */
+
+  function showPageLoader() {
+    let loader = document.getElementById("pageLoader");
+
+    if (loader) {
+      loader.classList.add("active");
+      return;
+    }
+
+    loader = document.createElement("div");
+
+    loader.id = "pageLoader";
+    loader.className = "page-loader";
+
+    loader.innerHTML = `
+      <div class="page-loader-spinner"></div>
+      <div class="page-loader-text">Loading...</div>
+    `;
+
+    document.body.appendChild(loader);
+
+    requestAnimationFrame(() => {
+      loader.classList.add("active");
+    });
+  }
+
+  function hidePageLoader() {
+    const loader = document.getElementById("pageLoader");
+
+    if (!loader) return;
+
+    loader.classList.remove("active");
+
+    setTimeout(() => {
+      loader.remove();
+    }, 250);
+  }
+
+
+  /* ------------------------------------------------------------
+     CURRENT YEAR
+     ------------------------------------------------------------ */
+
+  function setCurrentYear() {
+    const year = new Date().getFullYear();
+
+    document.querySelectorAll("[data-current-year]").forEach((element) => {
+      element.textContent = year;
+    });
+  }
+
+
+  /* ------------------------------------------------------------
+     FORM HELPERS
+     ------------------------------------------------------------ */
+
+  function getFormData(form) {
+    if (!form) return {};
+
+    const formData = new FormData(form);
+
+    return Object.fromEntries(formData.entries());
+  }
+
+
+  function clearForm(form) {
+    if (!form) return;
+
+    form.reset();
+
+    form.querySelectorAll(".error").forEach((element) => {
+      element.classList.remove("error");
+    });
+
+    form.querySelectorAll(".field-error").forEach((element) => {
+      element.remove();
+    });
+  }
+
+
+  /* ------------------------------------------------------------
+     SAFE REDIRECT
+     ------------------------------------------------------------ */
+
+  function goTo(url) {
+    if (!url) return;
+
+    window.location.href = url;
+  }
+
+
+  /* ------------------------------------------------------------
+     LOCAL STORAGE HELPERS
+     ------------------------------------------------------------ */
+
+  function saveLocal(key, value) {
+    try {
+      localStorage.setItem(key, JSON.stringify(value));
+      return true;
+    } catch (error) {
+      console.error("Local storage save failed:", error);
+      return false;
+    }
+  }
+
+
+  function getLocal(key, fallback = null) {
+    try {
+      const value = localStorage.getItem(key);
+
+      if (value === null) {
+        return fallback;
+      }
+
+      return JSON.parse(value);
+    } catch (error) {
+      console.error("Local storage read failed:", error);
+      return fallback;
+    }
+  }
+
+
+  function removeLocal(key) {
+    try {
+      localStorage.removeItem(key);
+      return true;
+    } catch (error) {
+      console.error("Local storage remove failed:", error);
+      return false;
+    }
+  }
+
+
+  /* ------------------------------------------------------------
+     FORMAT CURRENCY
+     ------------------------------------------------------------ */
+
+  function formatKES(value) {
+    const number = Number(value) || 0;
+
+    return new Intl.NumberFormat("en-KE", {
+      style: "currency",
+      currency: "KES",
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    }).format(number);
+  }
+
+
+  /* ------------------------------------------------------------
+     FORMAT NUMBERS
+     ------------------------------------------------------------ */
+
+  function formatNumber(value) {
+    const number = Number(value) || 0;
+
+    return new Intl.NumberFormat("en-KE").format(number);
+  }
+
+
+  /* ------------------------------------------------------------
+     DATE FORMAT
+     ------------------------------------------------------------ */
+
+  function formatDate(dateValue) {
+    if (!dateValue) return "—";
+
+    const date = new Date(dateValue);
+
+    if (Number.isNaN(date.getTime())) {
+      return "—";
+    }
+
+    return new Intl.DateTimeFormat("en-KE", {
+      day: "2-digit",
+      month: "short",
+      year: "numeric"
+    }).format(date);
+  }
+
+
+  /* ------------------------------------------------------------
+     EXPOSE GLOBAL HELPERS
+     ------------------------------------------------------------ */
+
+  window.MEISite.showToast = showToast;
+
+  window.MEISite.showPageLoader = showPageLoader;
+
+  window.MEISite.hidePageLoader = hidePageLoader;
+
+  window.MEISite.setButtonLoading = setButtonLoading;
+
+  window.MEISite.closeModal = closeModal;
+
+  window.MEISite.getFormData = getFormData;
+
+  window.MEISite.clearForm = clearForm;
+
+  window.MEISite.goTo = goTo;
+
+  window.MEISite.saveLocal = saveLocal;
+
+  window.MEISite.getLocal = getLocal;
+
+  window.MEISite.removeLocal = removeLocal;
+
+  window.MEISite.formatKES = formatKES;
+
+  window.MEISite.formatNumber = formatNumber;
+
+  window.MEISite.formatDate = formatDate;
+
 })();
