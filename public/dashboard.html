@@ -1,1693 +1,1118 @@
-```css
-/* =========================================================
-   MEI ONE — DASHBOARD
-   Dark Navy / Neon Green
-   Production Dashboard Styles
-   ========================================================= */
-
-/* =========================================================
-   RESET
-   ========================================================= */
-
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
-}
-
-html {
-  scroll-behavior: smooth;
-  font-size: 16px;
-}
-
-body.dashboard-page {
-  margin: 0;
-  min-height: 100vh;
-  background:
-    radial-gradient(circle at 80% 0%, rgba(57, 255, 20, 0.06), transparent 28%),
-    #050b14;
-  color: #f4f7f8;
-  font-family:
-    Inter,
-    ui-sans-serif,
-    system-ui,
-    -apple-system,
-    BlinkMacSystemFont,
-    "Segoe UI",
-    sans-serif;
-  line-height: 1.5;
-  overflow-x: hidden;
-}
-
-body.dashboard-page a {
-  color: inherit;
-  text-decoration: none;
-}
-
-button,
-a {
-  -webkit-tap-highlight-color: transparent;
-}
-
-button {
-  font: inherit;
-}
-
-img {
-  max-width: 100%;
-  display: block;
-}
-
-/* =========================================================
-   VARIABLES
-   ========================================================= */
-
-:root {
-  --mei-bg: #050b14;
-  --mei-bg-soft: #08111d;
-  --mei-panel: #0b1624;
-  --mei-panel-2: #0e1b2b;
-  --mei-panel-3: #101f31;
-
-  --mei-border: rgba(255, 255, 255, 0.08);
-  --mei-border-strong: rgba(57, 255, 20, 0.24);
-
-  --mei-green: #39ff14;
-  --mei-green-dark: #19c900;
-  --mei-green-soft: rgba(57, 255, 20, 0.1);
-  --mei-green-glow: rgba(57, 255, 20, 0.22);
-
-  --mei-white: #ffffff;
-  --mei-text: #f4f7f8;
-  --mei-muted: #8d9aaa;
-  --mei-muted-2: #687789;
-
-  --mei-danger: #ff4d67;
-  --mei-warning: #ffbf3f;
-  --mei-blue: #42a5ff;
-
-  --sidebar-width: 260px;
-  --header-height: 76px;
-
-  --radius-sm: 10px;
-  --radius-md: 16px;
-  --radius-lg: 22px;
-
-  --shadow:
-    0 18px 50px rgba(0, 0, 0, 0.28);
-
-  --transition:
-    180ms ease;
-}
-
-/* =========================================================
-   ACCESSIBILITY
-   ========================================================= */
-
-.skip-link {
-  position: fixed;
-  top: -100px;
-  left: 16px;
-  z-index: 9999;
-  padding: 12px 18px;
-  border-radius: 10px;
-  background: var(--mei-green);
-  color: #031006;
-  font-weight: 800;
-  transition: top var(--transition);
-}
-
-.skip-link:focus {
-  top: 16px;
-  outline: none;
-}
-
-/* =========================================================
-   SIDEBAR
-   ========================================================= */
-
-.dashboard-sidebar {
-  position: fixed;
-  inset: 0 auto 0 0;
-  z-index: 1000;
-
-  width: var(--sidebar-width);
-  height: 100vh;
-
-  display: flex;
-  flex-direction: column;
-
-  background:
-    linear-gradient(
-      180deg,
-      #07101c 0%,
-      #06101a 100%
-    );
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Login | MEI One</title>
+
+  <meta
+    name="description"
+    content="Sign in to your MEI One customer account."
+  >
+
+  <style>
+    :root {
+      --navy: #06111f;
+      --navy-2: #0a1a2b;
+      --navy-3: #10263d;
+      --green: #b7ff00;
+      --green-hover: #c8ff3d;
+      --white: #ffffff;
+      --text: #e8f0f7;
+      --muted: #91a4b8;
+      --border: rgba(255, 255, 255, 0.10);
+      --danger: #ff6474;
+      --success: #5de3a0;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html,
+    body {
+      min-height: 100%;
+    }
+
+    body {
+      min-height: 100vh;
+      padding: 24px;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      font-family:
+        Inter,
+        ui-sans-serif,
+        system-ui,
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        sans-serif;
+
+      color: var(--white);
+
+      background:
+        radial-gradient(
+          circle at 85% 10%,
+          rgba(183, 255, 0, 0.11),
+          transparent 28%
+        ),
+        radial-gradient(
+          circle at 10% 90%,
+          rgba(0, 120, 255, 0.08),
+          transparent 32%
+        ),
+        var(--navy);
+    }
+
+    button,
+    input {
+      font: inherit;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    .page {
+      width: 100%;
+      max-width: 440px;
+    }
+
+    /* -------------------------------------------------------
+       BRAND
+       ------------------------------------------------------- */
+
+    .brand {
+      text-align: center;
+      margin-bottom: 24px;
+    }
+
+    .brand-mark {
+      width: 68px;
+      height: 68px;
+      margin: 0 auto 14px;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      border-radius: 20px;
+
+      background: var(--green);
+      color: var(--navy);
+
+      font-size: 23px;
+      font-weight: 950;
+      letter-spacing: -1px;
+
+      box-shadow:
+        0 0 0 1px rgba(183, 255, 0, 0.25),
+        0 18px 45px rgba(183, 255, 0, 0.16);
+    }
+
+    .brand h1 {
+      font-size: 32px;
+      line-height: 1;
+      font-weight: 950;
+      letter-spacing: -1.5px;
+    }
+
+    .brand p {
+      margin-top: 8px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    /* -------------------------------------------------------
+       CARD
+       ------------------------------------------------------- */
 
-  border-right: 1px solid var(--mei-border);
+    .card {
+      padding: 30px;
+
+      border: 1px solid var(--border);
+      border-radius: 24px;
+
+      background:
+        linear-gradient(
+          180deg,
+          rgba(16, 38, 61, 0.96),
+          rgba(7, 19, 33, 0.98)
+        );
 
-  overflow-y: auto;
-  overflow-x: hidden;
-
-  scrollbar-width: thin;
-  scrollbar-color: rgba(57, 255, 20, 0.25) transparent;
-}
-
-.dashboard-sidebar::-webkit-scrollbar {
-  width: 5px;
-}
-
-.dashboard-sidebar::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-.dashboard-sidebar::-webkit-scrollbar-thumb {
-  background: rgba(57, 255, 20, 0.25);
-  border-radius: 20px;
-}
-
-/* =========================================================
-   BRAND
-   ========================================================= */
-
-.sidebar-brand {
-  min-height: var(--header-height);
-
-  display: flex;
-  align-items: center;
-
-  padding: 18px 20px;
-
-  border-bottom: 1px solid var(--mei-border);
-}
-
-.sidebar-brand a {
-  display: inline-flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.brand-mark {
-  width: 42px;
-  height: 42px;
-
-  display: grid;
-  place-items: center;
-
-  border-radius: 12px;
-
-  background: var(--mei-green);
-  color: #031006;
-
-  font-size: 20px;
-  font-weight: 950;
-
-  box-shadow:
-    0 0 0 4px rgba(57, 255, 20, 0.06),
-    0 0 22px rgba(57, 255, 20, 0.18);
-}
-
-.sidebar-brand .brand-name {
-  color: var(--mei-white);
-  font-size: 20px;
-  font-weight: 900;
-  letter-spacing: -0.04em;
-}
-
-/* =========================================================
-   NAVIGATION
-   ========================================================= */
-
-.dashboard-nav {
-  padding: 18px 12px;
-}
-
-.nav-item {
-  position: relative;
-
-  width: 100%;
-  min-height: 48px;
-
-  display: flex;
-  align-items: center;
-  gap: 13px;
-
-  margin-bottom: 5px;
-  padding: 11px 14px;
-
-  border: 1px solid transparent;
-  border-radius: 12px;
-
-  color: var(--mei-muted);
-
-  font-size: 14px;
-  font-weight: 750;
-
-  transition:
-    background var(--transition),
-    color var(--transition),
-    border-color var(--transition),
-    transform var(--transition);
-}
-
-.nav-item:hover {
-  color: var(--mei-white);
-  background: rgba(255, 255, 255, 0.035);
-  border-color: var(--mei-border);
-  transform: translateX(2px);
-}
-
-.nav-item.active {
-  color: var(--mei-green);
-  background:
-    linear-gradient(
-      90deg,
-      rgba(57, 255, 20, 0.12),
-      rgba(57, 255, 20, 0.035)
-    );
-  border-color: rgba(57, 255, 20, 0.15);
-}
-
-.nav-item.active::before {
-  content: "";
-
-  position: absolute;
-  left: -12px;
-  top: 9px;
-  bottom: 9px;
-
-  width: 3px;
-
-  border-radius: 0 5px 5px 0;
-
-  background: var(--mei-green);
-  box-shadow: 0 0 12px var(--mei-green-glow);
-}
-
-.nav-icon {
-  width: 22px;
-  min-width: 22px;
-
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-
-  font-size: 17px;
-}
+      box-shadow:
+        0 25px 70px rgba(0, 0, 0, 0.40);
 
-.logout-link {
-  color: #a5afba;
-}
+      backdrop-filter: blur(18px);
+    }
+
+    .card-header {
+      margin-bottom: 24px;
+    }
+
+    .card-header h2 {
+      font-size: 25px;
+      font-weight: 900;
+      letter-spacing: -0.8px;
+    }
 
-.logout-link:hover {
-  color: var(--mei-danger);
-  background: rgba(255, 77, 103, 0.06);
-  border-color: rgba(255, 77, 103, 0.12);
-}
-
-.sidebar-bottom {
-  margin-top: auto;
-  padding: 12px;
-  border-top: 1px solid var(--mei-border);
-}
-
-/* =========================================================
-   OVERLAY
-   ========================================================= */
-
-.sidebar-overlay {
-  display: none;
-
-  position: fixed;
-  inset: 0;
-  z-index: 900;
-
-  background: rgba(0, 0, 0, 0.68);
-  backdrop-filter: blur(3px);
-}
-
-/* =========================================================
-   MAIN APP AREA
-   ========================================================= */
-
-.dashboard-main {
-  min-height: 100vh;
-  margin-left: var(--sidebar-width);
-}
-
-/* =========================================================
-   HEADER
-   ========================================================= */
-
-.app-header {
-  position: sticky;
-  top: 0;
-  z-index: 800;
-
-  height: var(--header-height);
-
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-
-  padding: 0 30px;
-
-  background:
-    rgba(5, 11, 20, 0.9);
-
-  border-bottom: 1px solid var(--mei-border);
-
-  backdrop-filter: blur(18px);
-  -webkit-backdrop-filter: blur(18px);
-}
-
-.header-left,
-.header-right {
-  display: flex;
-  align-items: center;
-}
-
-.header-left {
-  gap: 15px;
-}
-
-.header-right {
-  gap: 14px;
-}
-
-.menu-btn {
-  display: none;
-
-  width: 42px;
-  height: 42px;
-
-  align-items: center;
-  justify-content: center;
-
-  border: 1px solid var(--mei-border);
-  border-radius: 10px;
-
-  background: var(--mei-panel);
-  color: var(--mei-white);
-
-  cursor: pointer;
-}
-
-.menu-btn:hover {
-  border-color: var(--mei-border-strong);
-  color: var(--mei-green);
-}
-
-.brand {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.brand .brand-mark {
-  width: 38px;
-  height: 38px;
-  border-radius: 10px;
-  font-size: 17px;
-}
-
-.brand-name {
-  color: var(--mei-white);
-  font-size: 18px;
-  font-weight: 900;
-  letter-spacing: -0.04em;
-}
-
-.header-user {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.user-avatar {
-  width: 40px;
-  height: 40px;
-
-  display: grid;
-  place-items: center;
-
-  border-radius: 50%;
-
-  background:
-    linear-gradient(
-      135deg,
-      rgba(57, 255, 20, 0.2),
-      rgba(57, 255, 20, 0.04)
-    );
-
-  border: 1px solid rgba(57, 255, 20, 0.3);
-
-  color: var(--mei-green);
-  font-size: 14px;
-  font-weight: 900;
-}
-
-.user-info {
-  display: flex;
-  flex-direction: column;
-  min-width: 0;
-}
-
-.user-info strong {
-  max-width: 180px;
-
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-
-  color: var(--mei-white);
-  font-size: 13px;
-  font-weight: 800;
-}
-
-.user-info span {
-  color: var(--mei-muted);
-  font-size: 11px;
-}
-
-.logout-btn {
-  min-height: 40px;
-
-  padding: 8px 13px;
-
-  border: 1px solid var(--mei-border);
-  border-radius: 10px;
-
-  background: transparent;
-  color: var(--mei-muted);
-
-  font-size: 12px;
-  font-weight: 800;
-
-  cursor: pointer;
-
-  transition:
-    color var(--transition),
-    border-color var(--transition),
-    background var(--transition);
-}
-
-.logout-btn:hover {
-  color: var(--mei-danger);
-  border-color: rgba(255, 77, 103, 0.25);
-  background: rgba(255, 77, 103, 0.05);
-}
-
-/* =========================================================
-   DASHBOARD CONTENT
-   ========================================================= */
+    .card-header p {
+      margin-top: 7px;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.5;
+    }
 
-.dashboard-section {
-  display: none;
-  width: 100%;
-  padding: 34px 30px 60px;
-}
-
-.dashboard-section.active {
-  display: block;
-}
-
-.page-heading {
-  margin-bottom: 28px;
-}
-
-.page-heading h1 {
-  margin: 0;
-
-  color: var(--mei-white);
-
-  font-size: clamp(26px, 3vw, 38px);
-  line-height: 1.1;
-
-  font-weight: 950;
-  letter-spacing: -0.045em;
-}
-
-.page-heading p {
-  max-width: 720px;
-  margin: 9px 0 0;
-
-  color: var(--mei-muted);
-  font-size: 14px;
-}
-
-.status-pill {
-  display: inline-flex;
-  align-items: center;
-  gap: 7px;
-
-  margin-top: 15px;
-  padding: 7px 11px;
-
-  border: 1px solid rgba(57, 255, 20, 0.2);
-  border-radius: 999px;
+    /* -------------------------------------------------------
+       MESSAGE
+       ------------------------------------------------------- */
 
-  background: rgba(57, 255, 20, 0.07);
-  color: var(--mei-green);
+    .message {
+      display: none;
 
-  font-size: 11px;
-  font-weight: 850;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-}
-
-.status-pill::before {
-  content: "";
+      margin-bottom: 18px;
+      padding: 13px 14px;
 
-  width: 7px;
-  height: 7px;
+      border-radius: 12px;
 
-  border-radius: 50%;
-  background: var(--mei-green);
-
-  box-shadow: 0 0 9px rgba(57, 255, 20, 0.7);
-}
-
-/* =========================================================
-   QUICK ACTIONS
-   ========================================================= */
-
-.quick-actions {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 14px;
+      font-size: 13px;
+      line-height: 1.5;
+    }
 
-  margin-bottom: 30px;
-}
+    .message.show {
+      display: block;
+    }
 
-.quick-action {
-  min-height: 92px;
+    .message.error {
+      color: #ffdce0;
+      background: rgba(255, 100, 116, 0.10);
+      border: 1px solid rgba(255, 100, 116, 0.28);
+    }
 
-  display: flex;
-  align-items: center;
-  gap: 13px;
+    .message.success {
+      color: #d9ffeb;
+      background: rgba(93, 227, 160, 0.10);
+      border: 1px solid rgba(93, 227, 160, 0.28);
+    }
 
-  padding: 16px;
+    /* -------------------------------------------------------
+       FORM
+       ------------------------------------------------------- */
 
-  border: 1px solid var(--mei-border);
-  border-radius: var(--radius-md);
+    .field {
+      margin-bottom: 17px;
+    }
 
-  background:
-    linear-gradient(
-      145deg,
-      rgba(14, 27, 43, 0.95),
-      rgba(8, 17, 29, 0.95)
-    );
+    .field label {
+      display: block;
+      margin-bottom: 8px;
 
-  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.16);
+      color: var(--text);
+      font-size: 13px;
+      font-weight: 800;
+    }
 
-  transition:
-    transform var(--transition),
-    border-color var(--transition),
-    background var(--transition),
-    box-shadow var(--transition);
-}
+    .field input {
+      width: 100%;
+      height: 52px;
 
-.quick-action:hover {
-  transform: translateY(-3px);
+      padding: 0 15px;
 
-  border-color: rgba(57, 255, 20, 0.28);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 13px;
 
-  background:
-    linear-gradient(
-      145deg,
-      rgba(16, 34, 48, 1),
-      rgba(8, 20, 30, 1)
-    );
+      outline: none;
 
-  box-shadow:
-    0 16px 40px rgba(0, 0, 0, 0.28),
-    0 0 24px rgba(57, 255, 20, 0.05);
-}
+      background: rgba(0, 0, 0, 0.20);
+      color: var(--white);
 
-.quick-icon {
-  width: 48px;
-  height: 48px;
-  min-width: 48px;
+      transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
+    }
 
-  display: grid;
-  place-items: center;
+    .field input::placeholder {
+      color: #62778b;
+    }
 
-  border-radius: 13px;
+    .field input:focus {
+      border-color: var(--green);
 
-  background: var(--mei-green-soft);
-  border: 1px solid rgba(57, 255, 20, 0.16);
+      box-shadow:
+        0 0 0 3px rgba(183, 255, 0, 0.10);
+    }
 
-  font-size: 22px;
-}
+    .password-wrap {
+      position: relative;
+    }
 
-.quick-action strong {
-  display: block;
+    .password-wrap input {
+      padding-right: 80px;
+    }
 
-  color: var(--mei-white);
-  font-size: 13px;
-  font-weight: 900;
-}
+    .toggle-password {
+      position: absolute;
+      right: 9px;
+      top: 50%;
 
-.quick-action span {
-  display: block;
-  margin-top: 2px;
+      transform: translateY(-50%);
 
-  color: var(--mei-muted);
-  font-size: 11px;
-}
+      padding: 8px;
 
-/* =========================================================
-   DASHBOARD STATS
-   ========================================================= */
+      border: 0;
+      background: transparent;
 
-.dashboard-grid {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 16px;
+      color: var(--green);
 
-  margin-bottom: 30px;
-}
+      font-size: 11px;
+      font-weight: 900;
+    }
 
-.dashboard-card {
-  position: relative;
+    .forgot-row {
+      display: flex;
+      justify-content: flex-end;
 
-  min-width: 0;
-  padding: 21px;
+      margin-top: -4px;
+      margin-bottom: 18px;
+    }
 
-  border: 1px solid var(--mei-border);
-  border-radius: var(--radius-md);
+    .forgot-button {
+      padding: 3px;
 
-  background:
-    linear-gradient(
-      145deg,
-      rgba(13, 27, 43, 0.96),
-      rgba(7, 16, 27, 0.96)
-    );
+      border: 0;
+      background: transparent;
 
-  overflow: hidden;
-}
+      color: var(--green);
 
-.dashboard-card::after {
-  content: "";
+      font-size: 13px;
+      font-weight: 800;
+    }
 
-  position: absolute;
-  width: 100px;
-  height: 100px;
+    /* -------------------------------------------------------
+       BUTTONS
+       ------------------------------------------------------- */
 
-  right: -45px;
-  bottom: -45px;
+    .primary-button {
+      width: 100%;
+      min-height: 54px;
 
-  border-radius: 50%;
+      border: 0;
+      border-radius: 14px;
 
-  background: rgba(57, 255, 20, 0.05);
-}
+      background: var(--green);
+      color: #07101b;
 
-.card-icon {
-  width: 42px;
-  height: 42px;
+      font-size: 15px;
+      font-weight: 950;
 
-  display: grid;
-  place-items: center;
+      transition:
+        transform 0.2s ease,
+        background 0.2s ease,
+        opacity 0.2s ease;
+    }
 
-  margin-bottom: 15px;
+    .primary-button:hover:not(:disabled) {
+      background: var(--green-hover);
+      transform: translateY(-1px);
+    }
 
-  border-radius: 11px;
+    .primary-button:disabled {
+      opacity: 0.55;
+      cursor: not-allowed;
+      transform: none;
+    }
 
-  background: rgba(57, 255, 20, 0.08);
-  border: 1px solid rgba(57, 255, 20, 0.12);
+    .secondary-button {
+      width: 100%;
+      min-height: 50px;
 
-  font-size: 18px;
-}
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 13px;
 
-.card-label {
-  margin-bottom: 4px;
+      background: rgba(255, 255, 255, 0.03);
+      color: var(--white);
 
-  color: var(--mei-muted);
-  font-size: 11px;
-  font-weight: 750;
-  text-transform: uppercase;
-  letter-spacing: 0.07em;
-}
+      font-size: 14px;
+      font-weight: 850;
 
-.card-value {
-  color: var(--mei-white);
-  font-size: 28px;
-  line-height: 1;
-  font-weight: 950;
-  letter-spacing: -0.04em;
-}
+      transition:
+        border-color 0.2s ease,
+        background 0.2s ease;
+    }
 
-/* =========================================================
-   CONTENT CARDS
-   ========================================================= */
+    .secondary-button:hover:not(:disabled) {
+      border-color: rgba(183, 255, 0, 0.35);
+      background: rgba(183, 255, 0, 0.05);
+    }
 
-.content-card {
-  min-width: 0;
+    .secondary-button:disabled {
+      opacity: 0.55;
+      cursor: not-allowed;
+    }
 
-  margin-bottom: 22px;
-  padding: 22px;
+    /* -------------------------------------------------------
+       DIVIDER
+       ------------------------------------------------------- */
 
-  border: 1px solid var(--mei-border);
-  border-radius: var(--radius-lg);
+    .divider {
+      display: flex;
+      align-items: center;
+      gap: 12px;
 
-  background:
-    linear-gradient(
-      145deg,
-      rgba(10, 22, 36, 0.97),
-      rgba(6, 14, 24, 0.97)
-    );
+      margin: 23px 0;
 
-  box-shadow: var(--shadow);
-}
+      color: #60758a;
 
-.card-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 15px;
+      font-size: 11px;
+      font-weight: 800;
+    }
 
-  margin-bottom: 20px;
-}
+    .divider::before,
+    .divider::after {
+      content: "";
+      height: 1px;
+      flex: 1;
+      background: var(--border);
+    }
 
-.card-header h2,
-.card-header h3 {
-  margin: 0;
+    /* -------------------------------------------------------
+       FOOTER
+       ------------------------------------------------------- */
 
-  color: var(--mei-white);
+    .footer {
+      margin-top: 22px;
 
-  font-size: 17px;
-  font-weight: 900;
-  letter-spacing: -0.02em;
-}
+      text-align: center;
 
-.text-button {
-  padding: 7px 10px;
+      color: var(--muted);
+      font-size: 13px;
+    }
 
-  border: 1px solid transparent;
-  border-radius: 8px;
+    .footer a {
+      color: var(--green);
+      font-weight: 850;
+    }
 
-  background: transparent;
-  color: var(--mei-green);
+    /* -------------------------------------------------------
+       SPINNER
+       ------------------------------------------------------- */
 
-  font-size: 12px;
-  font-weight: 800;
+    .spinner {
+      width: 17px;
+      height: 17px;
 
-  cursor: pointer;
-}
+      display: inline-block;
+      vertical-align: middle;
 
-.text-button:hover {
-  background: rgba(57, 255, 20, 0.07);
-  border-color: rgba(57, 255, 20, 0.12);
-}
+      margin-right: 8px;
 
-/* =========================================================
-   EMPTY / LOADING STATES
-   ========================================================= */
+      border: 2px solid rgba(0, 0, 0, 0.22);
+      border-top-color: #07101b;
 
-.empty-state,
-.loading-state {
-  padding: 45px 20px;
+      border-radius: 50%;
 
-  text-align: center;
+      animation: spin 0.7s linear infinite;
+    }
 
-  border: 1px dashed rgba(255, 255, 255, 0.09);
-  border-radius: 14px;
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
 
-  color: var(--mei-muted);
-}
+    /* -------------------------------------------------------
+       MOBILE
+       ------------------------------------------------------- */
 
-.empty-icon {
-  width: 56px;
-  height: 56px;
+    @media (max-width: 520px) {
+      body {
+        padding: 15px;
+      }
 
-  display: grid;
-  place-items: center;
+      .card {
+        padding: 22px;
+        border-radius: 20px;
+      }
 
-  margin: 0 auto 14px;
+      .brand h1 {
+        font-size: 29px;
+      }
+    }
+  </style>
+</head>
 
-  border-radius: 50%;
+<body>
 
-  background: rgba(57, 255, 20, 0.07);
-  border: 1px solid rgba(57, 255, 20, 0.12);
+  <main class="page">
 
-  font-size: 22px;
-}
+    <!-- =====================================================
+         BRAND
+         ===================================================== -->
 
-.empty-state strong {
-  display: block;
+    <header class="brand">
 
-  margin-bottom: 5px;
+      <div class="brand-mark">
+        MEI
+      </div>
 
-  color: var(--mei-white);
-  font-size: 14px;
-}
+      <h1>MEI One</h1>
 
-.empty-state p,
-.loading-state p {
-  margin: 0;
+      <p>
+        One platform. Connected services.
+      </p>
 
-  color: var(--mei-muted);
-  font-size: 12px;
-}
+    </header>
 
-/* =========================================================
-   SERVICES
-   ========================================================= */
+    <!-- =====================================================
+         LOGIN CARD
+         ===================================================== -->
 
-.services-grid {
-  display: grid;
+    <section class="card">
 
-  grid-template-columns:
-    repeat(4, minmax(0, 1fr));
+      <div class="card-header">
 
-  gap: 16px;
+        <h2>
+          Welcome back
+        </h2>
 
-  margin-top: 4px;
-}
+        <p>
+          Sign in to access your MEI One customer dashboard.
+        </p>
 
-.service-card {
-  position: relative;
+      </div>
 
-  min-height: 190px;
+      <div
+        id="message"
+        class="message"
+        role="alert"
+        aria-live="polite"
+      ></div>
 
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
+      <form
+        id="loginForm"
+        novalidate
+      >
 
-  padding: 20px;
+        <!-- EMAIL -->
 
-  border: 1px solid var(--mei-border);
-  border-radius: var(--radius-lg);
+        <div class="field">
 
-  background:
-    linear-gradient(
-      145deg,
-      rgba(14, 29, 45, 0.98),
-      rgba(7, 16, 27, 0.98)
-    );
+          <label for="email">
+            Email address
+          </label>
 
-  overflow: hidden;
+          <input
+            id="email"
+            name="email"
+            type="email"
+            autocomplete="username"
+            placeholder="you@example.com"
+            required
+          >
 
-  transition:
-    transform var(--transition),
-    border-color var(--transition),
-    box-shadow var(--transition),
-    background var(--transition);
-}
+        </div>
 
-.service-card::before {
-  content: "";
+        <!-- PASSWORD -->
 
-  position: absolute;
-  left: 0;
-  top: 0;
+        <div class="field">
 
-  width: 100%;
-  height: 2px;
+          <label for="password">
+            Password
+          </label>
 
-  background: linear-gradient(
-    90deg,
-    transparent,
-    var(--mei-green),
-    transparent
-  );
+          <div class="password-wrap">
 
-  opacity: 0;
+            <input
+              id="password"
+              name="password"
+              type="password"
+              autocomplete="current-password"
+              placeholder="Enter your password"
+              required
+            >
 
-  transition: opacity var(--transition);
-}
+            <button
+              type="button"
+              class="toggle-password"
+              id="togglePassword"
+            >
+              SHOW
+            </button>
 
-.service-card::after {
-  content: "";
+          </div>
 
-  position: absolute;
+        </div>
 
-  width: 150px;
-  height: 150px;
+        <!-- FORGOT PASSWORD -->
 
-  right: -80px;
-  bottom: -80px;
+        <div class="forgot-row">
 
-  border-radius: 50%;
+          <button
+            type="button"
+            class="forgot-button"
+            id="forgotPassword"
+          >
+            Forgot password?
+          </button>
 
-  background: rgba(57, 255, 20, 0.055);
+        </div>
 
-  pointer-events: none;
-}
+        <!-- SIGN IN -->
 
-.service-card:hover {
-  transform: translateY(-5px);
+        <button
+          type="submit"
+          class="primary-button"
+          id="loginButton"
+        >
+          Sign In
+        </button>
 
-  border-color: rgba(57, 255, 20, 0.32);
+      </form>
 
-  background:
-    linear-gradient(
-      145deg,
-      rgba(16, 35, 51, 1),
-      rgba(7, 18, 29, 1)
-    );
+      <!-- DIVIDER -->
 
-  box-shadow:
-    0 18px 45px rgba(0, 0, 0, 0.32),
-    0 0 28px rgba(57, 255, 20, 0.06);
-}
+      <div class="divider">
+        OR
+      </div>
 
-.service-card:hover::before {
-  opacity: 1;
-}
+      <!-- SIGN UP -->
 
-.service-card-icon {
-  position: relative;
-  z-index: 1;
+      <button
+        type="button"
+        class="secondary-button"
+        id="signupButton"
+      >
+        Create a MEI One account
+      </button>
 
-  width: 56px;
-  height: 56px;
+    </section>
 
-  display: grid;
-  place-items: center;
+    <!-- FOOTER -->
 
-  margin-bottom: 20px;
+    <footer class="footer">
 
-  border-radius: 16px;
+      © <span id="year"></span> MEI One.
+      All rights reserved.
 
-  background:
-    linear-gradient(
-      145deg,
-      rgba(57, 255, 20, 0.15),
-      rgba(57, 255, 20, 0.045)
-    );
+    </footer>
 
-  border: 1px solid rgba(57, 255, 20, 0.18);
+  </main>
 
-  font-size: 27px;
+  <!-- =========================================================
+       MEI ONE CONFIGURATION
+       ========================================================= -->
 
-  transition:
-    transform var(--transition),
-    box-shadow var(--transition);
-}
+  <script src="js/config.js"></script>
 
-.service-card:hover .service-card-icon {
-  transform: scale(1.06);
+  <!-- =========================================================
+       SUPABASE SDK
+       ========================================================= -->
 
-  box-shadow:
-    0 0 20px rgba(57, 255, 20, 0.09);
-}
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
 
-.service-card-content {
-  position: relative;
-  z-index: 1;
+  <!-- =========================================================
+       MEI ONE SUPABASE CLIENT
+       ========================================================= -->
 
-  flex: 1;
-}
+  <script src="js/supabase.js"></script>
 
-.service-card-content h3 {
-  margin: 0 0 6px;
+  <!-- =========================================================
+       LOGIN LOGIC
+       ========================================================= -->
 
-  color: var(--mei-white);
+  <script>
+    (function () {
 
-  font-size: 16px;
-  line-height: 1.25;
+      "use strict";
 
-  font-weight: 900;
-  letter-spacing: -0.025em;
-}
+      /* -------------------------------------------------------
+         ELEMENTS
+         ------------------------------------------------------- */
 
-.service-card-content p {
-  margin: 0;
+      const form =
+        document.getElementById("loginForm");
 
-  color: var(--mei-muted);
+      const emailInput =
+        document.getElementById("email");
 
-  font-size: 12px;
-  line-height: 1.55;
-}
+      const passwordInput =
+        document.getElementById("password");
 
-.service-arrow {
-  position: relative;
-  z-index: 1;
+      const loginButton =
+        document.getElementById("loginButton");
 
-  align-self: flex-end;
+      const togglePassword =
+        document.getElementById("togglePassword");
 
-  display: flex;
-  align-items: center;
-  justify-content: center;
+      const forgotPassword =
+        document.getElementById("forgotPassword");
 
-  width: 32px;
-  height: 32px;
+      const signupButton =
+        document.getElementById("signupButton");
 
-  margin-top: 15px;
+      const message =
+        document.getElementById("message");
 
-  border: 1px solid rgba(57, 255, 20, 0.15);
-  border-radius: 50%;
+      const year =
+        document.getElementById("year");
 
-  background: rgba(57, 255, 20, 0.07);
-  color: var(--mei-green);
+      year.textContent =
+        new Date().getFullYear();
 
-  font-size: 16px;
-  font-weight: 900;
+      /* -------------------------------------------------------
+         SUPABASE CLIENT
+         ------------------------------------------------------- */
 
-  transition:
-    transform var(--transition),
-    background var(--transition);
-}
+      const supabase =
+        window.supabaseClient ||
+        window.MEISupabase;
 
-.service-card:hover .service-arrow {
-  transform: translateX(3px);
+      /* -------------------------------------------------------
+         MESSAGE
+         ------------------------------------------------------- */
 
-  background: rgba(57, 255, 20, 0.13);
-}
+      function showMessage(
+        text,
+        type = "error"
+      ) {
 
-/* =========================================================
-   PROFILE
-   ========================================================= */
+        message.textContent =
+          text;
 
-.profile-card {
-  display: grid;
+        message.className =
+          "message show " + type;
 
-  grid-template-columns: auto minmax(0, 1fr);
+      }
 
-  gap: 24px;
+      function clearMessage() {
 
-  padding: 25px;
+        message.textContent =
+          "";
 
-  border: 1px solid var(--mei-border);
-  border-radius: var(--radius-lg);
+        message.className =
+          "message";
 
-  background:
-    linear-gradient(
-      145deg,
-      rgba(13, 27, 43, 0.97),
-      rgba(7, 16, 27, 0.97)
-    );
+      }
 
-  box-shadow: var(--shadow);
-}
+      /* -------------------------------------------------------
+         TIMEOUT
+         ------------------------------------------------------- */
 
-.profile-avatar {
-  width: 82px;
-  height: 82px;
+      function withTimeout(
+        promise,
+        timeout,
+        label
+      ) {
 
-  display: grid;
-  place-items: center;
+        return Promise.race([
 
-  border-radius: 22px;
+          promise,
 
-  background:
-    linear-gradient(
-      145deg,
-      rgba(57, 255, 20, 0.18),
-      rgba(57, 255, 20, 0.05)
-    );
+          new Promise(
+            function (_, reject) {
 
-  border: 1px solid rgba(57, 255, 20, 0.25);
+              setTimeout(
+                function () {
 
-  color: var(--mei-green);
+                  reject(
+                    new Error(
+                      label +
+                      " timed out. Please check your connection and try again."
+                    )
+                  );
 
-  font-size: 30px;
-  font-weight: 950;
-}
+                },
+                timeout
+              );
 
-.profile-details {
-  min-width: 0;
-}
+            }
+          )
 
-.profile-details h2 {
-  margin: 0 0 4px;
+        ]);
 
-  color: var(--mei-white);
+      }
 
-  font-size: 20px;
-  font-weight: 900;
-}
+      /* -------------------------------------------------------
+         CHECK SUPABASE
+         ------------------------------------------------------- */
 
-.profile-details > p {
-  margin: 0 0 20px;
+      function ensureSupabase() {
 
-  color: var(--mei-muted);
-  font-size: 13px;
-}
+        if (!supabase) {
 
-.profile-row {
-  display: grid;
+          throw new Error(
+            "MEI One could not connect to Supabase. Check js/config.js and js/supabase.js."
+          );
 
-  grid-template-columns:
-    minmax(110px, 150px)
-    minmax(0, 1fr);
+        }
 
-  gap: 15px;
+      }
 
-  padding: 12px 0;
+      /* -------------------------------------------------------
+         PASSWORD VISIBILITY
+         ------------------------------------------------------- */
 
-  border-top: 1px solid var(--mei-border);
-}
+      togglePassword.addEventListener(
+        "click",
+        function () {
 
-.profile-row strong {
-  color: var(--mei-muted);
-  font-size: 12px;
-  font-weight: 750;
-}
+          const isPassword =
+            passwordInput.type === "password";
 
-.profile-row span {
-  min-width: 0;
+          passwordInput.type =
+            isPassword
+              ? "text"
+              : "password";
 
-  overflow-wrap: anywhere;
+          togglePassword.textContent =
+            isPassword
+              ? "HIDE"
+              : "SHOW";
 
-  color: var(--mei-white);
-  font-size: 13px;
-  font-weight: 650;
-}
+        }
+      );
 
-.active-text {
-  color: var(--mei-green) !important;
-  font-weight: 850 !important;
-}
+      /* -------------------------------------------------------
+         LOADING STATE
+         ------------------------------------------------------- */
 
-/* =========================================================
-   REQUEST / PAYMENT TABLE-LIKE CONTENT
-   ========================================================= */
+      function setLoading(
+        loading
+      ) {
 
-.request-list,
-.payment-list {
-  width: 100%;
-}
+        loginButton.disabled =
+          loading;
 
-.request-item,
-.payment-item {
-  display: grid;
+        forgotPassword.disabled =
+          loading;
 
-  grid-template-columns:
-    minmax(0, 1fr)
-    auto;
+        signupButton.disabled =
+          loading;
 
-  gap: 20px;
+        if (loading) {
 
-  padding: 16px 0;
+          loginButton.innerHTML =
+            '<span class="spinner"></span>Signing in...';
 
-  border-bottom: 1px solid var(--mei-border);
-}
+        } else {
 
-.request-item:last-child,
-.payment-item:last-child {
-  border-bottom: 0;
-}
+          loginButton.textContent =
+            "Sign In";
 
-.request-item strong,
-.payment-item strong {
-  color: var(--mei-white);
-  font-size: 13px;
-}
+        }
 
-.request-item span,
-.payment-item span {
-  display: block;
+      }
 
-  margin-top: 3px;
+      /* -------------------------------------------------------
+         LOGIN
+         ------------------------------------------------------- */
 
-  color: var(--mei-muted);
-  font-size: 11px;
-}
+      form.addEventListener(
+        "submit",
+        async function (event) {
 
-/* =========================================================
-   STATUS BADGES
-   ========================================================= */
+          event.preventDefault();
 
-.status-badge {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
+          clearMessage();
 
-  min-height: 28px;
+          const email =
+            emailInput.value
+              .trim()
+              .toLowerCase();
 
-  padding: 5px 10px;
+          const password =
+            passwordInput.value;
 
-  border-radius: 999px;
+          /* VALIDATION */
 
-  font-size: 10px;
-  font-weight: 850;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-}
+          if (!email) {
 
-.status-pending {
-  color: var(--mei-warning);
-  background: rgba(255, 191, 63, 0.09);
-  border: 1px solid rgba(255, 191, 63, 0.16);
-}
+            showMessage(
+              "Please enter your email address."
+            );
 
-.status-completed,
-.status-paid,
-.status-active {
-  color: var(--mei-green);
-  background: rgba(57, 255, 20, 0.08);
-  border: 1px solid rgba(57, 255, 20, 0.16);
-}
+            emailInput.focus();
 
-.status-cancelled,
-.status-failed {
-  color: var(--mei-danger);
-  background: rgba(255, 77, 103, 0.08);
-  border: 1px solid rgba(255, 77, 103, 0.16);
-}
+            return;
 
-.status-processing,
-.status-progress {
-  color: var(--mei-blue);
-  background: rgba(66, 165, 255, 0.08);
-  border: 1px solid rgba(66, 165, 255, 0.16);
-}
+          }
 
-/* =========================================================
-   FORMS / INPUTS IF USED ON DASHBOARD
-   ========================================================= */
+          if (!password) {
 
-.dashboard-page input,
-.dashboard-page select,
-.dashboard-page textarea {
-  width: 100%;
+            showMessage(
+              "Please enter your password."
+            );
 
-  min-height: 44px;
+            passwordInput.focus();
 
-  padding: 10px 13px;
+            return;
 
-  border: 1px solid var(--mei-border);
-  border-radius: 10px;
+          }
 
-  outline: none;
+          setLoading(true);
 
-  background: #07121f;
-  color: var(--mei-white);
+          try {
 
-  font: inherit;
-  font-size: 13px;
+            ensureSupabase();
 
-  transition:
-    border-color var(--transition),
-    box-shadow var(--transition);
-}
+            console.log(
+              "MEI One: Starting customer login..."
+            );
 
-.dashboard-page textarea {
-  min-height: 100px;
-  resize: vertical;
-}
+            /* -----------------------------------------------
+               AUTHENTICATE
+               ----------------------------------------------- */
 
-.dashboard-page input::placeholder,
-.dashboard-page textarea::placeholder {
-  color: var(--mei-muted-2);
-}
+            const result =
+              await withTimeout(
+                supabase.auth.signInWithPassword({
+                  email: email,
+                  password: password
+                }),
+                15000,
+                "Supabase login request"
+              );
 
-.dashboard-page input:focus,
-.dashboard-page select:focus,
-.dashboard-page textarea:focus {
-  border-color: rgba(57, 255, 20, 0.45);
+            console.log(
+              "MEI One: Login response:",
+              result
+            );
 
-  box-shadow:
-    0 0 0 3px rgba(57, 255, 20, 0.07);
-}
+            if (result.error) {
 
-/* =========================================================
-   BUTTONS
-   ========================================================= */
+              throw result.error;
 
-.dashboard-page .primary-btn {
-  min-height: 44px;
+            }
 
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
+            if (!result.data?.session) {
 
-  padding: 10px 17px;
+              throw new Error(
+                "Login completed but no active session was returned."
+              );
 
-  border: 1px solid var(--mei-green);
-  border-radius: 10px;
+            }
 
-  background: var(--mei-green);
-  color: #031006;
+            console.log(
+              "MEI One: Customer authentication successful."
+            );
 
-  font-size: 13px;
-  font-weight: 900;
+            showMessage(
+              "Login successful. Opening your dashboard...",
+              "success"
+            );
 
-  cursor: pointer;
+            /* -----------------------------------------------
+               SHORT DELAY TO ALLOW SESSION PERSISTENCE
+               ----------------------------------------------- */
 
-  transition:
-    transform var(--transition),
-    box-shadow var(--transition),
-    background var(--transition);
-}
+            await new Promise(
+              function (resolve) {
 
-.dashboard-page .primary-btn:hover {
-  transform: translateY(-1px);
+                setTimeout(
+                  resolve,
+                  300
+                );
 
-  background: #4dff2b;
+              }
+            );
 
-  box-shadow:
-    0 8px 22px rgba(57, 255, 20, 0.16);
-}
+            /* -----------------------------------------------
+               CUSTOMER DASHBOARD
+               ----------------------------------------------- */
 
-.dashboard-page .secondary-btn {
-  min-height: 44px;
+            console.log(
+              "MEI One: Redirecting to dashboard.html"
+            );
 
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
+            window.location.replace(
+              "dashboard.html"
+            );
 
-  padding: 10px 17px;
+          } catch (error) {
 
-  border: 1px solid var(--mei-border);
-  border-radius: 10px;
+            console.error(
+              "MEI One login error:",
+              error
+            );
 
-  background: transparent;
-  color: var(--mei-white);
+            let errorMessage =
+              error?.message ||
+              "Login failed. Please try again.";
 
-  font-size: 13px;
-  font-weight: 800;
+            /* FRIENDLIER SUPABASE MESSAGES */
 
-  cursor: pointer;
-}
+            if (
+              errorMessage
+                .toLowerCase()
+                .includes(
+                  "invalid login credentials"
+                )
+            ) {
 
-.dashboard-page .secondary-btn:hover {
-  border-color: rgba(57, 255, 20, 0.25);
-  color: var(--mei-green);
-  background: rgba(57, 255, 20, 0.05);
-}
+              errorMessage =
+                "Incorrect email or password.";
 
-/* =========================================================
-   LINKS
-   ========================================================= */
+            }
 
-.dashboard-page a:focus-visible,
-.dashboard-page button:focus-visible,
-.dashboard-page input:focus-visible,
-.dashboard-page select:focus-visible,
-.dashboard-page textarea:focus-visible {
-  outline: 2px solid var(--mei-green);
-  outline-offset: 3px;
-}
+            if (
+              errorMessage
+                .toLowerCase()
+                .includes(
+                  "email not confirmed"
+                )
+            ) {
 
-/* =========================================================
-   SCROLLBAR
-   ========================================================= */
+              errorMessage =
+                "Please confirm your email address before signing in.";
 
-.dashboard-page {
-  scrollbar-width: thin;
-  scrollbar-color: rgba(57, 255, 20, 0.25) #050b14;
-}
+            }
 
-.dashboard-page::-webkit-scrollbar {
-  width: 8px;
-}
+            showMessage(
+              errorMessage
+            );
 
-.dashboard-page::-webkit-scrollbar-track {
-  background: #050b14;
-}
+          } finally {
 
-.dashboard-page::-webkit-scrollbar-thumb {
-  background: rgba(57, 255, 20, 0.25);
-  border-radius: 20px;
-}
+            setLoading(false);
 
-.dashboard-page::-webkit-scrollbar-thumb:hover {
-  background: rgba(57, 255, 20, 0.4);
-}
+          }
 
-/* =========================================================
-   LARGE DESKTOP
-   ========================================================= */
+        }
+      );
 
-@media (max-width: 1200px) {
-  .services-grid {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
+      /* -------------------------------------------------------
+         FORGOT PASSWORD
+         ------------------------------------------------------- */
 
-  .quick-actions {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
+      forgotPassword.addEventListener(
+        "click",
+        async function () {
 
-  .dashboard-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-}
+          clearMessage();
 
-/* =========================================================
-   TABLET
-   ========================================================= */
+          const email =
+            emailInput.value
+              .trim()
+              .toLowerCase();
 
-@media (max-width: 900px) {
-  :root {
-    --sidebar-width: 245px;
-  }
+          if (!email) {
 
-  .app-header {
-    padding: 0 20px;
-  }
+            showMessage(
+              "Enter your email address first."
+            );
 
-  .dashboard-section {
-    padding: 28px 20px 50px;
-  }
+            emailInput.focus();
 
-  .services-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
+            return;
 
-  .quick-actions {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
+          }
 
-  .dashboard-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-}
+          try {
 
-/* =========================================================
-   MOBILE
-   ========================================================= */
+            ensureSupabase();
 
-@media (max-width: 720px) {
-  body.dashboard-page {
-    background:
-      radial-gradient(
-        circle at 100% 0%,
-        rgba(57, 255, 20, 0.05),
-        transparent 32%
-      ),
-      #050b14;
-  }
+            forgotPassword.disabled =
+              true;
 
-  .dashboard-sidebar {
-    width: min(84vw, 300px);
+            const redirectUrl =
+              window.location.origin +
+              "/login.html";
 
-    transform: translateX(-105%);
+            const result =
+              await withTimeout(
+                supabase.auth.resetPasswordForEmail(
+                  email,
+                  {
+                    redirectTo:
+                      redirectUrl
+                  }
+                ),
+                15000,
+                "Password reset request"
+              );
 
-    transition:
-      transform 220ms ease;
+            if (result.error) {
 
-    box-shadow:
-      20px 0 60px rgba(0, 0, 0, 0.4);
-  }
+              throw result.error;
 
-  body.sidebar-open .dashboard-sidebar {
-    transform: translateX(0);
-  }
+            }
 
-  body.sidebar-open .sidebar-overlay {
-    display: block;
-  }
+            showMessage(
+              "If the email exists, a password reset link has been sent.",
+              "success"
+            );
 
-  .dashboard-main {
-    margin-left: 0;
-  }
+          } catch (error) {
 
-  .app-header {
-    height: 68px;
+            console.error(
+              "MEI One password reset error:",
+              error
+            );
 
-    padding: 0 15px;
-  }
+            showMessage(
+              error?.message ||
+              "Password reset failed."
+            );
 
-  .menu-btn {
-    display: inline-flex;
-  }
+          } finally {
 
-  .brand .brand-mark {
-    width: 35px;
-    height: 35px;
-  }
+            forgotPassword.disabled =
+              false;
 
-  .brand-name {
-    font-size: 17px;
-  }
+          }
 
-  .header-user {
-    gap: 0;
-  }
+        }
+      );
 
-  .user-info {
-    display: none;
-  }
+      /* -------------------------------------------------------
+         SIGN UP
+         ------------------------------------------------------- */
 
-  .logout-btn {
-    width: 40px;
-    height: 40px;
+      signupButton.addEventListener(
+        "click",
+        function () {
 
-    padding: 0;
+          window.location.href =
+            "signup.html";
 
-    font-size: 0;
-  }
+        }
+      );
 
-  .logout-btn::before {
-    content: "↪";
+      /* -------------------------------------------------------
+         INITIALISE
+         ------------------------------------------------------- */
 
-    font-size: 18px;
-  }
+      try {
 
-  .dashboard-section {
-    padding: 24px 15px 45px;
-  }
+        ensureSupabase();
 
-  .page-heading {
-    margin-bottom: 22px;
-  }
+        console.log(
+          "MEI One: Customer login ready."
+        );
 
-  .page-heading h1 {
-    font-size: 28px;
-  }
+      } catch (error) {
 
-  .page-heading p {
-    font-size: 13px;
-  }
+        console.error(
+          "MEI One initialization error:",
+          error
+        );
 
-  .quick-actions {
-    grid-template-columns: 1fr;
-    gap: 10px;
-  }
+        showMessage(
+          error.message
+        );
 
-  .quick-action {
-    min-height: 76px;
-  }
+      }
 
-  .quick-icon {
-    width: 43px;
-    height: 43px;
-    min-width: 43px;
-  }
+    })();
+  </script>
 
-  .dashboard-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 10px;
-  }
-
-  .dashboard-card {
-    padding: 16px;
-  }
-
-  .card-icon {
-    width: 37px;
-    height: 37px;
-    margin-bottom: 11px;
-  }
-
-  .card-value {
-    font-size: 23px;
-  }
-
-  .services-grid {
-    grid-template-columns: 1fr;
-    gap: 12px;
-  }
-
-  .service-card {
-    min-height: 165px;
-    padding: 18px;
-  }
-
-  .service-card-icon {
-    width: 50px;
-    height: 50px;
-    margin-bottom: 15px;
-    font-size: 24px;
-  }
-
-  .content-card {
-    padding: 17px;
-    border-radius: 16px;
-  }
-
-  .card-header {
-    margin-bottom: 16px;
-  }
-
-  .profile-card {
-    grid-template-columns: 1fr;
-    padding: 20px;
-    gap: 18px;
-  }
-
-  .profile-avatar {
-    width: 68px;
-    height: 68px;
-    border-radius: 18px;
-    font-size: 25px;
-  }
-
-  .profile-row {
-    grid-template-columns: 1fr;
-    gap: 4px;
-  }
-}
-
-/* =========================================================
-   SMALL PHONES
-   ========================================================= */
-
-@media (max-width: 430px) {
-  .dashboard-section {
-    padding-left: 12px;
-    padding-right: 12px;
-  }
-
-  .dashboard-grid {
-    grid-template-columns: 1fr 1fr;
-  }
-
-  .dashboard-card {
-    padding: 14px;
-  }
-
-  .card-label {
-    font-size: 9px;
-  }
-
-  .card-value {
-    font-size: 21px;
-  }
-
-  .quick-action {
-    padding: 13px;
-  }
-
-  .service-card {
-    min-height: 155px;
-  }
-
-  .page-heading h1 {
-    font-size: 25px;
-  }
-}
-
-/* =========================================================
-   REDUCED MOTION
-   ========================================================= */
-
-@media (prefers-reduced-motion: reduce) {
-  html {
-    scroll-behavior: auto;
-  }
-
-  *,
-  *::before,
-  *::after {
-    transition-duration: 0.01ms !important;
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-  }
-}
+</body>
+</html>
 ```
