@@ -1,977 +1,1693 @@
-```html
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
-  >
-
-  <meta
-    name="theme-color"
-    content="#071a2f"
-  >
-
-  <meta
-    name="robots"
-    content="noindex"
-  >
-
-  <title>Dashboard | MEI One</title>
-
-  <link
-    rel="stylesheet"
-    href="css/styles.css?v=4"
-  >
-
-  <link
-    rel="stylesheet"
-    href="css/dashboard.css?v=2"
-  >
-</head>
-
-<body class="dashboard-page">
-
-  <a
-    class="skip-link"
-    href="#dashboardMain"
-  >
-    Skip to content
-  </a>
-
-  <!-- =====================================================
-       SIDEBAR
-       ===================================================== -->
-
-  <aside
-    class="dashboard-sidebar"
-    id="sidebar"
-    aria-label="Dashboard navigation"
-  >
-
-    <a
-      href="index.html"
-      class="sidebar-brand"
-      aria-label="MEI One home"
-    >
-
-      <span class="brand-mark">
-        MEI
-      </span>
-
-      <span>
-        <strong>MEI One</strong>
-        <small>Connected services</small>
-      </span>
-
-    </a>
-
-    <nav class="dashboard-nav">
-
-      <a
-        href="#overview"
-        class="nav-item active"
-        data-section="overview"
-      >
-        <span
-          class="nav-icon"
-          aria-hidden="true"
-        >⌂</span>
-
-        <span>Overview</span>
-      </a>
-
-      <a
-        href="#requests"
-        class="nav-item"
-        data-section="requests"
-      >
-        <span
-          class="nav-icon"
-          aria-hidden="true"
-        >📋</span>
-
-        <span>My Requests</span>
-      </a>
-
-      <a
-        href="#payments"
-        class="nav-item"
-        data-section="payments"
-      >
-        <span
-          class="nav-icon"
-          aria-hidden="true"
-        >💳</span>
-
-        <span>Payments</span>
-      </a>
-
-      <a
-        href="#services"
-        class="nav-item"
-        data-section="services"
-      >
-        <span
-          class="nav-icon"
-          aria-hidden="true"
-        >▣</span>
-
-        <span>Services</span>
-      </a>
-
-      <a
-        href="#profile"
-        class="nav-item"
-        data-section="profile"
-      >
-        <span
-          class="nav-icon"
-          aria-hidden="true"
-        >◉</span>
-
-        <span>My Profile</span>
-      </a>
-
-    </nav>
-
-    <div class="sidebar-bottom">
-
-      <a
-        href="index.html"
-        class="nav-item"
-      >
-        <span
-          class="nav-icon"
-          aria-hidden="true"
-        >←</span>
-
-        <span>Back to MEI One</span>
-      </a>
-
-      <button
-        type="button"
-        class="nav-item logout-link"
-        id="sidebarLogout"
-      >
-        <span
-          class="nav-icon"
-          aria-hidden="true"
-        >↪</span>
-
-        <span>Sign out</span>
-      </button>
-
-    </div>
-
-  </aside>
-
-  <div
-    class="sidebar-overlay"
-    id="sidebarOverlay"
-  ></div>
-
-  <!-- =====================================================
-       HEADER
-       ===================================================== -->
-
-  <header class="app-header">
-
-    <div class="header-left">
-
-      <button
-        type="button"
-        class="menu-btn"
-        id="menuToggle"
-        aria-label="Open menu"
-        aria-controls="sidebar"
-        aria-expanded="false"
-      >
-        ☰
-      </button>
-
-      <a
-        href="index.html"
-        class="brand"
-        aria-label="MEI One home"
-      >
-
-        <span class="brand-mark">
-          MEI
-        </span>
-
-        <span class="brand-name">
-          One
-        </span>
-
-      </a>
-
-    </div>
-
-    <div class="header-right">
-
-      <div
-        class="header-user"
-        id="headerUser"
-      >
-
-        <div
-          class="user-avatar"
-          id="userAvatar"
-          aria-hidden="true"
-        >
-          U
-        </div>
-
-        <div class="user-info">
-
-          <strong id="userName">
-            User
-          </strong>
-
-          <small id="userEmail">
-            —
-          </small>
-
-        </div>
-
-      </div>
-
-      <button
-        type="button"
-        class="logout-btn"
-        id="logoutBtn"
-      >
-        Sign out
-      </button>
-
-    </div>
-
-  </header>
-
-  <!-- =====================================================
-       MAIN DASHBOARD
-       ===================================================== -->
-
-  <main
-    class="dashboard-main"
-    id="dashboardMain"
-  >
-
-    <!-- ===================================================
-         OVERVIEW
-         =================================================== -->
-
-    <section
-      class="dashboard-section active"
-      data-section-content="overview"
-    >
-
-      <div class="page-heading">
-
-        <div>
-
-          <h1>
-            Welcome back,
-            <span id="welcomeName">
-              User
-            </span>
-          </h1>
-
-          <p>
-            Access your connected MEI services from one place.
-          </p>
-
-        </div>
-
-        <div class="status-pill">
-          <span></span>
-          Account active
-        </div>
-
-      </div>
-
-      <!-- QUICK SERVICES -->
-
-      <div class="quick-actions">
-
-        <a
-          href="rides.html"
-          class="quick-action"
-        >
-          <span
-            class="quick-icon"
-            aria-hidden="true"
-          >
-            🚗
-          </span>
-
-          <strong>
-            Request a ride
-          </strong>
-
-          <small>
-            Move with ease
-          </small>
-        </a>
-
-        <a
-          href="delivery.html"
-          class="quick-action"
-        >
-          <span
-            class="quick-icon"
-            aria-hidden="true"
-          >
-            📦
-          </span>
-
-          <strong>
-            Send a delivery
-          </strong>
-
-          <small>
-            Send & receive
-          </small>
-        </a>
-
-        <a
-          href="towing.html"
-          class="quick-action"
-        >
-          <span
-            class="quick-icon"
-            aria-hidden="true"
-          >
-            🚙
-          </span>
-
-          <strong>
-            Request towing
-          </strong>
-
-          <small>
-            Vehicle recovery
-          </small>
-        </a>
-
-        <a
-          href="roadside.html"
-          class="quick-action"
-        >
-          <span
-            class="quick-icon"
-            aria-hidden="true"
-          >
-            🛠️
-          </span>
-
-          <strong>
-            Roadside help
-          </strong>
-
-          <small>
-            Help when needed
-          </small>
-        </a>
-
-      </div>
-
-      <!-- DASHBOARD STATS -->
-
-      <div class="dashboard-grid">
-
-        <div class="dashboard-card">
-
-          <div
-            class="card-icon"
-            aria-hidden="true"
-          >
-            📋
-          </div>
-
-          <div>
-
-            <span class="card-label">
-              My requests
-            </span>
-
-            <strong
-              id="requestCount"
-              class="card-value"
-            >
-              —
-            </strong>
-
-          </div>
-
-        </div>
-
-        <div class="dashboard-card">
-
-          <div
-            class="card-icon"
-            aria-hidden="true"
-          >
-            💳
-          </div>
-
-          <div>
-
-            <span class="card-label">
-              Payments
-            </span>
-
-            <strong
-              id="paymentCount"
-              class="card-value"
-            >
-              —
-            </strong>
-
-          </div>
-
-        </div>
-
-        <div class="dashboard-card">
-
-          <div
-            class="card-icon"
-            aria-hidden="true"
-          >
-            ✓
-          </div>
-
-          <div>
-
-            <span class="card-label">
-              Completed
-            </span>
-
-            <strong
-              id="completedCount"
-              class="card-value"
-            >
-              —
-            </strong>
-
-          </div>
-
-        </div>
-
-      </div>
+```css
+/* =========================================================
+   MEI ONE — DASHBOARD
+   Dark Navy / Neon Green
+   Production Dashboard Styles
+   ========================================================= */
+
+/* =========================================================
+   RESET
+   ========================================================= */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  font-size: 16px;
+}
+
+body.dashboard-page {
+  margin: 0;
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at 80% 0%, rgba(57, 255, 20, 0.06), transparent 28%),
+    #050b14;
+  color: #f4f7f8;
+  font-family:
+    Inter,
+    ui-sans-serif,
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
+  line-height: 1.5;
+  overflow-x: hidden;
+}
+
+body.dashboard-page a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button,
+a {
+  -webkit-tap-highlight-color: transparent;
+}
+
+button {
+  font: inherit;
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+/* =========================================================
+   VARIABLES
+   ========================================================= */
+
+:root {
+  --mei-bg: #050b14;
+  --mei-bg-soft: #08111d;
+  --mei-panel: #0b1624;
+  --mei-panel-2: #0e1b2b;
+  --mei-panel-3: #101f31;
+
+  --mei-border: rgba(255, 255, 255, 0.08);
+  --mei-border-strong: rgba(57, 255, 20, 0.24);
+
+  --mei-green: #39ff14;
+  --mei-green-dark: #19c900;
+  --mei-green-soft: rgba(57, 255, 20, 0.1);
+  --mei-green-glow: rgba(57, 255, 20, 0.22);
+
+  --mei-white: #ffffff;
+  --mei-text: #f4f7f8;
+  --mei-muted: #8d9aaa;
+  --mei-muted-2: #687789;
+
+  --mei-danger: #ff4d67;
+  --mei-warning: #ffbf3f;
+  --mei-blue: #42a5ff;
+
+  --sidebar-width: 260px;
+  --header-height: 76px;
+
+  --radius-sm: 10px;
+  --radius-md: 16px;
+  --radius-lg: 22px;
+
+  --shadow:
+    0 18px 50px rgba(0, 0, 0, 0.28);
+
+  --transition:
+    180ms ease;
+}
+
+/* =========================================================
+   ACCESSIBILITY
+   ========================================================= */
+
+.skip-link {
+  position: fixed;
+  top: -100px;
+  left: 16px;
+  z-index: 9999;
+  padding: 12px 18px;
+  border-radius: 10px;
+  background: var(--mei-green);
+  color: #031006;
+  font-weight: 800;
+  transition: top var(--transition);
+}
+
+.skip-link:focus {
+  top: 16px;
+  outline: none;
+}
+
+/* =========================================================
+   SIDEBAR
+   ========================================================= */
+
+.dashboard-sidebar {
+  position: fixed;
+  inset: 0 auto 0 0;
+  z-index: 1000;
+
+  width: var(--sidebar-width);
+  height: 100vh;
+
+  display: flex;
+  flex-direction: column;
+
+  background:
+    linear-gradient(
+      180deg,
+      #07101c 0%,
+      #06101a 100%
+    );
 
-      <!-- RECENT REQUESTS -->
-
-      <div class="content-card">
+  border-right: 1px solid var(--mei-border);
 
-        <div class="card-header">
-
-          <h2>
-            Recent requests
-          </h2>
+  overflow-y: auto;
+  overflow-x: hidden;
+
+  scrollbar-width: thin;
+  scrollbar-color: rgba(57, 255, 20, 0.25) transparent;
+}
+
+.dashboard-sidebar::-webkit-scrollbar {
+  width: 5px;
+}
+
+.dashboard-sidebar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.dashboard-sidebar::-webkit-scrollbar-thumb {
+  background: rgba(57, 255, 20, 0.25);
+  border-radius: 20px;
+}
+
+/* =========================================================
+   BRAND
+   ========================================================= */
+
+.sidebar-brand {
+  min-height: var(--header-height);
+
+  display: flex;
+  align-items: center;
+
+  padding: 18px 20px;
+
+  border-bottom: 1px solid var(--mei-border);
+}
+
+.sidebar-brand a {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.brand-mark {
+  width: 42px;
+  height: 42px;
+
+  display: grid;
+  place-items: center;
+
+  border-radius: 12px;
+
+  background: var(--mei-green);
+  color: #031006;
+
+  font-size: 20px;
+  font-weight: 950;
+
+  box-shadow:
+    0 0 0 4px rgba(57, 255, 20, 0.06),
+    0 0 22px rgba(57, 255, 20, 0.18);
+}
+
+.sidebar-brand .brand-name {
+  color: var(--mei-white);
+  font-size: 20px;
+  font-weight: 900;
+  letter-spacing: -0.04em;
+}
+
+/* =========================================================
+   NAVIGATION
+   ========================================================= */
+
+.dashboard-nav {
+  padding: 18px 12px;
+}
+
+.nav-item {
+  position: relative;
+
+  width: 100%;
+  min-height: 48px;
+
+  display: flex;
+  align-items: center;
+  gap: 13px;
+
+  margin-bottom: 5px;
+  padding: 11px 14px;
+
+  border: 1px solid transparent;
+  border-radius: 12px;
+
+  color: var(--mei-muted);
+
+  font-size: 14px;
+  font-weight: 750;
+
+  transition:
+    background var(--transition),
+    color var(--transition),
+    border-color var(--transition),
+    transform var(--transition);
+}
+
+.nav-item:hover {
+  color: var(--mei-white);
+  background: rgba(255, 255, 255, 0.035);
+  border-color: var(--mei-border);
+  transform: translateX(2px);
+}
+
+.nav-item.active {
+  color: var(--mei-green);
+  background:
+    linear-gradient(
+      90deg,
+      rgba(57, 255, 20, 0.12),
+      rgba(57, 255, 20, 0.035)
+    );
+  border-color: rgba(57, 255, 20, 0.15);
+}
+
+.nav-item.active::before {
+  content: "";
+
+  position: absolute;
+  left: -12px;
+  top: 9px;
+  bottom: 9px;
+
+  width: 3px;
+
+  border-radius: 0 5px 5px 0;
+
+  background: var(--mei-green);
+  box-shadow: 0 0 12px var(--mei-green-glow);
+}
+
+.nav-icon {
+  width: 22px;
+  min-width: 22px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 17px;
+}
 
-          <button
-            type="button"
-            class="text-button"
-            data-section-link="requests"
-          >
-            View all
-          </button>
+.logout-link {
+  color: #a5afba;
+}
 
-        </div>
+.logout-link:hover {
+  color: var(--mei-danger);
+  background: rgba(255, 77, 103, 0.06);
+  border-color: rgba(255, 77, 103, 0.12);
+}
+
+.sidebar-bottom {
+  margin-top: auto;
+  padding: 12px;
+  border-top: 1px solid var(--mei-border);
+}
+
+/* =========================================================
+   OVERLAY
+   ========================================================= */
+
+.sidebar-overlay {
+  display: none;
+
+  position: fixed;
+  inset: 0;
+  z-index: 900;
+
+  background: rgba(0, 0, 0, 0.68);
+  backdrop-filter: blur(3px);
+}
+
+/* =========================================================
+   MAIN APP AREA
+   ========================================================= */
+
+.dashboard-main {
+  min-height: 100vh;
+  margin-left: var(--sidebar-width);
+}
+
+/* =========================================================
+   HEADER
+   ========================================================= */
+
+.app-header {
+  position: sticky;
+  top: 0;
+  z-index: 800;
+
+  height: var(--header-height);
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  padding: 0 30px;
+
+  background:
+    rgba(5, 11, 20, 0.9);
+
+  border-bottom: 1px solid var(--mei-border);
+
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+}
+
+.header-left,
+.header-right {
+  display: flex;
+  align-items: center;
+}
+
+.header-left {
+  gap: 15px;
+}
+
+.header-right {
+  gap: 14px;
+}
+
+.menu-btn {
+  display: none;
+
+  width: 42px;
+  height: 42px;
+
+  align-items: center;
+  justify-content: center;
+
+  border: 1px solid var(--mei-border);
+  border-radius: 10px;
+
+  background: var(--mei-panel);
+  color: var(--mei-white);
+
+  cursor: pointer;
+}
+
+.menu-btn:hover {
+  border-color: var(--mei-border-strong);
+  color: var(--mei-green);
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.brand .brand-mark {
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  font-size: 17px;
+}
+
+.brand-name {
+  color: var(--mei-white);
+  font-size: 18px;
+  font-weight: 900;
+  letter-spacing: -0.04em;
+}
+
+.header-user {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.user-avatar {
+  width: 40px;
+  height: 40px;
+
+  display: grid;
+  place-items: center;
+
+  border-radius: 50%;
+
+  background:
+    linear-gradient(
+      135deg,
+      rgba(57, 255, 20, 0.2),
+      rgba(57, 255, 20, 0.04)
+    );
+
+  border: 1px solid rgba(57, 255, 20, 0.3);
+
+  color: var(--mei-green);
+  font-size: 14px;
+  font-weight: 900;
+}
+
+.user-info {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.user-info strong {
+  max-width: 180px;
+
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+
+  color: var(--mei-white);
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.user-info span {
+  color: var(--mei-muted);
+  font-size: 11px;
+}
+
+.logout-btn {
+  min-height: 40px;
+
+  padding: 8px 13px;
+
+  border: 1px solid var(--mei-border);
+  border-radius: 10px;
+
+  background: transparent;
+  color: var(--mei-muted);
+
+  font-size: 12px;
+  font-weight: 800;
+
+  cursor: pointer;
+
+  transition:
+    color var(--transition),
+    border-color var(--transition),
+    background var(--transition);
+}
+
+.logout-btn:hover {
+  color: var(--mei-danger);
+  border-color: rgba(255, 77, 103, 0.25);
+  background: rgba(255, 77, 103, 0.05);
+}
+
+/* =========================================================
+   DASHBOARD CONTENT
+   ========================================================= */
 
-        <div id="recentRequests">
+.dashboard-section {
+  display: none;
+  width: 100%;
+  padding: 34px 30px 60px;
+}
+
+.dashboard-section.active {
+  display: block;
+}
+
+.page-heading {
+  margin-bottom: 28px;
+}
+
+.page-heading h1 {
+  margin: 0;
+
+  color: var(--mei-white);
+
+  font-size: clamp(26px, 3vw, 38px);
+  line-height: 1.1;
+
+  font-weight: 950;
+  letter-spacing: -0.045em;
+}
+
+.page-heading p {
+  max-width: 720px;
+  margin: 9px 0 0;
+
+  color: var(--mei-muted);
+  font-size: 14px;
+}
+
+.status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+
+  margin-top: 15px;
+  padding: 7px 11px;
+
+  border: 1px solid rgba(57, 255, 20, 0.2);
+  border-radius: 999px;
 
-          <div class="empty-state">
+  background: rgba(57, 255, 20, 0.07);
+  color: var(--mei-green);
 
-            <div
-              class="empty-icon"
-              aria-hidden="true"
-            >
-              📋
-            </div>
+  font-size: 11px;
+  font-weight: 850;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.status-pill::before {
+  content: "";
 
-            <h3>
-              No requests yet
-            </h3>
+  width: 7px;
+  height: 7px;
 
-            <p>
-              Your service requests will appear here.
-            </p>
+  border-radius: 50%;
+  background: var(--mei-green);
+
+  box-shadow: 0 0 9px rgba(57, 255, 20, 0.7);
+}
+
+/* =========================================================
+   QUICK ACTIONS
+   ========================================================= */
+
+.quick-actions {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 14px;
 
-          </div>
+  margin-bottom: 30px;
+}
 
-        </div>
+.quick-action {
+  min-height: 92px;
 
-      </div>
+  display: flex;
+  align-items: center;
+  gap: 13px;
 
-    </section>
+  padding: 16px;
 
-    <!-- ===================================================
-         REQUESTS
-         =================================================== -->
+  border: 1px solid var(--mei-border);
+  border-radius: var(--radius-md);
 
-    <section
-      class="dashboard-section"
-      data-section-content="requests"
-    >
+  background:
+    linear-gradient(
+      145deg,
+      rgba(14, 27, 43, 0.95),
+      rgba(8, 17, 29, 0.95)
+    );
 
-      <div class="page-heading">
+  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.16);
 
-        <div>
+  transition:
+    transform var(--transition),
+    border-color var(--transition),
+    background var(--transition),
+    box-shadow var(--transition);
+}
 
-          <h1>
-            My requests
-          </h1>
+.quick-action:hover {
+  transform: translateY(-3px);
 
-          <p>
-            Track your MEI One service requests.
-          </p>
+  border-color: rgba(57, 255, 20, 0.28);
 
-        </div>
+  background:
+    linear-gradient(
+      145deg,
+      rgba(16, 34, 48, 1),
+      rgba(8, 20, 30, 1)
+    );
 
-      </div>
+  box-shadow:
+    0 16px 40px rgba(0, 0, 0, 0.28),
+    0 0 24px rgba(57, 255, 20, 0.05);
+}
 
-      <div
-        class="content-card"
-        id="requestsList"
-      >
+.quick-icon {
+  width: 48px;
+  height: 48px;
+  min-width: 48px;
 
-        <div class="loading-state">
-          Loading requests…
-        </div>
+  display: grid;
+  place-items: center;
 
-      </div>
+  border-radius: 13px;
 
-    </section>
+  background: var(--mei-green-soft);
+  border: 1px solid rgba(57, 255, 20, 0.16);
 
-    <!-- ===================================================
-         PAYMENTS
-         =================================================== -->
+  font-size: 22px;
+}
 
-    <section
-      class="dashboard-section"
-      data-section-content="payments"
-    >
+.quick-action strong {
+  display: block;
 
-      <div class="page-heading">
+  color: var(--mei-white);
+  font-size: 13px;
+  font-weight: 900;
+}
 
-        <div>
+.quick-action span {
+  display: block;
+  margin-top: 2px;
 
-          <h1>
-            Payments
-          </h1>
+  color: var(--mei-muted);
+  font-size: 11px;
+}
 
-          <p>
-            View your payment history.
-          </p>
+/* =========================================================
+   DASHBOARD STATS
+   ========================================================= */
 
-        </div>
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 16px;
 
-      </div>
+  margin-bottom: 30px;
+}
 
-      <div
-        class="content-card"
-        id="paymentsList"
-      >
+.dashboard-card {
+  position: relative;
 
-        <div class="loading-state">
-          Loading payments…
-        </div>
+  min-width: 0;
+  padding: 21px;
 
-      </div>
+  border: 1px solid var(--mei-border);
+  border-radius: var(--radius-md);
 
-    </section>
+  background:
+    linear-gradient(
+      145deg,
+      rgba(13, 27, 43, 0.96),
+      rgba(7, 16, 27, 0.96)
+    );
 
-    <!-- ===================================================
-         SERVICES
-         =================================================== -->
+  overflow: hidden;
+}
 
-    <section
-      class="dashboard-section"
-      data-section-content="services"
-    >
+.dashboard-card::after {
+  content: "";
 
-      <div class="page-heading">
+  position: absolute;
+  width: 100px;
+  height: 100px;
 
-        <div>
+  right: -45px;
+  bottom: -45px;
 
-          <h1>
-            MEI One Services
-          </h1>
+  border-radius: 50%;
 
-          <p>
-            Everything you need, connected in one place.
-          </p>
+  background: rgba(57, 255, 20, 0.05);
+}
 
-        </div>
+.card-icon {
+  width: 42px;
+  height: 42px;
 
-        <div class="status-pill">
-          <span></span>
-          Kenya
-        </div>
+  display: grid;
+  place-items: center;
 
-      </div>
+  margin-bottom: 15px;
 
-      <!--
-        These are direct customer-facing service links.
-        They intentionally use the dedicated service pages.
-      -->
+  border-radius: 11px;
 
-      <div
-        class="services-grid"
-        id="servicesGrid"
-      >
+  background: rgba(57, 255, 20, 0.08);
+  border: 1px solid rgba(57, 255, 20, 0.12);
 
-        <!-- MEI RIDES -->
+  font-size: 18px;
+}
 
-        <a
-          href="rides.html"
-          class="service-card"
-        >
+.card-label {
+  margin-bottom: 4px;
 
-          <div class="service-card-icon">
-            🚗
-          </div>
+  color: var(--mei-muted);
+  font-size: 11px;
+  font-weight: 750;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+}
 
-          <div class="service-card-content">
+.card-value {
+  color: var(--mei-white);
+  font-size: 28px;
+  line-height: 1;
+  font-weight: 950;
+  letter-spacing: -0.04em;
+}
 
-            <h3>
-              MEI Rides
-            </h3>
+/* =========================================================
+   CONTENT CARDS
+   ========================================================= */
 
-            <p>
-              Move with ease
-            </p>
+.content-card {
+  min-width: 0;
 
-          </div>
+  margin-bottom: 22px;
+  padding: 22px;
 
-          <span class="service-arrow">
-            →
-          </span>
+  border: 1px solid var(--mei-border);
+  border-radius: var(--radius-lg);
 
-        </a>
+  background:
+    linear-gradient(
+      145deg,
+      rgba(10, 22, 36, 0.97),
+      rgba(6, 14, 24, 0.97)
+    );
 
-        <!-- MEI DELIVERY -->
+  box-shadow: var(--shadow);
+}
 
-        <a
-          href="delivery.html"
-          class="service-card"
-        >
+.card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
 
-          <div class="service-card-icon">
-            📦
-          </div>
+  margin-bottom: 20px;
+}
 
-          <div class="service-card-content">
+.card-header h2,
+.card-header h3 {
+  margin: 0;
 
-            <h3>
-              MEI Delivery
-            </h3>
+  color: var(--mei-white);
 
-            <p>
-              Send & receive
-            </p>
+  font-size: 17px;
+  font-weight: 900;
+  letter-spacing: -0.02em;
+}
 
-          </div>
+.text-button {
+  padding: 7px 10px;
 
-          <span class="service-arrow">
-            →
-          </span>
+  border: 1px solid transparent;
+  border-radius: 8px;
 
-        </a>
+  background: transparent;
+  color: var(--mei-green);
 
-        <!-- MEI TOWING -->
+  font-size: 12px;
+  font-weight: 800;
 
-        <a
-          href="towing.html"
-          class="service-card"
-        >
+  cursor: pointer;
+}
 
-          <div class="service-card-icon">
-            🚙
-          </div>
+.text-button:hover {
+  background: rgba(57, 255, 20, 0.07);
+  border-color: rgba(57, 255, 20, 0.12);
+}
 
-          <div class="service-card-content">
+/* =========================================================
+   EMPTY / LOADING STATES
+   ========================================================= */
 
-            <h3>
-              MEI Towing
-            </h3>
+.empty-state,
+.loading-state {
+  padding: 45px 20px;
 
-            <p>
-              Vehicle recovery
-            </p>
+  text-align: center;
 
-          </div>
+  border: 1px dashed rgba(255, 255, 255, 0.09);
+  border-radius: 14px;
 
-          <span class="service-arrow">
-            →
-          </span>
+  color: var(--mei-muted);
+}
 
-        </a>
+.empty-icon {
+  width: 56px;
+  height: 56px;
 
-        <!-- ROADSIDE -->
+  display: grid;
+  place-items: center;
 
-        <a
-          href="roadside.html"
-          class="service-card"
-        >
+  margin: 0 auto 14px;
 
-          <div class="service-card-icon">
-            🛠️
-          </div>
+  border-radius: 50%;
 
-          <div class="service-card-content">
+  background: rgba(57, 255, 20, 0.07);
+  border: 1px solid rgba(57, 255, 20, 0.12);
 
-            <h3>
-              Roadside Assistance
-            </h3>
+  font-size: 22px;
+}
 
-            <p>
-              Help when needed
-            </p>
+.empty-state strong {
+  display: block;
 
-          </div>
+  margin-bottom: 5px;
 
-          <span class="service-arrow">
-            →
-          </span>
+  color: var(--mei-white);
+  font-size: 14px;
+}
 
-        </a>
+.empty-state p,
+.loading-state p {
+  margin: 0;
 
-        <!-- MEI AUTO -->
+  color: var(--mei-muted);
+  font-size: 12px;
+}
 
-        <a
-          href="auto.html"
-          class="service-card"
-        >
+/* =========================================================
+   SERVICES
+   ========================================================= */
 
-          <div class="service-card-icon">
-            🔧
-          </div>
+.services-grid {
+  display: grid;
 
-          <div class="service-card-content">
+  grid-template-columns:
+    repeat(4, minmax(0, 1fr));
 
-            <h3>
-              MEI Auto
-            </h3>
+  gap: 16px;
 
-            <p>
-              Automotive services
-            </p>
+  margin-top: 4px;
+}
 
-          </div>
+.service-card {
+  position: relative;
 
-          <span class="service-arrow">
-            →
-          </span>
+  min-height: 190px;
 
-        </a>
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 
-        <!-- MARKETPLACE -->
+  padding: 20px;
 
-        <a
-          href="marketplace.html"
-          class="service-card"
-        >
+  border: 1px solid var(--mei-border);
+  border-radius: var(--radius-lg);
 
-          <div class="service-card-icon">
-            🛍️
-          </div>
+  background:
+    linear-gradient(
+      145deg,
+      rgba(14, 29, 45, 0.98),
+      rgba(7, 16, 27, 0.98)
+    );
 
-          <div class="service-card-content">
+  overflow: hidden;
 
-            <h3>
-              MEI Marketplace
-            </h3>
+  transition:
+    transform var(--transition),
+    border-color var(--transition),
+    box-shadow var(--transition),
+    background var(--transition);
+}
 
-            <p>
-              Shop & discover
-            </p>
+.service-card::before {
+  content: "";
 
-          </div>
+  position: absolute;
+  left: 0;
+  top: 0;
 
-          <span class="service-arrow">
-            →
-          </span>
+  width: 100%;
+  height: 2px;
 
-        </a>
+  background: linear-gradient(
+    90deg,
+    transparent,
+    var(--mei-green),
+    transparent
+  );
 
-        <!-- HOME SERVICES -->
+  opacity: 0;
 
-        <a
-          href="home-services.html"
-          class="service-card"
-        >
+  transition: opacity var(--transition);
+}
 
-          <div class="service-card-icon">
-            🏠
-          </div>
+.service-card::after {
+  content: "";
 
-          <div class="service-card-content">
+  position: absolute;
 
-            <h3>
-              Home Services
-            </h3>
+  width: 150px;
+  height: 150px;
 
-            <p>
-              Services at home
-            </p>
+  right: -80px;
+  bottom: -80px;
 
-          </div>
+  border-radius: 50%;
 
-          <span class="service-arrow">
-            →
-          </span>
+  background: rgba(57, 255, 20, 0.055);
 
-        </a>
+  pointer-events: none;
+}
 
-        <!-- MEI LEARN -->
+.service-card:hover {
+  transform: translateY(-5px);
 
-        <a
-          href="https://www.meidriveafrica.com/"
-          class="service-card"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
+  border-color: rgba(57, 255, 20, 0.32);
 
-          <div class="service-card-icon">
-            🎓
-          </div>
+  background:
+    linear-gradient(
+      145deg,
+      rgba(16, 35, 51, 1),
+      rgba(7, 18, 29, 1)
+    );
 
-          <div class="service-card-content">
+  box-shadow:
+    0 18px 45px rgba(0, 0, 0, 0.32),
+    0 0 28px rgba(57, 255, 20, 0.06);
+}
 
-            <h3>
-              MEI Learn
-            </h3>
+.service-card:hover::before {
+  opacity: 1;
+}
 
-            <p>
-              Learn & practise
-            </p>
+.service-card-icon {
+  position: relative;
+  z-index: 1;
 
-          </div>
+  width: 56px;
+  height: 56px;
 
-          <span class="service-arrow">
-            ↗
-          </span>
+  display: grid;
+  place-items: center;
 
-        </a>
+  margin-bottom: 20px;
 
-      </div>
+  border-radius: 16px;
 
-    </section>
+  background:
+    linear-gradient(
+      145deg,
+      rgba(57, 255, 20, 0.15),
+      rgba(57, 255, 20, 0.045)
+    );
 
-    <!-- ===================================================
-         PROFILE
-         =================================================== -->
+  border: 1px solid rgba(57, 255, 20, 0.18);
 
-    <section
-      class="dashboard-section"
-      data-section-content="profile"
-    >
+  font-size: 27px;
 
-      <div class="page-heading">
+  transition:
+    transform var(--transition),
+    box-shadow var(--transition);
+}
 
-        <div>
+.service-card:hover .service-card-icon {
+  transform: scale(1.06);
 
-          <h1>
-            My profile
-          </h1>
+  box-shadow:
+    0 0 20px rgba(57, 255, 20, 0.09);
+}
 
-          <p>
-            Manage your MEI One account.
-          </p>
+.service-card-content {
+  position: relative;
+  z-index: 1;
 
-        </div>
+  flex: 1;
+}
 
-      </div>
+.service-card-content h3 {
+  margin: 0 0 6px;
 
-      <div class="content-card profile-card">
+  color: var(--mei-white);
 
-        <div class="profile-avatar">
+  font-size: 16px;
+  line-height: 1.25;
 
-          <span id="profileAvatar">
-            U
-          </span>
+  font-weight: 900;
+  letter-spacing: -0.025em;
+}
 
-        </div>
+.service-card-content p {
+  margin: 0;
 
-        <div class="profile-details">
+  color: var(--mei-muted);
 
-          <div class="profile-row">
+  font-size: 12px;
+  line-height: 1.55;
+}
 
-            <span>
-              Name
-            </span>
+.service-arrow {
+  position: relative;
+  z-index: 1;
 
-            <strong id="profileName">
-              —
-            </strong>
+  align-self: flex-end;
 
-          </div>
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
-          <div class="profile-row">
+  width: 32px;
+  height: 32px;
 
-            <span>
-              Email
-            </span>
+  margin-top: 15px;
 
-            <strong id="profileEmail">
-              —
-            </strong>
+  border: 1px solid rgba(57, 255, 20, 0.15);
+  border-radius: 50%;
 
-          </div>
+  background: rgba(57, 255, 20, 0.07);
+  color: var(--mei-green);
 
-          <div class="profile-row">
+  font-size: 16px;
+  font-weight: 900;
 
-            <span>
-              Phone
-            </span>
+  transition:
+    transform var(--transition),
+    background var(--transition);
+}
 
-            <strong id="profilePhone">
-              —
-            </strong>
+.service-card:hover .service-arrow {
+  transform: translateX(3px);
 
-          </div>
+  background: rgba(57, 255, 20, 0.13);
+}
 
-          <div class="profile-row">
+/* =========================================================
+   PROFILE
+   ========================================================= */
 
-            <span>
-              Account
-            </span>
+.profile-card {
+  display: grid;
 
-            <strong class="active-text">
-              Active
-            </strong>
+  grid-template-columns: auto minmax(0, 1fr);
 
-          </div>
+  gap: 24px;
 
-        </div>
+  padding: 25px;
 
-      </div>
+  border: 1px solid var(--mei-border);
+  border-radius: var(--radius-lg);
 
-    </section>
+  background:
+    linear-gradient(
+      145deg,
+      rgba(13, 27, 43, 0.97),
+      rgba(7, 16, 27, 0.97)
+    );
 
-  </main>
+  box-shadow: var(--shadow);
+}
 
-  <!-- =====================================================
-       SCRIPTS
-       ===================================================== -->
+.profile-avatar {
+  width: 82px;
+  height: 82px;
 
-  <script src="js/config.js"></script>
+  display: grid;
+  place-items: center;
 
-  <script
-    src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"
-  ></script>
+  border-radius: 22px;
 
-  <script src="js/supabase.js"></script>
+  background:
+    linear-gradient(
+      145deg,
+      rgba(57, 255, 20, 0.18),
+      rgba(57, 255, 20, 0.05)
+    );
 
-  <script src="js/site.js"></script>
+  border: 1px solid rgba(57, 255, 20, 0.25);
 
-  <script src="js/dashboard.js"></script>
+  color: var(--mei-green);
 
-</body>
-</html>
+  font-size: 30px;
+  font-weight: 950;
+}
+
+.profile-details {
+  min-width: 0;
+}
+
+.profile-details h2 {
+  margin: 0 0 4px;
+
+  color: var(--mei-white);
+
+  font-size: 20px;
+  font-weight: 900;
+}
+
+.profile-details > p {
+  margin: 0 0 20px;
+
+  color: var(--mei-muted);
+  font-size: 13px;
+}
+
+.profile-row {
+  display: grid;
+
+  grid-template-columns:
+    minmax(110px, 150px)
+    minmax(0, 1fr);
+
+  gap: 15px;
+
+  padding: 12px 0;
+
+  border-top: 1px solid var(--mei-border);
+}
+
+.profile-row strong {
+  color: var(--mei-muted);
+  font-size: 12px;
+  font-weight: 750;
+}
+
+.profile-row span {
+  min-width: 0;
+
+  overflow-wrap: anywhere;
+
+  color: var(--mei-white);
+  font-size: 13px;
+  font-weight: 650;
+}
+
+.active-text {
+  color: var(--mei-green) !important;
+  font-weight: 850 !important;
+}
+
+/* =========================================================
+   REQUEST / PAYMENT TABLE-LIKE CONTENT
+   ========================================================= */
+
+.request-list,
+.payment-list {
+  width: 100%;
+}
+
+.request-item,
+.payment-item {
+  display: grid;
+
+  grid-template-columns:
+    minmax(0, 1fr)
+    auto;
+
+  gap: 20px;
+
+  padding: 16px 0;
+
+  border-bottom: 1px solid var(--mei-border);
+}
+
+.request-item:last-child,
+.payment-item:last-child {
+  border-bottom: 0;
+}
+
+.request-item strong,
+.payment-item strong {
+  color: var(--mei-white);
+  font-size: 13px;
+}
+
+.request-item span,
+.payment-item span {
+  display: block;
+
+  margin-top: 3px;
+
+  color: var(--mei-muted);
+  font-size: 11px;
+}
+
+/* =========================================================
+   STATUS BADGES
+   ========================================================= */
+
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  min-height: 28px;
+
+  padding: 5px 10px;
+
+  border-radius: 999px;
+
+  font-size: 10px;
+  font-weight: 850;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.status-pending {
+  color: var(--mei-warning);
+  background: rgba(255, 191, 63, 0.09);
+  border: 1px solid rgba(255, 191, 63, 0.16);
+}
+
+.status-completed,
+.status-paid,
+.status-active {
+  color: var(--mei-green);
+  background: rgba(57, 255, 20, 0.08);
+  border: 1px solid rgba(57, 255, 20, 0.16);
+}
+
+.status-cancelled,
+.status-failed {
+  color: var(--mei-danger);
+  background: rgba(255, 77, 103, 0.08);
+  border: 1px solid rgba(255, 77, 103, 0.16);
+}
+
+.status-processing,
+.status-progress {
+  color: var(--mei-blue);
+  background: rgba(66, 165, 255, 0.08);
+  border: 1px solid rgba(66, 165, 255, 0.16);
+}
+
+/* =========================================================
+   FORMS / INPUTS IF USED ON DASHBOARD
+   ========================================================= */
+
+.dashboard-page input,
+.dashboard-page select,
+.dashboard-page textarea {
+  width: 100%;
+
+  min-height: 44px;
+
+  padding: 10px 13px;
+
+  border: 1px solid var(--mei-border);
+  border-radius: 10px;
+
+  outline: none;
+
+  background: #07121f;
+  color: var(--mei-white);
+
+  font: inherit;
+  font-size: 13px;
+
+  transition:
+    border-color var(--transition),
+    box-shadow var(--transition);
+}
+
+.dashboard-page textarea {
+  min-height: 100px;
+  resize: vertical;
+}
+
+.dashboard-page input::placeholder,
+.dashboard-page textarea::placeholder {
+  color: var(--mei-muted-2);
+}
+
+.dashboard-page input:focus,
+.dashboard-page select:focus,
+.dashboard-page textarea:focus {
+  border-color: rgba(57, 255, 20, 0.45);
+
+  box-shadow:
+    0 0 0 3px rgba(57, 255, 20, 0.07);
+}
+
+/* =========================================================
+   BUTTONS
+   ========================================================= */
+
+.dashboard-page .primary-btn {
+  min-height: 44px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+
+  padding: 10px 17px;
+
+  border: 1px solid var(--mei-green);
+  border-radius: 10px;
+
+  background: var(--mei-green);
+  color: #031006;
+
+  font-size: 13px;
+  font-weight: 900;
+
+  cursor: pointer;
+
+  transition:
+    transform var(--transition),
+    box-shadow var(--transition),
+    background var(--transition);
+}
+
+.dashboard-page .primary-btn:hover {
+  transform: translateY(-1px);
+
+  background: #4dff2b;
+
+  box-shadow:
+    0 8px 22px rgba(57, 255, 20, 0.16);
+}
+
+.dashboard-page .secondary-btn {
+  min-height: 44px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 10px 17px;
+
+  border: 1px solid var(--mei-border);
+  border-radius: 10px;
+
+  background: transparent;
+  color: var(--mei-white);
+
+  font-size: 13px;
+  font-weight: 800;
+
+  cursor: pointer;
+}
+
+.dashboard-page .secondary-btn:hover {
+  border-color: rgba(57, 255, 20, 0.25);
+  color: var(--mei-green);
+  background: rgba(57, 255, 20, 0.05);
+}
+
+/* =========================================================
+   LINKS
+   ========================================================= */
+
+.dashboard-page a:focus-visible,
+.dashboard-page button:focus-visible,
+.dashboard-page input:focus-visible,
+.dashboard-page select:focus-visible,
+.dashboard-page textarea:focus-visible {
+  outline: 2px solid var(--mei-green);
+  outline-offset: 3px;
+}
+
+/* =========================================================
+   SCROLLBAR
+   ========================================================= */
+
+.dashboard-page {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(57, 255, 20, 0.25) #050b14;
+}
+
+.dashboard-page::-webkit-scrollbar {
+  width: 8px;
+}
+
+.dashboard-page::-webkit-scrollbar-track {
+  background: #050b14;
+}
+
+.dashboard-page::-webkit-scrollbar-thumb {
+  background: rgba(57, 255, 20, 0.25);
+  border-radius: 20px;
+}
+
+.dashboard-page::-webkit-scrollbar-thumb:hover {
+  background: rgba(57, 255, 20, 0.4);
+}
+
+/* =========================================================
+   LARGE DESKTOP
+   ========================================================= */
+
+@media (max-width: 1200px) {
+  .services-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .quick-actions {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .dashboard-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* =========================================================
+   TABLET
+   ========================================================= */
+
+@media (max-width: 900px) {
+  :root {
+    --sidebar-width: 245px;
+  }
+
+  .app-header {
+    padding: 0 20px;
+  }
+
+  .dashboard-section {
+    padding: 28px 20px 50px;
+  }
+
+  .services-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .quick-actions {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .dashboard-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 720px) {
+  body.dashboard-page {
+    background:
+      radial-gradient(
+        circle at 100% 0%,
+        rgba(57, 255, 20, 0.05),
+        transparent 32%
+      ),
+      #050b14;
+  }
+
+  .dashboard-sidebar {
+    width: min(84vw, 300px);
+
+    transform: translateX(-105%);
+
+    transition:
+      transform 220ms ease;
+
+    box-shadow:
+      20px 0 60px rgba(0, 0, 0, 0.4);
+  }
+
+  body.sidebar-open .dashboard-sidebar {
+    transform: translateX(0);
+  }
+
+  body.sidebar-open .sidebar-overlay {
+    display: block;
+  }
+
+  .dashboard-main {
+    margin-left: 0;
+  }
+
+  .app-header {
+    height: 68px;
+
+    padding: 0 15px;
+  }
+
+  .menu-btn {
+    display: inline-flex;
+  }
+
+  .brand .brand-mark {
+    width: 35px;
+    height: 35px;
+  }
+
+  .brand-name {
+    font-size: 17px;
+  }
+
+  .header-user {
+    gap: 0;
+  }
+
+  .user-info {
+    display: none;
+  }
+
+  .logout-btn {
+    width: 40px;
+    height: 40px;
+
+    padding: 0;
+
+    font-size: 0;
+  }
+
+  .logout-btn::before {
+    content: "↪";
+
+    font-size: 18px;
+  }
+
+  .dashboard-section {
+    padding: 24px 15px 45px;
+  }
+
+  .page-heading {
+    margin-bottom: 22px;
+  }
+
+  .page-heading h1 {
+    font-size: 28px;
+  }
+
+  .page-heading p {
+    font-size: 13px;
+  }
+
+  .quick-actions {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .quick-action {
+    min-height: 76px;
+  }
+
+  .quick-icon {
+    width: 43px;
+    height: 43px;
+    min-width: 43px;
+  }
+
+  .dashboard-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+  }
+
+  .dashboard-card {
+    padding: 16px;
+  }
+
+  .card-icon {
+    width: 37px;
+    height: 37px;
+    margin-bottom: 11px;
+  }
+
+  .card-value {
+    font-size: 23px;
+  }
+
+  .services-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .service-card {
+    min-height: 165px;
+    padding: 18px;
+  }
+
+  .service-card-icon {
+    width: 50px;
+    height: 50px;
+    margin-bottom: 15px;
+    font-size: 24px;
+  }
+
+  .content-card {
+    padding: 17px;
+    border-radius: 16px;
+  }
+
+  .card-header {
+    margin-bottom: 16px;
+  }
+
+  .profile-card {
+    grid-template-columns: 1fr;
+    padding: 20px;
+    gap: 18px;
+  }
+
+  .profile-avatar {
+    width: 68px;
+    height: 68px;
+    border-radius: 18px;
+    font-size: 25px;
+  }
+
+  .profile-row {
+    grid-template-columns: 1fr;
+    gap: 4px;
+  }
+}
+
+/* =========================================================
+   SMALL PHONES
+   ========================================================= */
+
+@media (max-width: 430px) {
+  .dashboard-section {
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+
+  .dashboard-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .dashboard-card {
+    padding: 14px;
+  }
+
+  .card-label {
+    font-size: 9px;
+  }
+
+  .card-value {
+    font-size: 21px;
+  }
+
+  .quick-action {
+    padding: 13px;
+  }
+
+  .service-card {
+    min-height: 155px;
+  }
+
+  .page-heading h1 {
+    font-size: 25px;
+  }
+}
+
+/* =========================================================
+   REDUCED MOTION
+   ========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
 ```
