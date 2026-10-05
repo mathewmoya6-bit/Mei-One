@@ -1,4 +1,3 @@
-```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -22,7 +21,7 @@
       --white: #ffffff;
       --text: #e8f0f7;
       --muted: #91a4b8;
-      --border: rgba(255, 255, 255, 0.10);
+      --border: rgba(255,255,255,.10);
       --danger: #ff6474;
       --success: #5de3a0;
     }
@@ -60,12 +59,12 @@
       background:
         radial-gradient(
           circle at 85% 10%,
-          rgba(183, 255, 0, 0.11),
+          rgba(183,255,0,.11),
           transparent 28%
         ),
         radial-gradient(
           circle at 10% 90%,
-          rgba(0, 120, 255, 0.08),
+          rgba(0,120,255,.08),
           transparent 32%
         ),
         var(--navy);
@@ -84,10 +83,6 @@
       width: 100%;
       max-width: 440px;
     }
-
-    /* -------------------------------------------------------
-       BRAND
-       ------------------------------------------------------- */
 
     .brand {
       text-align: center;
@@ -113,8 +108,8 @@
       letter-spacing: -1px;
 
       box-shadow:
-        0 0 0 1px rgba(183, 255, 0, 0.25),
-        0 18px 45px rgba(183, 255, 0, 0.16);
+        0 0 0 1px rgba(183,255,0,.25),
+        0 18px 45px rgba(183,255,0,.16);
     }
 
     .brand h1 {
@@ -130,10 +125,6 @@
       font-size: 14px;
     }
 
-    /* -------------------------------------------------------
-       CARD
-       ------------------------------------------------------- */
-
     .card {
       padding: 30px;
 
@@ -143,12 +134,12 @@
       background:
         linear-gradient(
           180deg,
-          rgba(16, 38, 61, 0.96),
-          rgba(7, 19, 33, 0.98)
+          rgba(16,38,61,.96),
+          rgba(7,19,33,.98)
         );
 
       box-shadow:
-        0 25px 70px rgba(0, 0, 0, 0.40);
+        0 25px 70px rgba(0,0,0,.40);
 
       backdrop-filter: blur(18px);
     }
@@ -160,7 +151,7 @@
     .card-header h2 {
       font-size: 25px;
       font-weight: 900;
-      letter-spacing: -0.8px;
+      letter-spacing: -.8px;
     }
 
     .card-header p {
@@ -169,10 +160,6 @@
       font-size: 14px;
       line-height: 1.5;
     }
-
-    /* -------------------------------------------------------
-       MESSAGE
-       ------------------------------------------------------- */
 
     .message {
       display: none;
@@ -192,19 +179,15 @@
 
     .message.error {
       color: #ffdce0;
-      background: rgba(255, 100, 116, 0.10);
-      border: 1px solid rgba(255, 100, 116, 0.28);
+      background: rgba(255,100,116,.10);
+      border: 1px solid rgba(255,100,116,.28);
     }
 
     .message.success {
       color: #d9ffeb;
-      background: rgba(93, 227, 160, 0.10);
-      border: 1px solid rgba(93, 227, 160, 0.28);
+      background: rgba(93,227,160,.10);
+      border: 1px solid rgba(93,227,160,.28);
     }
-
-    /* -------------------------------------------------------
-       FORM
-       ------------------------------------------------------- */
 
     .field {
       margin-bottom: 17px;
@@ -225,17 +208,17 @@
 
       padding: 0 15px;
 
-      border: 1px solid rgba(255, 255, 255, 0.12);
+      border: 1px solid rgba(255,255,255,.12);
       border-radius: 13px;
 
       outline: none;
 
-      background: rgba(0, 0, 0, 0.20);
+      background: rgba(0,0,0,.20);
       color: var(--white);
 
       transition:
-        border-color 0.2s ease,
-        box-shadow 0.2s ease;
+        border-color .2s ease,
+        box-shadow .2s ease;
     }
 
     .field input::placeholder {
@@ -246,7 +229,7 @@
       border-color: var(--green);
 
       box-shadow:
-        0 0 0 3px rgba(183, 255, 0, 0.10);
+        0 0 0 3px rgba(183,255,0,.10);
     }
 
     .password-wrap {
@@ -295,10 +278,6 @@
       font-weight: 800;
     }
 
-    /* -------------------------------------------------------
-       BUTTONS
-       ------------------------------------------------------- */
-
     .primary-button {
       width: 100%;
       min-height: 54px;
@@ -313,9 +292,9 @@
       font-weight: 950;
 
       transition:
-        transform 0.2s ease,
-        background 0.2s ease,
-        opacity 0.2s ease;
+        transform .2s ease,
+        background .2s ease,
+        opacity .2s ease;
     }
 
     .primary-button:hover:not(:disabled) {
@@ -324,7 +303,7 @@
     }
 
     .primary-button:disabled {
-      opacity: 0.55;
+      opacity: .55;
       cursor: not-allowed;
       transform: none;
     }
@@ -333,33 +312,29 @@
       width: 100%;
       min-height: 50px;
 
-      border: 1px solid rgba(255, 255, 255, 0.12);
+      border: 1px solid rgba(255,255,255,.12);
       border-radius: 13px;
 
-      background: rgba(255, 255, 255, 0.03);
+      background: rgba(255,255,255,.03);
       color: var(--white);
 
       font-size: 14px;
       font-weight: 850;
 
       transition:
-        border-color 0.2s ease,
-        background 0.2s ease;
+        border-color .2s ease,
+        background .2s ease;
     }
 
     .secondary-button:hover:not(:disabled) {
-      border-color: rgba(183, 255, 0, 0.35);
-      background: rgba(183, 255, 0, 0.05);
+      border-color: rgba(183,255,0,.35);
+      background: rgba(183,255,0,.05);
     }
 
     .secondary-button:disabled {
-      opacity: 0.55;
+      opacity: .55;
       cursor: not-allowed;
     }
-
-    /* -------------------------------------------------------
-       DIVIDER
-       ------------------------------------------------------- */
 
     .divider {
       display: flex;
@@ -382,10 +357,6 @@
       background: var(--border);
     }
 
-    /* -------------------------------------------------------
-       FOOTER
-       ------------------------------------------------------- */
-
     .footer {
       margin-top: 22px;
 
@@ -400,10 +371,6 @@
       font-weight: 850;
     }
 
-    /* -------------------------------------------------------
-       SPINNER
-       ------------------------------------------------------- */
-
     .spinner {
       width: 17px;
       height: 17px;
@@ -413,12 +380,12 @@
 
       margin-right: 8px;
 
-      border: 2px solid rgba(0, 0, 0, 0.22);
+      border: 2px solid rgba(0,0,0,.22);
       border-top-color: #07101b;
 
       border-radius: 50%;
 
-      animation: spin 0.7s linear infinite;
+      animation: spin .7s linear infinite;
     }
 
     @keyframes spin {
@@ -427,11 +394,7 @@
       }
     }
 
-    /* -------------------------------------------------------
-       MOBILE
-       ------------------------------------------------------- */
-
-    @media (max-width: 520px) {
+    @media (max-width:520px) {
       body {
         padding: 15px;
       }
@@ -450,669 +413,711 @@
 
 <body>
 
-  <main class="page">
+<main class="page">
 
-    <!-- =====================================================
-         BRAND
-         ===================================================== -->
+  <header class="brand">
 
-    <header class="brand">
+    <div class="brand-mark">
+      MEI
+    </div>
 
-      <div class="brand-mark">
-        MEI
-      </div>
+    <h1>MEI One</h1>
 
-      <h1>MEI One</h1>
+    <p>
+      One platform. Connected services.
+    </p>
+
+  </header>
+
+  <section class="card">
+
+    <div class="card-header">
+
+      <h2>Welcome back</h2>
 
       <p>
-        One platform. Connected services.
+        Sign in to access your MEI One customer dashboard.
       </p>
 
-    </header>
+    </div>
 
-    <!-- =====================================================
-         LOGIN CARD
-         ===================================================== -->
+    <div
+      id="message"
+      class="message"
+      role="alert"
+      aria-live="polite"
+    ></div>
 
-    <section class="card">
+    <form id="loginForm" novalidate>
 
-      <div class="card-header">
+      <div class="field">
 
-        <h2>
-          Welcome back
-        </h2>
+        <label for="email">
+          Email address
+        </label>
 
-        <p>
-          Sign in to access your MEI One customer dashboard.
-        </p>
+        <input
+          id="email"
+          name="email"
+          type="email"
+          autocomplete="username"
+          placeholder="you@example.com"
+          required
+        >
 
       </div>
 
-      <div
-        id="message"
-        class="message"
-        role="alert"
-        aria-live="polite"
-      ></div>
+      <div class="field">
 
-      <form
-        id="loginForm"
-        novalidate
-      >
+        <label for="password">
+          Password
+        </label>
 
-        <!-- EMAIL -->
-
-        <div class="field">
-
-          <label for="email">
-            Email address
-          </label>
+        <div class="password-wrap">
 
           <input
-            id="email"
-            name="email"
-            type="email"
-            autocomplete="username"
-            placeholder="you@example.com"
+            id="password"
+            name="password"
+            type="password"
+            autocomplete="current-password"
+            placeholder="Enter your password"
             required
           >
 
-        </div>
-
-        <!-- PASSWORD -->
-
-        <div class="field">
-
-          <label for="password">
-            Password
-          </label>
-
-          <div class="password-wrap">
-
-            <input
-              id="password"
-              name="password"
-              type="password"
-              autocomplete="current-password"
-              placeholder="Enter your password"
-              required
-            >
-
-            <button
-              type="button"
-              class="toggle-password"
-              id="togglePassword"
-            >
-              SHOW
-            </button>
-
-          </div>
-
-        </div>
-
-        <!-- FORGOT PASSWORD -->
-
-        <div class="forgot-row">
-
           <button
             type="button"
-            class="forgot-button"
-            id="forgotPassword"
+            class="toggle-password"
+            id="togglePassword"
           >
-            Forgot password?
+            SHOW
           </button>
 
         </div>
 
-        <!-- SIGN IN -->
-
-        <button
-          type="submit"
-          class="primary-button"
-          id="loginButton"
-        >
-          Sign In
-        </button>
-
-      </form>
-
-      <!-- DIVIDER -->
-
-      <div class="divider">
-        OR
       </div>
 
-      <!-- SIGN UP -->
+      <div class="forgot-row">
+
+        <button
+          type="button"
+          class="forgot-button"
+          id="forgotPassword"
+        >
+          Forgot password?
+        </button>
+
+      </div>
 
       <button
-        type="button"
-        class="secondary-button"
-        id="signupButton"
+        type="submit"
+        class="primary-button"
+        id="loginButton"
       >
-        Create a MEI One account
+        Sign In
       </button>
 
-    </section>
+    </form>
 
-    <!-- FOOTER -->
+    <div class="divider">
+      OR
+    </div>
 
-    <footer class="footer">
+    <button
+      type="button"
+      class="secondary-button"
+      id="signupButton"
+    >
+      Create a MEI One account
+    </button>
 
-      © <span id="year"></span> MEI One.
-      All rights reserved.
+  </section>
 
-    </footer>
+  <footer class="footer">
+    © <span id="year"></span> MEI One.
+    All rights reserved.
+  </footer>
 
-  </main>
+</main>
 
-  <!-- =========================================================
-       MEI ONE CONFIGURATION
-       ========================================================= -->
+<!-- =========================================================
+     CONFIG
+     ========================================================= -->
 
-  <script src="js/config.js"></script>
+<script src="js/config.js"></script>
 
-  <!-- =========================================================
-       SUPABASE SDK
-       ========================================================= -->
+<!-- =========================================================
+     SUPABASE SDK
+     ========================================================= -->
 
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
 
-  <!-- =========================================================
-       MEI ONE SUPABASE CLIENT
-       ========================================================= -->
+<!-- =========================================================
+     SUPABASE CLIENT
+     ========================================================= -->
 
-  <script src="js/supabase.js"></script>
+<script src="js/supabase.js"></script>
 
-  <!-- =========================================================
-       LOGIN LOGIC
-       ========================================================= -->
+<!-- =========================================================
+     LOGIN
+     ========================================================= -->
 
-  <script>
-    (function () {
+<script>
+(function () {
 
-      "use strict";
+  "use strict";
 
-      /* -------------------------------------------------------
-         ELEMENTS
-         ------------------------------------------------------- */
+  const form =
+    document.getElementById("loginForm");
 
-      const form =
-        document.getElementById("loginForm");
+  const emailInput =
+    document.getElementById("email");
 
-      const emailInput =
-        document.getElementById("email");
+  const passwordInput =
+    document.getElementById("password");
 
-      const passwordInput =
-        document.getElementById("password");
+  const loginButton =
+    document.getElementById("loginButton");
 
-      const loginButton =
-        document.getElementById("loginButton");
+  const togglePassword =
+    document.getElementById("togglePassword");
 
-      const togglePassword =
-        document.getElementById("togglePassword");
+  const forgotPassword =
+    document.getElementById("forgotPassword");
 
-      const forgotPassword =
-        document.getElementById("forgotPassword");
+  const signupButton =
+    document.getElementById("signupButton");
 
-      const signupButton =
-        document.getElementById("signupButton");
+  const message =
+    document.getElementById("message");
 
-      const message =
-        document.getElementById("message");
+  const year =
+    document.getElementById("year");
 
-      const year =
-        document.getElementById("year");
+  year.textContent =
+    new Date().getFullYear();
 
-      year.textContent =
-        new Date().getFullYear();
+  const supabase =
+    window.supabaseClient ||
+    window.MEISupabase ||
+    null;
 
-      /* -------------------------------------------------------
-         SUPABASE CLIENT
-         ------------------------------------------------------- */
+  /* =========================================================
+     REDIRECT
+     ========================================================= */
 
-      const supabase =
-        window.supabaseClient ||
-        window.MEISupabase;
+  const params =
+    new URLSearchParams(
+      window.location.search
+    );
 
-      /* -------------------------------------------------------
-         MESSAGE
-         ------------------------------------------------------- */
+  const requestedRedirect =
+    params.get("redirect");
 
-      function showMessage(
-        text,
-        type = "error"
-      ) {
+  const requestedService =
+    params.get("service");
 
-        message.textContent =
-          text;
+  function getRedirectTarget() {
 
-        message.className =
-          "message show " + type;
+    /*
+     * Explicit redirect supplied by another page.
+     */
+    if (requestedRedirect) {
 
-      }
+      try {
 
-      function clearMessage() {
-
-        message.textContent =
-          "";
-
-        message.className =
-          "message";
-
-      }
-
-      /* -------------------------------------------------------
-         TIMEOUT
-         ------------------------------------------------------- */
-
-      function withTimeout(
-        promise,
-        timeout,
-        label
-      ) {
-
-        return Promise.race([
-
-          promise,
-
-          new Promise(
-            function (_, reject) {
-
-              setTimeout(
-                function () {
-
-                  reject(
-                    new Error(
-                      label +
-                      " timed out. Please check your connection and try again."
-                    )
-                  );
-
-                },
-                timeout
-              );
-
-            }
-          )
-
-        ]);
-
-      }
-
-      /* -------------------------------------------------------
-         CHECK SUPABASE
-         ------------------------------------------------------- */
-
-      function ensureSupabase() {
-
-        if (!supabase) {
-
-          throw new Error(
-            "MEI One could not connect to Supabase. Check js/config.js and js/supabase.js."
+        const decoded =
+          decodeURIComponent(
+            requestedRedirect
           );
 
+        /*
+         * Only allow local MEI pages.
+         */
+        if (
+          decoded.startsWith("/") ||
+          decoded.startsWith(
+            "dashboard.html"
+          ) ||
+          decoded.startsWith(
+            "index.html"
+          )
+        ) {
+          return decoded;
         }
+
+      } catch (error) {
+
+        console.warn(
+          "MEI One: invalid redirect parameter.",
+          error
+        );
 
       }
+    }
 
-      /* -------------------------------------------------------
-         PASSWORD VISIBILITY
-         ------------------------------------------------------- */
+    /*
+     * Service-specific login.
+     */
+    if (
+      requestedService === "rides" ||
+      requestedService === "ride"
+    ) {
+      return "dashboard.html?service=rides";
+    }
 
-      togglePassword.addEventListener(
-        "click",
-        function () {
+    /*
+     * Default.
+     */
+    return "dashboard.html";
+  }
 
-          const isPassword =
-            passwordInput.type === "password";
+  const redirectTarget =
+    getRedirectTarget();
 
-          passwordInput.type =
-            isPassword
-              ? "text"
-              : "password";
+  /* =========================================================
+     MESSAGE
+     ========================================================= */
 
-          togglePassword.textContent =
-            isPassword
-              ? "HIDE"
-              : "SHOW";
+  function showMessage(
+    text,
+    type
+  ) {
 
-        }
+    message.textContent =
+      text;
+
+    message.className =
+      "message show " +
+      (type || "error");
+  }
+
+  function clearMessage() {
+
+    message.textContent =
+      "";
+
+    message.className =
+      "message";
+  }
+
+  /* =========================================================
+     SUPABASE
+     ========================================================= */
+
+  function ensureSupabase() {
+
+    if (!supabase) {
+
+      throw new Error(
+        "MEI One could not connect to Supabase. Please check js/config.js and js/supabase.js."
       );
+    }
+  }
 
-      /* -------------------------------------------------------
-         LOADING STATE
-         ------------------------------------------------------- */
+  /* =========================================================
+     PASSWORD
+     ========================================================= */
 
-      function setLoading(
-        loading
-      ) {
+  togglePassword.addEventListener(
+    "click",
+    function () {
 
-        loginButton.disabled =
-          loading;
+      const visible =
+        passwordInput.type === "text";
 
-        forgotPassword.disabled =
-          loading;
+      passwordInput.type =
+        visible
+          ? "password"
+          : "text";
 
-        signupButton.disabled =
-          loading;
+      togglePassword.textContent =
+        visible
+          ? "SHOW"
+          : "HIDE";
+    }
+  );
 
-        if (loading) {
+  /* =========================================================
+     LOADING
+     ========================================================= */
 
-          loginButton.innerHTML =
-            '<span class="spinner"></span>Signing in...';
+  function setLoading(
+    loading
+  ) {
 
-        } else {
+    loginButton.disabled =
+      loading;
 
-          loginButton.textContent =
-            "Sign In";
+    forgotPassword.disabled =
+      loading;
 
-        }
+    signupButton.disabled =
+      loading;
 
+    if (loading) {
+
+      loginButton.innerHTML =
+        '<span class="spinner"></span>Signing in...';
+
+    } else {
+
+      loginButton.textContent =
+        "Sign In";
+    }
+  }
+
+  /* =========================================================
+     LOGIN
+     ========================================================= */
+
+  form.addEventListener(
+    "submit",
+    async function (event) {
+
+      event.preventDefault();
+
+      clearMessage();
+
+      const email =
+        emailInput.value
+          .trim()
+          .toLowerCase();
+
+      const password =
+        passwordInput.value;
+
+      if (!email) {
+
+        showMessage(
+          "Please enter your email address."
+        );
+
+        emailInput.focus();
+
+        return;
       }
 
-      /* -------------------------------------------------------
-         LOGIN
-         ------------------------------------------------------- */
+      if (!email.includes("@")) {
 
-      form.addEventListener(
-        "submit",
-        async function (event) {
+        showMessage(
+          "Please enter a valid email address."
+        );
 
-          event.preventDefault();
+        emailInput.focus();
 
-          clearMessage();
+        return;
+      }
 
-          const email =
-            emailInput.value
-              .trim()
-              .toLowerCase();
+      if (!password) {
 
-          const password =
-            passwordInput.value;
+        showMessage(
+          "Please enter your password."
+        );
 
-          /* VALIDATION */
+        passwordInput.focus();
 
-          if (!email) {
+        return;
+      }
 
-            showMessage(
-              "Please enter your email address."
-            );
-
-            emailInput.focus();
-
-            return;
-
-          }
-
-          if (!password) {
-
-            showMessage(
-              "Please enter your password."
-            );
-
-            passwordInput.focus();
-
-            return;
-
-          }
-
-          setLoading(true);
-
-          try {
-
-            ensureSupabase();
-
-            console.log(
-              "MEI One: Starting customer login..."
-            );
-
-            /* -----------------------------------------------
-               AUTHENTICATE
-               ----------------------------------------------- */
-
-            const result =
-              await withTimeout(
-                supabase.auth.signInWithPassword({
-                  email: email,
-                  password: password
-                }),
-                15000,
-                "Supabase login request"
-              );
-
-            console.log(
-              "MEI One: Login response:",
-              result
-            );
-
-            if (result.error) {
-
-              throw result.error;
-
-            }
-
-            if (!result.data?.session) {
-
-              throw new Error(
-                "Login completed but no active session was returned."
-              );
-
-            }
-
-            console.log(
-              "MEI One: Customer authentication successful."
-            );
-
-            showMessage(
-              "Login successful. Opening your dashboard...",
-              "success"
-            );
-
-            /* -----------------------------------------------
-               SHORT DELAY TO ALLOW SESSION PERSISTENCE
-               ----------------------------------------------- */
-
-            await new Promise(
-              function (resolve) {
-
-                setTimeout(
-                  resolve,
-                  300
-                );
-
-              }
-            );
-
-            /* -----------------------------------------------
-               CUSTOMER DASHBOARD
-               ----------------------------------------------- */
-
-            console.log(
-              "MEI One: Redirecting to dashboard.html"
-            );
-
-            window.location.replace(
-              "dashboard.html"
-            );
-
-          } catch (error) {
-
-            console.error(
-              "MEI One login error:",
-              error
-            );
-
-            let errorMessage =
-              error?.message ||
-              "Login failed. Please try again.";
-
-            /* FRIENDLIER SUPABASE MESSAGES */
-
-            if (
-              errorMessage
-                .toLowerCase()
-                .includes(
-                  "invalid login credentials"
-                )
-            ) {
-
-              errorMessage =
-                "Incorrect email or password.";
-
-            }
-
-            if (
-              errorMessage
-                .toLowerCase()
-                .includes(
-                  "email not confirmed"
-                )
-            ) {
-
-              errorMessage =
-                "Please confirm your email address before signing in.";
-
-            }
-
-            showMessage(
-              errorMessage
-            );
-
-          } finally {
-
-            setLoading(false);
-
-          }
-
-        }
-      );
-
-      /* -------------------------------------------------------
-         FORGOT PASSWORD
-         ------------------------------------------------------- */
-
-      forgotPassword.addEventListener(
-        "click",
-        async function () {
-
-          clearMessage();
-
-          const email =
-            emailInput.value
-              .trim()
-              .toLowerCase();
-
-          if (!email) {
-
-            showMessage(
-              "Enter your email address first."
-            );
-
-            emailInput.focus();
-
-            return;
-
-          }
-
-          try {
-
-            ensureSupabase();
-
-            forgotPassword.disabled =
-              true;
-
-            const redirectUrl =
-              window.location.origin +
-              "/login.html";
-
-            const result =
-              await withTimeout(
-                supabase.auth.resetPasswordForEmail(
-                  email,
-                  {
-                    redirectTo:
-                      redirectUrl
-                  }
-                ),
-                15000,
-                "Password reset request"
-              );
-
-            if (result.error) {
-
-              throw result.error;
-
-            }
-
-            showMessage(
-              "If the email exists, a password reset link has been sent.",
-              "success"
-            );
-
-          } catch (error) {
-
-            console.error(
-              "MEI One password reset error:",
-              error
-            );
-
-            showMessage(
-              error?.message ||
-              "Password reset failed."
-            );
-
-          } finally {
-
-            forgotPassword.disabled =
-              false;
-
-          }
-
-        }
-      );
-
-      /* -------------------------------------------------------
-         SIGN UP
-         ------------------------------------------------------- */
-
-      signupButton.addEventListener(
-        "click",
-        function () {
-
-          window.location.href =
-            "signup.html";
-
-        }
-      );
-
-      /* -------------------------------------------------------
-         INITIALISE
-         ------------------------------------------------------- */
+      setLoading(true);
 
       try {
 
         ensureSupabase();
 
         console.log(
-          "MEI One: Customer login ready."
+          "MEI One: signing in..."
+        );
+
+        const {
+          data,
+          error
+        } =
+          await supabase.auth
+            .signInWithPassword({
+              email,
+              password
+            });
+
+        if (error) {
+          throw error;
+        }
+
+        if (!data || !data.session) {
+
+          throw new Error(
+            "Login succeeded but no active session was returned."
+          );
+        }
+
+        console.log(
+          "MEI One: authenticated successfully."
+        );
+
+        showMessage(
+          "Login successful. Opening your dashboard...",
+          "success"
+        );
+
+        /*
+         * Give Supabase a moment to persist the
+         * session before dashboard.js checks it.
+         */
+        await new Promise(
+          function (resolve) {
+            setTimeout(
+              resolve,
+              400
+            );
+          }
+        );
+
+        console.log(
+          "MEI One: redirecting to:",
+          redirectTarget
+        );
+
+        window.location.replace(
+          redirectTarget
         );
 
       } catch (error) {
 
         console.error(
-          "MEI One initialization error:",
+          "MEI One login error:",
+          error
+        );
+
+        let errorMessage =
+          error?.message ||
+          "Login failed. Please try again.";
+
+        const lower =
+          errorMessage.toLowerCase();
+
+        if (
+          lower.includes(
+            "invalid login credentials"
+          )
+        ) {
+
+          errorMessage =
+            "Incorrect email or password.";
+        }
+
+        if (
+          lower.includes(
+            "email not confirmed"
+          )
+        ) {
+
+          errorMessage =
+            "Please confirm your email address before signing in.";
+        }
+
+        if (
+          lower.includes(
+            "failed to fetch"
+          )
+        ) {
+
+          errorMessage =
+            "Unable to connect to MEI One. Please check your internet connection.";
+        }
+
+        showMessage(
+          errorMessage
+        );
+
+      } finally {
+
+        setLoading(false);
+      }
+
+    }
+  );
+
+  /* =========================================================
+     FORGOT PASSWORD
+     ========================================================= */
+
+  forgotPassword.addEventListener(
+    "click",
+    async function () {
+
+      clearMessage();
+
+      const email =
+        emailInput.value
+          .trim()
+          .toLowerCase();
+
+      if (!email) {
+
+        showMessage(
+          "Enter your email address first."
+        );
+
+        emailInput.focus();
+
+        return;
+      }
+
+      try {
+
+        ensureSupabase();
+
+        forgotPassword.disabled =
+          true;
+
+        const redirectUrl =
+          window.location.origin +
+          window.location.pathname;
+
+        const {
+          error
+        } =
+          await supabase.auth
+            .resetPasswordForEmail(
+              email,
+              {
+                redirectTo:
+                  redirectUrl
+              }
+            );
+
+        if (error) {
+          throw error;
+        }
+
+        showMessage(
+          "If the email exists, a password reset link has been sent.",
+          "success"
+        );
+
+      } catch (error) {
+
+        console.error(
+          "MEI One password reset error:",
           error
         );
 
         showMessage(
-          error.message
+          error?.message ||
+          "Unable to send the password reset email."
         );
 
+      } finally {
+
+        forgotPassword.disabled =
+          false;
       }
 
-    })();
-  </script>
+    }
+  );
+
+  /* =========================================================
+     SIGN UP
+     ========================================================= */
+
+  signupButton.addEventListener(
+    "click",
+    function () {
+
+      /*
+       * Preserve service intent when coming from Rides.
+       */
+      if (
+        requestedService === "rides"
+      ) {
+
+        window.location.href =
+          "signup.html?service=rides";
+
+        return;
+      }
+
+      window.location.href =
+        "signup.html";
+    }
+  );
+
+  /* =========================================================
+     INITIAL CHECK
+     ========================================================= */
+
+  async function checkExistingSession() {
+
+    try {
+
+      ensureSupabase();
+
+      const {
+        data,
+        error
+      } =
+        await supabase.auth.getSession();
+
+      if (error) {
+        throw error;
+      }
+
+      /*
+       * Already logged in.
+       * Do not make the user log in again.
+       */
+      if (data?.session) {
+
+        console.log(
+          "MEI One: existing session found."
+        );
+
+        window.location.replace(
+          redirectTarget
+        );
+      }
+
+    } catch (error) {
+
+      /*
+       * Do not block the login page if this check fails.
+       * The actual login request will provide the useful error.
+       */
+      console.warn(
+        "MEI One: existing session check failed.",
+        error
+      );
+    }
+  }
+
+  /* =========================================================
+     START
+     ========================================================= */
+
+  try {
+
+    ensureSupabase();
+
+    console.log(
+      "MEI One: login page ready."
+    );
+
+    checkExistingSession();
+
+  } catch (error) {
+
+    console.error(
+      "MEI One: login initialization failed.",
+      error
+    );
+
+    showMessage(
+      error.message
+    );
+  }
+
+})();
+</script>
 
 </body>
 </html>
-```
