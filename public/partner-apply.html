@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#071a2f">
+  <meta name="description" content="Apply to become a MEI One partner: driver, towing operator, roadside responder, garage, marketplace seller or home service professional.">
+  <title>Apply to partner | MEI One</title>
+  <link rel="icon" href="assets/favicon.png" type="image/png">
+  <link rel="stylesheet" href="css/styles.css?v=3">
+  <link rel="stylesheet" href="css/partners.css?v=2">
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="site-header">
+    <div class="container nav-container">
+      <a class="brand" href="index.html" aria-label="MEI One home">
+        <span class="brand-mark" aria-hidden="true">MEI</span><span class="brand-name">One</span>
+      </a>
+
+      <button class="mobile-menu-button" id="mobileMenuButton" type="button"
+              aria-label="Open navigation" aria-controls="mainNavigation" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+
+      <nav class="main-navigation" id="mainNavigation" aria-label="Main navigation">
+        <a href="index.html#services">Services</a>
+        <a href="index.html#how-it-works">How It Works</a>
+        <a href="partners.html" aria-current="page">For Business</a>
+        <a href="index.html#about">About</a>
+        <a href="login.html" data-auth="login">Sign In</a>
+        <a href="dashboard.html" data-auth="dashboard" class="nav-dashboard">Dashboard</a>
+        <button type="button" data-modal="signup" class="button button-small button-primary">Get Started</button>
+      </nav>
+    </div>
+  </header>
+
+  <div class="pt-head">
+    <div class="container">
+      <h1>Apply to partner with MEI One</h1>
+      <p>Tell us about you and what you offer. The MEI team will review it and get back to you.</p>
+    </div>
+  </div>
+
+  <main id="main" class="pt-wrap">
+
+    <!-- Form -->
+    <section class="pt-panel" id="formPanel" aria-labelledby="formHeading">
+      <h2 id="formHeading">Your application</h2>
+      <p>Fields marked with * are required.</p>
+
+      <form id="partnerForm" class="pt-form" novalidate>
+
+        <label class="pt-field">I want to partner as *
+          <select name="partner_type" id="partnerType" required>
+            <option value="">Choose a service</option>
+          </select>
+        </label>
+
+        <div class="pt-row">
+          <label class="pt-field">Full name *
+            <input name="full_name" type="text" required minlength="2" maxlength="100" autocomplete="name">
+          </label>
+          <label class="pt-field">Business name <small>(if you have one)</small>
+            <input name="business_name" type="text" maxlength="120" autocomplete="organization">
+          </label>
+        </div>
+
+        <div class="pt-row">
+          <label class="pt-field">Phone number *
+            <input name="phone" type="tel" required maxlength="20" autocomplete="tel" placeholder="07XXXXXXXX">
+          </label>
+          <label class="pt-field">Email *
+            <input name="email" type="email" required maxlength="120" autocomplete="email" placeholder="you@example.com">
+          </label>
+        </div>
+
+        <div class="pt-row">
+          <label class="pt-field">Town or area where you work *
+            <input name="location" type="text" required minlength="2" maxlength="120" placeholder="e.g. Westlands, Nairobi">
+          </label>
+          <label class="pt-field">Years of experience <small>(optional)</small>
+            <input name="experience_years" type="number" min="0" max="60" inputmode="numeric">
+          </label>
+        </div>
+
+        <label class="pt-field">What do you offer? *
+          <textarea name="details" id="details" required minlength="10" maxlength="1000"
+                    placeholder="Tell us about your vehicle, tools, trade or products and the areas you cover."></textarea>
+          <small id="detailsHint">The more specific you are, the faster we can review.</small>
+        </label>
+
+        <!-- Honeypot: real people never see or fill this -->
+        <div class="pt-hp" aria-hidden="true">
+          <label>Website <input name="website" type="text" tabindex="-1" autocomplete="off"></label>
+        </div>
+
+        <label class="pt-consent">
+          <input type="checkbox" name="consent" required>
+          <span>I agree that MEI One may use these details to review my application and contact me about it. *</span>
+        </label>
+
+        <p class="pt-message" id="formMessage" aria-live="polite"></p>
+
+        <button type="submit" class="button button-primary button-large pt-block" id="submitBtn">Submit application</button>
+      </form>
+    </section>
+
+    <!-- Success -->
+    <section class="pt-panel pt-success" id="successPanel" hidden tabindex="-1" aria-labelledby="successHeading">
+      <h2 id="successHeading">Application received</h2>
+      <p>Thank you. Here is what happens next:</p>
+      <ul>
+        <li>The MEI team reviews your application.</li>
+        <li>We contact you on the phone number or email you gave.</li>
+        <li>We may ask for supporting documents, such as a licence or business permit.</li>
+      </ul>
+      <a href="partners.html" class="button button-primary pt-block">Back to partners</a>
+      <button type="button" class="pt-ghost" id="applyAgain">Apply for another service</button>
+    </section>
+
+    <!-- My applications (signed-in users only) -->
+    <section class="pt-panel" id="myApps" hidden aria-labelledby="myAppsHeading">
+      <h2 id="myAppsHeading">Your applications</h2>
+      <p>Applications you submitted while signed in.</p>
+      <div id="myAppsList" aria-live="polite"></div>
+    </section>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="container footer-grid">
+
+      <div class="footer-brand">
+        <a class="brand" href="index.html" aria-label="MEI One home">
+          <span class="brand-mark" aria-hidden="true">MEI</span>
+          <span class="brand-name">One</span>
+        </a>
+        <p>One platform for connected services.</p>
+      </div>
+
+      <nav class="footer-column" aria-label="Services">
+        <h3>Services</h3>
+        <a href="rides.html">MEI Rides</a>
+        <a href="delivery.html">MEI Delivery</a>
+        <a href="towing.html">MEI Towing</a>
+        <a href="roadside.html">Roadside Assistance</a>
+      </nav>
+
+      <nav class="footer-column" aria-label="More services">
+        <h3>More</h3>
+        <a href="https://auto-d.meipressgroup.com/">MEI Auto <span aria-hidden="true">↗</span></a>
+        <a href="marketplace.html">Marketplace</a>
+        <a href="home-services.html">Home Services</a>
+        <a href="https://www.meidriveafrica.com">MEI Learn <span aria-hidden="true">↗</span></a>
+      </nav>
+
+      <nav class="footer-column" aria-label="Platform">
+        <h3>Platform</h3>
+        <a href="index.html#how-it-works">How It Works</a>
+        <a href="partners.html">Partners</a>
+        <a href="index.html#about">About</a>
+        <a href="login.html">Sign In</a>
+      </nav>
+
+    </div>
+
+    <div class="container footer-bottom">
+      <span>
+        © <span data-current-year id="currentYear">2026</span>
+        MEI One. All rights reserved.
+      </span>
+      <span>Connected digital services.</span>
+    </div>
+  </footer>
+
+  <!-- Modal & toasts -->
+  <div class="modal" id="globalModal" aria-hidden="true">
+    <div class="modal-backdrop" data-modal-close></div>
+
+    <div class="modal-dialog" role="dialog" aria-modal="true" aria-label="MEI One">
+      <button type="button" class="modal-close" data-modal-close aria-label="Close dialog">
+        <span aria-hidden="true">×</span>
+      </button>
+
+      <div id="modalContent"></div>
+    </div>
+  </div>
+
+  <div class="toast-container" id="toastContainer" role="status" aria-live="polite" aria-atomic="true"></div>
+
+  <!-- Scripts -->
+  <script src="js/config.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js" crossorigin="anonymous" defer></script>
+  <script src="js/supabase.js" defer></script>
+  <script src="js/site.js" defer></script>
+
+  <script>
+  document.addEventListener("DOMContentLoaded", function () {
+    "use strict";
+
+    var supabase = window.supabaseClient || null;
+    var CONFIG = window.MEI_CONFIG || window.MEIConfig || window.CONFIG || {};
+    var TABLE = "partner_applications";
+    var TIMEZONE = (CONFIG.settings && CONFIG.settings.timezone) || "Africa/Nairobi";
+
+    var TYPES = [
+      ["driver",   "Ride and delivery driver",  "Vehicle type, licence class, years driving and the areas you cover."],
+      ["towing",   "Towing operator",           "Trucks or trailers you run, the vehicles you can recover and your coverage area."],
+      ["roadside", "Roadside responder",        "Services you provide (jump-start, tyre change, fuel delivery), your tools and coverage area."],
+      ["garage",   "Garage or auto service",    "Services you offer, where your workshop is and how many mechanics you have."],
+      ["seller",   "Marketplace seller",        "What you sell, where you ship from and how you deliver."],
+      ["home",     "Home service professional", "Your trade (plumbing, electrical, cleaning and so on), your tools and the areas you serve."]
+    ];
+    var TYPE_LABELS = {};
+    TYPES.forEach(function (t) { TYPE_LABELS[t[0]] = t[1]; });
+
+    var STATUS_LABELS = {
+      "new": "Received",
+      reviewing: "In review",
+      approved: "Approved",
+      rejected: "Not approved"
+    };
+
+    var dateFormat = new Intl.DateTimeFormat("en-KE", { dateStyle: "medium", timeZone: TIMEZONE });
+
+    function $(s, p) { return (p || document).querySelector(s); }
+    function el(tag, className, text) {
+      var n = document.createElement(tag);
+      if (className) n.className = className;
+      if (text !== undefined) n.textContent = text;
+      return n;
+    }
+
+    var form = $("#partnerForm");
+    var select = $("#partnerType");
+    var message = $("#formMessage");
+
+    function setMessage(text, type) {
+      message.textContent = text;
+      message.dataset.type = type || "info";
+    }
+
+    /* ---------- Type select ---------- */
+
+    TYPES.forEach(function (t) {
+      var option = el("option", "", t[1]);
+      option.value = t[0];
+      select.appendChild(option);
+    });
+
+    function syncHint() {
+      var match = TYPES.filter(function (t) { return t[0] === select.value; })[0];
+      $("#detailsHint").textContent = match
+        ? "Include: " + match[2]
+        : "The more specific you are, the faster we can review.";
+    }
+    select.addEventListener("change", syncHint);
+
+    var wanted = new URLSearchParams(window.location.search).get("type");
+    if (wanted && TYPE_LABELS[wanted]) select.value = wanted;
+    syncHint();
+
+    /* ---------- Session ---------- */
+
+    async function getUser() {
+      if (!supabase) return null;
+      try {
+        var res = await supabase.auth.getSession();
+        return (res.data && res.data.session && res.data.session.user) || null;
+      } catch (e) {
+        console.error("MEI Partners: unable to read session.", e);
+        return null;
+      }
+    }
+
+    function prefill(user) {
+      if (!user) return;
+      var meta = user.user_metadata || {};
+      if (!form.email.value && user.email) form.email.value = user.email;
+      if (!form.full_name.value && (meta.full_name || meta.name)) form.full_name.value = meta.full_name || meta.name;
+      if (!form.phone.value && meta.phone) form.phone.value = meta.phone;
+    }
+
+    /* ---------- Submit ---------- */
+
+    function validate(values) {
+      if (!TYPE_LABELS[values.partner_type]) return "Choose the service you want to partner as.";
+      if (values.full_name.length < 2) return "Enter your full name.";
+      if (!/^\+?[0-9\s-]{9,15}$/.test(values.phone)) return "Enter a valid phone number.";
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(values.email)) return "Enter a valid email address.";
+      if (values.location.length < 2) return "Tell us the town or area where you work.";
+      if (values.experience_years !== null &&
+          (!Number.isInteger(values.experience_years) || values.experience_years < 0 || values.experience_years > 60)) {
+        return "Years of experience must be a number between 0 and 60.";
+      }
+      if (values.details.length < 10) return "Tell us a little more about what you offer.";
+      if (!values.consent) return "Please tick the box to agree before submitting.";
+      return "";
+    }
+
+    function showSuccess() {
+      $("#formPanel").hidden = true;
+      var done = $("#successPanel");
+      done.hidden = false;
+      done.focus();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    async function submit(event) {
+      event.preventDefault();
+      setMessage("", "info");
+
+      // Honeypot: pretend it worked.
+      if (form.website.value) { showSuccess(); return; }
+
+      var years = form.experience_years.value.trim();
+      var values = {
+        partner_type: select.value,
+        full_name: form.full_name.value.trim(),
+        business_name: form.business_name.value.trim(),
+        phone: form.phone.value.trim(),
+        email: form.email.value.trim().toLowerCase(),
+        location: form.location.value.trim(),
+        experience_years: years === "" ? null : parseInt(years, 10),
+        details: form.details.value.trim(),
+        consent: form.consent.checked
+      };
+
+      var problem = validate(values);
+      if (problem) { setMessage(problem, "error"); return; }
+
+      if (!supabase) {
+        setMessage("Applications are temporarily unavailable. Please try again later.", "error");
+        return;
+      }
+
+      var btn = $("#submitBtn");
+      btn.disabled = true;
+      btn.textContent = "Sending…";
+
+      try {
+        var user = await getUser();
+        var res = await supabase.from(TABLE).insert({
+          user_id: user ? user.id : null,
+          partner_type: values.partner_type,
+          full_name: values.full_name,
+          business_name: values.business_name || null,
+          phone: values.phone,
+          email: values.email,
+          location: values.location,
+          experience_years: values.experience_years,
+          details: values.details,
+          consent: true
+        });
+
+        if (res.error) {
+          if (res.error.code === "23505") {
+            setMessage("You already have an open application for this service with this email. We'll be in touch.", "error");
+            return;
+          }
+          throw res.error;
+        }
+
+        form.reset();
+        select.value = "";
+        syncHint();
+        showSuccess();
+        if (user) loadMyApplications(user);
+      } catch (e) {
+        console.error("MEI Partners: submit failed.", e);
+        setMessage("We couldn't send your application. Check your connection and try again.", "error");
+      } finally {
+        btn.disabled = false;
+        btn.textContent = "Submit application";
+      }
+    }
+
+    $("#applyAgain").addEventListener("click", function () {
+      $("#successPanel").hidden = true;
+      $("#formPanel").hidden = false;
+      getUser().then(prefill);
+      select.focus();
+    });
+
+    form.addEventListener("submit", submit);
+
+    /* ---------- My applications ---------- */
+
+    async function loadMyApplications(user) {
+      var box = $("#myApps");
+      var list = $("#myAppsList");
+      try {
+        var res = await supabase.from(TABLE)
+          .select("id, partner_type, status, created_at")
+          .eq("user_id", user.id)
+          .order("created_at", { ascending: false })
+          .limit(20);
+        if (res.error) throw res.error;
+
+        var rows = res.data || [];
+        if (!rows.length) { box.hidden = true; return; }
+
+        list.replaceChildren();
+        rows.forEach(function (row) {
+          var item = el("article", "pt-app");
+          var left = el("div");
+          left.appendChild(el("strong", "", TYPE_LABELS[row.partner_type] || row.partner_type));
+          left.appendChild(el("small", "", "Applied " + dateFormat.format(new Date(row.created_at))));
+          item.appendChild(left);
+          var chip = el("span", "pt-chip", STATUS_LABELS[row.status] || row.status);
+          chip.dataset.status = row.status;
+          item.appendChild(chip);
+          list.appendChild(item);
+        });
+        box.hidden = false;
+      } catch (e) {
+        console.warn("MEI Partners: unable to load applications.", e);
+        box.hidden = true;
+      }
+    }
+
+    /* ---------- Init ---------- */
+
+    getUser().then(function (user) {
+      prefill(user);
+      if (user) loadMyApplications(user);
+    });
+  });
+  </script>
+
+</body>
+</html>
