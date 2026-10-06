@@ -53,7 +53,7 @@
     /* ---------- LAYOUT ---------- */
     .admin-layout { min-height: 100vh; }
 
-    /* Sidebar (from admin dashboard) */
+    /* Sidebar */
     .admin-sidebar {
       position: fixed;
       inset: 0 auto 0 0;
@@ -293,7 +293,7 @@
     .form-message[data-type="error"] { color: var(--danger-light); }
     .form-message[data-type="success"] { color: var(--green-bright); }
 
-    /* Tabs & filters (for data views) */
+    /* Tabs & filters */
     .tabs { display: flex; gap: 6px; margin-bottom: 14px; overflow-x: auto; }
     .tab {
       flex: 1 0 auto; background: var(--admin-card-2);
@@ -319,7 +319,7 @@
     .filter[aria-pressed="true"] { background: var(--green-bright); border-color: var(--green-bright); color: var(--navy); }
     .toolbar small { color: var(--muted-light); }
 
-    /* List cards (from admin.html) */
+    /* List cards */
     .list { display: grid; gap: 12px; }
     .item {
       background: var(--admin-card); border: 1px solid var(--border-dark);
@@ -435,16 +435,22 @@
       <div class="admin-nav-title">Overview</div>
       <nav class="admin-nav">
         <button type="button" class="active" data-admin-section="dashboard"><span class="admin-nav-icon" aria-hidden="true">▦</span>Dashboard</button>
-        <button type="button" data-admin-section="rides"><span class="admin-nav-icon" aria-hidden="true">🚗</span>Rides</button>
-        <button type="button" data-admin-section="drivers"><span class="admin-nav-icon" aria-hidden="true">👤</span>Drivers</button>
-        <button type="button" data-admin-section="apps"><span class="admin-nav-icon" aria-hidden="true">📋</span>Applications</button>
-        <button type="button" data-admin-section="users"><span class="admin-nav-icon" aria-hidden="true">◉</span>Users</button>
-        <button type="button" data-admin-section="payments"><span class="admin-nav-icon" aria-hidden="true">▣</span>Payments</button>
-        <button type="button" data-admin-section="activity"><span class="admin-nav-icon" aria-hidden="true">◷</span>Activity</button>
+        <button type="button" data-admin-section="rides"><span class="admin-nav-icon" aria-hidden="true">🚗</span>MEI Rides</button>
+        <button type="button" data-admin-section="delivery"><span class="admin-nav-icon" aria-hidden="true">📦</span>MEI Delivery</button>
+        <button type="button" data-admin-section="towing"><span class="admin-nav-icon" aria-hidden="true">🚙</span>MEI Towing</button>
+        <button type="button" data-admin-section="roadside"><span class="admin-nav-icon" aria-hidden="true">🛠️</span>Roadside Assistance</button>
+        <button type="button" data-admin-section="auto"><span class="admin-nav-icon" aria-hidden="true">🔧</span>MEI Auto</button>
+        <button type="button" data-admin-section="marketplace"><span class="admin-nav-icon" aria-hidden="true">🛍️</span>MEI Marketplace</button>
+        <button type="button" data-admin-section="home"><span class="admin-nav-icon" aria-hidden="true">🏠</span>Home Services</button>
+        <button type="button" data-admin-section="learn"><span class="admin-nav-icon" aria-hidden="true">🎓</span>MEI Learn</button>
       </nav>
 
       <div class="admin-nav-title">Management</div>
       <nav class="admin-nav">
+        <button type="button" data-admin-section="drivers"><span class="admin-nav-icon" aria-hidden="true">👤</span>Drivers</button>
+        <button type="button" data-admin-section="apps"><span class="admin-nav-icon" aria-hidden="true">📋</span>Applications</button>
+        <button type="button" data-admin-section="users"><span class="admin-nav-icon" aria-hidden="true">◉</span>Users</button>
+        <button type="button" data-admin-section="payments"><span class="admin-nav-icon" aria-hidden="true">▣</span>Payments</button>
         <button type="button" data-admin-section="settings"><span class="admin-nav-icon" aria-hidden="true">⚙</span>Settings</button>
         <a href="dashboard.html"><span class="admin-nav-icon" aria-hidden="true">←</span>Customer dashboard</a>
       </nav>
@@ -554,7 +560,7 @@
                 <div class="quick-grid">
                   <button type="button" class="quick-action" data-admin-section="rides">
                     <div class="quick-action-icon" aria-hidden="true">🚗</div>
-                    <strong>Manage rides</strong>
+                    <strong>MEI Rides</strong>
                     <span>View and assign rides</span>
                   </button>
                   <button type="button" class="quick-action" data-admin-section="drivers">
@@ -633,7 +639,7 @@
           </div>
         </section>
 
-        <!-- Generic section (users, payments, activity, settings) -->
+        <!-- Generic section (users, payments, activity, settings, and service sections) -->
         <section id="viewSection" class="panel" hidden>
           <div class="panel-header">
             <h3 id="viewTitle">Section</h3>
@@ -709,7 +715,6 @@
     /* ---------- UI helpers ---------- */
 
     function showAuthView(name) {
-      // name: "SignIn" | "Denied"
       $("#viewSignIn").hidden = name !== "SignIn";
       $("#viewDenied").hidden = name !== "Denied";
       $("#viewDashboard").hidden = true;
@@ -734,7 +739,9 @@
       state.section = name;
       $("#viewDashboard").hidden = name !== "dashboard";
       $("#viewData").hidden = !(name === "rides" || name === "drivers" || name === "apps");
-      $("#viewSection").hidden = !(name === "users" || name === "payments" || name === "activity" || name === "settings");
+      $("#viewSection").hidden = !(name === "users" || name === "payments" || name === "activity" || name === "settings" ||
+        name === "delivery" || name === "towing" || name === "roadside" || name === "auto" ||
+        name === "marketplace" || name === "home" || name === "learn");
 
       // Update sidebar active state
       $$(".admin-nav button, .admin-nav a").forEach(function (btn) {
@@ -744,7 +751,7 @@
 
       if (name === "rides" || name === "drivers" || name === "apps") {
         setTab(name);
-        $("#dataTitle").textContent = name === "rides" ? "Rides" : name === "drivers" ? "Drivers" : "Partner applications";
+        $("#dataTitle").textContent = name === "rides" ? "MEI Rides" : name === "drivers" ? "Drivers" : "Partner applications";
       } else if (name !== "dashboard") {
         renderSection(name);
       }
@@ -881,7 +888,7 @@
     }
 
     function updateStats() {
-      $("#statUsers").textContent = state.rides.length ? "—" : "—"; // placeholder
+      $("#statUsers").textContent = "—";
       $("#statRides").textContent = state.rides.length;
       $("#statDrivers").textContent = state.drivers.filter(function (d) { return d.active; }).length;
       $("#statApps").textContent = state.apps.length;
@@ -891,7 +898,6 @@
       var box = $("#recentActivity");
       if (!box) return;
       var items = [];
-      // Combine recent rides + apps
       state.rides.slice(0, 3).forEach(function (r) {
         items.push({ icon: "🚗", title: "Ride: " + r.pickup + " → " + r.destination, meta: formatDate(r.created_at) });
       });
@@ -916,7 +922,20 @@
     }
 
     function renderSection(name) {
-      var title = name.charAt(0).toUpperCase() + name.slice(1);
+      var titles = {
+        users: "Users",
+        payments: "Payments",
+        activity: "Activity",
+        settings: "Settings",
+        delivery: "MEI Delivery",
+        towing: "MEI Towing",
+        roadside: "Roadside Assistance",
+        auto: "MEI Auto",
+        marketplace: "MEI Marketplace",
+        home: "MEI Home Services",
+        learn: "MEI Learn"
+      };
+      var title = titles[name] || name;
       $("#viewTitle").textContent = title;
       var body = $("#viewBody");
       body.replaceChildren();
@@ -928,6 +947,8 @@
         body.appendChild(el("div", "empty-state", "Activity log coming soon."));
       } else if (name === "settings") {
         body.appendChild(el("div", "empty-state", "Settings coming soon."));
+      } else {
+        body.appendChild(el("div", "empty-state", title + " management coming soon."));
       }
     }
 
