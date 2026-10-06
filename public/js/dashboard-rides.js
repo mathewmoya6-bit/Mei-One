@@ -4,10 +4,13 @@
 
    Adds a "Rides" section to dashboard.html:
    - request form (inserts into public.ride_requests)
+   - live driver tracking once a driver is assigned
+     (driver, vehicle, distance, arrival estimate, map)
    - "My rides" list with status + cancel
    - opens automatically for ?service=rides
 
    Self-contained: injects its own nav item, section and styles.
+   Needs driver-assignment SQL (drivers + driver_locations tables).
    Load AFTER dashboard.js:
      <script src="js/dashboard-rides.js"></script>
    ============================================================ */
@@ -19,9 +22,20 @@
   const CONFIG = window.MEI_CONFIG || window.MEIConfig || window.CONFIG || {};
 
   const TABLE = "ride_requests";
+  const DRIVERS_TABLE = "drivers";
+  const LOCATIONS_TABLE = "driver_locations";
   const AFTER_LOGIN_KEY = "mei_after_login";
   const MAX_ACTIVE_REQUESTS = 3;
   const TIMEZONE = (CONFIG.settings && CONFIG.settings.timezone) || "Africa/Nairobi";
+
+  // Tracking
+  const LOCATION_POLL_MS = 15000;   // fallback if realtime is unavailable
+  const TICK_MS = 5000;             // refresh "updated x seconds ago"
+  const STALE_AFTER_S = 90;         // warn when the driver's last update is older than this
+  const ROAD_FACTOR = 1.3;          // straight-line distance -> rough road distance
+  const DEFAULT_SPEED_KMH = 25;     // used when the driver is slow or stationary
+  const LEAFLET_CSS = "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.css";
+  const LEAFLET_JS = "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js";
 
   // Placeholder categories. Override with CONFIG.rides.categories = [["value","Label"], ...]
   const CATEGORIES = (CONFIG.rides && CONFIG.rides.categories) || [
@@ -34,6 +48,7 @@
   const STATUS_LABELS = {
     requested: "Requested",
     accepted: "Accepted",
+    arrived: "Driver arrived",
     completed: "Completed",
     cancelled: "Cancelled"
   };
@@ -66,6 +81,7 @@
     const style = document.createElement("style");
     style.textContent = `
       .ride-card{max-width:640px}
+      .ride-card[hidden]{display:none}
       .ride-form{display:grid;gap:16px}
       .ride-form label{display:grid;gap:6px;color:var(--navy,#071a2f);font-weight:700;font-size:.9rem}
       .ride-form label small{font-weight:400;color:var(--muted,#5b6b7b)}
@@ -97,6 +113,7 @@
         padding:3px 10px;border-radius:999px;white-space:nowrap}
       .ride-status[data-status="requested"]{background:#fff6e0;color:#92600a}
       .ride-status[data-status="accepted"]{background:#eafff4;color:#067a43}
+      .ride-status[data-status="arrived"]{background:#e0f7ea;color:#05603a}
       .ride-status[data-status="completed"]{background:#e8f1ff;color:#1d4ed8}
       .ride-status[data-status="cancelled"]{background:#fff0f0;color:var(--danger,#b91c1c)}
       .ride-cancel{margin-top:10px;font:inherit;font-size:.85rem;font-weight:700;cursor:pointer;
@@ -104,6 +121,22 @@
         border-radius:999px;padding:6px 14px}
       .ride-cancel:hover:not(:disabled){color:var(--danger,#b91c1c);border-color:#f3b8b8;background:#fff5f5}
       .ride-cancel:disabled{opacity:.5;cursor:default}
+
+      /* Tracking */
+      .track-status{font-weight:800;font-size:1.05rem;color:var(--navy,#071a2f)}
+      .track-driver{margin-top:4px;color:var(--navy,#071a2f)}
+      .track-driver small{display:block;color:var(--muted,#5b6b7b)}
+      .track-stats{display:flex;flex-wrap:wrap;gap:10px 28px;margin:14px 0}
+      .track-stat strong{display:block;font-size:1.25rem;line-height:1.2;color:var(--navy,#071a2f)}
+      .track-stat span{font-size:.8rem;color:var(--muted,#5b6b7b)}
+      .track-map{height:280px;border-radius:12px;border:1px solid var(--border,#d8e1e8);
+        overflow:hidden;background:#eef3f7;z-index:0}
+      .track-map[hidden]{display:none}
+      .track-foot{display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px;margin-top:10px}
+      .track-foot a{font-size:.85rem;font-weight:700;color:#067a43}
+      .track-warn{color:#92600a}
+      .ride-marker{font-size:26px;line-height:1;text-align:center;
+        filter:drop-shadow(0 1px 2px rgba(0,0,0,.35))}
     `;
     document.head.appendChild(style);
   }
@@ -126,6 +159,19 @@
         </div>
       </div>
 
+      <div class="content-card ride-card" id="trackCard" hidden style="margin-bottom:22px">
+        <div class="card-header"><h2>Your driver</h2></div>
+        <div class="track-status" id="trackStatus" aria-live="polite"></div>
+        <div class="track-driver" id="trackDriver"></div>
+        <div class="track-stats" id="trackStats" aria-live="polite"></div>
+        <div class="track-map" id="trackMap" hidden></div>
+        <div class="track-foot">
+          <span class="ride-note" id="trackUpdated"></span>
+          <a id="trackExternal" href="#" target="_blank" rel="noopener noreferrer" hidden>Open in Google Maps</a>
+        </div>
+        <p class="ride-note" style="margin-top:8px">Distance and arrival time are estimates and can change with traffic.</p>
+      </div>
+
       <div class="content-card ride-card">
         <form id="rideForm" class="ride-form">
           <label>Pickup location
@@ -135,7 +181,7 @@
           <div class="ride-location">
             <button type="button" class="ride-locate" id="rideUseLocation">📍 Use my current location</button>
             <div class="ride-location-status" id="rideLocationStatus" aria-live="polite"></div>
-            <p class="ride-note">Your location is shared only with this ride request.</p>
+            <p class="ride-note">Your location is shared only with this ride request. Sharing it also lets you see how far your driver is.</p>
           </div>
           <label>Destination
             <input name="destination" type="text" required minlength="3" maxlength="200"
@@ -209,6 +255,11 @@
       item.classList.toggle("active", item.dataset.section === name);
     });
     if (window.history && history.replaceState) history.replaceState(null, "", "#" + name);
+
+    // The map can't measure itself while its section is hidden.
+    if (name === "rides" && track.map) {
+      window.setTimeout(() => track.map && track.map.invalidateSize(), 60);
+    }
   }
 
   function toLocalInputValue(date) {
@@ -433,6 +484,327 @@
   }
 
   /* ----------------------------------------------------------
+     LIVE TRACKING
+  ---------------------------------------------------------- */
+
+  const track = {
+    seq: 0,            // guards against overlapping syncs
+    ride: null,
+    driverId: null,
+    driver: null,      // { name, vehicle_description, plate }
+    loc: null,         // { lat, lng, accuracy_m, heading, speed_kmh, updated_at }
+    channel: null,
+    pollTimer: null,
+    tickTimer: null,
+    map: null,
+    car: null,
+    pin: null,
+    fitted: false
+  };
+
+  const isTrackable = (row) => (row.status === "accepted" || row.status === "arrived") && !!row.driver_id;
+
+  function haversineKm(lat1, lng1, lat2, lng2) {
+    const rad = (d) => (d * Math.PI) / 180;
+    const dLat = rad(lat2 - lat1);
+    const dLng = rad(lng2 - lng1);
+    const a = Math.sin(dLat / 2) ** 2 +
+      Math.cos(rad(lat1)) * Math.cos(rad(lat2)) * Math.sin(dLng / 2) ** 2;
+    return 6371 * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  }
+
+  function formatDistance(km) {
+    if (km < 1) return `${Math.max(10, Math.round((km * 1000) / 10) * 10)} m`;
+    return `${km.toFixed(1)} km`;
+  }
+
+  function secondsSince(value) {
+    return Math.max(0, Math.round((Date.now() - new Date(value).getTime()) / 1000));
+  }
+
+  function ageText(seconds) {
+    if (seconds < 10) return "Live";
+    if (seconds < 60) return `Updated ${seconds} s ago`;
+    return `Updated ${Math.floor(seconds / 60)} min ago`;
+  }
+
+  function loadLeaflet() {
+    if (window.L && window.L.map) return Promise.resolve(window.L);
+    if (loadLeaflet.promise) return loadLeaflet.promise;
+
+    loadLeaflet.promise = new Promise((resolve, reject) => {
+      const css = document.createElement("link");
+      css.rel = "stylesheet";
+      css.href = LEAFLET_CSS;
+      document.head.appendChild(css);
+
+      const script = document.createElement("script");
+      script.src = LEAFLET_JS;
+      script.async = true;
+      script.onload = () => (window.L ? resolve(window.L) : reject(new Error("Leaflet missing")));
+      script.onerror = () => reject(new Error("Leaflet failed to load"));
+      document.head.appendChild(script);
+    }).catch((error) => {
+      loadLeaflet.promise = null;
+      throw error;
+    });
+
+    return loadLeaflet.promise;
+  }
+
+  async function updateMap(seq) {
+    const box = $("#trackMap");
+    if (!box) return;
+
+    const ride = track.ride;
+    const hasPin = ride && typeof ride.pickup_lat === "number" && typeof ride.pickup_lng === "number";
+    const hasCar = !!track.loc;
+
+    box.hidden = !(hasPin || hasCar);
+    if (box.hidden) return;
+
+    let L;
+    try {
+      L = await loadLeaflet();
+    } catch (error) {
+      console.warn("MEI Rides: map unavailable.", error);
+      box.hidden = true;
+      return;
+    }
+    if (seq !== track.seq) return;
+
+    const first = hasCar ? [track.loc.lat, track.loc.lng] : [ride.pickup_lat, ride.pickup_lng];
+
+    if (!track.map) {
+      track.map = L.map(box, { zoomControl: true, attributionControl: true }).setView(first, 15);
+      L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
+        maxZoom: 19,
+        attribution: "&copy; OpenStreetMap contributors"
+      }).addTo(track.map);
+    }
+
+    const icon = (emoji, label) => L.divIcon({
+      className: "ride-marker",
+      html: `<span role="img" aria-label="${label}">${emoji}</span>`,
+      iconSize: [32, 32],
+      iconAnchor: [16, 26]
+    });
+
+    if (hasPin) {
+      const pinAt = [ride.pickup_lat, ride.pickup_lng];
+      if (!track.pin) track.pin = L.marker(pinAt, { icon: icon("📍", "Pickup") }).addTo(track.map);
+      else track.pin.setLatLng(pinAt);
+    } else if (track.pin) {
+      track.pin.remove();
+      track.pin = null;
+    }
+
+    if (hasCar) {
+      const carAt = [track.loc.lat, track.loc.lng];
+      if (!track.car) track.car = L.marker(carAt, { icon: icon("🚗", "Your driver") }).addTo(track.map);
+      else track.car.setLatLng(carAt);
+    } else if (track.car) {
+      track.car.remove();
+      track.car = null;
+    }
+
+    track.map.invalidateSize();
+
+    // Fit once; afterwards only re-fit if the car drifts out of view.
+    const points = [];
+    if (track.car) points.push(track.car.getLatLng());
+    if (track.pin) points.push(track.pin.getLatLng());
+
+    if (points.length > 1) {
+      const bounds = L.latLngBounds(points);
+      if (!track.fitted || !track.map.getBounds().contains(track.car.getLatLng())) {
+        track.map.fitBounds(bounds, { padding: [40, 40], maxZoom: 17 });
+        track.fitted = true;
+      }
+    } else if (!track.fitted) {
+      track.map.setView(points[0], 15);
+      track.fitted = true;
+    }
+  }
+
+  function renderTrack() {
+    const ride = track.ride;
+    const card = $("#trackCard");
+    if (!card || !ride) return;
+    card.hidden = false;
+
+    const arrived = ride.status === "arrived";
+    $("#trackStatus").textContent = arrived ? "Your driver has arrived." : "Your driver is on the way.";
+
+    const driverBox = $("#trackDriver");
+    driverBox.replaceChildren();
+    if (track.driver) {
+      driverBox.appendChild(el("strong", "", track.driver.name));
+      const vehicle = [track.driver.vehicle_description, track.driver.plate].filter(Boolean).join(" · ");
+      if (vehicle) driverBox.appendChild(el("small", "", vehicle));
+    } else {
+      driverBox.appendChild(el("small", "", "Driver details are loading."));
+    }
+
+    const stats = $("#trackStats");
+    stats.replaceChildren();
+    const updated = $("#trackUpdated");
+    const external = $("#trackExternal");
+
+    const hasPin = typeof ride.pickup_lat === "number" && typeof ride.pickup_lng === "number";
+    const loc = track.loc;
+
+    if (!loc) {
+      stats.appendChild(el("p", "ride-note", "Waiting for your driver to share their location."));
+      updated.textContent = "";
+      updated.className = "ride-note";
+      external.hidden = true;
+    } else {
+      const age = secondsSince(loc.updated_at);
+      updated.textContent = ageText(age) + (age > STALE_AFTER_S ? ". Location may be out of date." : "");
+      updated.className = "ride-note" + (age > STALE_AFTER_S ? " track-warn" : "");
+
+      external.href = `https://www.google.com/maps?q=${loc.lat},${loc.lng}`;
+      external.hidden = false;
+
+      const stat = (value, label) => {
+        const box = el("div", "track-stat");
+        box.appendChild(el("strong", "", value));
+        box.appendChild(el("span", "", label));
+        stats.appendChild(box);
+      };
+
+      if (arrived) {
+        stat("At pickup", "Please meet your driver");
+      } else if (hasPin) {
+        const km = haversineKm(loc.lat, loc.lng, ride.pickup_lat, ride.pickup_lng) * ROAD_FACTOR;
+        const speed = typeof loc.speed_kmh === "number" && loc.speed_kmh >= 10
+          ? Math.min(loc.speed_kmh, 60)
+          : DEFAULT_SPEED_KMH;
+        const minutes = Math.max(1, Math.round((km / speed) * 60));
+        stat(formatDistance(km), "Away from pickup");
+        stat(km < 0.1 ? "Almost there" : `About ${minutes} min`, "Estimated arrival");
+      } else {
+        stats.appendChild(el("p", "ride-note",
+          "Share your location when you request a ride to see distance and arrival time."));
+      }
+    }
+  }
+
+  async function loadDriverInfo(seq) {
+    try {
+      const { data, error } = await supabase
+        .from(DRIVERS_TABLE)
+        .select("name, vehicle_description, plate")
+        .eq("id", track.driverId)
+        .maybeSingle();
+      if (error) throw error;
+      if (seq === track.seq) track.driver = data || null;
+    } catch (error) {
+      console.warn("MEI Rides: unable to load driver details.", error);
+    }
+  }
+
+  async function loadDriverLocation(seq) {
+    try {
+      const { data, error } = await supabase
+        .from(LOCATIONS_TABLE)
+        .select("lat, lng, accuracy_m, heading, speed_kmh, updated_at")
+        .eq("driver_id", track.driverId)
+        .maybeSingle();
+      if (error) throw error;
+      if (seq === track.seq) track.loc = data || null;
+    } catch (error) {
+      console.warn("MEI Rides: unable to load driver location.", error);
+    }
+  }
+
+  function subscribeLocation(seq) {
+    try {
+      track.channel = supabase
+        .channel("driver-location-" + track.driverId)
+        .on("postgres_changes",
+          { event: "*", schema: "public", table: LOCATIONS_TABLE, filter: `driver_id=eq.${track.driverId}` },
+          (payload) => {
+            if (seq !== track.seq) return;
+            track.loc = payload.eventType === "DELETE" ? null : payload.new;
+            renderTrack();
+            updateMap(seq);
+          })
+        .subscribe();
+    } catch (error) {
+      console.warn("MEI Rides: live tracking unavailable.", error);
+    }
+  }
+
+  function stopTracking() {
+    track.seq++;
+    if (track.channel) {
+      try { supabase.removeChannel(track.channel); } catch (_) { /* ignore */ }
+      track.channel = null;
+    }
+    window.clearInterval(track.pollTimer);
+    window.clearInterval(track.tickTimer);
+    track.pollTimer = track.tickTimer = null;
+
+    if (track.map) {
+      track.map.remove();
+      track.map = null;
+    }
+    track.car = track.pin = null;
+    track.fitted = false;
+    track.ride = null;
+    track.driverId = null;
+    track.driver = null;
+    track.loc = null;
+
+    const card = $("#trackCard");
+    if (card) card.hidden = true;
+  }
+
+  async function syncTracking(rows) {
+    // rows are newest first; track the most recent ride with a driver on it.
+    const active = rows.find(isTrackable);
+
+    if (!active) {
+      if (track.driverId) stopTracking();
+      return;
+    }
+
+    if (track.driverId !== active.driver_id) {
+      stopTracking();
+      track.driverId = active.driver_id;
+      track.ride = active;
+      const seq = track.seq;
+
+      renderTrack();
+      await Promise.all([loadDriverInfo(seq), loadDriverLocation(seq)]);
+      if (seq !== track.seq) return;
+
+      renderTrack();
+      updateMap(seq);
+      subscribeLocation(seq);
+
+      // Polling backs up realtime; the tick keeps "updated x s ago" fresh.
+      track.pollTimer = window.setInterval(async () => {
+        await loadDriverLocation(seq);
+        if (seq !== track.seq) return;
+        renderTrack();
+        updateMap(seq);
+      }, LOCATION_POLL_MS);
+      track.tickTimer = window.setInterval(() => {
+        if (seq === track.seq) renderTrack();
+      }, TICK_MS);
+      return;
+    }
+
+    // Same driver: the ride's status or pickup pin may have changed.
+    track.ride = active;
+    renderTrack();
+    updateMap(track.seq);
+  }
+
+  /* ----------------------------------------------------------
      MY RIDES
   ---------------------------------------------------------- */
 
@@ -481,13 +853,14 @@
     const user = await getUser();
     if (!user) {
       list.replaceChildren(el("p", "ride-note", "Sign in to see your rides."));
+      stopTracking();
       return;
     }
 
     try {
       const { data, error } = await supabase
         .from(TABLE)
-        .select("id, created_at, pickup, destination, vehicle_category, passengers, pickup_time, pickup_lat, pickup_lng, status")
+        .select("id, created_at, pickup, destination, vehicle_category, passengers, pickup_time, pickup_lat, pickup_lng, status, driver_id")
         .eq("user_id", user.id)
         .order("created_at", { ascending: false })
         .limit(20);
@@ -500,10 +873,11 @@
         empty.appendChild(el("h3", "", "No rides yet"));
         empty.appendChild(el("p", "", "Your ride requests will appear here."));
         list.appendChild(empty);
-        return;
+      } else {
+        data.forEach((row) => list.appendChild(rideItem(row)));
       }
 
-      data.forEach((row) => list.appendChild(rideItem(row)));
+      syncTracking(data);
     } catch (error) {
       console.error("MEI Rides: unable to load rides.", error);
       list.replaceChildren(el("p", "ride-note", "We couldn't load your rides. Please refresh and try again."));
@@ -539,7 +913,7 @@
     loadRides();
   }
 
-  // Live updates when your team changes a status (needs the realtime line in rides.sql).
+  // Live updates when your team or the driver changes a status.
   function subscribe(user) {
     try {
       supabase
