@@ -6,6 +6,7 @@
   <meta name="theme-color" content="#071a2f">
   <meta name="robots" content="noindex">
   <title>Dashboard | MEI One</title>
+  <link rel="icon" href="assets/favicon.png" type="image/png">
 
   <link rel="stylesheet" href="css/styles.css?v=4">
   <link rel="stylesheet" href="css/dashboard.css?v=2">
@@ -75,17 +76,17 @@
   <a class="skip-link" href="#dashboardMain">Skip to content</a>
 
   <!-- SIDEBAR -->
-  <aside class="dashboard-sidebar" id="sidebar" aria-label="Dashboard navigation">
+  <aside class="dashboard-sidebar" id="sidebar" aria-label="Dashboard sidebar">
 
     <a href="index.html" class="sidebar-brand" aria-label="MEI One home">
-      <span class="brand-mark">MEI</span>
+      <span class="brand-mark" aria-hidden="true">MEI</span>
       <span>
         <strong>MEI One</strong>
         <small>Connected services</small>
       </span>
     </a>
 
-    <nav class="dashboard-nav">
+    <nav class="dashboard-nav" aria-label="Dashboard">
       <a href="#overview" class="nav-item active" data-section="overview">
         <span class="nav-icon" aria-hidden="true">⌂</span><span>Overview</span>
       </a>
@@ -114,17 +115,19 @@
 
   </aside>
 
-  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+  <div class="sidebar-overlay" id="sidebarOverlay" aria-hidden="true"></div>
 
   <!-- HEADER -->
   <header class="app-header">
 
     <div class="header-left">
       <button type="button" class="menu-btn" id="menuToggle"
-              aria-label="Open menu" aria-controls="sidebar" aria-expanded="false">☰</button>
+              aria-label="Open menu" aria-controls="sidebar" aria-expanded="false">
+        <span aria-hidden="true">☰</span>
+      </button>
 
       <a href="index.html" class="brand" aria-label="MEI One home">
-        <span class="brand-mark">MEI</span>
+        <span class="brand-mark" aria-hidden="true">MEI</span>
         <span class="brand-name">One</span>
       </a>
     </div>
@@ -144,7 +147,7 @@
   </header>
 
   <!-- MAIN -->
-  <main class="dashboard-main" id="dashboardMain">
+  <main class="dashboard-main" id="dashboardMain" tabindex="-1">
 
     <!-- OVERVIEW -->
     <section class="dashboard-section active" data-section-content="overview">
@@ -154,7 +157,7 @@
           <h1>Welcome back, <span id="welcomeName">User</span></h1>
           <p>Everything MEI One offers, one tap away.</p>
         </div>
-        <div class="status-pill"><span></span>Account active</div>
+        <div class="status-pill"><span aria-hidden="true"></span>Account active</div>
       </div>
 
       <!-- DASHBOARD STATS -->
@@ -191,6 +194,7 @@
 
       <div class="quick-actions all-services">
 
+        <!-- dashboard-rides.js opens the in-dashboard ride form instead of this page -->
         <a href="rides.html" class="quick-action">
           <span class="quick-icon" aria-hidden="true">🚗</span>
           <strong>Request a ride</strong>
@@ -243,7 +247,7 @@
            target="_blank" rel="noopener noreferrer">
           <span class="quick-icon" aria-hidden="true">🎓</span>
           <strong>MEI Learn</strong>
-          <small>Learn &amp; practise ↗</small>
+          <small>Learn &amp; practise <span aria-hidden="true">↗</span><span class="sr-only"> (opens in a new tab)</span></small>
         </a>
 
       </div>
@@ -308,101 +312,101 @@
           <h1>All MEI One services</h1>
           <p>Everything you need, connected in one place.</p>
         </div>
-        <div class="status-pill"><span></span>Kenya</div>
+        <div class="status-pill"><span aria-hidden="true"></span>Kenya</div>
       </div>
 
       <div class="service-filters" role="group" aria-label="Filter services">
-        <button type="button" class="filter-chip active" data-filter="all">All</button>
-        <button type="button" class="filter-chip" data-filter="mobility">Mobility</button>
-        <button type="button" class="filter-chip" data-filter="assistance">Assistance</button>
-        <button type="button" class="filter-chip" data-filter="vehicle">Vehicle</button>
-        <button type="button" class="filter-chip" data-filter="lifestyle">Lifestyle</button>
-        <button type="button" class="filter-chip" data-filter="learning">Learning</button>
+        <button type="button" class="filter-chip active" data-filter="all" aria-pressed="true">All</button>
+        <button type="button" class="filter-chip" data-filter="mobility" aria-pressed="false">Mobility</button>
+        <button type="button" class="filter-chip" data-filter="assistance" aria-pressed="false">Assistance</button>
+        <button type="button" class="filter-chip" data-filter="vehicle" aria-pressed="false">Vehicle</button>
+        <button type="button" class="filter-chip" data-filter="lifestyle" aria-pressed="false">Lifestyle</button>
+        <button type="button" class="filter-chip" data-filter="learning" aria-pressed="false">Learning</button>
       </div>
 
-      <p class="services-count" id="servicesCount">Showing 8 of 8 services</p>
+      <p class="services-count" id="servicesCount" aria-live="polite">Showing 8 of 8 services</p>
 
       <div class="services-grid" id="servicesGrid">
 
         <a href="rides.html" class="service-card" data-category="mobility">
-          <div class="service-card-icon">🚗</div>
+          <div class="service-card-icon" aria-hidden="true">🚗</div>
           <div class="service-card-content">
             <h3>MEI Rides</h3>
             <p>Book a ride and move with ease.</p>
             <span class="service-chip">Mobility</span>
           </div>
-          <span class="service-arrow">→</span>
+          <span class="service-arrow" aria-hidden="true">→</span>
         </a>
 
         <a href="delivery.html" class="service-card" data-category="mobility">
-          <div class="service-card-icon">📦</div>
+          <div class="service-card-icon" aria-hidden="true">📦</div>
           <div class="service-card-content">
             <h3>MEI Delivery</h3>
             <p>Send and receive parcels quickly.</p>
             <span class="service-chip">Mobility</span>
           </div>
-          <span class="service-arrow">→</span>
+          <span class="service-arrow" aria-hidden="true">→</span>
         </a>
 
         <a href="towing.html" class="service-card" data-category="assistance">
-          <div class="service-card-icon">🚙</div>
+          <div class="service-card-icon" aria-hidden="true">🚙</div>
           <div class="service-card-content">
             <h3>MEI Towing</h3>
             <p>Vehicle recovery when you break down.</p>
             <span class="service-chip">Assistance</span>
           </div>
-          <span class="service-arrow">→</span>
+          <span class="service-arrow" aria-hidden="true">→</span>
         </a>
 
         <a href="roadside.html" class="service-card" data-category="assistance">
-          <div class="service-card-icon">🛠️</div>
+          <div class="service-card-icon" aria-hidden="true">🛠️</div>
           <div class="service-card-content">
             <h3>Roadside Assistance</h3>
             <p>Help on the spot, whenever you need it.</p>
             <span class="service-chip">Assistance</span>
           </div>
-          <span class="service-arrow">→</span>
+          <span class="service-arrow" aria-hidden="true">→</span>
         </a>
 
         <a href="auto.html" class="service-card" data-category="vehicle">
-          <div class="service-card-icon">🔧</div>
+          <div class="service-card-icon" aria-hidden="true">🔧</div>
           <div class="service-card-content">
             <h3>MEI Auto</h3>
             <p>Servicing, repairs and automotive support.</p>
             <span class="service-chip">Vehicle</span>
           </div>
-          <span class="service-arrow">→</span>
+          <span class="service-arrow" aria-hidden="true">→</span>
         </a>
 
         <a href="marketplace.html" class="service-card" data-category="lifestyle">
-          <div class="service-card-icon">🛍️</div>
+          <div class="service-card-icon" aria-hidden="true">🛍️</div>
           <div class="service-card-content">
             <h3>MEI Marketplace</h3>
             <p>Shop and discover products and sellers.</p>
             <span class="service-chip">Lifestyle</span>
           </div>
-          <span class="service-arrow">→</span>
+          <span class="service-arrow" aria-hidden="true">→</span>
         </a>
 
         <a href="home-services.html" class="service-card" data-category="lifestyle">
-          <div class="service-card-icon">🏠</div>
+          <div class="service-card-icon" aria-hidden="true">🏠</div>
           <div class="service-card-content">
             <h3>Home Services</h3>
             <p>Trusted help for your home.</p>
             <span class="service-chip">Lifestyle</span>
           </div>
-          <span class="service-arrow">→</span>
+          <span class="service-arrow" aria-hidden="true">→</span>
         </a>
 
         <a href="https://www.meidriveafrica.com/" class="service-card" data-category="learning"
            target="_blank" rel="noopener noreferrer">
-          <div class="service-card-icon">🎓</div>
+          <div class="service-card-icon" aria-hidden="true">🎓</div>
           <div class="service-card-content">
-            <h3>MEI Learn</h3>
+            <h3>MEI Learn <span class="sr-only">(opens in a new tab)</span></h3>
             <p>Learn and practise with MEI Drive Africa.</p>
             <span class="service-chip">Learning</span>
           </div>
-          <span class="service-arrow">↗</span>
+          <span class="service-arrow" aria-hidden="true">↗</span>
         </a>
 
       </div>
@@ -422,7 +426,7 @@
       <div class="content-card profile-card">
 
         <div class="profile-avatar">
-          <span id="profileAvatar">U</span>
+          <span id="profileAvatar" aria-hidden="true">U</span>
         </div>
 
         <div class="profile-details">
@@ -436,14 +440,29 @@
 
     </section>
 
+    <!-- The Rides section (request form + "My rides") is added here by js/dashboard-rides.js -->
+
   </main>
+
+  <!-- Toasts (used by site.js) -->
+  <div id="toastContainer" class="toast-container" role="status" aria-live="polite" aria-atomic="true"></div>
+
+  <!-- Login / sign-up modal host (used by site.js, e.g. if a session expires on the ride form) -->
+  <div id="globalModal" class="modal" aria-hidden="true">
+    <div class="modal-backdrop" data-modal-close></div>
+    <div class="modal-dialog" role="dialog" aria-modal="true" aria-label="MEI One">
+      <button type="button" class="modal-close" data-modal-close aria-label="Close dialog"><span aria-hidden="true">×</span></button>
+      <div id="modalContent"></div>
+    </div>
+  </div>
 
   <!-- SCRIPTS -->
   <script src="js/config.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js" crossorigin="anonymous"></script>
   <script src="js/supabase.js"></script>
   <script src="js/site.js"></script>
   <script src="js/dashboard.js"></script>
+  <script src="js/dashboard-rides.js"></script>
 
   <!-- Service filter (self-contained) -->
   <script>
@@ -458,7 +477,11 @@
           var f = chip.getAttribute('data-filter');
           var shown = 0;
 
-          chips.forEach(function (c) { c.classList.toggle('active', c === chip); });
+          chips.forEach(function (c) {
+            var on = c === chip;
+            c.classList.toggle('active', on);
+            c.setAttribute('aria-pressed', on ? 'true' : 'false');
+          });
 
           cards.forEach(function (card) {
             var match = f === 'all' || card.getAttribute('data-category') === f;
