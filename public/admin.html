@@ -9,193 +9,646 @@
   <link rel="icon" href="assets/favicon.png" type="image/png">
 
   <style>
-    :root{
-      --navy:#071a2f;
-      --green:#00b85c;
-      --green-dark:#067a43;
-      --muted:#5b6b7b;
-      --border:#d8e1e8;
-      --bg:#f3f6f9;
-      --danger:#b91c1c;
-      --radius:14px;
+    /* ---------- DESIGN TOKENS (merged) ---------- */
+    :root {
+      --navy: #071a2f;
+      --navy-light: #0d1d31;
+      --navy-soft: #10243c;
+      --green: #00b85c;
+      --green-dark: #067a43;
+      --green-bright: #39ff88;
+      --muted: #5b6b7b;
+      --muted-light: #8e9caf;
+      --faint: #63738a;
+      --border: #d8e1e8;
+      --border-dark: rgba(255,255,255,.09);
+      --bg: #f3f6f9;
+      --bg-dark: #07111f;
+      --danger: #b91c1c;
+      --danger-light: #ff8585;
+      --radius: 14px;
+      --radius-lg: 18px;
+      --sidebar-width: 260px;
+      --topbar-height: 72px;
+      --admin-card: #0d1d31;
+      --admin-card-2: #10243c;
     }
-    *{box-sizing:border-box}
-    html{-webkit-text-size-adjust:100%}
-    body{
-      margin:0;background:var(--bg);color:var(--navy);
-      font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;line-height:1.5;
+
+    /* ---------- RESET & BASE ---------- */
+    *, *::before, *::after { box-sizing: border-box; }
+    html { -webkit-text-size-adjust: 100%; }
+    body {
+      margin: 0;
+      background: var(--bg-dark);
+      color: #fff;
+      font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
     }
-    [hidden]{display:none !important}
-    button,input,select,textarea{font:inherit}
-    a{color:var(--green-dark)}
-    :focus-visible{outline:3px solid var(--green);outline-offset:2px}
+    [hidden] { display: none !important; }
+    button, input, select, textarea { font: inherit; }
+    a { color: var(--green-dark); }
+    :focus-visible { outline: 3px solid rgba(57,255,136,.45); outline-offset: 2px; }
 
-    .topbar{
-      background:var(--navy);color:#fff;display:flex;align-items:center;justify-content:space-between;
-      gap:12px;padding:12px 18px;position:sticky;top:0;z-index:10;
+    /* ---------- LAYOUT ---------- */
+    .admin-layout { min-height: 100vh; }
+
+    /* Sidebar (from admin dashboard) */
+    .admin-sidebar {
+      position: fixed;
+      inset: 0 auto 0 0;
+      z-index: 100;
+      display: flex;
+      flex-direction: column;
+      width: var(--sidebar-width);
+      padding: 22px 16px;
+      overflow-y: auto;
+      background: var(--navy);
+      border-right: 1px solid var(--border-dark);
     }
-    .brand{display:flex;align-items:center;gap:10px;color:#fff;text-decoration:none}
-    .brand-mark{background:var(--green);color:#04210f;font-weight:800;font-size:.8rem;padding:6px 9px;border-radius:8px;letter-spacing:.04em}
-    .brand strong{display:block;line-height:1.1}
-    .brand small{display:block;opacity:.7;font-size:.75rem}
-    .who{display:flex;align-items:center;gap:12px;font-size:.85rem}
-    .who span{opacity:.85;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-    .btn-ghost{background:transparent;color:#fff;border:1px solid rgba(255,255,255,.35);border-radius:999px;padding:6px 14px;font-weight:600;font-size:.85rem;cursor:pointer}
-    .btn-ghost:hover{border-color:#fff}
 
-    main{max-width:960px;margin:0 auto;padding:20px 16px 60px}
+    .admin-main { margin-left: var(--sidebar-width); min-height: 100vh; }
 
-    .panel{background:#fff;border:1px solid var(--border);border-radius:var(--radius);padding:22px}
-    .panel h1,.panel h2{margin:0 0 6px}
-    .panel p{margin:0 0 16px;color:var(--muted)}
-    .auth{max-width:420px;margin:40px auto 0}
-    .field{display:grid;gap:6px;margin-bottom:14px;font-weight:700;font-size:.9rem}
-    .field small{font-weight:400;color:var(--muted)}
-    .field input,.field select,.field textarea{
-      width:100%;padding:11px;border:1px solid var(--border);border-radius:10px;background:#fff;color:var(--navy);font-weight:400;
+    .admin-brand { display: flex; align-items: center; gap: 12px; padding: 4px 10px 24px; }
+    .admin-logo {
+      display: grid; place-items: center; flex: none;
+      width: 42px; height: 42px; border-radius: 12px;
+      color: var(--navy); background: var(--green-bright);
+      font-size: 15px; font-weight: 900;
     }
-    .field textarea{resize:vertical;min-height:70px}
-    .btn{display:inline-flex;align-items:center;justify-content:center;border:0;border-radius:10px;padding:11px 18px;font-weight:700;cursor:pointer;background:var(--green);color:#04210f}
-    .btn:hover:not(:disabled){filter:brightness(.95)}
-    .btn:disabled{opacity:.55;cursor:default}
-    .btn-block{width:100%}
-    .btn-outline{background:#fff;color:var(--navy);border:1px solid var(--border)}
-    .btn-outline:hover:not(:disabled){border-color:var(--navy);filter:none}
-    .btn-danger{background:#fff;color:var(--danger);border:1px solid #f3b8b8}
-    .btn-danger:hover:not(:disabled){background:#fff5f5;filter:none}
-    .btn-small{padding:7px 14px;font-size:.85rem}
-    .form-message{min-height:1.4em;margin:0 0 12px;font-size:.9rem}
-    .form-message[data-type="error"]{color:var(--danger)}
-    .form-message[data-type="success"]{color:var(--green-dark)}
+    .admin-brand strong { display: block; font-size: 17px; font-weight: 800; line-height: 1.2; }
+    .admin-brand span { display: block; margin-top: 2px; color: var(--muted-light); font-size: 11px; }
 
-    .tabs{display:flex;gap:6px;margin-bottom:14px;overflow-x:auto}
-    .tab{flex:1 0 auto;background:#fff;border:1px solid var(--border);color:var(--navy);padding:10px 16px;border-radius:999px;font-weight:700;font-size:.9rem;cursor:pointer;white-space:nowrap}
-    .tab[aria-selected="true"]{background:var(--navy);border-color:var(--navy);color:#fff}
-    .count{display:inline-block;min-width:1.5em;margin-left:6px;padding:0 6px;border-radius:999px;background:rgba(128,150,170,.2);font-size:.78rem}
-    .tab[aria-selected="true"] .count{background:var(--green);color:#04210f}
+    .admin-nav-title {
+      margin: 18px 10px 8px; color: var(--faint);
+      font-size: 11px; font-weight: 800;
+      letter-spacing: .08em; text-transform: uppercase;
+    }
 
-    .toolbar{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:10px;margin:0 0 14px}
-    .filters{display:flex;flex-wrap:wrap;gap:6px}
-    .filter{background:transparent;border:1px solid var(--border);color:var(--navy);border-radius:999px;padding:6px 14px;font-weight:600;font-size:.85rem;cursor:pointer}
-    .filter[aria-pressed="true"]{background:var(--green);border-color:var(--green);color:#04210f}
-    .toolbar small{color:var(--muted)}
+    .admin-nav { display: grid; gap: 4px; }
+    .admin-nav button,
+    .admin-nav a,
+    .admin-logout {
+      display: flex; align-items: center; gap: 11px;
+      width: 100%; min-height: 44px; padding: 0 12px;
+      border: 0; border-radius: 10px;
+      color: #b7c2d1; background: transparent;
+      font: inherit; font-size: 13px; font-weight: 700;
+      text-align: left; text-decoration: none; cursor: pointer;
+      transition: background 160ms ease, color 160ms ease;
+    }
+    .admin-nav button:hover,
+    .admin-nav a:hover,
+    .admin-nav .active { color: var(--green-bright); background: rgba(57,255,136,.08); }
+    .admin-nav .active { box-shadow: inset 3px 0 0 var(--green-bright); }
+    .admin-nav-icon { flex: none; width: 22px; text-align: center; font-size: 15px; }
 
-    .list{display:grid;gap:12px}
-    .item{background:#fff;border:1px solid var(--border);border-radius:var(--radius);padding:16px}
-    .item-top{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}
-    .title{font-weight:800;overflow-wrap:anywhere}
-    .title span{color:var(--muted);font-weight:400;margin:0 4px}
-    .meta{font-size:.88rem;color:var(--muted);margin-top:4px;overflow-wrap:anywhere}
-    .notes{margin-top:10px;padding:10px 12px;background:var(--bg);border-radius:10px;font-size:.9rem;overflow-wrap:anywhere;white-space:pre-wrap}
-    .links{display:flex;flex-wrap:wrap;gap:14px;margin-top:10px;font-weight:700;font-size:.9rem}
-    .actions{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-top:14px}
-    .actions select,.actions input{padding:8px 10px;border:1px solid var(--border);border-radius:10px;background:#fff;color:var(--navy);min-width:0}
-    .actions select{flex:1 1 220px}
-    .driver-line{margin-top:10px;font-weight:700}
-    .chip{font-size:.7rem;font-weight:800;text-transform:uppercase;letter-spacing:.06em;padding:3px 10px;border-radius:999px;white-space:nowrap}
-    .chip[data-status="requested"],.chip[data-status="new"]{background:#fff6e0;color:#92600a}
-    .chip[data-status="accepted"],.chip[data-status="approved"],.chip[data-status="on"]{background:#eafff4;color:var(--green-dark)}
-    .chip[data-status="arrived"],.chip[data-status="reviewing"]{background:#e8f1ff;color:#1d4ed8}
-    .chip[data-status="completed"]{background:#eef0f3;color:#475467}
-    .chip[data-status="cancelled"],.chip[data-status="rejected"],.chip[data-status="off"]{background:#fff0f0;color:var(--danger)}
-    .empty{text-align:center;padding:36px 16px;color:var(--muted)}
-    .empty h3{margin:0 0 4px;color:var(--navy)}
+    .admin-sidebar-footer { margin-top: auto; padding-top: 18px; }
+    .admin-logout { color: var(--danger-light); background: rgba(255,92,92,.07); font-weight: 800; }
+    .admin-logout:hover { background: rgba(255,92,92,.14); }
 
-    .add-driver{margin-bottom:16px}
-    .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:0 12px}
-    @media(max-width:560px){.grid-2{grid-template-columns:1fr}}
+    /* Topbar */
+    .admin-topbar {
+      position: sticky; top: 0; z-index: 50;
+      display: flex; align-items: center; justify-content: space-between; gap: 16px;
+      height: var(--topbar-height); padding: 0 28px;
+      background: rgba(7,17,31,.9);
+      border-bottom: 1px solid var(--border-dark);
+      backdrop-filter: blur(16px);
+    }
+    .topbar-left { display: flex; align-items: center; gap: 12px; min-width: 0; }
+    .mobile-menu {
+      display: none; width: 42px; height: 42px;
+      border: 1px solid var(--border-dark); border-radius: 10px;
+      color: #fff; background: transparent; font-size: 20px; cursor: pointer;
+    }
+    .topbar-title h1 { margin: 0; font-size: 19px; font-weight: 800; letter-spacing: -.01em; }
+    .topbar-title p { margin: 2px 0 0; color: var(--muted-light); font-size: 12px; }
 
-    .toast{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);background:var(--navy);color:#fff;padding:12px 18px;border-radius:999px;font-size:.9rem;max-width:90vw;z-index:50;box-shadow:0 8px 24px rgba(7,26,47,.3)}
-    .toast[data-type="error"]{background:var(--danger)}
+    .admin-user { display: flex; align-items: center; gap: 10px; }
+    .admin-user-info { text-align: right; line-height: 1.3; }
+    .admin-user-info strong { display: block; font-size: 13px; }
+    .admin-user-info span { display: block; color: var(--muted-light); font-size: 11px; }
+    .admin-avatar {
+      display: grid; place-items: center; flex: none;
+      width: 38px; height: 38px; border-radius: 50%;
+      color: var(--navy); background: var(--green-bright);
+      font-size: 14px; font-weight: 900;
+    }
+
+    /* Content */
+    .admin-content { max-width: 1500px; margin-inline: auto; padding: 28px; }
+
+    .welcome { margin-bottom: 24px; }
+    .welcome h2 { margin: 0; font-size: 28px; font-weight: 900; letter-spacing: -.02em; }
+    .welcome p { margin: 6px 0 0; color: var(--muted-light); font-size: 14px; }
+
+    /* Stat cards */
+    .stat-grid { display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: 16px; margin-bottom: 20px; }
+    .stat-card {
+      padding: 20px; border: 1px solid var(--border-dark);
+      border-radius: 16px; background: var(--admin-card);
+    }
+    .stat-label { color: var(--muted-light); font-size: 11px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; }
+    .stat-value { margin-top: 10px; font-size: 30px; font-weight: 900; line-height: 1.1; }
+    .stat-note { margin-top: 8px; color: var(--faint); font-size: 11px; }
+
+    /* Section grid */
+    .section-grid { display: grid; grid-template-columns: 1.5fr 1fr; gap: 16px; align-items: start; }
+
+    .panel {
+      overflow: hidden; border: 1px solid var(--border-dark);
+      border-radius: var(--radius-lg); background: var(--admin-card);
+    }
+    .panel-header {
+      display: flex; align-items: center; justify-content: space-between; gap: 12px;
+      padding: 18px 20px; border-bottom: 1px solid var(--border-dark);
+    }
+    .panel-header h3 { margin: 0; font-size: 15px; font-weight: 800; }
+    .panel-header span { color: var(--muted-light); font-size: 12px; }
+    .panel-body { padding: 20px; }
+
+    /* Empty state */
+    .empty-state { padding: 40px 20px; color: var(--muted-light); text-align: center; }
+    .empty-icon {
+      display: grid; place-items: center;
+      width: 52px; height: 52px; margin: 0 auto 14px;
+      border-radius: 15px; color: var(--green-bright);
+      background: rgba(57,255,136,.07); font-size: 21px;
+    }
+    .empty-state strong { display: block; margin-bottom: 6px; color: #fff; font-size: 15px; }
+    .empty-state p { max-width: 360px; margin: 0 auto; font-size: 13px; line-height: 1.6; }
+
+    /* Quick actions */
+    .quick-grid { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 10px; }
+    .quick-action {
+      display: flex; flex-direction: column; align-items: flex-start; gap: 3px;
+      min-height: 100px; padding: 15px;
+      border: 1px solid var(--border-dark); border-radius: 13px;
+      color: #fff; background: var(--admin-card-2);
+      font: inherit; text-align: left; cursor: pointer;
+      transition: border-color 160ms ease, transform 160ms ease;
+    }
+    .quick-action:hover { border-color: rgba(57,255,136,.4); transform: translateY(-2px); }
+    .quick-action-icon { margin-bottom: 6px; color: var(--green-bright); font-size: 18px; }
+    .quick-action strong { font-size: 13px; }
+    .quick-action span { color: var(--muted-light); font-size: 11px; line-height: 1.4; }
+
+    /* Activity */
+    .activity-item { display: flex; align-items: flex-start; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--border-dark); }
+    .activity-item:first-child { padding-top: 0; }
+    .activity-item:last-child { padding-bottom: 0; border-bottom: 0; }
+    .activity-icon {
+      display: grid; place-items: center; flex: none;
+      width: 32px; height: 32px; border-radius: 10px;
+      color: var(--green-bright); background: rgba(57,255,136,.08); font-size: 13px;
+    }
+    .activity-title { font-size: 13px; font-weight: 700; }
+    .activity-meta { margin-top: 2px; color: var(--muted-light); font-size: 11px; }
+
+    /* Tables */
+    .table-wrap { overflow-x: auto; }
+    .data-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    .data-table th {
+      padding: 10px 14px; color: var(--muted-light);
+      font-size: 11px; font-weight: 800; letter-spacing: .06em;
+      text-align: left; text-transform: uppercase; white-space: nowrap;
+      border-bottom: 1px solid var(--border-dark);
+    }
+    .data-table td {
+      max-width: 260px; padding: 13px 14px;
+      overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+      border-bottom: 1px solid rgba(255,255,255,.05);
+    }
+    .data-table tbody tr:hover { background: rgba(255,255,255,.03); }
+    .data-table tr:last-child td { border-bottom: 0; }
+    #viewSection .panel-body { padding: 0; }
+    #viewSection .empty-state { padding: 48px 20px; }
+
+    /* Loading screen */
+    .loading-screen {
+      position: fixed; inset: 0; z-index: 9999;
+      display: grid; place-items: center; align-content: center;
+      gap: 18px; padding: 20px; text-align: center;
+      background: var(--bg-dark);
+    }
+    .loading-screen.hidden { display: none; }
+    .loader {
+      width: 42px; height: 42px;
+      border: 4px solid rgba(255,255,255,.1);
+      border-top-color: var(--green-bright);
+      border-radius: 50%; animation: spin .8s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .loading-error { display: none; max-width: 380px; color: var(--muted-light); font-size: 14px; line-height: 1.6; }
+    .loading-error strong { display: block; margin-bottom: 6px; color: #fff; font-size: 16px; }
+    .loading-error a { color: var(--green-bright); font-weight: 800; }
+    .loading-screen.failed .loader { display: none; }
+    .loading-screen.failed .loading-error { display: block; }
+
+    /* Overlay */
+    .admin-overlay { display: none; }
+
+    /* Auth (sign-in) */
+    .auth-panel {
+      max-width: 420px; margin: 40px auto 0;
+      background: var(--admin-card); border: 1px solid var(--border-dark);
+      border-radius: var(--radius-lg); padding: 28px;
+    }
+    .auth-panel h1 { margin: 0 0 6px; font-size: 24px; font-weight: 900; }
+    .auth-panel p { margin: 0 0 20px; color: var(--muted-light); font-size: 14px; }
+    .field { display: grid; gap: 6px; margin-bottom: 14px; font-weight: 700; font-size: .9rem; }
+    .field small { font-weight: 400; color: var(--muted-light); }
+    .field input, .field select, .field textarea {
+      width: 100%; padding: 11px; border: 1px solid var(--border-dark);
+      border-radius: 10px; background: var(--admin-card-2); color: #fff;
+      font-weight: 400; font-size: 14px;
+    }
+    .field textarea { resize: vertical; min-height: 70px; }
+    .field input::placeholder { color: var(--faint); }
+
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center;
+      border: 0; border-radius: 10px; padding: 11px 18px;
+      font-weight: 700; cursor: pointer;
+      background: var(--green-bright); color: var(--navy);
+      transition: filter .15s;
+    }
+    .btn:hover:not(:disabled) { filter: brightness(.95); }
+    .btn:disabled { opacity: .55; cursor: default; }
+    .btn-block { width: 100%; }
+    .btn-outline {
+      background: transparent; color: #fff;
+      border: 1px solid var(--border-dark);
+    }
+    .btn-outline:hover:not(:disabled) { border-color: var(--green-bright); color: var(--green-bright); filter: none; }
+    .btn-danger {
+      background: transparent; color: var(--danger-light);
+      border: 1px solid rgba(255,92,92,.3);
+    }
+    .btn-danger:hover:not(:disabled) { background: rgba(255,92,92,.1); filter: none; }
+    .btn-small { padding: 7px 14px; font-size: .85rem; }
+
+    .form-message { min-height: 1.4em; margin: 0 0 12px; font-size: .9rem; }
+    .form-message[data-type="error"] { color: var(--danger-light); }
+    .form-message[data-type="success"] { color: var(--green-bright); }
+
+    /* Tabs & filters (for data views) */
+    .tabs { display: flex; gap: 6px; margin-bottom: 14px; overflow-x: auto; }
+    .tab {
+      flex: 1 0 auto; background: var(--admin-card-2);
+      border: 1px solid var(--border-dark); color: #fff;
+      padding: 10px 16px; border-radius: 999px;
+      font-weight: 700; font-size: .9rem; cursor: pointer; white-space: nowrap;
+    }
+    .tab[aria-selected="true"] { background: var(--green-bright); border-color: var(--green-bright); color: var(--navy); }
+    .count {
+      display: inline-block; min-width: 1.5em; margin-left: 6px;
+      padding: 0 6px; border-radius: 999px;
+      background: rgba(128,150,170,.2); font-size: .78rem;
+    }
+    .tab[aria-selected="true"] .count { background: rgba(0,0,0,.15); color: var(--navy); }
+
+    .toolbar { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 10px; margin: 0 0 14px; }
+    .filters { display: flex; flex-wrap: wrap; gap: 6px; }
+    .filter {
+      background: transparent; border: 1px solid var(--border-dark); color: #fff;
+      border-radius: 999px; padding: 6px 14px;
+      font-weight: 600; font-size: .85rem; cursor: pointer;
+    }
+    .filter[aria-pressed="true"] { background: var(--green-bright); border-color: var(--green-bright); color: var(--navy); }
+    .toolbar small { color: var(--muted-light); }
+
+    /* List cards (from admin.html) */
+    .list { display: grid; gap: 12px; }
+    .item {
+      background: var(--admin-card); border: 1px solid var(--border-dark);
+      border-radius: var(--radius); padding: 16px;
+    }
+    .item-top { display: flex; justify-content: space-between; gap: 12px; align-items: flex-start; }
+    .title { font-weight: 800; overflow-wrap: anywhere; }
+    .title span { color: var(--muted-light); font-weight: 400; margin: 0 4px; }
+    .meta { font-size: .88rem; color: var(--muted-light); margin-top: 4px; overflow-wrap: anywhere; }
+    .notes { margin-top: 10px; padding: 10px 12px; background: var(--admin-card-2); border-radius: 10px; font-size: .9rem; overflow-wrap: anywhere; white-space: pre-wrap; }
+    .links { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 10px; font-weight: 700; font-size: .9rem; }
+    .links a { color: var(--green-bright); }
+    .actions { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-top: 14px; }
+    .actions select, .actions input {
+      padding: 8px 10px; border: 1px solid var(--border-dark);
+      border-radius: 10px; background: var(--admin-card-2); color: #fff; min-width: 0;
+    }
+    .actions select { flex: 1 1 220px; }
+    .driver-line { margin-top: 10px; font-weight: 700; }
+    .chip {
+      font-size: .7rem; font-weight: 800; text-transform: uppercase;
+      letter-spacing: .06em; padding: 3px 10px; border-radius: 999px; white-space: nowrap;
+    }
+    .chip[data-status="requested"], .chip[data-status="new"] { background: #fff6e0; color: #92600a; }
+    .chip[data-status="accepted"], .chip[data-status="approved"], .chip[data-status="on"] { background: #eafff4; color: var(--green-dark); }
+    .chip[data-status="arrived"], .chip[data-status="reviewing"] { background: #e8f1ff; color: #1d4ed8; }
+    .chip[data-status="completed"] { background: #eef0f3; color: #475467; }
+    .chip[data-status="cancelled"], .chip[data-status="rejected"], .chip[data-status="off"] { background: #fff0f0; color: var(--danger); }
+    .empty { text-align: center; padding: 36px 16px; color: var(--muted-light); }
+    .empty h3 { margin: 0 0 4px; color: #fff; }
+
+    .add-driver { margin-bottom: 16px; }
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 0 12px; }
+
+    /* Toast */
+    .toast {
+      position: fixed; left: 50%; bottom: 20px; transform: translateX(-50%);
+      background: var(--navy); color: #fff; padding: 12px 18px;
+      border-radius: 999px; font-size: .9rem; max-width: 90vw; z-index: 50;
+      box-shadow: 0 8px 24px rgba(7,26,47,.3);
+    }
+    .toast[data-type="error"] { background: var(--danger); }
+
+    /* Denied view */
+    .denied-panel {
+      max-width: 420px; margin: 40px auto 0;
+      background: var(--admin-card); border: 1px solid var(--border-dark);
+      border-radius: var(--radius-lg); padding: 28px; text-align: center;
+    }
+    .denied-panel h1 { margin: 0 0 6px; font-size: 24px; font-weight: 900; }
+    .denied-panel p { margin: 0 0 20px; color: var(--muted-light); }
+
+    /* ---------- RESPONSIVE ---------- */
+    @media (max-width: 1050px) {
+      .stat-grid { grid-template-columns: repeat(2, minmax(0,1fr)); }
+      .section-grid { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 800px) {
+      .admin-sidebar { transform: translateX(-100%); transition: transform 250ms ease; }
+      .admin-sidebar.open { transform: none; box-shadow: 0 0 60px rgba(0,0,0,.5); }
+      .admin-main { margin-left: 0; }
+      .mobile-menu { display: grid; place-items: center; }
+      .admin-overlay { position: fixed; inset: 0; z-index: 90; background: rgba(0,0,0,.55); }
+      .admin-overlay.show { display: block; }
+      .admin-topbar { padding: 0 15px; }
+      .admin-content { padding: 20px 15px 48px; }
+      .admin-user-info { display: none; }
+    }
+
+    @media (max-width: 560px) {
+      .grid-2 { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 520px) {
+      .stat-grid, .quick-grid { grid-template-columns: 1fr; }
+      .welcome h2 { font-size: 23px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .loader { animation-duration: 2s; }
+      .admin-sidebar { transition: none; }
+    }
   </style>
 </head>
 
 <body>
 
-  <header class="topbar">
-    <a href="index.html" class="brand" aria-label="MEI One home">
-      <span class="brand-mark" aria-hidden="true">MEI</span>
-      <span><strong>MEI One</strong><small>Admin</small></span>
-    </a>
-    <div class="who" id="who" hidden>
-      <span id="whoName"></span>
-      <button type="button" class="btn-ghost" id="signOut">Sign out</button>
+  <!-- Loading screen -->
+  <div id="adminLoading" class="loading-screen" role="status" aria-live="polite">
+    <div class="loader" aria-hidden="true"></div>
+    <div class="loading-error">
+      <strong>Taking longer than expected</strong>
+      The dashboard could not finish loading.
+      <a href="#" id="retryLink">Retry</a> or check the browser console (F12).
     </div>
-  </header>
+  </div>
 
-  <main>
+  <div id="adminOverlay" class="admin-overlay"></div>
 
-    <div class="panel auth" id="viewLoading"><p style="margin:0">Loading…</p></div>
+  <div class="admin-layout">
 
-    <section class="panel auth" id="viewSignIn" hidden>
-      <h1>Admin sign in</h1>
-      <p>Sign in with your MEI One admin account.</p>
-      <form id="signInForm" novalidate>
-        <label class="field">Email
-          <input name="email" type="email" required autocomplete="email">
-        </label>
-        <label class="field">Password
-          <input name="password" type="password" required autocomplete="current-password">
-        </label>
-        <div class="form-message" id="signInMessage" aria-live="polite"></div>
-        <button type="submit" class="btn btn-block" id="signInBtn">Sign in</button>
-      </form>
-    </section>
-
-    <section class="panel auth" id="viewDenied" hidden>
-      <h1>No admin access</h1>
-      <p id="deniedText">This account isn't an MEI One admin.</p>
-      <button type="button" class="btn btn-outline btn-block" id="deniedSignOut">Sign out</button>
-    </section>
-
-    <section id="viewApp" hidden>
-
-      <div class="tabs" role="tablist" aria-label="Admin sections">
-        <button type="button" class="tab" role="tab" id="tab-rides" data-tab="rides" aria-selected="true">Rides<span class="count" id="count-rides">0</span></button>
-        <button type="button" class="tab" role="tab" id="tab-drivers" data-tab="drivers" aria-selected="false">Drivers<span class="count" id="count-drivers">0</span></button>
-        <button type="button" class="tab" role="tab" id="tab-apps" data-tab="apps" aria-selected="false">Partner applications<span class="count" id="count-apps">0</span></button>
-      </div>
-
-      <div class="toolbar">
-        <div class="filters" id="filters" role="group" aria-label="Filter"></div>
+    <!-- Sidebar -->
+    <aside id="adminSidebar" class="admin-sidebar" aria-label="Admin navigation">
+      <div class="admin-brand">
+        <div class="admin-logo">MEI</div>
         <div>
-          <small id="updated" aria-live="polite"></small>
-          <button type="button" class="btn btn-outline btn-small" id="refresh">Refresh</button>
+          <strong>MEI One</strong>
+          <span>Administration</span>
         </div>
       </div>
 
-      <!-- Add driver (Drivers tab only) -->
-      <section class="panel add-driver" id="addDriver" hidden>
-        <h2>Add a driver</h2>
-        <p>The driver must already have a MEI One account. Use the email they signed up with.</p>
-        <form id="addDriverForm" novalidate>
-          <div class="grid-2">
-            <label class="field">Account email
-              <input name="email" type="email" required autocomplete="off">
-            </label>
-            <label class="field">Name
-              <input name="name" type="text" required maxlength="100" autocomplete="off">
-            </label>
-            <label class="field">Vehicle <small>(e.g. White Toyota Axio)</small>
-              <input name="vehicle" type="text" required maxlength="100" autocomplete="off">
-            </label>
-            <label class="field">Number plate
-              <input name="plate" type="text" required maxlength="20" autocomplete="off">
-            </label>
+      <div class="admin-nav-title">Overview</div>
+      <nav class="admin-nav">
+        <button type="button" class="active" data-admin-section="dashboard"><span class="admin-nav-icon" aria-hidden="true">▦</span>Dashboard</button>
+        <button type="button" data-admin-section="rides"><span class="admin-nav-icon" aria-hidden="true">🚗</span>Rides</button>
+        <button type="button" data-admin-section="drivers"><span class="admin-nav-icon" aria-hidden="true">👤</span>Drivers</button>
+        <button type="button" data-admin-section="apps"><span class="admin-nav-icon" aria-hidden="true">📋</span>Applications</button>
+        <button type="button" data-admin-section="users"><span class="admin-nav-icon" aria-hidden="true">◉</span>Users</button>
+        <button type="button" data-admin-section="payments"><span class="admin-nav-icon" aria-hidden="true">▣</span>Payments</button>
+        <button type="button" data-admin-section="activity"><span class="admin-nav-icon" aria-hidden="true">◷</span>Activity</button>
+      </nav>
+
+      <div class="admin-nav-title">Management</div>
+      <nav class="admin-nav">
+        <button type="button" data-admin-section="settings"><span class="admin-nav-icon" aria-hidden="true">⚙</span>Settings</button>
+        <a href="dashboard.html"><span class="admin-nav-icon" aria-hidden="true">←</span>Customer dashboard</a>
+      </nav>
+
+      <div class="admin-sidebar-footer">
+        <button id="adminLogout" type="button" class="admin-logout"><span class="admin-nav-icon" aria-hidden="true">↪</span>Sign out</button>
+      </div>
+    </aside>
+
+    <!-- Main -->
+    <main class="admin-main">
+
+      <header class="admin-topbar">
+        <div class="topbar-left">
+          <button id="mobileMenu" class="mobile-menu" type="button" aria-label="Open menu" aria-controls="adminSidebar">☰</button>
+          <div class="topbar-title">
+            <h1>Admin dashboard</h1>
+            <p>MEI One platform management</p>
           </div>
-          <div class="form-message" id="addDriverMessage" aria-live="polite"></div>
-          <button type="submit" class="btn" id="addDriverBtn">Add driver</button>
-        </form>
+        </div>
+
+        <div class="admin-user">
+          <div class="admin-user-info">
+            <strong id="adminUserName">Administrator</strong>
+            <span id="adminUserEmail">Loading…</span>
+          </div>
+          <div id="adminAvatar" class="admin-avatar" aria-hidden="true">A</div>
+        </div>
+      </header>
+
+      <section class="admin-content">
+
+        <!-- Auth: Sign in -->
+        <div id="viewSignIn" class="auth-panel" hidden>
+          <h1>Admin sign in</h1>
+          <p>Sign in with your MEI One admin account.</p>
+          <form id="signInForm" novalidate>
+            <label class="field">Email
+              <input name="email" type="email" required autocomplete="email">
+            </label>
+            <label class="field">Password
+              <input name="password" type="password" required autocomplete="current-password">
+            </label>
+            <div class="form-message" id="signInMessage" aria-live="polite"></div>
+            <button type="submit" class="btn btn-block" id="signInBtn">Sign in</button>
+          </form>
+        </div>
+
+        <!-- Auth: Denied -->
+        <div id="viewDenied" class="denied-panel" hidden>
+          <h1>No admin access</h1>
+          <p id="deniedText">This account isn't an MEI One admin.</p>
+          <button type="button" class="btn btn-outline btn-block" id="deniedSignOut">Sign out</button>
+        </div>
+
+        <!-- Dashboard view -->
+        <div id="viewDashboard" hidden>
+          <div class="welcome">
+            <h2>Platform overview</h2>
+            <p>Manage MEI One from one central administration workspace.</p>
+          </div>
+
+          <div class="stat-grid">
+            <article class="stat-card">
+              <div class="stat-label">Users</div>
+              <div class="stat-value" id="statUsers">—</div>
+              <div class="stat-note">Registered accounts</div>
+            </article>
+            <article class="stat-card">
+              <div class="stat-label">Rides</div>
+              <div class="stat-value" id="statRides">—</div>
+              <div class="stat-note">Total ride requests</div>
+            </article>
+            <article class="stat-card">
+              <div class="stat-label">Drivers</div>
+              <div class="stat-value" id="statDrivers">—</div>
+              <div class="stat-note">Active drivers</div>
+            </article>
+            <article class="stat-card">
+              <div class="stat-label">Applications</div>
+              <div class="stat-value" id="statApps">—</div>
+              <div class="stat-note">Partner applications</div>
+            </article>
+          </div>
+
+          <div class="section-grid">
+            <section class="panel">
+              <div class="panel-header">
+                <h3>Recent activity</h3>
+                <span>Latest events</span>
+              </div>
+              <div class="panel-body" id="recentActivity">
+                <div class="empty-state">
+                  <div class="empty-icon" aria-hidden="true">◷</div>
+                  <strong>No activity yet</strong>
+                  <p>Sign-ins, requests and payments will be listed here as they happen.</p>
+                </div>
+              </div>
+            </section>
+
+            <section class="panel">
+              <div class="panel-header">
+                <h3>Quick actions</h3>
+                <span>Shortcuts</span>
+              </div>
+              <div class="panel-body">
+                <div class="quick-grid">
+                  <button type="button" class="quick-action" data-admin-section="rides">
+                    <div class="quick-action-icon" aria-hidden="true">🚗</div>
+                    <strong>Manage rides</strong>
+                    <span>View and assign rides</span>
+                  </button>
+                  <button type="button" class="quick-action" data-admin-section="drivers">
+                    <div class="quick-action-icon" aria-hidden="true">👤</div>
+                    <strong>Drivers</strong>
+                    <span>Add or manage drivers</span>
+                  </button>
+                  <button type="button" class="quick-action" data-admin-section="apps">
+                    <div class="quick-action-icon" aria-hidden="true">📋</div>
+                    <strong>Applications</strong>
+                    <span>Review partner applications</span>
+                  </button>
+                  <button type="button" class="quick-action" data-admin-section="settings">
+                    <div class="quick-action-icon" aria-hidden="true">⚙</div>
+                    <strong>Settings</strong>
+                    <span>Platform configuration</span>
+                  </button>
+                </div>
+              </div>
+            </section>
+          </div>
+        </div>
+
+        <!-- Rides / Drivers / Apps data view -->
+        <section id="viewData" class="panel" hidden>
+          <div class="panel-header">
+            <h3 id="dataTitle">Rides</h3>
+            <button type="button" class="quick-action" data-admin-section="dashboard" style="min-height:0;padding:8px 14px;flex-direction:row;">← Dashboard</button>
+          </div>
+          <div class="panel-body" style="padding:20px;">
+
+            <div class="tabs" role="tablist" aria-label="Admin sections">
+              <button type="button" class="tab" role="tab" id="tab-rides" data-tab="rides" aria-selected="true">Rides<span class="count" id="count-rides">0</span></button>
+              <button type="button" class="tab" role="tab" id="tab-drivers" data-tab="drivers" aria-selected="false">Drivers<span class="count" id="count-drivers">0</span></button>
+              <button type="button" class="tab" role="tab" id="tab-apps" data-tab="apps" aria-selected="false">Applications<span class="count" id="count-apps">0</span></button>
+            </div>
+
+            <div class="toolbar">
+              <div class="filters" id="filters" role="group" aria-label="Filter"></div>
+              <div>
+                <small id="updated" aria-live="polite"></small>
+                <button type="button" class="btn btn-outline btn-small" id="refresh">Refresh</button>
+              </div>
+            </div>
+
+            <!-- Add driver form (shown only on Drivers tab) -->
+            <section class="panel add-driver" id="addDriver" hidden>
+              <div class="panel-header">
+                <h3>Add a driver</h3>
+                <span>The driver must have a MEI One account</span>
+              </div>
+              <div class="panel-body">
+                <form id="addDriverForm" novalidate>
+                  <div class="grid-2">
+                    <label class="field">Account email
+                      <input name="email" type="email" required autocomplete="off">
+                    </label>
+                    <label class="field">Name
+                      <input name="name" type="text" required maxlength="100" autocomplete="off">
+                    </label>
+                    <label class="field">Vehicle <small>(e.g. White Toyota Axio)</small>
+                      <input name="vehicle" type="text" required maxlength="100" autocomplete="off">
+                    </label>
+                    <label class="field">Number plate
+                      <input name="plate" type="text" required maxlength="20" autocomplete="off">
+                    </label>
+                  </div>
+                  <div class="form-message" id="addDriverMessage" aria-live="polite"></div>
+                  <button type="submit" class="btn" id="addDriverBtn">Add driver</button>
+                </form>
+              </div>
+            </section>
+
+            <div class="list" id="list" role="tabpanel" aria-live="polite"></div>
+
+          </div>
+        </section>
+
+        <!-- Generic section (users, payments, activity, settings) -->
+        <section id="viewSection" class="panel" hidden>
+          <div class="panel-header">
+            <h3 id="viewTitle">Section</h3>
+            <button type="button" class="quick-action" data-admin-section="dashboard" style="min-height:0;padding:8px 14px;flex-direction:row;">← Dashboard</button>
+          </div>
+          <div class="panel-body" id="viewBody"></div>
+        </section>
+
       </section>
-
-      <div class="list" id="list" role="tabpanel" aria-live="polite"></div>
-
-    </section>
-
-  </main>
+    </main>
+  </div>
 
   <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
 
+  <!-- Scripts -->
   <script src="js/config.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js" crossorigin="anonymous"></script>
   <script src="js/supabase.js"></script>
@@ -230,7 +683,7 @@
     };
 
     var state = {
-      user: null, tab: "rides",
+      user: null, tab: "rides", section: "dashboard",
       filter: { rides: "open", drivers: "all", apps: "new" },
       rides: [], drivers: [], apps: []
     };
@@ -255,9 +708,46 @@
 
     /* ---------- UI helpers ---------- */
 
-    function showView(name) {
-      ["Loading", "SignIn", "Denied", "App"].forEach(function (v) { $("#view" + v).hidden = v !== name; });
-      $("#who").hidden = !(name === "App" || name === "Denied");
+    function showAuthView(name) {
+      // name: "SignIn" | "Denied"
+      $("#viewSignIn").hidden = name !== "SignIn";
+      $("#viewDenied").hidden = name !== "Denied";
+      $("#viewDashboard").hidden = true;
+      $("#viewData").hidden = true;
+      $("#viewSection").hidden = true;
+      $("#adminLoading").classList.add("hidden");
+      if (name === "SignIn") {
+        $("#adminUserEmail").textContent = "Not signed in";
+        $("#adminUserName").textContent = "Administrator";
+        $("#adminAvatar").textContent = "A";
+      }
+    }
+
+    function showAppView() {
+      $("#viewSignIn").hidden = true;
+      $("#viewDenied").hidden = true;
+      $("#adminLoading").classList.add("hidden");
+      showSection(state.section);
+    }
+
+    function showSection(name) {
+      state.section = name;
+      $("#viewDashboard").hidden = name !== "dashboard";
+      $("#viewData").hidden = !(name === "rides" || name === "drivers" || name === "apps");
+      $("#viewSection").hidden = !(name === "users" || name === "payments" || name === "activity" || name === "settings");
+
+      // Update sidebar active state
+      $$(".admin-nav button, .admin-nav a").forEach(function (btn) {
+        var sec = btn.dataset.adminSection;
+        if (sec) btn.classList.toggle("active", sec === name);
+      });
+
+      if (name === "rides" || name === "drivers" || name === "apps") {
+        setTab(name);
+        $("#dataTitle").textContent = name === "rides" ? "Rides" : name === "drivers" ? "Drivers" : "Partner applications";
+      } else if (name !== "dashboard") {
+        renderSection(name);
+      }
     }
 
     function toast(text, type) {
@@ -321,40 +811,43 @@
       stopLive();
       try { await supabase.auth.signOut(); } catch (e) { console.error(e); }
       state.user = null;
-      showView("SignIn");
+      showAuthView("SignIn");
     }
 
     async function boot() {
-      showView("Loading");
+      $("#adminLoading").classList.remove("hidden");
+      $("#adminLoading").classList.remove("failed");
 
       if (!supabase) {
-        showView("SignIn");
+        showAuthView("SignIn");
         formMessage($("#signInMessage"), "Admin is temporarily unavailable.", "error");
         return;
       }
 
       var user = await getUser();
-      if (!user) { showView("SignIn"); return; }
+      if (!user) { showAuthView("SignIn"); return; }
 
       state.user = user;
-      $("#whoName").textContent = user.email || "";
+      $("#adminUserEmail").textContent = user.email || "";
+      $("#adminUserName").textContent = "Administrator";
+      $("#adminAvatar").textContent = (user.email || "A").charAt(0).toUpperCase();
 
       try {
         var res = await supabase.rpc("is_mei_admin");
         if (res.error) throw res.error;
         if (res.data !== true) {
           $("#deniedText").textContent = "This account isn't an MEI One admin.";
-          showView("Denied");
+          showAuthView("Denied");
           return;
         }
       } catch (e) {
         console.error("MEI Admin: unable to check admin access.", e);
         $("#deniedText").textContent = "We couldn't check your admin access. Refresh and try again.";
-        showView("Denied");
+        showAuthView("Denied");
         return;
       }
 
-      showView("App");
+      showAppView();
       renderFilters();
       await loadAll();
       startLive();
@@ -379,9 +872,62 @@
         state.apps = results[2].data || [];
         $("#updated").textContent = "Updated " + timeFormat.format(new Date()) + " ";
         render();
+        updateStats();
+        renderRecentActivity();
       } catch (e) {
         console.error("MEI Admin: unable to load data.", e);
         $("#updated").textContent = "Couldn't refresh. ";
+      }
+    }
+
+    function updateStats() {
+      $("#statUsers").textContent = state.rides.length ? "—" : "—"; // placeholder
+      $("#statRides").textContent = state.rides.length;
+      $("#statDrivers").textContent = state.drivers.filter(function (d) { return d.active; }).length;
+      $("#statApps").textContent = state.apps.length;
+    }
+
+    function renderRecentActivity() {
+      var box = $("#recentActivity");
+      if (!box) return;
+      var items = [];
+      // Combine recent rides + apps
+      state.rides.slice(0, 3).forEach(function (r) {
+        items.push({ icon: "🚗", title: "Ride: " + r.pickup + " → " + r.destination, meta: formatDate(r.created_at) });
+      });
+      state.apps.slice(0, 3).forEach(function (a) {
+        items.push({ icon: "📋", title: "Application: " + a.full_name, meta: formatDate(a.created_at) });
+      });
+      items = items.slice(0, 5);
+      if (!items.length) {
+        box.innerHTML = '<div class="empty-state"><div class="empty-icon" aria-hidden="true">◷</div><strong>No activity yet</strong><p>Sign-ins, requests and payments will be listed here as they happen.</p></div>';
+        return;
+      }
+      box.replaceChildren();
+      items.forEach(function (it) {
+        var row = el("div", "activity-item");
+        row.appendChild(el("div", "activity-icon", it.icon));
+        var txt = el("div");
+        txt.appendChild(el("div", "activity-title", it.title));
+        txt.appendChild(el("div", "activity-meta", it.meta));
+        row.appendChild(txt);
+        box.appendChild(row);
+      });
+    }
+
+    function renderSection(name) {
+      var title = name.charAt(0).toUpperCase() + name.slice(1);
+      $("#viewTitle").textContent = title;
+      var body = $("#viewBody");
+      body.replaceChildren();
+      if (name === "users") {
+        body.appendChild(el("div", "empty-state", "User management coming soon."));
+      } else if (name === "payments") {
+        body.appendChild(el("div", "empty-state", "Payment records coming soon."));
+      } else if (name === "activity") {
+        body.appendChild(el("div", "empty-state", "Activity log coming soon."));
+      } else if (name === "settings") {
+        body.appendChild(el("div", "empty-state", "Settings coming soon."));
       }
     }
 
@@ -664,6 +1210,7 @@
     function renderFilters() {
       var box = $("#filters");
       box.replaceChildren();
+      if (!FILTERS[state.tab]) return;
       FILTERS[state.tab].forEach(function (f) {
         var b = el("button", "filter", f[1]);
         b.type = "button";
@@ -678,6 +1225,7 @@
     }
 
     function render() {
+      if (!state.rides) return;
       $("#count-rides").textContent = ridesByFilter("open").length;
       $("#count-drivers").textContent = state.drivers.filter(function (d) { return d.active; }).length;
       $("#count-apps").textContent = state.apps.filter(function (a) { return a.status === "new"; }).length;
@@ -752,22 +1300,58 @@
     /* ---------- Init ---------- */
 
     $("#signInForm").addEventListener("submit", signIn);
-    $("#signOut").addEventListener("click", signOut);
+    $("#adminLogout").addEventListener("click", signOut);
     $("#deniedSignOut").addEventListener("click", signOut);
     $("#refresh").addEventListener("click", function () { loadAll(); });
     $("#addDriverForm").addEventListener("submit", addDriver);
     $$(".tab").forEach(function (t) { t.addEventListener("click", function () { setTab(t.dataset.tab); }); });
     document.addEventListener("visibilitychange", function () { if (!document.hidden && state.user) loadAll(); });
 
+    // Sidebar navigation
+    $$("[data-admin-section]").forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        var sec = btn.dataset.adminSection;
+        if (!sec) return;
+        showSection(sec);
+        // Close mobile sidebar
+        $("#adminSidebar").classList.remove("open");
+        $("#adminOverlay").classList.remove("show");
+      });
+    });
+
+    // Mobile menu
+    $("#mobileMenu").addEventListener("click", function () {
+      $("#adminSidebar").classList.add("open");
+      $("#adminOverlay").classList.add("show");
+    });
+    $("#adminOverlay").addEventListener("click", function () {
+      $("#adminSidebar").classList.remove("open");
+      $("#adminOverlay").classList.remove("show");
+    });
+
+    // Retry link
+    $("#retryLink").addEventListener("click", function (e) {
+      e.preventDefault();
+      boot();
+    });
+
     if (supabase) {
       supabase.auth.onAuthStateChange(function (event) {
         if (event === "SIGNED_OUT" && state.user) {
           stopLive();
           state.user = null;
-          showView("SignIn");
+          showAuthView("SignIn");
         }
       });
     }
+
+    // Failsafe: never spin forever
+    setTimeout(function () {
+      var screen = document.getElementById('adminLoading');
+      if (screen && !screen.classList.contains('hidden') && !screen.classList.contains('failed')) {
+        screen.classList.add('failed');
+      }
+    }, 10000);
 
     boot();
   })(window, document);
