@@ -18,6 +18,22 @@
 
   const route = (name, fallback) => (CONFIG.routes && CONFIG.routes[name]) || fallback;
 
+  // A page can store where the person was heading before sign-in (e.g. rides.js),
+  // so login returns them there instead of the default dashboard view.
+  // Only same-site relative .html paths are accepted, so this can't redirect elsewhere.
+  const AFTER_LOGIN_KEY = "mei_after_login";
+
+  function postLoginDestination(fallback) {
+    try {
+      const destination = sessionStorage.getItem(AFTER_LOGIN_KEY);
+      if (destination) {
+        sessionStorage.removeItem(AFTER_LOGIN_KEY);
+        if (/^[\w-]+\.html(\?[\w=&%.-]*)?(#[\w-]*)?$/i.test(destination)) return destination;
+      }
+    } catch (_) { /* storage unavailable */ }
+    return fallback;
+  }
+
   // Optional: set emergencyPhone (or supportPhone) in config.js to show a direct call link.
   const supportPhone = String(CONFIG.emergencyPhone || CONFIG.supportPhone || "").replace(/[^\d+]/g, "");
 
@@ -369,7 +385,7 @@
       if (data.session) {
         showToast("Account created successfully.", "success");
         modal.close();
-        window.setTimeout(() => { window.location.href = route("dashboard", "dashboard.html"); }, 400);
+        window.setTimeout(() => { window.location.href = postLoginDestination(route("dashboard", "dashboard.html")); }, 400);
       } else {
         showFormMessage(message, "Account created. Check your email to confirm your account.", "success");
         form.reset();
@@ -407,7 +423,7 @@
 
       showToast("Signed in successfully.", "success");
       modal.close();
-      window.setTimeout(() => { window.location.href = route("dashboard", "dashboard.html"); }, 300);
+      window.setTimeout(() => { window.location.href = postLoginDestination(route("dashboard", "dashboard.html")); }, 300);
     } catch (error) {
       showFormMessage(message, friendlyAuthError(error), "error");
     } finally {
