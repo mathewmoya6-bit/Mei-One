@@ -11,7 +11,6 @@
   <style>
     :root{
       --navy:#071a2f;
-      --navy-2:#0d2742;
       --green:#00b85c;
       --green-dark:#067a43;
       --muted:#5b6b7b;
@@ -32,7 +31,6 @@
     a{color:var(--green-dark)}
     :focus-visible{outline:3px solid var(--green);outline-offset:2px}
 
-    /* Header */
     .topbar{
       background:var(--navy);color:#fff;
       display:flex;align-items:center;justify-content:space-between;gap:12px;
@@ -45,8 +43,10 @@
     }
     .brand strong{display:block;line-height:1.1}
     .brand small{display:block;opacity:.7;font-size:.75rem}
-    .who{display:flex;align-items:center;gap:12px;font-size:.85rem}
-    .who span{opacity:.85;max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+    .who{display:flex;align-items:center;gap:12px;font-size:.85rem;text-align:right}
+    .who-text{line-height:1.2;max-width:170px}
+    .who-text strong,.who-text small{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+    .who-text small{opacity:.7}
     .btn-ghost{
       background:transparent;color:#fff;border:1px solid rgba(255,255,255,.35);
       border-radius:999px;padding:6px 14px;font-weight:600;font-size:.85rem;cursor:pointer;
@@ -55,7 +55,6 @@
 
     main{max-width:720px;margin:0 auto;padding:20px 16px 60px}
 
-    /* Panels */
     .panel{
       background:#fff;border:1px solid var(--border);border-radius:var(--radius);
       padding:22px;
@@ -78,16 +77,27 @@
     .btn-block{width:100%}
     .btn-outline{background:#fff;color:var(--navy);border:1px solid var(--border)}
     .btn-outline:hover:not(:disabled){border-color:var(--navy);filter:none}
+    .btn-small{padding:6px 14px;font-size:.85rem}
     .form-message{min-height:1.4em;margin:0 0 12px;font-size:.9rem}
     .form-message[data-type="error"]{color:var(--danger)}
-    .form-message[data-type="success"]{color:var(--green-dark)}
+
+    /* Location sharing */
+    .share{
+      display:flex;align-items:center;justify-content:space-between;gap:14px;
+      background:#fff;border:1px solid var(--border);border-radius:var(--radius);
+      padding:14px 16px;margin-bottom:16px;
+    }
+    .share.is-on{border-color:var(--green);box-shadow:0 0 0 1px var(--green)}
+    .share strong{display:block}
+    .share small{display:block;color:var(--muted);font-size:.85rem}
+    .share .btn{flex:0 0 auto}
+    @media(max-width:480px){.share{flex-direction:column;align-items:stretch}}
 
     /* Tabs */
-    .tabs{display:flex;gap:6px;margin-bottom:16px;overflow-x:auto}
+    .tabs{display:flex;gap:6px;margin-bottom:12px}
     .tab{
-      flex:1 0 auto;background:#fff;border:1px solid var(--border);color:var(--navy);
+      flex:1;background:#fff;border:1px solid var(--border);color:var(--navy);
       padding:10px 14px;border-radius:999px;font-weight:700;font-size:.9rem;cursor:pointer;
-      white-space:nowrap;
     }
     .tab[aria-selected="true"]{background:var(--navy);border-color:var(--navy);color:#fff}
     .tab .count{
@@ -113,8 +123,8 @@
       font-size:.7rem;font-weight:800;text-transform:uppercase;letter-spacing:.06em;
       padding:3px 10px;border-radius:999px;white-space:nowrap;
     }
-    .chip[data-status="requested"]{background:#fff6e0;color:#92600a}
     .chip[data-status="accepted"]{background:#eafff4;color:var(--green-dark)}
+    .chip[data-status="arrived"]{background:#fff6e0;color:#92600a}
     .chip[data-status="completed"]{background:#e8f1ff;color:#1d4ed8}
     .chip[data-status="cancelled"]{background:#fff0f0;color:var(--danger)}
     .meta{font-size:.88rem;color:var(--muted);margin-top:6px}
@@ -128,17 +138,12 @@
     .empty{text-align:center;padding:36px 16px;color:var(--muted)}
     .empty h3{margin:0 0 4px;color:var(--navy)}
 
-    /* Toast */
     .toast{
       position:fixed;left:50%;bottom:20px;transform:translateX(-50%);
       background:var(--navy);color:#fff;padding:12px 18px;border-radius:999px;
       font-size:.9rem;max-width:90vw;z-index:50;box-shadow:0 8px 24px rgba(7,26,47,.3);
     }
     .toast[data-type="error"]{background:var(--danger)}
-
-    @media (prefers-reduced-motion:no-preference){
-      .job{transition:border-color .15s}
-    }
   </style>
 </head>
 
@@ -150,22 +155,23 @@
       <span><strong>MEI One</strong><small>Driver</small></span>
     </a>
     <div class="who" id="who" hidden>
-      <span id="whoName"></span>
+      <div class="who-text">
+        <strong id="whoName"></strong>
+        <small id="whoVehicle"></small>
+      </div>
       <button type="button" class="btn-ghost" id="signOut">Sign out</button>
     </div>
   </header>
 
   <main>
 
-    <!-- Loading -->
     <div class="panel auth" id="viewLoading">
       <p style="margin:0">Loading…</p>
     </div>
 
-    <!-- Sign in -->
     <section class="panel auth" id="viewSignIn" hidden>
       <h1>Driver sign in</h1>
-      <p>Sign in to see and accept ride requests.</p>
+      <p>Sign in to see the rides assigned to you.</p>
       <form id="signInForm" novalidate>
         <label class="field">Email
           <input name="email" type="email" required autocomplete="email" placeholder="you@example.com">
@@ -178,22 +184,25 @@
       </form>
     </section>
 
-    <!-- No access -->
     <section class="panel auth" id="viewDenied" hidden>
       <h1>No driver access</h1>
       <p id="deniedText">This account isn't registered as a driver. Contact the MEI team to be added.</p>
       <button type="button" class="btn btn-outline btn-block" id="deniedSignOut">Sign out</button>
     </section>
 
-    <!-- App -->
     <section id="viewApp" hidden>
 
-      <div class="tabs" role="tablist" aria-label="Jobs">
-        <button type="button" class="tab" role="tab" id="tab-available" data-tab="available" aria-selected="true">
-          Available<span class="count" id="count-available">0</span>
-        </button>
-        <button type="button" class="tab" role="tab" id="tab-mine" data-tab="mine" aria-selected="false">
-          My jobs<span class="count" id="count-mine">0</span>
+      <div class="share" id="share">
+        <div>
+          <strong id="shareTitle">Location sharing is off</strong>
+          <small id="shareHint">Riders see your vehicle only while a ride is assigned to you.</small>
+        </div>
+        <button type="button" class="btn" id="shareBtn">Share my location</button>
+      </div>
+
+      <div class="tabs" role="tablist" aria-label="Rides">
+        <button type="button" class="tab" role="tab" id="tab-active" data-tab="active" aria-selected="true">
+          Active<span class="count" id="count-active">0</span>
         </button>
         <button type="button" class="tab" role="tab" id="tab-history" data-tab="history" aria-selected="false">
           History<span class="count" id="count-history">0</span>
@@ -202,7 +211,7 @@
 
       <div class="toolbar">
         <small id="updated" aria-live="polite"></small>
-        <button type="button" class="btn btn-outline" id="refresh" style="padding:6px 14px;font-size:.85rem">Refresh</button>
+        <button type="button" class="btn btn-outline btn-small" id="refresh">Refresh</button>
       </div>
 
       <div class="jobs" id="jobs" role="tabpanel" aria-live="polite"></div>
@@ -213,7 +222,6 @@
 
   <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
 
-  <!-- SCRIPTS -->
   <script src="js/config.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js" crossorigin="anonymous"></script>
   <script src="js/supabase.js"></script>
@@ -226,9 +234,13 @@
     var CONFIG = window.MEI_CONFIG || window.MEIConfig || window.CONFIG || {};
 
     var RIDES = "ride_requests";
-    var DRIVERS = "ride_drivers";
+    var DRIVERS = "drivers";
+    var LOCATIONS = "driver_locations";
     var TIMEZONE = (CONFIG.settings && CONFIG.settings.timezone) || "Africa/Nairobi";
-    var POLL_MS = 30000;
+
+    var POLL_MS = 30000;        // refresh rides
+    var SEND_MIN_MS = 5000;     // minimum gap between location writes
+    var HEARTBEAT_MS = 15000;   // re-send last fix so riders see it is live
 
     var CATEGORIES = (CONFIG.rides && CONFIG.rides.categories) || [
       ["standard", "Standard car"],
@@ -237,19 +249,22 @@
       ["bike", "Motorbike"]
     ];
     var STATUS_LABELS = {
-      requested: "Open",
       accepted: "Accepted",
+      arrived: "Arrived",
       completed: "Completed",
       cancelled: "Cancelled"
     };
     var EMPTY = {
-      available: ["No open requests", "New ride requests appear here as soon as they come in."],
-      mine: ["No active jobs", "Accept a request from the Available tab."],
-      history: ["No history yet", "Completed and cancelled jobs show up here."]
+      active: ["No active rides", "Rides the MEI team assigns to you appear here."],
+      history: ["No history yet", "Completed and cancelled rides show up here."]
     };
 
-    var state = { user: null, driver: null, tab: "available", rides: { available: [], mine: [] } };
+    var state = {
+      user: null, driver: null, tab: "active", rides: [], knownIds: null,
+      sharing: false, lastFix: null, lastSent: 0, sendFailed: false
+    };
     var pollTimer = null, reloadTimer = null, channel = null, toastTimer = null;
+    var watchId = null, heartbeatTimer = null, wakeLock = null;
 
     function $(s, p) { return (p || document).querySelector(s); }
     function $$(s, p) { return Array.prototype.slice.call((p || document).querySelectorAll(s)); }
@@ -334,18 +349,25 @@
     }
 
     async function signOut() {
+      await stopSharing(true);
       stopLive();
       try { await supabase.auth.signOut(); } catch (e) { console.error(e); }
+      resetState();
+      showView("SignIn");
+    }
+
+    function resetState() {
       state.user = null;
       state.driver = null;
-      showView("SignIn");
+      state.rides = [];
+      state.knownIds = null;
     }
 
     async function loadDriver(user) {
       var res = await supabase
         .from(DRIVERS)
-        .select("id, full_name, phone, vehicle_category, plate, is_active")
-        .eq("user_id", user.id)
+        .select("id, name, vehicle_description, plate, active")
+        .eq("id", user.id)
         .maybeSingle();
       if (res.error) throw res.error;
       return res.data;
@@ -356,7 +378,7 @@
 
       if (!supabase) {
         showView("SignIn");
-        setSignInMessage("Driver portal is temporarily unavailable.", "error");
+        setSignInMessage("Driver page is temporarily unavailable.", "error");
         return;
       }
 
@@ -365,10 +387,11 @@
 
       state.user = user;
       $("#whoName").textContent = user.email || "";
+      $("#whoVehicle").textContent = "";
 
       try {
         var driver = await loadDriver(user);
-        if (!driver || driver.is_active === false) {
+        if (!driver || driver.active === false) {
           $("#deniedText").textContent = driver
             ? "Your driver account is switched off. Contact the MEI team."
             : "This account isn't registered as a driver. Contact the MEI team to be added.";
@@ -376,7 +399,8 @@
           return;
         }
         state.driver = driver;
-        $("#whoName").textContent = driver.full_name || user.email || "";
+        $("#whoName").textContent = driver.name || user.email || "";
+        $("#whoVehicle").textContent = [driver.vehicle_description, driver.plate].filter(Boolean).join(" · ");
       } catch (e) {
         console.error("MEI Driver: unable to check driver access.", e);
         $("#deniedText").textContent = "We couldn't check your driver access. Refresh and try again.";
@@ -385,39 +409,50 @@
       }
 
       showView("App");
-      await loadJobs();
+      updateShareUI();
+      await loadRides();
       startLive();
     }
 
-    /* ---------- Data ---------- */
+    /* ---------- Rides ---------- */
 
-    async function loadJobs() {
+    async function loadRides() {
       if (!state.user) return;
       try {
-        var results = await Promise.all([
-          supabase.from(RIDES).select("*")
-            .eq("status", "requested").is("driver_id", null)
-            .order("created_at", { ascending: true }).limit(50),
-          supabase.from(RIDES).select("*")
-            .eq("driver_id", state.user.id)
-            .order("created_at", { ascending: false }).limit(100)
-        ]);
-        if (results[0].error) throw results[0].error;
-        if (results[1].error) throw results[1].error;
+        var res = await supabase.from(RIDES).select("*")
+          .eq("driver_id", state.user.id)
+          .order("created_at", { ascending: false })
+          .limit(100);
+        if (res.error) throw res.error;
 
-        state.rides.available = results[0].data || [];
-        state.rides.mine = results[1].data || [];
+        var rows = res.data || [];
+
+        // Tell the driver when a new ride is assigned (not on the first load).
+        var activeIds = rows
+          .filter(function (r) { return r.status === "accepted" || r.status === "arrived"; })
+          .map(function (r) { return r.id; });
+        if (state.knownIds) {
+          var fresh = activeIds.filter(function (id) { return state.knownIds.indexOf(id) === -1; });
+          if (fresh.length) {
+            toast("New ride assigned to you.");
+            if (navigator.vibrate) { try { navigator.vibrate([200, 100, 200]); } catch (e) { /* ignore */ } }
+          }
+        }
+        state.knownIds = activeIds;
+
+        state.rides = rows;
         $("#updated").textContent = "Updated " + timeFormat.format(new Date());
         render();
+        updateShareUI();
       } catch (e) {
-        console.error("MEI Driver: unable to load jobs.", e);
+        console.error("MEI Driver: unable to load rides.", e);
         $("#updated").textContent = "Couldn't refresh. Check your connection.";
       }
     }
 
     function scheduleReload() {
       clearTimeout(reloadTimer);
-      reloadTimer = setTimeout(loadJobs, 400);
+      reloadTimer = setTimeout(loadRides, 400);
     }
 
     function startLive() {
@@ -425,13 +460,16 @@
       try {
         channel = supabase
           .channel("driver-rides-" + state.user.id)
-          .on("postgres_changes", { event: "*", schema: "public", table: RIDES }, scheduleReload)
+          .on("postgres_changes",
+            { event: "*", schema: "public", table: RIDES, filter: "driver_id=eq." + state.user.id },
+            scheduleReload)
           .subscribe();
       } catch (e) {
         console.warn("MEI Driver: live updates unavailable.", e);
       }
+      // Polling also catches rides taken away from this driver.
       pollTimer = setInterval(function () {
-        if (!document.hidden) loadJobs();
+        if (!document.hidden) loadRides();
       }, POLL_MS);
     }
 
@@ -444,88 +482,42 @@
       }
     }
 
-    /* ---------- Actions ---------- */
-
-    async function accept(id, btn) {
+    // accepted -> arrived -> completed (the database enforces this too)
+    async function advance(row, nextStatus, btn, doneText) {
       btn.disabled = true;
       try {
         var res = await supabase.from(RIDES)
-          .update({
-            status: "accepted",
-            driver_id: state.user.id,
-            accepted_at: new Date().toISOString()
-          })
-          .eq("id", id)
-          .eq("status", "requested")
-          .is("driver_id", null)
+          .update({ status: nextStatus })
+          .eq("id", row.id)
+          .eq("driver_id", state.user.id)
+          .eq("status", row.status)
           .select("id");
         if (res.error) throw res.error;
 
-        if (!res.data || !res.data.length) {
-          toast("Someone else already took this request.", "error");
-        } else {
-          toast("Request accepted. The rider's phone number is in My jobs.");
-          setTab("mine");
-        }
+        if (res.data && res.data.length) toast(doneText);
+        else toast("This ride has changed. Refreshing.", "error");
       } catch (e) {
-        console.error("MEI Driver: accept failed.", e);
-        toast("Couldn't accept the request. Try again.", "error");
+        console.error("MEI Driver: status change failed.", e);
+        toast("Couldn't update the ride. Try again.", "error");
       }
-      loadJobs();
+      loadRides();
     }
 
-    async function complete(id, btn) {
+    function arrived(row, btn) {
+      advance(row, "arrived", btn, "Marked as arrived.");
+    }
+
+    function complete(row, btn) {
       if (!window.confirm("Mark this ride as completed?")) return;
-      btn.disabled = true;
-      try {
-        var res = await supabase.from(RIDES)
-          .update({ status: "completed", completed_at: new Date().toISOString() })
-          .eq("id", id)
-          .eq("driver_id", state.user.id)
-          .eq("status", "accepted")
-          .select("id");
-        if (res.error) throw res.error;
-        toast(res.data && res.data.length ? "Ride marked as completed." : "This ride can't be completed any more.",
-              res.data && res.data.length ? "info" : "error");
-      } catch (e) {
-        console.error("MEI Driver: complete failed.", e);
-        toast("Couldn't complete the ride. Try again.", "error");
-      }
-      loadJobs();
-    }
-
-    async function release(id, btn) {
-      if (!window.confirm("Give this ride back so another driver can take it?")) return;
-      btn.disabled = true;
-      try {
-        var res = await supabase.from(RIDES)
-          .update({ status: "requested", driver_id: null, accepted_at: null })
-          .eq("id", id)
-          .eq("driver_id", state.user.id)
-          .eq("status", "accepted")
-          .select("id");
-        if (res.error) throw res.error;
-        toast(res.data && res.data.length ? "Ride released." : "This ride can't be released any more.",
-              res.data && res.data.length ? "info" : "error");
-      } catch (e) {
-        console.error("MEI Driver: release failed.", e);
-        toast("Couldn't release the ride. Try again.", "error");
-      }
-      loadJobs();
+      advance(row, "completed", btn, "Ride completed.");
     }
 
     /* ---------- Render ---------- */
 
-    function splitMine() {
-      var mine = state.rides.mine;
-      return {
-        active: mine.filter(function (r) { return r.status === "accepted"; }),
-        history: mine.filter(function (r) { return r.status !== "accepted"; })
-      };
-    }
+    function isActive(r) { return r.status === "accepted" || r.status === "arrived"; }
 
-    function rideCard(row, mode) {
-      var card = el("article", "job" + (row.status === "accepted" ? " is-active" : ""));
+    function rideCard(row) {
+      var card = el("article", "job" + (isActive(row) ? " is-active" : ""));
 
       var top = el("div", "job-top");
       var route = el("div", "route");
@@ -547,15 +539,22 @@
       if (row.notes) card.appendChild(el("div", "notes", row.notes));
 
       var links = el("div", "links");
-      if (typeof row.pickup_lat === "number" && typeof row.pickup_lng === "number") {
-        var map = el("a", "", "View pickup on map");
-        map.href = "https://www.google.com/maps?q=" + row.pickup_lat + "," + row.pickup_lng;
-        map.target = "_blank";
-        map.rel = "noopener noreferrer";
-        links.appendChild(map);
+      var hasPin = typeof row.pickup_lat === "number" && typeof row.pickup_lng === "number";
+      if (hasPin) {
+        var pin = el("a", "", "Navigate to pickup");
+        pin.href = "https://www.google.com/maps/dir/?api=1&destination=" + row.pickup_lat + "," + row.pickup_lng;
+        pin.target = "_blank";
+        pin.rel = "noopener noreferrer";
+        links.appendChild(pin);
       }
-      // Rider phone is only shown on jobs this driver has taken.
-      if (mode !== "available" && row.phone && row.status !== "cancelled") {
+      if (isActive(row)) {
+        var dest = el("a", "", "Navigate to destination");
+        dest.href = "https://www.google.com/maps/dir/?api=1&destination=" + encodeURIComponent(row.destination);
+        dest.target = "_blank";
+        dest.rel = "noopener noreferrer";
+        links.appendChild(dest);
+      }
+      if (isActive(row) && row.phone) {
         var call = el("a", "", "Call " + row.phone);
         call.href = "tel:" + String(row.phone).replace(/[^+\d]/g, "");
         links.appendChild(call);
@@ -563,20 +562,16 @@
       if (links.children.length) card.appendChild(links);
 
       var actions = el("div", "actions");
-      if (mode === "available") {
-        var a = el("button", "btn", "Accept ride");
+      if (row.status === "accepted") {
+        var a = el("button", "btn", "I've arrived");
         a.type = "button";
-        a.addEventListener("click", function () { accept(row.id, a); });
+        a.addEventListener("click", function () { arrived(row, a); });
         actions.appendChild(a);
-      } else if (row.status === "accepted") {
-        var c = el("button", "btn", "Mark completed");
+      } else if (row.status === "arrived") {
+        var c = el("button", "btn", "Complete ride");
         c.type = "button";
-        c.addEventListener("click", function () { complete(row.id, c); });
-        var r = el("button", "btn btn-outline", "Give back");
-        r.type = "button";
-        r.addEventListener("click", function () { release(row.id, r); });
+        c.addEventListener("click", function () { complete(row, c); });
         actions.appendChild(c);
-        actions.appendChild(r);
       }
       if (actions.children.length) card.appendChild(actions);
 
@@ -584,11 +579,12 @@
     }
 
     function render() {
-      var parts = splitMine();
-      var lists = { available: state.rides.available, mine: parts.active, history: parts.history };
+      var lists = {
+        active: state.rides.filter(isActive).reverse(),   // oldest first
+        history: state.rides.filter(function (r) { return !isActive(r); })
+      };
 
-      $("#count-available").textContent = lists.available.length;
-      $("#count-mine").textContent = lists.mine.length;
+      $("#count-active").textContent = lists.active.length;
       $("#count-history").textContent = lists.history.length;
 
       var wrap = $("#jobs");
@@ -603,7 +599,7 @@
         wrap.appendChild(empty);
         return;
       }
-      rows.forEach(function (row) { wrap.appendChild(rideCard(row, state.tab)); });
+      rows.forEach(function (row) { wrap.appendChild(rideCard(row)); });
     }
 
     function setTab(name) {
@@ -614,25 +610,161 @@
       render();
     }
 
+    /* ---------- Live location sharing ---------- */
+
+    function hasActiveRide() { return state.rides.some(isActive); }
+
+    function updateShareUI() {
+      var box = $("#share");
+      var title = $("#shareTitle");
+      var hint = $("#shareHint");
+      var btn = $("#shareBtn");
+
+      box.classList.toggle("is-on", state.sharing);
+
+      if (state.sharing) {
+        title.textContent = "Sharing your location";
+        hint.textContent = state.sendFailed
+          ? "We couldn't send your location. Check your connection."
+          : (state.lastFix ? "Keep this page open so riders can follow you."
+                           : "Waiting for a GPS signal…");
+        btn.textContent = "Stop sharing";
+        btn.className = "btn btn-outline";
+      } else {
+        title.textContent = "Location sharing is off";
+        hint.textContent = hasActiveRide()
+          ? "Share your location so your rider can follow you."
+          : "Riders see your vehicle only while a ride is assigned to you.";
+        btn.textContent = "Share my location";
+        btn.className = "btn";
+      }
+    }
+
+    async function pushLocation() {
+      var fix = state.lastFix;
+      if (!fix || !state.user) return;
+      state.lastSent = Date.now();
+      try {
+        var res = await supabase.from(LOCATIONS).upsert({
+          driver_id: state.user.id,
+          lat: fix.lat,
+          lng: fix.lng,
+          accuracy_m: fix.accuracy,
+          heading: fix.heading,
+          speed_kmh: fix.speed,
+          updated_at: new Date().toISOString()
+        }, { onConflict: "driver_id" });
+        if (res.error) throw res.error;
+        if (state.sendFailed) { state.sendFailed = false; updateShareUI(); }
+      } catch (e) {
+        console.error("MEI Driver: location update failed.", e);
+        if (!state.sendFailed) { state.sendFailed = true; updateShareUI(); }
+      }
+    }
+
+    function onFix(position) {
+      var c = position.coords;
+      var firstFix = !state.lastFix;
+      state.lastFix = {
+        lat: Number(c.latitude.toFixed(6)),
+        lng: Number(c.longitude.toFixed(6)),
+        accuracy: c.accuracy == null ? null : Math.round(c.accuracy),
+        heading: typeof c.heading === "number" && !isNaN(c.heading) ? c.heading : null,
+        speed: typeof c.speed === "number" && !isNaN(c.speed) ? Number((c.speed * 3.6).toFixed(1)) : null
+      };
+      if (firstFix) updateShareUI();
+      if (Date.now() - state.lastSent >= SEND_MIN_MS) pushLocation();
+    }
+
+    function onGeoError(error) {
+      if (error.code === 1) {
+        stopSharing(true);
+        toast("Location permission is blocked. Allow it in your browser settings.", "error");
+      } else {
+        $("#shareHint").textContent = "Waiting for a GPS signal…";
+      }
+    }
+
+    async function requestWakeLock() {
+      try {
+        if ("wakeLock" in navigator && !wakeLock) {
+          wakeLock = await navigator.wakeLock.request("screen");
+          wakeLock.addEventListener("release", function () { wakeLock = null; });
+        }
+      } catch (e) { /* not available or denied */ }
+    }
+
+    function startSharing() {
+      if (!("geolocation" in navigator)) {
+        toast("This browser doesn't support location.", "error");
+        return;
+      }
+      if (window.isSecureContext === false) {
+        toast("Location needs a secure (HTTPS) connection.", "error");
+        return;
+      }
+      state.sharing = true;
+      state.lastFix = null;
+      state.sendFailed = false;
+      updateShareUI();
+
+      watchId = navigator.geolocation.watchPosition(onFix, onGeoError, {
+        enableHighAccuracy: true, maximumAge: 5000, timeout: 20000
+      });
+      heartbeatTimer = setInterval(function () {
+        if (state.lastFix) pushLocation();
+      }, HEARTBEAT_MS);
+      requestWakeLock();
+    }
+
+    async function stopSharing(removeRow) {
+      var wasSharing = state.sharing;
+      state.sharing = false;
+
+      if (watchId !== null) { navigator.geolocation.clearWatch(watchId); watchId = null; }
+      clearInterval(heartbeatTimer);
+      heartbeatTimer = null;
+      if (wakeLock) { try { await wakeLock.release(); } catch (e) { /* ignore */ } wakeLock = null; }
+
+      state.lastFix = null;
+      state.sendFailed = false;
+
+      // Remove the vehicle from the map when sharing stops.
+      if (removeRow && (wasSharing || state.user) && supabase && state.user) {
+        try {
+          await supabase.from(LOCATIONS).delete().eq("driver_id", state.user.id);
+        } catch (e) {
+          console.warn("MEI Driver: couldn't clear location.", e);
+        }
+      }
+      if (state.driver) updateShareUI();
+    }
+
     /* ---------- Init ---------- */
 
     $("#signInForm").addEventListener("submit", signIn);
     $("#signOut").addEventListener("click", signOut);
     $("#deniedSignOut").addEventListener("click", signOut);
-    $("#refresh").addEventListener("click", function () { loadJobs(); });
+    $("#refresh").addEventListener("click", function () { loadRides(); });
+    $("#shareBtn").addEventListener("click", function () {
+      if (state.sharing) stopSharing(true);
+      else startSharing();
+    });
     $$(".tab").forEach(function (t) {
       t.addEventListener("click", function () { setTab(t.dataset.tab); });
     });
     document.addEventListener("visibilitychange", function () {
-      if (!document.hidden && state.driver) loadJobs();
+      if (document.hidden) return;
+      if (state.driver) loadRides();
+      if (state.sharing) requestWakeLock();
     });
 
     if (supabase) {
       supabase.auth.onAuthStateChange(function (event) {
         if (event === "SIGNED_OUT" && state.user) {
+          stopSharing(false);
           stopLive();
-          state.user = null;
-          state.driver = null;
+          resetState();
           showView("SignIn");
         }
       });
