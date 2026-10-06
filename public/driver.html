@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#071a2f">
+  <meta name="robots" content="noindex">
+  <title>Driver | MEI One</title>
+  <link rel="icon" href="assets/favicon.png" type="image/png">
+
+  <style>
+    :root{
+      --navy:#071a2f;
+      --navy-2:#0d2742;
+      --green:#00b85c;
+      --green-dark:#067a43;
+      --muted:#5b6b7b;
+      --border:#d8e1e8;
+      --bg:#f3f6f9;
+      --danger:#b91c1c;
+      --radius:14px;
+    }
+    *{box-sizing:border-box}
+    html{-webkit-text-size-adjust:100%}
+    body{
+      margin:0;background:var(--bg);color:var(--navy);
+      font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+      line-height:1.5;min-height:100vh;
+    }
+    [hidden]{display:none !important}
+    button,input{font:inherit}
+    a{color:var(--green-dark)}
+    :focus-visible{outline:3px solid var(--green);outline-offset:2px}
+
+    /* Header */
+    .topbar{
+      background:var(--navy);color:#fff;
+      display:flex;align-items:center;justify-content:space-between;gap:12px;
+      padding:12px 18px;position:sticky;top:0;z-index:10;
+    }
+    .brand{display:flex;align-items:center;gap:10px;color:#fff;text-decoration:none}
+    .brand-mark{
+      background:var(--green);color:#04210f;font-weight:800;font-size:.8rem;
+      padding:6px 9px;border-radius:8px;letter-spacing:.04em;
+    }
+    .brand strong{display:block;line-height:1.1}
+    .brand small{display:block;opacity:.7;font-size:.75rem}
+    .who{display:flex;align-items:center;gap:12px;font-size:.85rem}
+    .who span{opacity:.85;max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+    .btn-ghost{
+      background:transparent;color:#fff;border:1px solid rgba(255,255,255,.35);
+      border-radius:999px;padding:6px 14px;font-weight:600;font-size:.85rem;cursor:pointer;
+    }
+    .btn-ghost:hover{border-color:#fff}
+
+    main{max-width:720px;margin:0 auto;padding:20px 16px 60px}
+
+    /* Panels */
+    .panel{
+      background:#fff;border:1px solid var(--border);border-radius:var(--radius);
+      padding:22px;
+    }
+    .panel h1,.panel h2{margin:0 0 6px}
+    .panel p{margin:0 0 16px;color:var(--muted)}
+    .auth{max-width:420px;margin:40px auto 0}
+    .field{display:grid;gap:6px;margin-bottom:14px;font-weight:700;font-size:.9rem}
+    .field input{
+      width:100%;padding:12px;border:1px solid var(--border);border-radius:10px;
+      background:#fff;color:var(--navy);font-weight:400;
+    }
+    .btn{
+      display:inline-flex;align-items:center;justify-content:center;
+      border:0;border-radius:10px;padding:12px 18px;font-weight:700;cursor:pointer;
+      background:var(--green);color:#04210f;
+    }
+    .btn:hover:not(:disabled){filter:brightness(.95)}
+    .btn:disabled{opacity:.55;cursor:default}
+    .btn-block{width:100%}
+    .btn-outline{background:#fff;color:var(--navy);border:1px solid var(--border)}
+    .btn-outline:hover:not(:disabled){border-color:var(--navy);filter:none}
+    .form-message{min-height:1.4em;margin:0 0 12px;font-size:.9rem}
+    .form-message[data-type="error"]{color:var(--danger)}
+    .form-message[data-type="success"]{color:var(--green-dark)}
+
+    /* Tabs */
+    .tabs{display:flex;gap:6px;margin-bottom:16px;overflow-x:auto}
+    .tab{
+      flex:1 0 auto;background:#fff;border:1px solid var(--border);color:var(--navy);
+      padding:10px 14px;border-radius:999px;font-weight:700;font-size:.9rem;cursor:pointer;
+      white-space:nowrap;
+    }
+    .tab[aria-selected="true"]{background:var(--navy);border-color:var(--navy);color:#fff}
+    .tab .count{
+      display:inline-block;min-width:1.5em;margin-left:6px;padding:0 6px;border-radius:999px;
+      background:rgba(128,150,170,.2);font-size:.78rem;
+    }
+    .tab[aria-selected="true"] .count{background:var(--green);color:#04210f}
+
+    .toolbar{display:flex;justify-content:space-between;align-items:center;margin:0 0 12px}
+    .toolbar small{color:var(--muted)}
+
+    /* Jobs */
+    .jobs{display:grid;gap:12px}
+    .job{
+      background:#fff;border:1px solid var(--border);border-radius:var(--radius);
+      padding:16px;
+    }
+    .job.is-active{border-color:var(--green);box-shadow:0 0 0 1px var(--green)}
+    .job-top{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}
+    .route{font-weight:800;overflow-wrap:anywhere}
+    .route span{color:var(--muted);font-weight:400;margin:0 4px}
+    .chip{
+      font-size:.7rem;font-weight:800;text-transform:uppercase;letter-spacing:.06em;
+      padding:3px 10px;border-radius:999px;white-space:nowrap;
+    }
+    .chip[data-status="requested"]{background:#fff6e0;color:#92600a}
+    .chip[data-status="accepted"]{background:#eafff4;color:var(--green-dark)}
+    .chip[data-status="completed"]{background:#e8f1ff;color:#1d4ed8}
+    .chip[data-status="cancelled"]{background:#fff0f0;color:var(--danger)}
+    .meta{font-size:.88rem;color:var(--muted);margin-top:6px}
+    .notes{
+      margin-top:10px;padding:10px 12px;background:var(--bg);border-radius:10px;
+      font-size:.9rem;overflow-wrap:anywhere;
+    }
+    .links{display:flex;flex-wrap:wrap;gap:14px;margin-top:10px;font-weight:700;font-size:.9rem}
+    .actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+    .actions .btn{flex:1 1 140px}
+    .empty{text-align:center;padding:36px 16px;color:var(--muted)}
+    .empty h3{margin:0 0 4px;color:var(--navy)}
+
+    /* Toast */
+    .toast{
+      position:fixed;left:50%;bottom:20px;transform:translateX(-50%);
+      background:var(--navy);color:#fff;padding:12px 18px;border-radius:999px;
+      font-size:.9rem;max-width:90vw;z-index:50;box-shadow:0 8px 24px rgba(7,26,47,.3);
+    }
+    .toast[data-type="error"]{background:var(--danger)}
+
+    @media (prefers-reduced-motion:no-preference){
+      .job{transition:border-color .15s}
+    }
+  </style>
+</head>
+
+<body>
+
+  <header class="topbar">
+    <a href="index.html" class="brand" aria-label="MEI One home">
+      <span class="brand-mark" aria-hidden="true">MEI</span>
+      <span><strong>MEI One</strong><small>Driver</small></span>
+    </a>
+    <div class="who" id="who" hidden>
+      <span id="whoName"></span>
+      <button type="button" class="btn-ghost" id="signOut">Sign out</button>
+    </div>
+  </header>
+
+  <main>
+
+    <!-- Loading -->
+    <div class="panel auth" id="viewLoading">
+      <p style="margin:0">Loading…</p>
+    </div>
+
+    <!-- Sign in -->
+    <section class="panel auth" id="viewSignIn" hidden>
+      <h1>Driver sign in</h1>
+      <p>Sign in to see and accept ride requests.</p>
+      <form id="signInForm" novalidate>
+        <label class="field">Email
+          <input name="email" type="email" required autocomplete="email" placeholder="you@example.com">
+        </label>
+        <label class="field">Password
+          <input name="password" type="password" required autocomplete="current-password">
+        </label>
+        <div class="form-message" id="signInMessage" aria-live="polite"></div>
+        <button type="submit" class="btn btn-block" id="signInBtn">Sign in</button>
+      </form>
+    </section>
+
+    <!-- No access -->
+    <section class="panel auth" id="viewDenied" hidden>
+      <h1>No driver access</h1>
+      <p id="deniedText">This account isn't registered as a driver. Contact the MEI team to be added.</p>
+      <button type="button" class="btn btn-outline btn-block" id="deniedSignOut">Sign out</button>
+    </section>
+
+    <!-- App -->
+    <section id="viewApp" hidden>
+
+      <div class="tabs" role="tablist" aria-label="Jobs">
+        <button type="button" class="tab" role="tab" id="tab-available" data-tab="available" aria-selected="true">
+          Available<span class="count" id="count-available">0</span>
+        </button>
+        <button type="button" class="tab" role="tab" id="tab-mine" data-tab="mine" aria-selected="false">
+          My jobs<span class="count" id="count-mine">0</span>
+        </button>
+        <button type="button" class="tab" role="tab" id="tab-history" data-tab="history" aria-selected="false">
+          History<span class="count" id="count-history">0</span>
+        </button>
+      </div>
+
+      <div class="toolbar">
+        <small id="updated" aria-live="polite"></small>
+        <button type="button" class="btn btn-outline" id="refresh" style="padding:6px 14px;font-size:.85rem">Refresh</button>
+      </div>
+
+      <div class="jobs" id="jobs" role="tabpanel" aria-live="polite"></div>
+
+    </section>
+
+  </main>
+
+  <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+
+  <!-- SCRIPTS -->
+  <script src="js/config.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js" crossorigin="anonymous"></script>
+  <script src="js/supabase.js"></script>
+
+  <script>
+  (function (window, document) {
+    "use strict";
+
+    var supabase = window.supabaseClient || null;
+    var CONFIG = window.MEI_CONFIG || window.MEIConfig || window.CONFIG || {};
+
+    var RIDES = "ride_requests";
+    var DRIVERS = "ride_drivers";
+    var TIMEZONE = (CONFIG.settings && CONFIG.settings.timezone) || "Africa/Nairobi";
+    var POLL_MS = 30000;
+
+    var CATEGORIES = (CONFIG.rides && CONFIG.rides.categories) || [
+      ["standard", "Standard car"],
+      ["comfort", "Comfort"],
+      ["large", "Van / large group"],
+      ["bike", "Motorbike"]
+    ];
+    var STATUS_LABELS = {
+      requested: "Open",
+      accepted: "Accepted",
+      completed: "Completed",
+      cancelled: "Cancelled"
+    };
+    var EMPTY = {
+      available: ["No open requests", "New ride requests appear here as soon as they come in."],
+      mine: ["No active jobs", "Accept a request from the Available tab."],
+      history: ["No history yet", "Completed and cancelled jobs show up here."]
+    };
+
+    var state = { user: null, driver: null, tab: "available", rides: { available: [], mine: [] } };
+    var pollTimer = null, reloadTimer = null, channel = null, toastTimer = null;
+
+    function $(s, p) { return (p || document).querySelector(s); }
+    function $$(s, p) { return Array.prototype.slice.call((p || document).querySelectorAll(s)); }
+    function el(tag, className, text) {
+      var n = document.createElement(tag);
+      if (className) n.className = className;
+      if (text !== undefined) n.textContent = text;
+      return n;
+    }
+
+    var dateFormat = new Intl.DateTimeFormat("en-KE", { dateStyle: "medium", timeStyle: "short", timeZone: TIMEZONE });
+    var timeFormat = new Intl.DateTimeFormat("en-KE", { timeStyle: "short", timeZone: TIMEZONE });
+    function formatDate(v) { return dateFormat.format(new Date(v)); }
+
+    function categoryLabel(value) {
+      for (var i = 0; i < CATEGORIES.length; i++) if (CATEGORIES[i][0] === value) return CATEGORIES[i][1];
+      return value;
+    }
+
+    /* ---------- Views ---------- */
+
+    function showView(name) {
+      ["Loading", "SignIn", "Denied", "App"].forEach(function (v) {
+        $("#view" + v).hidden = v !== name;
+      });
+      $("#who").hidden = !(name === "App" || name === "Denied");
+    }
+
+    function toast(text, type) {
+      var t = $("#toast");
+      t.textContent = text;
+      t.dataset.type = type || "info";
+      t.hidden = false;
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(function () { t.hidden = true; }, 3500);
+    }
+
+    function setSignInMessage(text, type) {
+      var m = $("#signInMessage");
+      m.textContent = text;
+      m.dataset.type = type || "info";
+    }
+
+    /* ---------- Auth ---------- */
+
+    async function getUser() {
+      if (!supabase) return null;
+      try {
+        var res = await supabase.auth.getSession();
+        return (res.data && res.data.session && res.data.session.user) || null;
+      } catch (e) {
+        console.error("MEI Driver: unable to read session.", e);
+        return null;
+      }
+    }
+
+    async function signIn(event) {
+      event.preventDefault();
+      var form = event.currentTarget;
+      var email = form.email.value.trim();
+      var password = form.password.value;
+      if (!email || !password) {
+        setSignInMessage("Enter your email and password.", "error");
+        return;
+      }
+      var btn = $("#signInBtn");
+      btn.disabled = true;
+      btn.textContent = "Signing in…";
+      setSignInMessage("", "info");
+      try {
+        var res = await supabase.auth.signInWithPassword({ email: email, password: password });
+        if (res.error) throw res.error;
+        form.reset();
+        await boot();
+      } catch (e) {
+        console.error("MEI Driver: sign-in failed.", e);
+        setSignInMessage("Email or password is incorrect.", "error");
+      } finally {
+        btn.disabled = false;
+        btn.textContent = "Sign in";
+      }
+    }
+
+    async function signOut() {
+      stopLive();
+      try { await supabase.auth.signOut(); } catch (e) { console.error(e); }
+      state.user = null;
+      state.driver = null;
+      showView("SignIn");
+    }
+
+    async function loadDriver(user) {
+      var res = await supabase
+        .from(DRIVERS)
+        .select("id, full_name, phone, vehicle_category, plate, is_active")
+        .eq("user_id", user.id)
+        .maybeSingle();
+      if (res.error) throw res.error;
+      return res.data;
+    }
+
+    async function boot() {
+      showView("Loading");
+
+      if (!supabase) {
+        showView("SignIn");
+        setSignInMessage("Driver portal is temporarily unavailable.", "error");
+        return;
+      }
+
+      var user = await getUser();
+      if (!user) { showView("SignIn"); return; }
+
+      state.user = user;
+      $("#whoName").textContent = user.email || "";
+
+      try {
+        var driver = await loadDriver(user);
+        if (!driver || driver.is_active === false) {
+          $("#deniedText").textContent = driver
+            ? "Your driver account is switched off. Contact the MEI team."
+            : "This account isn't registered as a driver. Contact the MEI team to be added.";
+          showView("Denied");
+          return;
+        }
+        state.driver = driver;
+        $("#whoName").textContent = driver.full_name || user.email || "";
+      } catch (e) {
+        console.error("MEI Driver: unable to check driver access.", e);
+        $("#deniedText").textContent = "We couldn't check your driver access. Refresh and try again.";
+        showView("Denied");
+        return;
+      }
+
+      showView("App");
+      await loadJobs();
+      startLive();
+    }
+
+    /* ---------- Data ---------- */
+
+    async function loadJobs() {
+      if (!state.user) return;
+      try {
+        var results = await Promise.all([
+          supabase.from(RIDES).select("*")
+            .eq("status", "requested").is("driver_id", null)
+            .order("created_at", { ascending: true }).limit(50),
+          supabase.from(RIDES).select("*")
+            .eq("driver_id", state.user.id)
+            .order("created_at", { ascending: false }).limit(100)
+        ]);
+        if (results[0].error) throw results[0].error;
+        if (results[1].error) throw results[1].error;
+
+        state.rides.available = results[0].data || [];
+        state.rides.mine = results[1].data || [];
+        $("#updated").textContent = "Updated " + timeFormat.format(new Date());
+        render();
+      } catch (e) {
+        console.error("MEI Driver: unable to load jobs.", e);
+        $("#updated").textContent = "Couldn't refresh. Check your connection.";
+      }
+    }
+
+    function scheduleReload() {
+      clearTimeout(reloadTimer);
+      reloadTimer = setTimeout(loadJobs, 400);
+    }
+
+    function startLive() {
+      stopLive();
+      try {
+        channel = supabase
+          .channel("driver-rides-" + state.user.id)
+          .on("postgres_changes", { event: "*", schema: "public", table: RIDES }, scheduleReload)
+          .subscribe();
+      } catch (e) {
+        console.warn("MEI Driver: live updates unavailable.", e);
+      }
+      pollTimer = setInterval(function () {
+        if (!document.hidden) loadJobs();
+      }, POLL_MS);
+    }
+
+    function stopLive() {
+      clearInterval(pollTimer);
+      clearTimeout(reloadTimer);
+      if (channel) {
+        try { supabase.removeChannel(channel); } catch (e) { /* ignore */ }
+        channel = null;
+      }
+    }
+
+    /* ---------- Actions ---------- */
+
+    async function accept(id, btn) {
+      btn.disabled = true;
+      try {
+        var res = await supabase.from(RIDES)
+          .update({
+            status: "accepted",
+            driver_id: state.user.id,
+            accepted_at: new Date().toISOString()
+          })
+          .eq("id", id)
+          .eq("status", "requested")
+          .is("driver_id", null)
+          .select("id");
+        if (res.error) throw res.error;
+
+        if (!res.data || !res.data.length) {
+          toast("Someone else already took this request.", "error");
+        } else {
+          toast("Request accepted. The rider's phone number is in My jobs.");
+          setTab("mine");
+        }
+      } catch (e) {
+        console.error("MEI Driver: accept failed.", e);
+        toast("Couldn't accept the request. Try again.", "error");
+      }
+      loadJobs();
+    }
+
+    async function complete(id, btn) {
+      if (!window.confirm("Mark this ride as completed?")) return;
+      btn.disabled = true;
+      try {
+        var res = await supabase.from(RIDES)
+          .update({ status: "completed", completed_at: new Date().toISOString() })
+          .eq("id", id)
+          .eq("driver_id", state.user.id)
+          .eq("status", "accepted")
+          .select("id");
+        if (res.error) throw res.error;
+        toast(res.data && res.data.length ? "Ride marked as completed." : "This ride can't be completed any more.",
+              res.data && res.data.length ? "info" : "error");
+      } catch (e) {
+        console.error("MEI Driver: complete failed.", e);
+        toast("Couldn't complete the ride. Try again.", "error");
+      }
+      loadJobs();
+    }
+
+    async function release(id, btn) {
+      if (!window.confirm("Give this ride back so another driver can take it?")) return;
+      btn.disabled = true;
+      try {
+        var res = await supabase.from(RIDES)
+          .update({ status: "requested", driver_id: null, accepted_at: null })
+          .eq("id", id)
+          .eq("driver_id", state.user.id)
+          .eq("status", "accepted")
+          .select("id");
+        if (res.error) throw res.error;
+        toast(res.data && res.data.length ? "Ride released." : "This ride can't be released any more.",
+              res.data && res.data.length ? "info" : "error");
+      } catch (e) {
+        console.error("MEI Driver: release failed.", e);
+        toast("Couldn't release the ride. Try again.", "error");
+      }
+      loadJobs();
+    }
+
+    /* ---------- Render ---------- */
+
+    function splitMine() {
+      var mine = state.rides.mine;
+      return {
+        active: mine.filter(function (r) { return r.status === "accepted"; }),
+        history: mine.filter(function (r) { return r.status !== "accepted"; })
+      };
+    }
+
+    function rideCard(row, mode) {
+      var card = el("article", "job" + (row.status === "accepted" ? " is-active" : ""));
+
+      var top = el("div", "job-top");
+      var route = el("div", "route");
+      route.appendChild(document.createTextNode(row.pickup));
+      route.appendChild(el("span", "", "to"));
+      route.appendChild(document.createTextNode(row.destination));
+      top.appendChild(route);
+      var chip = el("span", "chip", STATUS_LABELS[row.status] || row.status);
+      chip.dataset.status = row.status;
+      top.appendChild(chip);
+      card.appendChild(top);
+
+      var people = row.passengers + " passenger" + (row.passengers === 1 ? "" : "s");
+      var when = row.pickup_time ? "Pickup " + formatDate(row.pickup_time) : "Pickup as soon as possible";
+      card.appendChild(el("div", "meta", categoryLabel(row.vehicle_category) + ", " + people));
+      card.appendChild(el("div", "meta", when));
+      card.appendChild(el("div", "meta", "Requested " + formatDate(row.created_at)));
+
+      if (row.notes) card.appendChild(el("div", "notes", row.notes));
+
+      var links = el("div", "links");
+      if (typeof row.pickup_lat === "number" && typeof row.pickup_lng === "number") {
+        var map = el("a", "", "View pickup on map");
+        map.href = "https://www.google.com/maps?q=" + row.pickup_lat + "," + row.pickup_lng;
+        map.target = "_blank";
+        map.rel = "noopener noreferrer";
+        links.appendChild(map);
+      }
+      // Rider phone is only shown on jobs this driver has taken.
+      if (mode !== "available" && row.phone && row.status !== "cancelled") {
+        var call = el("a", "", "Call " + row.phone);
+        call.href = "tel:" + String(row.phone).replace(/[^+\d]/g, "");
+        links.appendChild(call);
+      }
+      if (links.children.length) card.appendChild(links);
+
+      var actions = el("div", "actions");
+      if (mode === "available") {
+        var a = el("button", "btn", "Accept ride");
+        a.type = "button";
+        a.addEventListener("click", function () { accept(row.id, a); });
+        actions.appendChild(a);
+      } else if (row.status === "accepted") {
+        var c = el("button", "btn", "Mark completed");
+        c.type = "button";
+        c.addEventListener("click", function () { complete(row.id, c); });
+        var r = el("button", "btn btn-outline", "Give back");
+        r.type = "button";
+        r.addEventListener("click", function () { release(row.id, r); });
+        actions.appendChild(c);
+        actions.appendChild(r);
+      }
+      if (actions.children.length) card.appendChild(actions);
+
+      return card;
+    }
+
+    function render() {
+      var parts = splitMine();
+      var lists = { available: state.rides.available, mine: parts.active, history: parts.history };
+
+      $("#count-available").textContent = lists.available.length;
+      $("#count-mine").textContent = lists.mine.length;
+      $("#count-history").textContent = lists.history.length;
+
+      var wrap = $("#jobs");
+      wrap.replaceChildren();
+      wrap.setAttribute("aria-labelledby", "tab-" + state.tab);
+
+      var rows = lists[state.tab];
+      if (!rows.length) {
+        var empty = el("div", "empty");
+        empty.appendChild(el("h3", "", EMPTY[state.tab][0]));
+        empty.appendChild(el("p", "", EMPTY[state.tab][1]));
+        wrap.appendChild(empty);
+        return;
+      }
+      rows.forEach(function (row) { wrap.appendChild(rideCard(row, state.tab)); });
+    }
+
+    function setTab(name) {
+      state.tab = name;
+      $$(".tab").forEach(function (t) {
+        t.setAttribute("aria-selected", t.dataset.tab === name ? "true" : "false");
+      });
+      render();
+    }
+
+    /* ---------- Init ---------- */
+
+    $("#signInForm").addEventListener("submit", signIn);
+    $("#signOut").addEventListener("click", signOut);
+    $("#deniedSignOut").addEventListener("click", signOut);
+    $("#refresh").addEventListener("click", function () { loadJobs(); });
+    $$(".tab").forEach(function (t) {
+      t.addEventListener("click", function () { setTab(t.dataset.tab); });
+    });
+    document.addEventListener("visibilitychange", function () {
+      if (!document.hidden && state.driver) loadJobs();
+    });
+
+    if (supabase) {
+      supabase.auth.onAuthStateChange(function (event) {
+        if (event === "SIGNED_OUT" && state.user) {
+          stopLive();
+          state.user = null;
+          state.driver = null;
+          showView("SignIn");
+        }
+      });
+    }
+
+    boot();
+  })(window, document);
+  </script>
+
+</body>
+</html>
