@@ -1,0 +1,82 @@
+/* ============================================================
+   MEI ONE — PARTNER PAGES
+   File: public/css/partners.css
+   Load AFTER css/styles.css. Only adds pt- classes; the header,
+   footer, buttons, sections, grids and cards come from styles.css.
+   Colours are explicit so every block reads well on any background.
+   ============================================================ */
+
+/* Hero / page head */
+.pt-hero{background:#071a2f;color:#fff;padding:72px 0 76px}
+.pt-hero h1{margin:0 0 14px;color:#fff;font-size:clamp(2rem,5vw,3.1rem);line-height:1.1;letter-spacing:-.02em;max-width:16ch}
+.pt-hero p{margin:0 0 26px;max-width:54ch;font-size:1.08rem;color:#c8d5e2}
+.pt-actions{display:flex;flex-wrap:wrap;gap:12px}
+
+.pt-head{background:#071a2f;color:#fff;padding:48px 0 56px}
+.pt-head h1{margin:0 0 8px;color:#fff;font-size:clamp(1.7rem,4vw,2.4rem);letter-spacing:-.02em}
+.pt-head p{margin:0;color:#c8d5e2;max-width:56ch}
+
+/* White panels (readable on dark or light page backgrounds) */
+.pt-panel{
+  background:#fff;color:#071a2f;border:1px solid #d8e1e8;border-radius:14px;padding:24px;
+}
+.pt-panel h2{margin:0 0 6px;color:#071a2f;font-size:1.25rem}
+.pt-panel > p{margin:0 0 18px;color:#5b6b7b}
+.pt-panel a{color:#067a43}
+
+.pt-wrap{max-width:680px;margin:-28px auto 64px;padding:0 16px;display:grid;gap:22px;position:relative}
+
+/* Checklist */
+.pt-checks{margin:0;padding:0;list-style:none;display:grid;gap:12px}
+.pt-checks li{padding-left:28px;position:relative;color:#071a2f}
+.pt-checks li::before{content:"✓";position:absolute;left:0;color:#067a43;font-weight:800}
+.pt-narrow{max-width:760px}
+
+/* FAQ */
+.pt-faq{display:grid;gap:10px;max-width:760px}
+.pt-faq details{background:#fff;color:#071a2f;border:1px solid #d8e1e8;border-radius:12px;padding:14px 16px}
+.pt-faq summary{cursor:pointer;font-weight:700}
+.pt-faq details p{margin:10px 0 0;color:#5b6b7b}
+
+/* Closing band */
+.pt-cta{background:#071a2f;color:#fff;text-align:center;padding:52px 20px}
+.pt-cta h2{margin:0 0 8px;color:#fff}
+.pt-cta p{margin:0 0 20px;color:#c8d5e2}
+
+/* Form */
+.pt-form{display:grid;gap:16px}
+.pt-field{display:grid;gap:6px;font-weight:700;font-size:.9rem;color:#071a2f}
+.pt-field small{font-weight:400;color:#5b6b7b}
+.pt-field input,.pt-field select,.pt-field textarea{
+  width:100%;box-sizing:border-box;font:inherit;font-weight:400;
+  padding:12px;border:1px solid #d8e1e8;border-radius:10px;background:#fff;color:#071a2f;
+}
+.pt-field input:focus,.pt-field select:focus,.pt-field textarea:focus{outline:2px solid #00b85c;outline-offset:1px}
+.pt-field textarea{resize:vertical;min-height:110px}
+.pt-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:560px){.pt-row{grid-template-columns:1fr}}
+.pt-consent{display:grid;grid-template-columns:auto 1fr;gap:10px;align-items:start;font-size:.9rem;color:#5b6b7b}
+.pt-consent input{margin-top:4px;width:18px;height:18px}
+.pt-hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
+.pt-message{min-height:1.4em;margin:0;font-size:.92rem;color:#5b6b7b}
+.pt-message[data-type="error"]{color:#b91c1c}
+.pt-block{width:100%}
+.pt-ghost{
+  display:inline-flex;align-items:center;justify-content:center;width:100%;margin-top:12px;
+  background:#fff;color:#071a2f;border:1px solid #d8e1e8;border-radius:10px;
+  padding:12px 18px;font:inherit;font-weight:700;cursor:pointer;
+}
+.pt-ghost:hover{border-color:#071a2f}
+.pt-success h2{color:#067a43}
+.pt-success ul{margin:0 0 20px;padding-left:20px;color:#5b6b7b}
+
+/* Applications list */
+.pt-app{padding:14px 0;border-top:1px solid #edf2f6;display:flex;justify-content:space-between;gap:12px;align-items:flex-start}
+.pt-app:first-child{border-top:0;padding-top:0}
+.pt-app strong{display:block;color:#071a2f}
+.pt-app small{color:#5b6b7b}
+.pt-chip{font-size:.7rem;font-weight:800;text-transform:uppercase;letter-spacing:.06em;padding:3px 10px;border-radius:999px;white-space:nowrap}
+.pt-chip[data-status="new"]{background:#fff6e0;color:#92600a}
+.pt-chip[data-status="reviewing"]{background:#e8f1ff;color:#1d4ed8}
+.pt-chip[data-status="approved"]{background:#eafff4;color:#067a43}
+.pt-chip[data-status="rejected"]{background:#fff0f0;color:#b91c1c}
