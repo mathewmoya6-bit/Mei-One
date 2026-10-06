@@ -3,514 +3,775 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#07111f">
-  <meta name="robots" content="noindex">
-  <meta name="description" content="MEI One administration dashboard.">
-  <title>Admin Dashboard | MEI One</title>
-
-  <link rel="stylesheet" href="css/styles.css?v=3">
+  <meta name="theme-color" content="#071a2f">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Admin | MEI One</title>
+  <link rel="icon" href="assets/favicon.png" type="image/png">
 
   <style>
-    :root {
-      --admin-bg: #07111f;
-      --admin-sidebar: #091728;
-      --admin-card: #0d1d31;
-      --admin-card-2: #10243c;
-      --admin-text: #fff;
-      --admin-muted: #8e9caf;
-      --admin-faint: #63738a;
-      --admin-green: #39ff88;
-      --admin-border: rgba(255, 255, 255, .09);
-      --admin-danger: #ff8585;
-      --sidebar-width: 260px;
-      --topbar-height: 72px;
+    :root{
+      --navy:#071a2f;
+      --green:#00b85c;
+      --green-dark:#067a43;
+      --muted:#5b6b7b;
+      --border:#d8e1e8;
+      --bg:#f3f6f9;
+      --danger:#b91c1c;
+      --radius:14px;
     }
-
-    *, *::before, *::after { box-sizing: border-box; }
-
-    body {
-      margin: 0;
-      min-height: 100vh;
-      color: var(--admin-text);
-      background: var(--admin-bg);
-      font-family: Inter, system-ui, -apple-system, "Segoe UI", sans-serif;
-      -webkit-font-smoothing: antialiased;
+    *{box-sizing:border-box}
+    html{-webkit-text-size-adjust:100%}
+    body{
+      margin:0;background:var(--bg);color:var(--navy);
+      font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;line-height:1.5;
     }
+    [hidden]{display:none !important}
+    button,input,select,textarea{font:inherit}
+    a{color:var(--green-dark)}
+    :focus-visible{outline:3px solid var(--green);outline-offset:2px}
 
-    :focus-visible { outline: 3px solid rgba(57, 255, 136, .45); outline-offset: 2px; }
-
-    /* Layout ------------------------------------------------------------- */
-    .admin-layout { min-height: 100vh; }
-
-    .admin-sidebar {
-      position: fixed;
-      inset: 0 auto 0 0;
-      z-index: 100;
-      display: flex;
-      flex-direction: column;
-      width: var(--sidebar-width);
-      padding: 22px 16px;
-      overflow-y: auto;
-      background: var(--admin-sidebar);
-      border-right: 1px solid var(--admin-border);
+    .topbar{
+      background:var(--navy);color:#fff;display:flex;align-items:center;justify-content:space-between;
+      gap:12px;padding:12px 18px;position:sticky;top:0;z-index:10;
     }
+    .brand{display:flex;align-items:center;gap:10px;color:#fff;text-decoration:none}
+    .brand-mark{background:var(--green);color:#04210f;font-weight:800;font-size:.8rem;padding:6px 9px;border-radius:8px;letter-spacing:.04em}
+    .brand strong{display:block;line-height:1.1}
+    .brand small{display:block;opacity:.7;font-size:.75rem}
+    .who{display:flex;align-items:center;gap:12px;font-size:.85rem}
+    .who span{opacity:.85;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+    .btn-ghost{background:transparent;color:#fff;border:1px solid rgba(255,255,255,.35);border-radius:999px;padding:6px 14px;font-weight:600;font-size:.85rem;cursor:pointer}
+    .btn-ghost:hover{border-color:#fff}
 
-    .admin-main { margin-left: var(--sidebar-width); min-height: 100vh; }
+    main{max-width:960px;margin:0 auto;padding:20px 16px 60px}
 
-    /* Sidebar ------------------------------------------------------------ */
-    .admin-brand { display: flex; align-items: center; gap: 12px; padding: 4px 10px 24px; }
-
-    .admin-logo {
-      display: grid;
-      place-items: center;
-      flex: none;
-      width: 42px;
-      height: 42px;
-      border-radius: 12px;
-      color: var(--admin-bg);
-      background: var(--admin-green);
-      font-size: 15px;
-      font-weight: 900;
+    .panel{background:#fff;border:1px solid var(--border);border-radius:var(--radius);padding:22px}
+    .panel h1,.panel h2{margin:0 0 6px}
+    .panel p{margin:0 0 16px;color:var(--muted)}
+    .auth{max-width:420px;margin:40px auto 0}
+    .field{display:grid;gap:6px;margin-bottom:14px;font-weight:700;font-size:.9rem}
+    .field small{font-weight:400;color:var(--muted)}
+    .field input,.field select,.field textarea{
+      width:100%;padding:11px;border:1px solid var(--border);border-radius:10px;background:#fff;color:var(--navy);font-weight:400;
     }
+    .field textarea{resize:vertical;min-height:70px}
+    .btn{display:inline-flex;align-items:center;justify-content:center;border:0;border-radius:10px;padding:11px 18px;font-weight:700;cursor:pointer;background:var(--green);color:#04210f}
+    .btn:hover:not(:disabled){filter:brightness(.95)}
+    .btn:disabled{opacity:.55;cursor:default}
+    .btn-block{width:100%}
+    .btn-outline{background:#fff;color:var(--navy);border:1px solid var(--border)}
+    .btn-outline:hover:not(:disabled){border-color:var(--navy);filter:none}
+    .btn-danger{background:#fff;color:var(--danger);border:1px solid #f3b8b8}
+    .btn-danger:hover:not(:disabled){background:#fff5f5;filter:none}
+    .btn-small{padding:7px 14px;font-size:.85rem}
+    .form-message{min-height:1.4em;margin:0 0 12px;font-size:.9rem}
+    .form-message[data-type="error"]{color:var(--danger)}
+    .form-message[data-type="success"]{color:var(--green-dark)}
 
-    .admin-brand strong { display: block; font-size: 17px; font-weight: 800; line-height: 1.2; }
-    .admin-brand span { display: block; margin-top: 2px; color: var(--admin-muted); font-size: 11px; }
+    .tabs{display:flex;gap:6px;margin-bottom:14px;overflow-x:auto}
+    .tab{flex:1 0 auto;background:#fff;border:1px solid var(--border);color:var(--navy);padding:10px 16px;border-radius:999px;font-weight:700;font-size:.9rem;cursor:pointer;white-space:nowrap}
+    .tab[aria-selected="true"]{background:var(--navy);border-color:var(--navy);color:#fff}
+    .count{display:inline-block;min-width:1.5em;margin-left:6px;padding:0 6px;border-radius:999px;background:rgba(128,150,170,.2);font-size:.78rem}
+    .tab[aria-selected="true"] .count{background:var(--green);color:#04210f}
 
-    .admin-nav-title {
-      margin: 18px 10px 8px;
-      color: var(--admin-faint);
-      font-size: 11px;
-      font-weight: 800;
-      letter-spacing: .08em;
-      text-transform: uppercase;
-    }
+    .toolbar{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:10px;margin:0 0 14px}
+    .filters{display:flex;flex-wrap:wrap;gap:6px}
+    .filter{background:transparent;border:1px solid var(--border);color:var(--navy);border-radius:999px;padding:6px 14px;font-weight:600;font-size:.85rem;cursor:pointer}
+    .filter[aria-pressed="true"]{background:var(--green);border-color:var(--green);color:#04210f}
+    .toolbar small{color:var(--muted)}
 
-    .admin-nav { display: grid; gap: 4px; }
+    .list{display:grid;gap:12px}
+    .item{background:#fff;border:1px solid var(--border);border-radius:var(--radius);padding:16px}
+    .item-top{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}
+    .title{font-weight:800;overflow-wrap:anywhere}
+    .title span{color:var(--muted);font-weight:400;margin:0 4px}
+    .meta{font-size:.88rem;color:var(--muted);margin-top:4px;overflow-wrap:anywhere}
+    .notes{margin-top:10px;padding:10px 12px;background:var(--bg);border-radius:10px;font-size:.9rem;overflow-wrap:anywhere;white-space:pre-wrap}
+    .links{display:flex;flex-wrap:wrap;gap:14px;margin-top:10px;font-weight:700;font-size:.9rem}
+    .actions{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-top:14px}
+    .actions select,.actions input{padding:8px 10px;border:1px solid var(--border);border-radius:10px;background:#fff;color:var(--navy);min-width:0}
+    .actions select{flex:1 1 220px}
+    .driver-line{margin-top:10px;font-weight:700}
+    .chip{font-size:.7rem;font-weight:800;text-transform:uppercase;letter-spacing:.06em;padding:3px 10px;border-radius:999px;white-space:nowrap}
+    .chip[data-status="requested"],.chip[data-status="new"]{background:#fff6e0;color:#92600a}
+    .chip[data-status="accepted"],.chip[data-status="approved"],.chip[data-status="on"]{background:#eafff4;color:var(--green-dark)}
+    .chip[data-status="arrived"],.chip[data-status="reviewing"]{background:#e8f1ff;color:#1d4ed8}
+    .chip[data-status="completed"]{background:#eef0f3;color:#475467}
+    .chip[data-status="cancelled"],.chip[data-status="rejected"],.chip[data-status="off"]{background:#fff0f0;color:var(--danger)}
+    .empty{text-align:center;padding:36px 16px;color:var(--muted)}
+    .empty h3{margin:0 0 4px;color:var(--navy)}
 
-    .admin-nav button,
-    .admin-nav a,
-    .admin-logout {
-      display: flex;
-      align-items: center;
-      gap: 11px;
-      width: 100%;
-      min-height: 44px;
-      padding: 0 12px;
-      border: 0;
-      border-radius: 10px;
-      color: #b7c2d1;
-      background: transparent;
-      font: inherit;
-      font-size: 13px;
-      font-weight: 700;
-      text-align: left;
-      text-decoration: none;
-      cursor: pointer;
-      transition: background 160ms ease, color 160ms ease;
-    }
+    .add-driver{margin-bottom:16px}
+    .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:0 12px}
+    @media(max-width:560px){.grid-2{grid-template-columns:1fr}}
 
-    .admin-nav button:hover,
-    .admin-nav a:hover,
-    .admin-nav .active {
-      color: var(--admin-green);
-      background: rgba(57, 255, 136, .08);
-    }
-    .admin-nav .active { box-shadow: inset 3px 0 0 var(--admin-green); }
-
-    .admin-nav-icon { flex: none; width: 22px; text-align: center; font-size: 15px; }
-
-    .admin-sidebar-footer { margin-top: auto; padding-top: 18px; }
-    .admin-logout { color: var(--admin-danger); background: rgba(255, 92, 92, .07); font-weight: 800; }
-    .admin-logout:hover { background: rgba(255, 92, 92, .14); }
-
-    /* Topbar ------------------------------------------------------------- */
-    .admin-topbar {
-      position: sticky;
-      top: 0;
-      z-index: 50;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 16px;
-      height: var(--topbar-height);
-      padding: 0 28px;
-      background: rgba(7, 17, 31, .9);
-      border-bottom: 1px solid var(--admin-border);
-      backdrop-filter: blur(16px);
-    }
-
-    .topbar-left { display: flex; align-items: center; gap: 12px; min-width: 0; }
-
-    .mobile-menu {
-      display: none;
-      width: 42px;
-      height: 42px;
-      border: 1px solid var(--admin-border);
-      border-radius: 10px;
-      color: #fff;
-      background: transparent;
-      font-size: 20px;
-      cursor: pointer;
-    }
-
-    .topbar-title h1 { margin: 0; font-size: 19px; font-weight: 800; letter-spacing: -.01em; }
-    .topbar-title p { margin: 2px 0 0; color: var(--admin-muted); font-size: 12px; }
-
-    .admin-user { display: flex; align-items: center; gap: 10px; }
-    .admin-user-info { text-align: right; line-height: 1.3; }
-    .admin-user-info strong { display: block; font-size: 13px; }
-    .admin-user-info span { display: block; color: var(--admin-muted); font-size: 11px; }
-
-    .admin-avatar {
-      display: grid;
-      place-items: center;
-      flex: none;
-      width: 38px;
-      height: 38px;
-      border-radius: 50%;
-      color: var(--admin-bg);
-      background: var(--admin-green);
-      font-size: 14px;
-      font-weight: 900;
-    }
-
-    /* Content ------------------------------------------------------------ */
-    .admin-content { max-width: 1500px; margin-inline: auto; padding: 28px; }
-
-    .welcome { margin-bottom: 24px; }
-    .welcome h2 { margin: 0; font-size: 28px; font-weight: 900; letter-spacing: -.02em; }
-    .welcome p { margin: 6px 0 0; color: var(--admin-muted); font-size: 14px; }
-
-    .stat-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; margin-bottom: 20px; }
-
-    .stat-card {
-      padding: 20px;
-      border: 1px solid var(--admin-border);
-      border-radius: 16px;
-      background: var(--admin-card);
-    }
-    .stat-label { color: var(--admin-muted); font-size: 11px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; }
-    .stat-value { margin-top: 10px; font-size: 30px; font-weight: 900; line-height: 1.1; }
-    .stat-note { margin-top: 8px; color: var(--admin-faint); font-size: 11px; }
-
-    .section-grid { display: grid; grid-template-columns: 1.5fr 1fr; gap: 16px; align-items: start; }
-
-    .panel {
-      overflow: hidden;
-      border: 1px solid var(--admin-border);
-      border-radius: 18px;
-      background: var(--admin-card);
-    }
-    .panel-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      padding: 18px 20px;
-      border-bottom: 1px solid var(--admin-border);
-    }
-    .panel-header h3 { margin: 0; font-size: 15px; font-weight: 800; }
-    .panel-header span { color: var(--admin-muted); font-size: 12px; }
-    .panel-body { padding: 20px; }
-
-    .empty-state { padding: 40px 20px; color: var(--admin-muted); text-align: center; }
-    .empty-icon {
-      display: grid;
-      place-items: center;
-      width: 52px;
-      height: 52px;
-      margin: 0 auto 14px;
-      border-radius: 15px;
-      color: var(--admin-green);
-      background: rgba(57, 255, 136, .07);
-      font-size: 21px;
-    }
-    .empty-state strong { display: block; margin-bottom: 6px; color: #fff; font-size: 15px; }
-    .empty-state p { max-width: 360px; margin: 0 auto; font-size: 13px; line-height: 1.6; }
-
-    .quick-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
-
-    .quick-action {
-      display: flex;
-      flex-direction: column;
-      align-items: flex-start;
-      gap: 3px;
-      min-height: 100px;
-      padding: 15px;
-      border: 1px solid var(--admin-border);
-      border-radius: 13px;
-      color: #fff;
-      background: var(--admin-card-2);
-      font: inherit;
-      text-align: left;
-      cursor: pointer;
-      transition: border-color 160ms ease, transform 160ms ease;
-    }
-    .quick-action:hover { border-color: rgba(57, 255, 136, .4); transform: translateY(-2px); }
-    .quick-action-icon { margin-bottom: 6px; color: var(--admin-green); font-size: 18px; }
-    .quick-action strong { font-size: 13px; }
-    .quick-action span { color: var(--admin-muted); font-size: 11px; line-height: 1.4; }
-
-    /* Activity list ------------------------------------------------------ */
-    .activity-item { display: flex; align-items: flex-start; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--admin-border); }
-    .activity-item:first-child { padding-top: 0; }
-    .activity-item:last-child { padding-bottom: 0; border-bottom: 0; }
-    .activity-icon { display: grid; place-items: center; flex: none; width: 32px; height: 32px; border-radius: 10px; color: var(--admin-green); background: rgba(57, 255, 136, .08); font-size: 13px; }
-    .activity-title { font-size: 13px; font-weight: 700; }
-    .activity-meta { margin-top: 2px; color: var(--admin-muted); font-size: 11px; }
-
-    /* Section views and data tables -------------------------------------- */
-    [hidden] { display: none !important; }
-    .table-wrap { overflow-x: auto; }
-    .data-table { width: 100%; border-collapse: collapse; font-size: 13px; }
-    .data-table th { padding: 10px 14px; color: var(--admin-muted); font-size: 11px; font-weight: 800; letter-spacing: .06em; text-align: left; text-transform: uppercase; white-space: nowrap; border-bottom: 1px solid var(--admin-border); }
-    .data-table td { max-width: 260px; padding: 13px 14px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; border-bottom: 1px solid rgba(255, 255, 255, .05); }
-    .data-table tbody tr:hover { background: rgba(255, 255, 255, .03); }
-    .data-table tr:last-child td { border-bottom: 0; }
-    #viewSection .panel-body { padding: 0; }
-    #viewSection .empty-state { padding: 48px 20px; }
-
-    /* Overlay and loading ------------------------------------------------ */
-    .admin-overlay { display: none; }
-
-    .loading-screen {
-      position: fixed;
-      inset: 0;
-      z-index: 9999;
-      display: grid;
-      place-items: center;
-      align-content: center;
-      gap: 18px;
-      padding: 20px;
-      text-align: center;
-      background: var(--admin-bg);
-    }
-    .loading-screen.hidden { display: none; }
-
-    .loader {
-      width: 42px;
-      height: 42px;
-      border: 4px solid rgba(255, 255, 255, .1);
-      border-top-color: var(--admin-green);
-      border-radius: 50%;
-      animation: spin .8s linear infinite;
-    }
-    @keyframes spin { to { transform: rotate(360deg); } }
-
-    .loading-error { display: none; max-width: 380px; color: var(--admin-muted); font-size: 14px; line-height: 1.6; }
-    .loading-error strong { display: block; margin-bottom: 6px; color: #fff; font-size: 16px; }
-    .loading-error a { color: var(--admin-green); font-weight: 800; }
-    .loading-screen.failed .loader { display: none; }
-    .loading-screen.failed .loading-error { display: block; }
-
-    /* Responsive --------------------------------------------------------- */
-    @media (max-width: 1050px) {
-      .stat-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-      .section-grid { grid-template-columns: 1fr; }
-    }
-
-    @media (max-width: 800px) {
-      .admin-sidebar { transform: translateX(-100%); transition: transform 250ms ease; }
-      .admin-sidebar.open { transform: none; box-shadow: 0 0 60px rgba(0, 0, 0, .5); }
-      .admin-main { margin-left: 0; }
-      .mobile-menu { display: grid; place-items: center; }
-      .admin-overlay { position: fixed; inset: 0; z-index: 90; background: rgba(0, 0, 0, .55); }
-      .admin-overlay.show { display: block; }
-      .admin-topbar { padding: 0 15px; }
-      .admin-content { padding: 20px 15px 48px; }
-      .admin-user-info { display: none; }
-    }
-
-    @media (max-width: 520px) {
-      .stat-grid, .quick-grid { grid-template-columns: 1fr; }
-      .welcome h2 { font-size: 23px; }
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-      .loader { animation-duration: 2s; }
-      .admin-sidebar { transition: none; }
-    }
+    .toast{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);background:var(--navy);color:#fff;padding:12px 18px;border-radius:999px;font-size:.9rem;max-width:90vw;z-index:50;box-shadow:0 8px 24px rgba(7,26,47,.3)}
+    .toast[data-type="error"]{background:var(--danger)}
   </style>
 </head>
 
 <body>
 
-  <!-- Loading screen (hidden by admin.js; fails open after 10s) -->
-  <div id="adminLoading" class="loading-screen" role="status" aria-live="polite">
-    <div class="loader" aria-hidden="true"></div>
-    <div class="loading-error">
-      <strong>Taking longer than expected</strong>
-      The dashboard could not finish loading. <a href="admin-login.html">Sign in again</a>
-      or <a href="admin.html">retry</a>. Details are in the browser console (F12).
+  <header class="topbar">
+    <a href="index.html" class="brand" aria-label="MEI One home">
+      <span class="brand-mark" aria-hidden="true">MEI</span>
+      <span><strong>MEI One</strong><small>Admin</small></span>
+    </a>
+    <div class="who" id="who" hidden>
+      <span id="whoName"></span>
+      <button type="button" class="btn-ghost" id="signOut">Sign out</button>
     </div>
-  </div>
+  </header>
 
-  <div id="adminOverlay" class="admin-overlay"></div>
+  <main>
 
-  <div class="admin-layout">
+    <div class="panel auth" id="viewLoading"><p style="margin:0">Loading…</p></div>
 
-    <!-- Sidebar -->
-    <aside id="adminSidebar" class="admin-sidebar" aria-label="Admin navigation">
-      <div class="admin-brand">
-        <div class="admin-logo">MEI</div>
+    <section class="panel auth" id="viewSignIn" hidden>
+      <h1>Admin sign in</h1>
+      <p>Sign in with your MEI One admin account.</p>
+      <form id="signInForm" novalidate>
+        <label class="field">Email
+          <input name="email" type="email" required autocomplete="email">
+        </label>
+        <label class="field">Password
+          <input name="password" type="password" required autocomplete="current-password">
+        </label>
+        <div class="form-message" id="signInMessage" aria-live="polite"></div>
+        <button type="submit" class="btn btn-block" id="signInBtn">Sign in</button>
+      </form>
+    </section>
+
+    <section class="panel auth" id="viewDenied" hidden>
+      <h1>No admin access</h1>
+      <p id="deniedText">This account isn't an MEI One admin.</p>
+      <button type="button" class="btn btn-outline btn-block" id="deniedSignOut">Sign out</button>
+    </section>
+
+    <section id="viewApp" hidden>
+
+      <div class="tabs" role="tablist" aria-label="Admin sections">
+        <button type="button" class="tab" role="tab" id="tab-rides" data-tab="rides" aria-selected="true">Rides<span class="count" id="count-rides">0</span></button>
+        <button type="button" class="tab" role="tab" id="tab-drivers" data-tab="drivers" aria-selected="false">Drivers<span class="count" id="count-drivers">0</span></button>
+        <button type="button" class="tab" role="tab" id="tab-apps" data-tab="apps" aria-selected="false">Partner applications<span class="count" id="count-apps">0</span></button>
+      </div>
+
+      <div class="toolbar">
+        <div class="filters" id="filters" role="group" aria-label="Filter"></div>
         <div>
-          <strong>MEI One</strong>
-          <span>Administration</span>
+          <small id="updated" aria-live="polite"></small>
+          <button type="button" class="btn btn-outline btn-small" id="refresh">Refresh</button>
         </div>
       </div>
 
-      <div class="admin-nav-title">Overview</div>
-      <nav class="admin-nav">
-        <button type="button" class="active" data-admin-section="dashboard"><span class="admin-nav-icon" aria-hidden="true">▦</span>Dashboard</button>
-        <button type="button" data-admin-section="users"><span class="admin-nav-icon" aria-hidden="true">◉</span>Users</button>
-        <button type="button" data-admin-section="services"><span class="admin-nav-icon" aria-hidden="true">◆</span>Services</button>
-        <button type="button" data-admin-section="payments"><span class="admin-nav-icon" aria-hidden="true">▣</span>Payments</button>
-        <button type="button" data-admin-section="activity"><span class="admin-nav-icon" aria-hidden="true">◷</span>Activity</button>
-      </nav>
-
-      <div class="admin-nav-title">Management</div>
-      <nav class="admin-nav">
-        <button type="button" data-admin-section="settings"><span class="admin-nav-icon" aria-hidden="true">⚙</span>Settings</button>
-        <a href="dashboard.html"><span class="admin-nav-icon" aria-hidden="true">←</span>Customer dashboard</a>
-      </nav>
-
-      <div class="admin-sidebar-footer">
-        <button id="adminLogout" type="button" class="admin-logout"><span class="admin-nav-icon" aria-hidden="true">↪</span>Sign out</button>
-      </div>
-    </aside>
-
-    <!-- Main -->
-    <main class="admin-main">
-
-      <header class="admin-topbar">
-        <div class="topbar-left">
-          <button id="mobileMenu" class="mobile-menu" type="button" aria-label="Open menu" aria-controls="adminSidebar">☰</button>
-          <div class="topbar-title">
-            <h1>Admin dashboard</h1>
-            <p>MEI One platform management</p>
+      <!-- Add driver (Drivers tab only) -->
+      <section class="panel add-driver" id="addDriver" hidden>
+        <h2>Add a driver</h2>
+        <p>The driver must already have a MEI One account. Use the email they signed up with.</p>
+        <form id="addDriverForm" novalidate>
+          <div class="grid-2">
+            <label class="field">Account email
+              <input name="email" type="email" required autocomplete="off">
+            </label>
+            <label class="field">Name
+              <input name="name" type="text" required maxlength="100" autocomplete="off">
+            </label>
+            <label class="field">Vehicle <small>(e.g. White Toyota Axio)</small>
+              <input name="vehicle" type="text" required maxlength="100" autocomplete="off">
+            </label>
+            <label class="field">Number plate
+              <input name="plate" type="text" required maxlength="20" autocomplete="off">
+            </label>
           </div>
-        </div>
-
-        <div class="admin-user">
-          <div class="admin-user-info">
-            <strong id="adminUserName">Administrator</strong>
-            <span id="adminUserEmail">Loading…</span>
-          </div>
-          <div id="adminAvatar" class="admin-avatar" aria-hidden="true">A</div>
-        </div>
-      </header>
-
-      <section class="admin-content">
-
-        <!-- Dashboard view -->
-        <div id="viewDashboard">
-
-        <div class="welcome">
-          <h2>Platform overview</h2>
-          <p>Manage MEI One from one central administration workspace.</p>
-        </div>
-
-        <div class="stat-grid">
-          <article class="stat-card">
-            <div class="stat-label">Users</div>
-            <div class="stat-value" id="statUsers">—</div>
-            <div class="stat-note">Registered accounts</div>
-          </article>
-          <article class="stat-card">
-            <div class="stat-label">Services</div>
-            <div class="stat-value" id="statServices">8</div>
-            <div class="stat-note">MEI One service areas</div>
-          </article>
-          <article class="stat-card">
-            <div class="stat-label">Payments</div>
-            <div class="stat-value" id="statPayments">—</div>
-            <div class="stat-note">Recorded payments</div>
-          </article>
-          <article class="stat-card">
-            <div class="stat-label">Activity</div>
-            <div class="stat-value" id="statActivity">—</div>
-            <div class="stat-note">Logged events</div>
-          </article>
-        </div>
-
-        <div class="section-grid">
-
-          <section class="panel">
-            <div class="panel-header">
-              <h3>Recent activity</h3>
-              <span>Latest events</span>
-            </div>
-            <div class="panel-body" id="recentActivity">
-              <div class="empty-state">
-                <div class="empty-icon" aria-hidden="true">◷</div>
-                <strong>No activity yet</strong>
-                <p>Sign-ins, requests and payments will be listed here as they happen.</p>
-              </div>
-            </div>
-          </section>
-
-          <section class="panel">
-            <div class="panel-header">
-              <h3>Quick actions</h3>
-              <span>Shortcuts</span>
-            </div>
-            <div class="panel-body">
-              <div class="quick-grid">
-                <button type="button" class="quick-action" data-admin-section="users">
-                  <div class="quick-action-icon" aria-hidden="true">◉</div>
-                  <strong>Manage users</strong>
-                  <span>View and update accounts</span>
-                </button>
-                <button type="button" class="quick-action" data-admin-section="services">
-                  <div class="quick-action-icon" aria-hidden="true">◆</div>
-                  <strong>Services</strong>
-                  <span>Manage MEI One services</span>
-                </button>
-                <button type="button" class="quick-action" data-admin-section="payments">
-                  <div class="quick-action-icon" aria-hidden="true">▣</div>
-                  <strong>Payments</strong>
-                  <span>Review payment records</span>
-                </button>
-                <button type="button" class="quick-action" data-admin-section="settings">
-                  <div class="quick-action-icon" aria-hidden="true">⚙</div>
-                  <strong>Settings</strong>
-                  <span>Platform configuration</span>
-                </button>
-              </div>
-            </div>
-          </section>
-
-        </div>
-        </div>
-
-        <!-- Data view (users, services, payments, activity, settings) -->
-        <section id="viewSection" class="panel" hidden>
-          <div class="panel-header">
-            <h3 id="viewTitle">Section</h3>
-            <button type="button" class="quick-action" data-admin-section="dashboard" style="min-height:0;padding:8px 14px;flex-direction:row;">← Dashboard</button>
-          </div>
-          <div class="panel-body" id="viewBody"></div>
-        </section>
-
+          <div class="form-message" id="addDriverMessage" aria-live="polite"></div>
+          <button type="submit" class="btn" id="addDriverBtn">Add driver</button>
+        </form>
       </section>
-    </main>
-  </div>
 
-  <!-- Scripts -->
+      <div class="list" id="list" role="tabpanel" aria-live="polite"></div>
+
+    </section>
+
+  </main>
+
+  <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+
   <script src="js/config.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js" crossorigin="anonymous"></script>
   <script src="js/supabase.js"></script>
-  <script src="js/site.js"></script>
-  <script src="js/admin.js"></script>
 
-  <!-- Failsafe: never spin forever -->
   <script>
-    setTimeout(function () {
-      var screen = document.getElementById('adminLoading');
-      if (screen && getComputedStyle(screen).display !== 'none') {
-        screen.classList.add('failed');
+  (function (window, document) {
+    "use strict";
+
+    var supabase = window.supabaseClient || null;
+    var CONFIG = window.MEI_CONFIG || window.MEIConfig || window.CONFIG || {};
+    var TIMEZONE = (CONFIG.settings && CONFIG.settings.timezone) || "Africa/Nairobi";
+    var POLL_MS = 30000;
+
+    var CATEGORIES = (CONFIG.rides && CONFIG.rides.categories) || [
+      ["standard", "Standard car"], ["comfort", "Comfort"],
+      ["large", "Van / large group"], ["bike", "Motorbike"]
+    ];
+    var RIDE_STATUS = {
+      requested: "Requested", accepted: "Accepted", arrived: "Driver arrived",
+      completed: "Completed", cancelled: "Cancelled"
+    };
+    var APP_STATUS = { "new": "Received", reviewing: "In review", approved: "Approved", rejected: "Not approved" };
+    var PARTNER_TYPES = {
+      driver: "Ride and delivery driver", towing: "Towing operator", roadside: "Roadside responder",
+      garage: "Garage or auto service", seller: "Marketplace seller", home: "Home service professional"
+    };
+
+    var FILTERS = {
+      rides: [["open", "Open"], ["active", "Active"], ["done", "Done"]],
+      drivers: [["all", "All"], ["on", "Active"], ["off", "Switched off"]],
+      apps: [["new", "Received"], ["reviewing", "In review"], ["approved", "Approved"], ["rejected", "Not approved"], ["all", "All"]]
+    };
+
+    var state = {
+      user: null, tab: "rides",
+      filter: { rides: "open", drivers: "all", apps: "new" },
+      rides: [], drivers: [], apps: []
+    };
+    var pollTimer = null, reloadTimer = null, channel = null, toastTimer = null;
+
+    function $(s, p) { return (p || document).querySelector(s); }
+    function $$(s, p) { return Array.prototype.slice.call((p || document).querySelectorAll(s)); }
+    function el(tag, className, text) {
+      var n = document.createElement(tag);
+      if (className) n.className = className;
+      if (text !== undefined) n.textContent = text;
+      return n;
+    }
+
+    var dateFormat = new Intl.DateTimeFormat("en-KE", { dateStyle: "medium", timeStyle: "short", timeZone: TIMEZONE });
+    var timeFormat = new Intl.DateTimeFormat("en-KE", { timeStyle: "short", timeZone: TIMEZONE });
+    function formatDate(v) { return dateFormat.format(new Date(v)); }
+    function categoryLabel(v) {
+      for (var i = 0; i < CATEGORIES.length; i++) if (CATEGORIES[i][0] === v) return CATEGORIES[i][1];
+      return v;
+    }
+
+    /* ---------- UI helpers ---------- */
+
+    function showView(name) {
+      ["Loading", "SignIn", "Denied", "App"].forEach(function (v) { $("#view" + v).hidden = v !== name; });
+      $("#who").hidden = !(name === "App" || name === "Denied");
+    }
+
+    function toast(text, type) {
+      var t = $("#toast");
+      t.textContent = text;
+      t.dataset.type = type || "info";
+      t.hidden = false;
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(function () { t.hidden = true; }, 4000);
+    }
+
+    function formMessage(node, text, type) {
+      node.textContent = text;
+      node.dataset.type = type || "info";
+    }
+
+    function errorText(e, fallback) {
+      return (e && e.message) ? e.message : fallback;
+    }
+
+    /* ---------- Auth ---------- */
+
+    async function getUser() {
+      if (!supabase) return null;
+      try {
+        var res = await supabase.auth.getSession();
+        return (res.data && res.data.session && res.data.session.user) || null;
+      } catch (e) {
+        console.error("MEI Admin: unable to read session.", e);
+        return null;
       }
-    }, 10000);
+    }
+
+    async function signIn(event) {
+      event.preventDefault();
+      var form = event.currentTarget;
+      var msg = $("#signInMessage");
+      var email = form.email.value.trim();
+      var password = form.password.value;
+      if (!email || !password) { formMessage(msg, "Enter your email and password.", "error"); return; }
+
+      var btn = $("#signInBtn");
+      btn.disabled = true;
+      btn.textContent = "Signing in…";
+      formMessage(msg, "", "info");
+      try {
+        var res = await supabase.auth.signInWithPassword({ email: email, password: password });
+        if (res.error) throw res.error;
+        form.reset();
+        await boot();
+      } catch (e) {
+        console.error("MEI Admin: sign-in failed.", e);
+        formMessage(msg, "Email or password is incorrect.", "error");
+      } finally {
+        btn.disabled = false;
+        btn.textContent = "Sign in";
+      }
+    }
+
+    async function signOut() {
+      stopLive();
+      try { await supabase.auth.signOut(); } catch (e) { console.error(e); }
+      state.user = null;
+      showView("SignIn");
+    }
+
+    async function boot() {
+      showView("Loading");
+
+      if (!supabase) {
+        showView("SignIn");
+        formMessage($("#signInMessage"), "Admin is temporarily unavailable.", "error");
+        return;
+      }
+
+      var user = await getUser();
+      if (!user) { showView("SignIn"); return; }
+
+      state.user = user;
+      $("#whoName").textContent = user.email || "";
+
+      try {
+        var res = await supabase.rpc("is_mei_admin");
+        if (res.error) throw res.error;
+        if (res.data !== true) {
+          $("#deniedText").textContent = "This account isn't an MEI One admin.";
+          showView("Denied");
+          return;
+        }
+      } catch (e) {
+        console.error("MEI Admin: unable to check admin access.", e);
+        $("#deniedText").textContent = "We couldn't check your admin access. Refresh and try again.";
+        showView("Denied");
+        return;
+      }
+
+      showView("App");
+      renderFilters();
+      await loadAll();
+      startLive();
+    }
+
+    /* ---------- Data ---------- */
+
+    async function loadAll() {
+      if (!state.user) return;
+      try {
+        var results = await Promise.all([
+          supabase.from("ride_requests").select("*").order("created_at", { ascending: false }).limit(200),
+          supabase.from("drivers").select("id, name, vehicle_description, plate, active, created_at").order("name", { ascending: true }),
+          supabase.from("partner_applications").select("*").order("created_at", { ascending: false }).limit(200)
+        ]);
+        if (results[0].error) throw results[0].error;
+        if (results[1].error) throw results[1].error;
+        if (results[2].error) throw results[2].error;
+
+        state.rides = results[0].data || [];
+        state.drivers = results[1].data || [];
+        state.apps = results[2].data || [];
+        $("#updated").textContent = "Updated " + timeFormat.format(new Date()) + " ";
+        render();
+      } catch (e) {
+        console.error("MEI Admin: unable to load data.", e);
+        $("#updated").textContent = "Couldn't refresh. ";
+      }
+    }
+
+    function scheduleReload() {
+      clearTimeout(reloadTimer);
+      reloadTimer = setTimeout(loadAll, 400);
+    }
+
+    function startLive() {
+      stopLive();
+      try {
+        channel = supabase.channel("admin-feed")
+          .on("postgres_changes", { event: "*", schema: "public", table: "ride_requests" }, scheduleReload)
+          .on("postgres_changes", { event: "*", schema: "public", table: "partner_applications" }, scheduleReload)
+          .subscribe();
+      } catch (e) {
+        console.warn("MEI Admin: live updates unavailable.", e);
+      }
+      pollTimer = setInterval(function () { if (!document.hidden) loadAll(); }, POLL_MS);
+    }
+
+    function stopLive() {
+      clearInterval(pollTimer);
+      clearTimeout(reloadTimer);
+      if (channel) { try { supabase.removeChannel(channel); } catch (e) { /* ignore */ } channel = null; }
+    }
+
+    async function rpc(name, args, doneText, button) {
+      if (button) button.disabled = true;
+      try {
+        var res = await supabase.rpc(name, args);
+        if (res.error) throw res.error;
+        if (doneText) toast(doneText);
+        return true;
+      } catch (e) {
+        console.error("MEI Admin: " + name + " failed.", e);
+        toast(errorText(e, "That didn't work. Try again."), "error");
+        return false;
+      } finally {
+        if (button) button.disabled = false;
+        loadAll();
+      }
+    }
+
+    /* ---------- Lists by tab ---------- */
+
+    function driverById(id) {
+      for (var i = 0; i < state.drivers.length; i++) if (state.drivers[i].id === id) return state.drivers[i];
+      return null;
+    }
+
+    function driverLabel(d) {
+      return d.name + " · " + d.vehicle_description + " (" + d.plate + ")";
+    }
+
+    function ridesByFilter(f) {
+      return state.rides.filter(function (r) {
+        if (f === "open") return r.status === "requested";
+        if (f === "active") return r.status === "accepted" || r.status === "arrived";
+        return r.status === "completed" || r.status === "cancelled";
+      });
+    }
+
+    function driversByFilter(f) {
+      return state.drivers.filter(function (d) {
+        return f === "all" ? true : f === "on" ? d.active : !d.active;
+      });
+    }
+
+    function appsByFilter(f) {
+      return state.apps.filter(function (a) { return f === "all" ? true : a.status === f; });
+    }
+
+    /* ---------- Cards ---------- */
+
+    function rideCard(row) {
+      var card = el("article", "item");
+
+      var top = el("div", "item-top");
+      var title = el("div", "title");
+      title.appendChild(document.createTextNode(row.pickup));
+      title.appendChild(el("span", "", "to"));
+      title.appendChild(document.createTextNode(row.destination));
+      top.appendChild(title);
+      var chip = el("span", "chip", RIDE_STATUS[row.status] || row.status);
+      chip.dataset.status = row.status;
+      top.appendChild(chip);
+      card.appendChild(top);
+
+      var people = row.passengers + " passenger" + (row.passengers === 1 ? "" : "s");
+      card.appendChild(el("div", "meta", categoryLabel(row.vehicle_category) + ", " + people));
+      card.appendChild(el("div", "meta", row.pickup_time ? "Pickup " + formatDate(row.pickup_time) : "Pickup as soon as possible"));
+      card.appendChild(el("div", "meta", "Requested " + formatDate(row.created_at)));
+      if (row.notes) card.appendChild(el("div", "notes", row.notes));
+
+      var links = el("div", "links");
+      if (row.phone) {
+        var call = el("a", "", "Call " + row.phone);
+        call.href = "tel:" + String(row.phone).replace(/[^+\d]/g, "");
+        links.appendChild(call);
+      }
+      if (typeof row.pickup_lat === "number" && typeof row.pickup_lng === "number") {
+        var map = el("a", "", "View pickup on map");
+        map.href = "https://www.google.com/maps?q=" + row.pickup_lat + "," + row.pickup_lng;
+        map.target = "_blank";
+        map.rel = "noopener noreferrer";
+        links.appendChild(map);
+      }
+      if (links.children.length) card.appendChild(links);
+
+      if (row.driver_id) {
+        var d = driverById(row.driver_id);
+        card.appendChild(el("div", "driver-line", "Driver: " + (d ? driverLabel(d) : "unknown driver")));
+      }
+
+      var actions = el("div", "actions");
+
+      if (row.status === "requested") {
+        var sel = el("select");
+        sel.setAttribute("aria-label", "Choose a driver");
+        var first = el("option", "", "Choose a driver");
+        first.value = "";
+        sel.appendChild(first);
+        state.drivers.filter(function (d) { return d.active; }).forEach(function (d) {
+          var o = el("option", "", driverLabel(d));
+          o.value = d.id;
+          sel.appendChild(o);
+        });
+        var assign = el("button", "btn btn-small", "Assign driver");
+        assign.type = "button";
+        assign.addEventListener("click", function () {
+          if (!sel.value) { toast("Choose a driver first.", "error"); return; }
+          rpc("admin_assign_ride", { p_ride: row.id, p_driver: sel.value }, "Driver assigned.", assign);
+        });
+        actions.appendChild(sel);
+        actions.appendChild(assign);
+      }
+
+      if (row.status === "accepted") {
+        var un = el("button", "btn btn-outline btn-small", "Unassign");
+        un.type = "button";
+        un.addEventListener("click", function () {
+          if (!window.confirm("Take this ride off the driver and reopen it?")) return;
+          rpc("admin_unassign_ride", { p_ride: row.id }, "Ride reopened.", un);
+        });
+        actions.appendChild(un);
+      }
+
+      if (row.status === "requested" || row.status === "accepted" || row.status === "arrived") {
+        var cancel = el("button", "btn btn-danger btn-small", "Cancel ride");
+        cancel.type = "button";
+        cancel.addEventListener("click", function () {
+          if (!window.confirm("Cancel this ride?")) return;
+          rpc("admin_cancel_ride", { p_ride: row.id }, "Ride cancelled.", cancel);
+        });
+        actions.appendChild(cancel);
+      }
+
+      if (actions.children.length) card.appendChild(actions);
+      return card;
+    }
+
+    function driverCard(d) {
+      var card = el("article", "item");
+      var top = el("div", "item-top");
+      top.appendChild(el("div", "title", d.name));
+      var chip = el("span", "chip", d.active ? "Active" : "Switched off");
+      chip.dataset.status = d.active ? "on" : "off";
+      top.appendChild(chip);
+      card.appendChild(top);
+      card.appendChild(el("div", "meta", d.vehicle_description + " · " + d.plate));
+
+      var actions = el("div", "actions");
+      var toggle = el("button", d.active ? "btn btn-danger btn-small" : "btn btn-small", d.active ? "Switch off" : "Switch on");
+      toggle.type = "button";
+      toggle.addEventListener("click", function () {
+        if (d.active && !window.confirm("Switch off " + d.name + "? They will stop seeing rides.")) return;
+        rpc("admin_set_driver_active", { p_driver: d.id, p_active: !d.active },
+            d.active ? "Driver switched off." : "Driver switched on.", toggle);
+      });
+      actions.appendChild(toggle);
+      card.appendChild(actions);
+      return card;
+    }
+
+    function appCard(a) {
+      var card = el("article", "item");
+
+      var top = el("div", "item-top");
+      var title = el("div", "title", a.full_name + (a.business_name ? " (" + a.business_name + ")" : ""));
+      top.appendChild(title);
+      var chip = el("span", "chip", APP_STATUS[a.status] || a.status);
+      chip.dataset.status = a.status;
+      top.appendChild(chip);
+      card.appendChild(top);
+
+      card.appendChild(el("div", "meta", (PARTNER_TYPES[a.partner_type] || a.partner_type) + " · " + a.location +
+        (a.experience_years !== null && a.experience_years !== undefined ? " · " + a.experience_years + " yr experience" : "")));
+      card.appendChild(el("div", "meta", "Applied " + formatDate(a.created_at) + (a.user_id ? " · signed in" : " · no account")));
+      card.appendChild(el("div", "notes", a.details));
+
+      var links = el("div", "links");
+      var call = el("a", "", "Call " + a.phone);
+      call.href = "tel:" + String(a.phone).replace(/[^+\d]/g, "");
+      links.appendChild(call);
+      var mail = el("a", "", a.email);
+      mail.href = "mailto:" + a.email;
+      links.appendChild(mail);
+      card.appendChild(links);
+
+      // Review controls
+      var review = el("div", "actions");
+      var status = el("select");
+      status.setAttribute("aria-label", "Application status");
+      Object.keys(APP_STATUS).forEach(function (key) {
+        var o = el("option", "", APP_STATUS[key]);
+        o.value = key;
+        if (key === a.status) o.selected = true;
+        status.appendChild(o);
+      });
+      review.appendChild(status);
+      card.appendChild(review);
+
+      var noteField = el("div", "field");
+      noteField.style.marginTop = "10px";
+      noteField.style.marginBottom = "0";
+      var noteLabel = el("label", "", "Internal notes");
+      var note = el("textarea");
+      note.maxLength = 1000;
+      note.value = a.admin_notes || "";
+      note.id = "note-" + a.id;
+      noteLabel.setAttribute("for", note.id);
+      noteField.appendChild(noteLabel);
+      noteField.appendChild(note);
+      card.appendChild(noteField);
+
+      var actions = el("div", "actions");
+      var save = el("button", "btn btn-small", "Save");
+      save.type = "button";
+      save.addEventListener("click", async function () {
+        save.disabled = true;
+        try {
+          var res = await supabase.from("partner_applications")
+            .update({ status: status.value, admin_notes: note.value.trim() || null })
+            .eq("id", a.id)
+            .select("id");
+          if (res.error) throw res.error;
+          toast(res.data && res.data.length ? "Application updated." : "Couldn't update this application.",
+                res.data && res.data.length ? "info" : "error");
+        } catch (e) {
+          console.error("MEI Admin: application update failed.", e);
+          toast(errorText(e, "Couldn't update the application."), "error");
+        } finally {
+          save.disabled = false;
+          loadAll();
+        }
+      });
+      actions.appendChild(save);
+
+      if (a.partner_type === "driver") {
+        var make = el("button", "btn btn-outline btn-small", "Make driver");
+        make.type = "button";
+        make.addEventListener("click", function () {
+          setTab("drivers");
+          var f = $("#addDriverForm");
+          f.email.value = a.email;
+          f.name.value = a.full_name;
+          f.vehicle.focus();
+          $("#addDriver").scrollIntoView({ behavior: "smooth", block: "start" });
+          formMessage($("#addDriverMessage"), "Add the vehicle and plate from their application, then add the driver.", "info");
+        });
+        actions.appendChild(make);
+      }
+      card.appendChild(actions);
+      return card;
+    }
+
+    /* ---------- Render ---------- */
+
+    function renderFilters() {
+      var box = $("#filters");
+      box.replaceChildren();
+      FILTERS[state.tab].forEach(function (f) {
+        var b = el("button", "filter", f[1]);
+        b.type = "button";
+        b.setAttribute("aria-pressed", state.filter[state.tab] === f[0] ? "true" : "false");
+        b.addEventListener("click", function () {
+          state.filter[state.tab] = f[0];
+          renderFilters();
+          render();
+        });
+        box.appendChild(b);
+      });
+    }
+
+    function render() {
+      $("#count-rides").textContent = ridesByFilter("open").length;
+      $("#count-drivers").textContent = state.drivers.filter(function (d) { return d.active; }).length;
+      $("#count-apps").textContent = state.apps.filter(function (a) { return a.status === "new"; }).length;
+
+      $("#addDriver").hidden = state.tab !== "drivers";
+
+      var rows, build, empty;
+      if (state.tab === "rides") {
+        rows = ridesByFilter(state.filter.rides); build = rideCard;
+        empty = ["No rides here", "Rides in this group show up as riders request them."];
+      } else if (state.tab === "drivers") {
+        rows = driversByFilter(state.filter.drivers); build = driverCard;
+        empty = ["No drivers here", "Add a driver with the form above."];
+      } else {
+        rows = appsByFilter(state.filter.apps); build = appCard;
+        empty = ["No applications here", "Partner applications show up here as people apply."];
+      }
+
+      var list = $("#list");
+      list.replaceChildren();
+      list.setAttribute("aria-labelledby", "tab-" + state.tab);
+
+      if (!rows.length) {
+        var e = el("div", "empty");
+        e.appendChild(el("h3", "", empty[0]));
+        e.appendChild(el("p", "", empty[1]));
+        list.appendChild(e);
+        return;
+      }
+      rows.forEach(function (row) { list.appendChild(build(row)); });
+    }
+
+    function setTab(name) {
+      state.tab = name;
+      $$(".tab").forEach(function (t) { t.setAttribute("aria-selected", t.dataset.tab === name ? "true" : "false"); });
+      renderFilters();
+      render();
+    }
+
+    /* ---------- Add driver ---------- */
+
+    async function addDriver(event) {
+      event.preventDefault();
+      var form = event.currentTarget;
+      var msg = $("#addDriverMessage");
+      var email = form.email.value.trim();
+      var name = form.name.value.trim();
+      var vehicle = form.vehicle.value.trim();
+      var plate = form.plate.value.trim().toUpperCase();
+
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { formMessage(msg, "Enter the driver's account email.", "error"); return; }
+      if (!name || !vehicle || !plate) { formMessage(msg, "Name, vehicle and plate are all required.", "error"); return; }
+
+      var btn = $("#addDriverBtn");
+      btn.disabled = true;
+      formMessage(msg, "", "info");
+      try {
+        var res = await supabase.rpc("admin_add_driver", { p_email: email, p_name: name, p_vehicle: vehicle, p_plate: plate });
+        if (res.error) throw res.error;
+        form.reset();
+        formMessage(msg, name + " is now a driver.", "success");
+        toast("Driver added.");
+        loadAll();
+      } catch (e) {
+        console.error("MEI Admin: add driver failed.", e);
+        formMessage(msg, errorText(e, "Couldn't add the driver."), "error");
+      } finally {
+        btn.disabled = false;
+      }
+    }
+
+    /* ---------- Init ---------- */
+
+    $("#signInForm").addEventListener("submit", signIn);
+    $("#signOut").addEventListener("click", signOut);
+    $("#deniedSignOut").addEventListener("click", signOut);
+    $("#refresh").addEventListener("click", function () { loadAll(); });
+    $("#addDriverForm").addEventListener("submit", addDriver);
+    $$(".tab").forEach(function (t) { t.addEventListener("click", function () { setTab(t.dataset.tab); }); });
+    document.addEventListener("visibilitychange", function () { if (!document.hidden && state.user) loadAll(); });
+
+    if (supabase) {
+      supabase.auth.onAuthStateChange(function (event) {
+        if (event === "SIGNED_OUT" && state.user) {
+          stopLive();
+          state.user = null;
+          showView("SignIn");
+        }
+      });
+    }
+
+    boot();
+  })(window, document);
   </script>
+
 </body>
 </html>
