@@ -67,32 +67,42 @@
     style.textContent = `
       .ride-card{max-width:640px}
       .ride-form{display:grid;gap:16px}
-      .ride-form label{display:grid;gap:6px;font-weight:600;font-size:.9rem}
-      .ride-form label small{font-weight:400;opacity:.7}
+      .ride-form label{display:grid;gap:6px;color:var(--navy,#071a2f);font-weight:700;font-size:.9rem}
+      .ride-form label small{font-weight:400;color:var(--muted,#5b6b7b)}
       .ride-form input,.ride-form select,.ride-form textarea{
-        font:inherit;color:inherit;width:100%;box-sizing:border-box;
-        background:rgba(255,255,255,.05);
-        border:1px solid rgba(128,150,170,.35);
-        border-radius:10px;padding:12px}
-      .ride-form select option{color:#000}
+        font:inherit;color:var(--navy,#071a2f);width:100%;box-sizing:border-box;
+        background:#fff;border:1px solid var(--border,#d8e1e8);border-radius:10px;padding:12px}
+      .ride-form input:focus,.ride-form select:focus,.ride-form textarea:focus{
+        outline:2px solid var(--green-2,#00b85c);outline-offset:1px}
       .ride-row{display:grid;grid-template-columns:2fr 1fr;gap:12px}
       @media(max-width:520px){.ride-row{grid-template-columns:1fr}}
-      .ride-note{font-size:.85rem;opacity:.75;margin:0}
-      .ride-form .form-message[data-type="error"]{color:#ff6b6b}
-      .ride-form .form-message[data-type="success"]{color:#18b765}
-      .ride-item{padding:14px 0;border-top:1px solid rgba(128,150,170,.2)}
+      .ride-note{font-size:.85rem;color:var(--muted,#5b6b7b);margin:0}
+      .ride-location{display:grid;gap:8px;justify-items:start}
+      .ride-locate{font:inherit;font-size:.9rem;font-weight:700;cursor:pointer;color:var(--navy,#071a2f);
+        background:#fff;border:1px solid var(--border,#d8e1e8);border-radius:999px;padding:8px 16px}
+      .ride-locate:hover:not(:disabled){border-color:var(--green-2,#00b85c)}
+      .ride-locate:disabled{opacity:.6;cursor:default}
+      .ride-location-status{font-size:.85rem;color:#067a43}
+      .ride-locate-remove{margin-left:8px;font:inherit;font-size:.8rem;cursor:pointer;
+        color:var(--muted,#5b6b7b);background:none;border:0;text-decoration:underline}
+      .ride-map-link{display:inline-block;margin-top:6px;font-size:.85rem;font-weight:700;color:#067a43}
+      .ride-form .form-message[data-type="error"]{color:var(--danger,#b91c1c)}
+      .ride-form .form-message[data-type="success"]{color:#067a43}
+      .ride-item{padding:14px 0;border-top:1px solid #edf2f6}
       .ride-item:first-child{border-top:0;padding-top:0}
       .ride-item-top{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}
-      .ride-item-meta{font-size:.85rem;opacity:.75;margin-top:4px}
-      .ride-status{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;
-        padding:3px 8px;border-radius:999px;white-space:nowrap}
-      .ride-status[data-status="requested"]{background:rgba(255,193,7,.15);color:#ffc107}
-      .ride-status[data-status="accepted"]{background:rgba(24,183,101,.14);color:#18b765}
-      .ride-status[data-status="completed"]{background:rgba(106,169,255,.15);color:#6aa9ff}
-      .ride-status[data-status="cancelled"]{background:rgba(255,107,107,.14);color:#ff6b6b}
-      .ride-cancel{margin-top:10px;font:inherit;font-size:.85rem;font-weight:600;cursor:pointer;
-        background:transparent;color:inherit;border:1px solid rgba(128,150,170,.35);
+      .ride-item-top strong{color:var(--navy,#071a2f);overflow-wrap:anywhere}
+      .ride-item-meta{font-size:.85rem;color:var(--muted,#5b6b7b);margin-top:4px}
+      .ride-status{font-size:.7rem;font-weight:800;text-transform:uppercase;letter-spacing:.06em;
+        padding:3px 10px;border-radius:999px;white-space:nowrap}
+      .ride-status[data-status="requested"]{background:#fff6e0;color:#92600a}
+      .ride-status[data-status="accepted"]{background:#eafff4;color:#067a43}
+      .ride-status[data-status="completed"]{background:#e8f1ff;color:#1d4ed8}
+      .ride-status[data-status="cancelled"]{background:#fff0f0;color:var(--danger,#b91c1c)}
+      .ride-cancel{margin-top:10px;font:inherit;font-size:.85rem;font-weight:700;cursor:pointer;
+        color:var(--navy,#071a2f);background:#fff;border:1px solid var(--border,#d8e1e8);
         border-radius:999px;padding:6px 14px}
+      .ride-cancel:hover:not(:disabled){color:var(--danger,#b91c1c);border-color:#f3b8b8;background:#fff5f5}
       .ride-cancel:disabled{opacity:.5;cursor:default}
     `;
     document.head.appendChild(style);
@@ -122,6 +132,11 @@
             <input name="pickup" type="text" required minlength="3" maxlength="200"
                    placeholder="Area / street / landmark" autocomplete="off">
           </label>
+          <div class="ride-location">
+            <button type="button" class="ride-locate" id="rideUseLocation">📍 Use my current location</button>
+            <div class="ride-location-status" id="rideLocationStatus" aria-live="polite"></div>
+            <p class="ride-note">Your location is shared only with this ride request.</p>
+          </div>
           <label>Destination
             <input name="destination" type="text" required minlength="3" maxlength="200"
                    placeholder="Where to?" autocomplete="off">
@@ -169,6 +184,7 @@
     pickupTime.min = toLocalInputValue(new Date());
 
     $("#rideForm", section).addEventListener("submit", submitRide);
+    $("#rideUseLocation", section).addEventListener("click", (event) => useMyLocation(event.currentTarget));
     return true;
   }
 
@@ -307,11 +323,15 @@
         passengers,
         pickup_time: pickupTime,
         phone,
-        notes: notes || null
+        notes: notes || null,
+        pickup_lat: pickupCoords ? pickupCoords.lat : null,
+        pickup_lng: pickupCoords ? pickupCoords.lng : null,
+        pickup_accuracy_m: pickupCoords ? pickupCoords.accuracy : null
       });
       if (error) throw error;
 
       form.reset();
+      clearLocation(false);
       prefillPhone(user);
       setMessage("Ride request sent. We'll review it and contact you on " + phone + ".", "success");
       if (window.MEI && window.MEI.showToast) window.MEI.showToast("Ride request sent.", "success");
@@ -323,6 +343,87 @@
       button.disabled = false;
       button.textContent = originalText;
     }
+  }
+
+  /* ----------------------------------------------------------
+     GEOLOCATION (navigator.geolocation)
+  ---------------------------------------------------------- */
+
+  const CURRENT_LOCATION_TEXT = "My current location";
+  let pickupCoords = null; // { lat, lng, accuracy }
+
+  function showLocationStatus(text) {
+    const box = $("#rideLocationStatus");
+    if (!box) return;
+
+    box.replaceChildren(el("span", "", text));
+
+    const remove = el("button", "ride-locate-remove", "Remove");
+    remove.type = "button";
+    remove.addEventListener("click", () => clearLocation(true));
+    box.appendChild(remove);
+  }
+
+  function clearLocation(clearField) {
+    pickupCoords = null;
+
+    const box = $("#rideLocationStatus");
+    if (box) box.replaceChildren();
+
+    const field = $('#rideForm [name="pickup"]');
+    if (clearField && field && field.value === CURRENT_LOCATION_TEXT) field.value = "";
+  }
+
+  function useMyLocation(button) {
+    if (!("geolocation" in navigator)) {
+      setMessage("Your browser doesn't support location. Please type your pickup location.", "error");
+      return;
+    }
+    if (window.isSecureContext === false) {
+      setMessage("Location needs a secure (HTTPS) connection. Please type your pickup location.", "error");
+      return;
+    }
+
+    const originalText = button.textContent;
+    const restore = () => {
+      button.disabled = false;
+      button.textContent = originalText;
+    };
+
+    button.disabled = true;
+    button.textContent = "Finding your location…";
+    setMessage("", "info");
+
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        restore();
+
+        const { latitude, longitude, accuracy } = position.coords;
+        pickupCoords = {
+          lat: Number(latitude.toFixed(6)),
+          lng: Number(longitude.toFixed(6)),
+          accuracy: Math.round(accuracy)
+        };
+
+        const field = $('#rideForm [name="pickup"]');
+        if (field && !field.value.trim()) field.value = CURRENT_LOCATION_TEXT;
+
+        let text = `Location captured (accurate to about ${pickupCoords.accuracy} m).`;
+        if (pickupCoords.accuracy > 200) text += " Accuracy is low, so add a landmark to your pickup.";
+        showLocationStatus(text);
+      },
+      (error) => {
+        restore();
+
+        const messages = {
+          1: "Location permission is blocked. Allow it in your browser settings, or type your pickup location.",
+          2: "We couldn't work out your location. Check your GPS or signal, or type your pickup location.",
+          3: "Finding your location took too long. Try again, or type your pickup location."
+        };
+        setMessage(messages[error.code] || "Unable to get your location. Please type your pickup location.", "error");
+      },
+      { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 }
+    );
   }
 
   function prefillPhone(user) {
@@ -355,6 +456,14 @@
     item.appendChild(el("div", "ride-item-meta", `${categoryLabel(row.vehicle_category)} · ${people} · ${when}`));
     item.appendChild(el("div", "ride-item-meta", `Requested ${formatDate(row.created_at)}`));
 
+    if (typeof row.pickup_lat === "number" && typeof row.pickup_lng === "number") {
+      const map = el("a", "ride-map-link", "View pickup on map");
+      map.href = `https://www.google.com/maps?q=${row.pickup_lat},${row.pickup_lng}`;
+      map.target = "_blank";
+      map.rel = "noopener noreferrer";
+      item.appendChild(map);
+    }
+
     if (row.status === "requested") {
       const cancel = el("button", "ride-cancel", "Cancel request");
       cancel.type = "button";
@@ -378,7 +487,7 @@
     try {
       const { data, error } = await supabase
         .from(TABLE)
-        .select("id, created_at, pickup, destination, vehicle_category, passengers, pickup_time, status")
+        .select("id, created_at, pickup, destination, vehicle_category, passengers, pickup_time, pickup_lat, pickup_lng, status")
         .eq("user_id", user.id)
         .order("created_at", { ascending: false })
         .limit(20);
