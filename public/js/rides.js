@@ -1,142 +1,82 @@
 /* ============================================================
-   MEI ONE — MEI RIDES
+   MEI ONE — MEI RIDES (public page)
    File: public/js/rides.js
 
-   Purpose:
-   - Handles the public MEI Rides "Request a Ride" button.
-   - Uses the existing MEI One Supabase client.
-   - Uses the existing global login modal from site.js.
+   - Handles the "Request a Ride" button on rides.html.
+   - Signed in  -> dashboard ride form.
+   - Signed out -> global login modal (site.js), and the ride
+     destination is remembered so sign-in lands on the ride form
+     instead of the dashboard overview.
    - Does NOT duplicate authentication logic.
    ============================================================ */
 
 (function (window, document) {
   "use strict";
 
-  /* ----------------------------------------------------------
-     SUPABASE
-  ---------------------------------------------------------- */
-
   const supabase = window.supabaseClient || null;
 
-  /* ----------------------------------------------------------
-     ROUTE
-  ---------------------------------------------------------- */
+  const RIDE_DESTINATION = "dashboard.html?service=rides";
+  const AFTER_LOGIN_KEY = "mei_after_login"; // read by site.js after sign-in / sign-up
 
   function goToRideDashboard() {
-    window.location.href = "dashboard.html?service=rides";
+    window.location.href = RIDE_DESTINATION;
   }
 
-  /* ----------------------------------------------------------
-     LOGIN
-  ---------------------------------------------------------- */
+  function rememberDestination() {
+    try {
+      sessionStorage.setItem(AFTER_LOGIN_KEY, RIDE_DESTINATION);
+    } catch (_) {
+      /* storage unavailable: sign-in will land on the default dashboard view */
+    }
+  }
 
   function openLogin() {
-    if (
-      window.MEI &&
-      typeof window.MEI.openModal === "function"
-    ) {
+    rememberDestination();
+
+    if (window.MEI && typeof window.MEI.openModal === "function") {
       window.MEI.openModal("login");
       return;
     }
 
-    /*
-     * Fallback if the global modal is unavailable.
-     */
-    window.location.href =
-      "login.html?redirect=dashboard.html%3Fservice%3Drides";
+    // Fallback if the global modal is unavailable.
+    window.location.href = "login.html?redirect=" + encodeURIComponent(RIDE_DESTINATION);
   }
 
-  /* ----------------------------------------------------------
-     REQUEST RIDE
-  ---------------------------------------------------------- */
-
   async function requestRide(event) {
-    if (event) {
-      event.preventDefault();
-    }
+    if (event) event.preventDefault();
 
-    /*
-     * Supabase client should already have been created by
-     * public/js/supabase.js.
-     */
     if (!supabase) {
-      console.error(
-        "MEI Rides: Supabase client is unavailable."
-      );
-
+      console.error("MEI Rides: Supabase client is unavailable.");
       openLogin();
       return;
     }
 
     try {
-      const { data, error } =
-        await supabase.auth.getSession();
+      const { data, error } = await supabase.auth.getSession();
+      if (error) throw error;
 
-      if (error) {
-        throw error;
-      }
-
-      /*
-       * User is already authenticated.
-       */
       if (data && data.session) {
         goToRideDashboard();
         return;
       }
 
-      /*
-       * User is not authenticated.
-       */
       openLogin();
-
     } catch (error) {
-      console.error(
-        "MEI Rides: authentication check failed.",
-        error
-      );
-
-      /*
-       * If authentication cannot be determined,
-       * send the user to the existing login flow.
-       */
+      console.error("MEI Rides: authentication check failed.", error);
       openLogin();
     }
   }
-
-  /* ----------------------------------------------------------
-     INITIALIZE
-  ---------------------------------------------------------- */
 
   function init() {
-    /*
-     * This ID must exist on rides.html:
-     *
-     * id="requestRideBtn"
-     */
-    const requestButton =
-      document.getElementById("requestRideBtn");
+    const requestButton = document.getElementById("requestRideBtn");
+    if (!requestButton) return;
 
-    if (!requestButton) {
-      return;
-    }
-
-    requestButton.addEventListener(
-      "click",
-      requestRide
-    );
+    requestButton.addEventListener("click", requestRide);
   }
 
-  /* ----------------------------------------------------------
-     DOM READY
-  ---------------------------------------------------------- */
-
   if (document.readyState === "loading") {
-    document.addEventListener(
-      "DOMContentLoaded",
-      init
-    );
+    document.addEventListener("DOMContentLoaded", init);
   } else {
     init();
   }
-
 })(window, document);
