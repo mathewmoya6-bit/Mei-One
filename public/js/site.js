@@ -18,8 +18,21 @@
 
   const route = (name, fallback) => (CONFIG.routes && CONFIG.routes[name]) || fallback;
 
+  // Optional: set emergencyPhone (or supportPhone) in config.js to show a direct call link.
+  const supportPhone = String(CONFIG.emergencyPhone || CONFIG.supportPhone || "").replace(/[^\d+]/g, "");
+
+  const FOCUSABLE = [
+    "a[href]",
+    "button:not([disabled])",
+    "input:not([disabled])",
+    "select:not([disabled])",
+    "textarea:not([disabled])",
+    '[tabindex]:not([tabindex="-1"])'
+  ].join(",");
+
   /* ----------------------------------------------------------
      TOAST
+     (#toastContainer is the live region, so toasts don't need a role)
   ---------------------------------------------------------- */
 
   function showToast(message, type = "info", duration = 4000) {
@@ -32,7 +45,6 @@
 
     const toast = document.createElement("div");
     toast.className = `toast toast-${type}`;
-    toast.setAttribute("role", "status");
     toast.textContent = message;
     container.appendChild(toast);
 
@@ -63,6 +75,13 @@
     $$("#mainNavigation a, #mainNavigation button").forEach((element) => {
       element.addEventListener("click", () => setOpen(false));
     });
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && navigation.classList.contains("open")) {
+        setOpen(false);
+        button.focus();
+      }
+    });
   }
 
   /* ----------------------------------------------------------
@@ -92,7 +111,7 @@
         <span class="section-label">MEI ONE</span>
         <h2 id="modalTitle">Create your account</h2>
         <p>Create one MEI One account to access connected services.</p>
-        <form id="signupForm" novalidate>
+        <form id="signupForm">
           ${input("Full name", "full_name", "text", "Your full name", 'autocomplete="name"')}
           ${input("Phone", "phone", "tel", "07XXXXXXXX", 'autocomplete="tel"')}
           ${input("Email", "email", "email", "you@example.com", 'autocomplete="email"')}
@@ -110,7 +129,7 @@
         <span class="section-label">MEI ONE</span>
         <h2 id="modalTitle">Welcome back</h2>
         <p>Sign in to continue to your MEI One account.</p>
-        <form id="loginForm" novalidate>
+        <form id="loginForm">
           ${input("Email", "email", "email", "you@example.com", 'autocomplete="email"')}
           ${input("Password", "password", "password", "Your password", 'autocomplete="current-password"')}
           <div class="form-message" id="loginMessage" aria-live="polite"></div>
@@ -125,8 +144,9 @@
       <div class="modal-content">
         <span class="section-label">EMERGENCY SUPPORT</span>
         <h2 id="modalTitle">Request emergency help</h2>
-        <p>Provide your details and describe the assistance you need.</p>
-        <form id="emergencyForm" novalidate>
+        <p><strong>If anyone's life is in danger, call 999 or 112 now.</strong>${supportPhone ? ` You can also call us on <a href="tel:${supportPhone}">${supportPhone}</a>.` : ""}</p>
+        <p>Otherwise, provide your details and describe the assistance you need.</p>
+        <form id="emergencyForm">
           ${input("Full name", "name", "text", "Your full name", 'autocomplete="name"')}
           ${input("Phone", "phone", "tel", "07XXXXXXXX", 'autocomplete="tel"')}
           ${select("Service needed", "service", [
@@ -148,7 +168,7 @@
         <span class="section-label">FOR BUSINESS</span>
         <h2 id="modalTitle">Become a MEI One partner</h2>
         <p>Tell us about your business or service and our team can review your partnership enquiry.</p>
-        <form id="partnerForm" novalidate>
+        <form id="partnerForm">
           ${input("Business / organisation name", "business_name", "text", "Business name")}
           ${input("Contact person", "contact_name", "text", "Full name")}
           ${input("Phone", "phone", "tel", "07XXXXXXXX")}
@@ -174,44 +194,88 @@
 
   const modal = {
     element: null,
+    dialog: null,
     content: null,
+    lastFocused: null,
+
+    isOpen() {
+      return Boolean(this.element && this.element.classList.contains("open"));
+    },
 
     init() {
       this.element = $("#globalModal");
       this.content = $("#modalContent");
+      this.dialog = this.element ? $(".modal-dialog", this.element) : null;
       if (!this.element || !this.content) return;
 
-      $$("[data-modal-close]").forEach((element) => {
+      $$("[data-modal-close]", this.element).forEach((element) => {
         element.addEventListener("click", () => this.close());
       });
 
       document.addEventListener("keydown", (event) => {
-        if (event.key === "Escape") this.close();
+        if (!this.isOpen()) return;
+
+        if (event.key === "Escape") {
+          this.close();
+        } else if (event.key === "Tab") {
+          this.trapFocus(event);
+        }
       });
+    },
+
+    trapFocus(event) {
+      const scope = this.dialog || this.element;
+      const items = $$(FOCUSABLE, scope).filter((el) => el.getClientRects().length > 0);
+      if (!items.length) return;
+
+      const first = items[0];
+      const last = items[items.length - 1];
+
+      if (!scope.contains(document.activeElement)) {
+        event.preventDefault();
+        first.focus();
+      } else if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
     },
 
     open(type) {
       if (!this.element || !this.content || !templates[type]) return;
+
+      // Remember the trigger only on first open, so switching Sign in <-> Sign up keeps the original.
+      if (!this.isOpen()) this.lastFocused = document.activeElement;
 
       this.content.innerHTML = templates[type]();
       this.element.classList.add("open");
       this.element.setAttribute("aria-hidden", "false");
       document.body.style.overflow = "hidden";
 
+      if (this.dialog && $("#modalTitle", this.content)) {
+        this.dialog.setAttribute("aria-labelledby", "modalTitle");
+      }
+
       bindModalForm(type);
 
-      const firstInput = this.content.querySelector("input, textarea, select, button");
-      if (firstInput) window.setTimeout(() => firstInput.focus(), 50);
+      const firstField = this.content.querySelector("input, textarea, select, button");
+      if (firstField) window.setTimeout(() => firstField.focus(), 50);
     },
 
     close() {
-      if (!this.element) return;
+      if (!this.element || !this.isOpen()) return;
 
       this.element.classList.remove("open");
       this.element.setAttribute("aria-hidden", "true");
       document.body.style.overflow = "";
 
+      if (this.dialog) this.dialog.removeAttribute("aria-labelledby");
       if (this.content) this.content.innerHTML = "";
+
+      if (this.lastFocused && document.contains(this.lastFocused)) this.lastFocused.focus();
+      this.lastFocused = null;
     }
   };
 
@@ -295,6 +359,13 @@
 
       if (error) throw error;
 
+      // With email confirmation on, Supabase returns a fake "success" for an existing email
+      // (a user object with no identities). Detect it so the person isn't told to check email for nothing.
+      if (data.user && Array.isArray(data.user.identities) && data.user.identities.length === 0) {
+        showFormMessage(message, "An account with this email already exists. Try signing in instead.", "error");
+        return;
+      }
+
       if (data.session) {
         showToast("Account created successfully.", "success");
         modal.close();
@@ -369,15 +440,17 @@
     element.style.display = visible ? shown : "none";
   }
 
+  function applyAuthUI(signedIn) {
+    $$("[data-auth='login'], [data-auth='guest']").forEach((el) => setVisible(el, !signedIn));
+    $$("[data-auth='dashboard'], [data-auth='logout']").forEach((el) => setVisible(el, signedIn));
+  }
+
   async function updateAuthUI() {
     if (!supabase) return;
 
     try {
       const { data } = await supabase.auth.getSession();
-      const signedIn = Boolean(data?.session);
-
-      $$("[data-auth='login'], [data-auth='guest']").forEach((el) => setVisible(el, !signedIn));
-      $$("[data-auth='dashboard'], [data-auth='logout']").forEach((el) => setVisible(el, signedIn));
+      applyAuthUI(Boolean(data?.session));
     } catch (error) {
       console.error("MEI One: Unable to read authentication state.", error);
     }
@@ -385,7 +458,9 @@
 
   function initAuthListener() {
     if (!supabase) return;
-    supabase.auth.onAuthStateChange(() => updateAuthUI());
+
+    // Use the session passed to the callback instead of calling Supabase again inside it.
+    supabase.auth.onAuthStateChange((_event, session) => applyAuthUI(Boolean(session)));
   }
 
   /* ----------------------------------------------------------
@@ -413,26 +488,25 @@
   }
 
   function initSmoothScrolling() {
+    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
     $$('a[href^="#"]').forEach((link) => {
       link.addEventListener("click", (event) => {
         const targetId = link.getAttribute("href");
         if (!targetId || targetId === "#") return;
 
-        const target = document.querySelector(targetId);
+        const target = document.getElementById(targetId.slice(1));
         if (!target) return;
 
         event.preventDefault();
-        target.scrollIntoView({ behavior: "smooth", block: "start" });
+        target.scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth", block: "start" });
       });
     });
   }
 
   function updateCurrentYear() {
     const year = String(new Date().getFullYear());
-    $$("[data-current-year]").forEach((element) => { element.textContent = year; });
-
-    const currentYear = $("#currentYear");
-    if (currentYear) currentYear.textContent = year;
+    $$("[data-current-year], #currentYear").forEach((element) => { element.textContent = year; });
   }
 
   function initDashboardLinks() {
@@ -452,19 +526,15 @@
 
   /* ----------------------------------------------------------
      EMERGENCY & PARTNER FORMS
-     Stored in the browser only until dedicated Supabase tables
-     (emergency_requests, partner_requests) exist.
+     Sent to Supabase tables `emergency_requests` and `partner_requests`.
+     Success is only reported when the insert really succeeds. Nothing is
+     stored in the browser, and nobody is told a request was received
+     when it wasn't.
   ---------------------------------------------------------- */
 
-  function saveLocally(key, record) {
-    const existing = JSON.parse(localStorage.getItem(key) || "[]");
-    existing.push(record);
-    localStorage.setItem(key, JSON.stringify(existing));
-  }
-
-  async function submitLocalForm({ form, prefix, storageKey, fields, messageId, loadingText, successMessage, toastMessage, failMessage }) {
+  async function submitRequest({ form, table, fields, messageId, loadingText, successMessage, toastMessage, failMessage }) {
     const formData = new FormData(form);
-    const record = { id: `${prefix}-${Date.now()}`, created_at: new Date().toISOString() };
+    const record = {};
     fields.forEach((name) => { record[name] = readField(formData, name); });
 
     const message = $(messageId);
@@ -475,10 +545,17 @@
       return;
     }
 
+    if (!supabase) {
+      showFormMessage(message, failMessage, "error");
+      return;
+    }
+
     setButtonLoading(button, true, loadingText);
 
     try {
-      saveLocally(storageKey, record);
+      const { error } = await supabase.from(table).insert(record);
+      if (error) throw error;
+
       showFormMessage(message, successMessage, "success");
       form.reset();
       showToast(toastMessage, "success");
@@ -490,28 +567,26 @@
     }
   }
 
-  const submitEmergency = (form) => submitLocalForm({
+  const submitEmergency = (form) => submitRequest({
     form,
-    prefix: "EMG",
-    storageKey: "mei_emergency_requests",
+    table: "emergency_requests",
     fields: ["name", "phone", "service", "location", "message"],
     messageId: "#emergencyMessage",
     loadingText: "Submitting request…",
-    successMessage: "Your emergency request has been recorded. Please remain reachable on the phone number provided.",
-    toastMessage: "Emergency request submitted.",
-    failMessage: "Unable to submit the request. Please try again."
+    successMessage: "Your emergency request has been sent. Please keep your phone on and stay reachable.",
+    toastMessage: "Emergency request sent.",
+    failMessage: `We couldn't send your request. If anyone's life is in danger, call 999 or 112 now.${supportPhone ? ` You can also call us on ${supportPhone}.` : " Please try again."}`
   });
 
-  const submitPartner = (form) => submitLocalForm({
+  const submitPartner = (form) => submitRequest({
     form,
-    prefix: "PARTNER",
-    storageKey: "mei_partner_requests",
+    table: "partner_requests",
     fields: ["business_name", "contact_name", "phone", "email", "partnership_type", "message"],
     messageId: "#partnerMessage",
     loadingText: "Submitting…",
-    successMessage: "Thank you. Your partnership enquiry has been submitted.",
-    toastMessage: "Partnership enquiry submitted.",
-    failMessage: "Unable to submit the enquiry. Please try again."
+    successMessage: "Thank you. Your partnership enquiry has been sent.",
+    toastMessage: "Partnership enquiry sent.",
+    failMessage: "We couldn't send your enquiry. Please try again."
   });
 
   /* ----------------------------------------------------------
