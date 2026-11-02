@@ -495,5 +495,37 @@
     })();
   </script>
 
+  <!-- Sign out (sidebar + top bar buttons) -->
+  <script>
+    (function () {
+      var buttons = [document.getElementById('sidebarLogout'), document.getElementById('logoutBtn')];
+      var busy = false;
+
+      async function signOut() {
+        if (busy) return;
+        busy = true;
+        buttons.forEach(function (b) { if (b) { b.disabled = true; } });
+
+        var client = window.supabaseClient || window.MEISupabase || null;
+        try {
+          if (client) await client.auth.signOut();
+        } catch (e) {
+          console.warn('MEI One: sign-out request failed, clearing local session.', e);
+        }
+
+        // Make sure no session is left behind even if the request failed.
+        try {
+          Object.keys(localStorage).forEach(function (k) {
+            if (k.indexOf('sb-') === 0 && k.indexOf('-auth-token') > -1) localStorage.removeItem(k);
+          });
+        } catch (e) { /* storage unavailable */ }
+
+        window.location.replace('login.html');
+      }
+
+      buttons.forEach(function (b) { if (b) b.addEventListener('click', signOut); });
+    })();
+  </script>
+
 </body>
 </html>
