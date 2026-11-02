@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Create your MEI One account</title>
+
+  <meta
+    name="description"
+    content="Sign in to your MEI One customer account."
+  >
+
+  <style>
+    :root {
+      --navy: #06111f;
+      --navy-2: #0a1a2b;
+      --navy-3: #10263d;
+      --green: #b7ff00;
+      --green-hover: #c8ff3d;
+      --white: #ffffff;
+      --text: #e8f0f7;
+      --muted: #91a4b8;
+      --border: rgba(255,255,255,.10);
+      --danger: #ff6474;
+      --success: #5de3a0;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html,
+    body {
+      min-height: 100%;
+    }
+
+    body {
+      min-height: 100vh;
+      padding: 24px;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      font-family:
+        Inter,
+        ui-sans-serif,
+        system-ui,
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        sans-serif;
+
+      color: var(--white);
+
+      background:
+        radial-gradient(
+          circle at 85% 10%,
+          rgba(183,255,0,.11),
+          transparent 28%
+        ),
+        radial-gradient(
+          circle at 10% 90%,
+          rgba(0,120,255,.08),
+          transparent 32%
+        ),
+        var(--navy);
+    }
+
+    button,
+    input {
+      font: inherit;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    .page {
+      width: 100%;
+      max-width: 440px;
+    }
+
+    .brand {
+      text-align: center;
+      margin-bottom: 24px;
+    }
+
+    .brand-mark {
+      width: 68px;
+      height: 68px;
+      margin: 0 auto 14px;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      border-radius: 20px;
+
+      background: var(--green);
+      color: var(--navy);
+
+      font-size: 23px;
+      font-weight: 950;
+      letter-spacing: -1px;
+
+      box-shadow:
+        0 0 0 1px rgba(183,255,0,.25),
+        0 18px 45px rgba(183,255,0,.16);
+    }
+
+    .brand h1 {
+      font-size: 32px;
+      line-height: 1;
+      font-weight: 950;
+      letter-spacing: -1.5px;
+    }
+
+    .brand p {
+      margin-top: 8px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .card {
+      padding: 30px;
+
+      border: 1px solid var(--border);
+      border-radius: 24px;
+
+      background:
+        linear-gradient(
+          180deg,
+          rgba(16,38,61,.96),
+          rgba(7,19,33,.98)
+        );
+
+      box-shadow:
+        0 25px 70px rgba(0,0,0,.40);
+
+      backdrop-filter: blur(18px);
+    }
+
+    .card-header {
+      margin-bottom: 24px;
+    }
+
+    .card-header h2 {
+      font-size: 25px;
+      font-weight: 900;
+      letter-spacing: -.8px;
+    }
+
+    .card-header p {
+      margin-top: 7px;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .message {
+      display: none;
+
+      margin-bottom: 18px;
+      padding: 13px 14px;
+
+      border-radius: 12px;
+
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .message.show {
+      display: block;
+    }
+
+    .message.error {
+      color: #ffdce0;
+      background: rgba(255,100,116,.10);
+      border: 1px solid rgba(255,100,116,.28);
+    }
+
+    .message.success {
+      color: #d9ffeb;
+      background: rgba(93,227,160,.10);
+      border: 1px solid rgba(93,227,160,.28);
+    }
+
+    .field {
+      margin-bottom: 17px;
+    }
+
+    .field label {
+      display: block;
+      margin-bottom: 8px;
+
+      color: var(--text);
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .field input {
+      width: 100%;
+      height: 52px;
+
+      padding: 0 15px;
+
+      border: 1px solid rgba(255,255,255,.12);
+      border-radius: 13px;
+
+      outline: none;
+
+      background: rgba(0,0,0,.20);
+      color: var(--white);
+
+      transition:
+        border-color .2s ease,
+        box-shadow .2s ease;
+    }
+
+    .field input::placeholder {
+      color: #62778b;
+    }
+
+    .field input:focus {
+      border-color: var(--green);
+
+      box-shadow:
+        0 0 0 3px rgba(183,255,0,.10);
+    }
+
+    .password-wrap {
+      position: relative;
+    }
+
+    .password-wrap input {
+      padding-right: 80px;
+    }
+
+    .toggle-password {
+      position: absolute;
+      right: 9px;
+      top: 50%;
+
+      transform: translateY(-50%);
+
+      padding: 8px;
+
+      border: 0;
+      background: transparent;
+
+      color: var(--green);
+
+      font-size: 11px;
+      font-weight: 900;
+    }
+
+    .forgot-row {
+      display: flex;
+      justify-content: flex-end;
+
+      margin-top: -4px;
+      margin-bottom: 18px;
+    }
+
+    .forgot-button {
+      padding: 3px;
+
+      border: 0;
+      background: transparent;
+
+      color: var(--green);
+
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .primary-button {
+      width: 100%;
+      min-height: 54px;
+
+      border: 0;
+      border-radius: 14px;
+
+      background: var(--green);
+      color: #07101b;
+
+      font-size: 15px;
+      font-weight: 950;
+
+      transition:
+        transform .2s ease,
+        background .2s ease,
+        opacity .2s ease;
+    }
+
+    .primary-button:hover:not(:disabled) {
+      background: var(--green-hover);
+      transform: translateY(-1px);
+    }
+
+    .primary-button:disabled {
+      opacity: .55;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .secondary-button {
+      width: 100%;
+      min-height: 50px;
+
+      border: 1px solid rgba(255,255,255,.12);
+      border-radius: 13px;
+
+      background: rgba(255,255,255,.03);
+      color: var(--white);
+
+      font-size: 14px;
+      font-weight: 850;
+
+      transition:
+        border-color .2s ease,
+        background .2s ease;
+    }
+
+    .secondary-button:hover:not(:disabled) {
+      border-color: rgba(183,255,0,.35);
+      background: rgba(183,255,0,.05);
+    }
+
+    .secondary-button:disabled {
+      opacity: .55;
+      cursor: not-allowed;
+    }
+
+    .divider {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+
+      margin: 23px 0;
+
+      color: #60758a;
+
+      font-size: 11px;
+      font-weight: 800;
+    }
+
+    .divider::before,
+    .divider::after {
+      content: "";
+      height: 1px;
+      flex: 1;
+      background: var(--border);
+    }
+
+    .footer {
+      margin-top: 22px;
+
+      text-align: center;
+
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .footer a {
+      color: var(--green);
+      font-weight: 850;
+    }
+
+    .spinner {
+      width: 17px;
+      height: 17px;
+
+      display: inline-block;
+      vertical-align: middle;
+
+      margin-right: 8px;
+
+      border: 2px solid rgba(0,0,0,.22);
+      border-top-color: #07101b;
+
+      border-radius: 50%;
+
+      animation: spin .7s linear infinite;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    @media (max-width:520px) {
+      body {
+        padding: 15px;
+      }
+
+      .card {
+        padding: 22px;
+        border-radius: 20px;
+      }
+
+      .brand h1 {
+        font-size: 29px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+<main class="page">
+
+  <header class="brand">
+
+    <div class="brand-mark">
+      MEI
+    </div>
+
+    <h1>MEI One</h1>
+
+    <p>
+      One platform. Connected services.
+    </p>
+
+  </header>
+
+  <section class="card">
+
+    <div class="card-header">
+      <h2>Create your account</h2>
+      <p>Join MEI One to request rides and other services.</p>
+    </div>
+
+    <div id="message" class="message" role="alert" aria-live="polite"></div>
+
+    <form id="signupForm" novalidate>
+
+      <div class="field">
+        <label for="fullName">Full name</label>
+        <input id="fullName" name="fullName" type="text" autocomplete="name" placeholder="Your full name" maxlength="100" required>
+      </div>
+
+      <div class="field">
+        <label for="email">Email address</label>
+        <input id="email" name="email" type="email" autocomplete="email" placeholder="you@example.com" maxlength="120" required>
+      </div>
+
+      <div class="field">
+        <label for="phone">Phone number</label>
+        <input id="phone" name="phone" type="tel" autocomplete="tel" placeholder="07XX XXX XXX" maxlength="20" required>
+      </div>
+
+      <div class="field">
+        <label for="password">Password</label>
+        <div class="password-wrap">
+          <input id="password" name="password" type="password" autocomplete="new-password" placeholder="At least 8 characters" minlength="8" required>
+          <button type="button" class="toggle-password" id="togglePassword">SHOW</button>
+        </div>
+      </div>
+
+      <button type="submit" class="primary-button" id="signupSubmit">Create account</button>
+
+    </form>
+
+    <div class="divider">OR</div>
+
+    <button type="button" class="secondary-button" id="loginLink">I already have an account</button>
+
+  </section>
+
+  <footer class="footer">
+    &copy; <span id="year"></span> MEI One. All rights reserved.
+  </footer>
+
+</main>
+
+<script src="js/config.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+<script src="js/supabase.js"></script>
+
+<script>
+(function () {
+  "use strict";
+
+  var $ = function (id) { return document.getElementById(id); };
+  var form = $("signupForm"), message = $("message"), btn = $("signupSubmit");
+  var supabase = window.supabaseClient || window.MEISupabase || null;
+  var params = new URLSearchParams(window.location.search);
+  var service = params.get("service");
+
+  $("year").textContent = new Date().getFullYear();
+
+  function show(text, type) { message.textContent = text; message.className = "message show " + (type || "error"); }
+
+  // Keep the ride intent when the person came from Rides.
+  var suffix = service ? "?service=" + encodeURIComponent(service) : "";
+  var dashboard = service === "rides" || service === "ride" ? "dashboard.html?service=rides" : "dashboard.html";
+
+  $("loginLink").addEventListener("click", function () { window.location.href = "login.html" + suffix; });
+
+  $("togglePassword").addEventListener("click", function () {
+    var p = $("password"), hidden = p.type === "password";
+    p.type = hidden ? "text" : "password";
+    this.textContent = hidden ? "HIDE" : "SHOW";
+  });
+
+  // 07XXXXXXXX, 01XXXXXXXX, +2547XXXXXXXX, 2547XXXXXXXX -> 07XXXXXXXX
+  function normalisePhone(raw) {
+    var d = String(raw).replace(/[\s\-()]/g, "");
+    var m = d.match(/^(?:\+?254|0)([17]\d{8})$/);
+    return m ? "0" + m[1] : null;
+  }
+
+  function friendly(err) {
+    var t = String((err && err.message) || "").toLowerCase();
+    if (t.indexOf("already") > -1 && t.indexOf("registered") > -1) return "An account with this email already exists. Try signing in instead.";
+    if (t.indexOf("rate") > -1 || t.indexOf("too many") > -1) return "Too many attempts. Please wait a minute and try again.";
+    if (t.indexOf("password") > -1) return "That password isn't accepted. Use at least 8 characters.";
+    return "We couldn't create your account. Please try again.";
+  }
+
+  async function ifSignedIn() {
+    if (!supabase) return;
+    try {
+      var r = await supabase.auth.getSession();
+      if (r.data && r.data.session) window.location.replace(dashboard);
+    } catch (e) { /* ignore */ }
+  }
+
+  form.addEventListener("submit", async function (event) {
+    event.preventDefault();
+    show("", "");
+    message.className = "message";
+
+    var fullName = $("fullName").value.trim();
+    var email = $("email").value.trim().toLowerCase();
+    var phone = normalisePhone($("phone").value);
+    var password = $("password").value;
+
+    if (fullName.length < 2) return show("Enter your full name.");
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return show("Enter a valid email address.");
+    if (!phone) return show("Enter a valid Kenyan mobile number, e.g. 0712345678.");
+    if (password.length < 8) return show("Password must be at least 8 characters.");
+    if (!supabase) return show("MEI One could not connect right now. Please try again later.");
+
+    btn.disabled = true;
+    var label = btn.textContent;
+    btn.innerHTML = '<span class="spinner"></span>Creating account...';
+
+    try {
+      var res = await supabase.auth.signUp({
+        email: email,
+        password: password,
+        options: {
+          data: { full_name: fullName, phone: phone },
+          emailRedirectTo: new URL("login.html" + suffix, window.location.href).href
+        }
+      });
+      if (res.error) throw res.error;
+
+      // With email confirmation on, an existing email returns a user with no identities.
+      var u = res.data && res.data.user;
+      if (u && Array.isArray(u.identities) && u.identities.length === 0) {
+        show("An account with this email already exists. Try signing in instead.");
+        return;
+      }
+
+      if (res.data && res.data.session) {
+        show("Account created. Taking you to your dashboard...", "success");
+        setTimeout(function () { window.location.href = dashboard; }, 600);
+      } else {
+        show("Account created. Check your email and confirm your address, then sign in.", "success");
+        form.reset();
+      }
+    } catch (err) {
+      console.error("MEI One: sign-up failed.", err);
+      show(friendly(err));
+    } finally {
+      btn.disabled = false;
+      btn.textContent = label;
+    }
+  });
+
+  ifSignedIn();
+})();
+</script>
+
+</body>
+</html>
