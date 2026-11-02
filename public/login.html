@@ -674,6 +674,25 @@
   const redirectTarget =
     getRedirectTarget();
 
+  /* Role-based landing page: admins -> admin, active drivers -> driver app,
+     everyone else -> customer dashboard. An explicit redirect/service wins. */
+  async function destination() {
+    if (requestedRedirect || requestedService) return redirectTarget;
+    try {
+      const adminCheck = await supabase.rpc("is_mei_admin");
+      if (adminCheck.data === true) return "admin.html";
+      const u = await supabase.auth.getUser();
+      const user = u && u.data && u.data.user;
+      if (user) {
+        const d = await supabase.from("drivers").select("id, active").eq("id", user.id).maybeSingle();
+        if (d.data && d.data.active) return "driver.html";
+      }
+    } catch (e) {
+      console.warn("MEI One: role check failed, using default.", e);
+    }
+    return redirectTarget;
+  }
+
   /* =========================================================
      MESSAGE
      ========================================================= */
@@ -877,9 +896,7 @@
           redirectTarget
         );
 
-        window.location.replace(
-          redirectTarget
-        );
+        window.location.replace(await destination());
 
       } catch (error) {
 
@@ -1072,9 +1089,7 @@
           "MEI One: existing session found."
         );
 
-        window.location.replace(
-          redirectTarget
-        );
+        window.location.replace(await destination());
       }
 
     } catch (error) {
