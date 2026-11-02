@@ -96,9 +96,14 @@
           <label>Website <input name="website" type="text" tabindex="-1" autocomplete="off"></label>
         </div>
 
+        <!-- Cloudflare Turnstile (rendered by script below using turnstileSiteKey from js/config.js) -->
+        <div id="turnstileBox" style="min-height:65px"></div>
+
         <label class="pt-consent">
           <input type="checkbox" name="consent" required>
-          <span>I agree that MEI One may use these details to review my application and contact me about it. *</span>
+          <span>I agree that MEI One may use these details to review my application and contact me about it, as described in the
+            <a href="privacy.html" target="_blank" rel="noopener">Privacy Policy</a> and
+            <a href="terms.html" target="_blank" rel="noopener">Terms</a>. *</span>
         </label>
 
         <p class="pt-message" id="formMessage" aria-live="polite"></p>
@@ -163,6 +168,8 @@
         <a href="partners.html">Partners</a>
         <a href="index.html#about">About</a>
         <a href="login.html">Sign In</a>
+        <a href="privacy.html">Privacy Policy</a>
+        <a href="terms.html">Terms</a>
       </nav>
 
     </div>
@@ -193,7 +200,10 @@
 
   <!-- Scripts -->
   <script src="js/config.js" defer></script>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js" crossorigin="anonymous" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"
+          integrity="sha384-0w2KAL2YHP6wKOkUDzkCDGgVvfmHnj02DHeQ6XcHOgTfFsGyonKOpShMH1x6nk9o"
+          crossorigin="anonymous" defer></script>
+  <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit" async defer></script>
   <script src="js/supabase.js" defer></script>
   <script src="js/site.js" defer></script>
 
@@ -204,6 +214,7 @@
     var supabase = window.supabaseClient || null;
     var CONFIG = window.MEI_CONFIG || window.MEIConfig || window.CONFIG || {};
     var TABLE = "partner_applications";
+    var FUNCTION_NAME = "submit-partner-application";
     var TIMEZONE = (CONFIG.settings && CONFIG.settings.timezone) || "Africa/Nairobi";
 
     var TYPES = [
@@ -220,6 +231,7 @@
     var STATUS_LABELS = {
       "new": "Received",
       reviewing: "In review",
+      docs_requested: "Documents needed",
       approved: "Approved",
       rejected: "Not approved"
     };
@@ -242,6 +254,40 @@
       message.textContent = text;
       message.dataset.type = type || "info";
     }
+
+    /* ---------- Turnstile ---------- */
+
+    var tsWidget = null;
+
+    function mountTurnstile() {
+      var siteKey = CONFIG.turnstileSiteKey || CONFIG.TURNSTILE_SITE_KEY;
+      if (!siteKey) {
+        console.error("MEI Partners: turnstileSiteKey is missing from js/config.js.");
+        return;
+      }
+      var tries = 0;
+      var timer = setInterval(function () {
+        tries++;
+        if (window.turnstile && typeof window.turnstile.render === "function") {
+          clearInterval(timer);
+          tsWidget = window.turnstile.render("#turnstileBox", { sitekey: siteKey, theme: "auto" });
+        } else if (tries > 100) {
+          clearInterval(timer);
+          console.error("MEI Partners: Turnstile did not load.");
+        }
+      }, 100);
+    }
+
+    function turnstileToken() {
+      if (!window.turnstile || tsWidget === null) return "";
+      return window.turnstile.getResponse(tsWidget) || "";
+    }
+
+    function resetTurnstile() {
+      if (window.turnstile && tsWidget !== null) window.turnstile.reset(tsWidget);
+    }
+
+    mountTurnstile();
 
     /* ---------- Type select ---------- */
 
@@ -286,10 +332,18 @@
 
     /* ---------- Submit ---------- */
 
+    // Kenyan mobiles: 07XXXXXXXX, 01XXXXXXXX, 2547XXXXXXXX, +2547XXXXXXXX -> +254XXXXXXXXX
+    // (the server applies the same rule, so keep the two in step)
+    function normalisePhone(raw) {
+      var s = raw.replace(/[\s-]/g, "");
+      var m = /^0([17]\d{8})$/.exec(s) || /^\+?254([17]\d{8})$/.exec(s);
+      return m ? "+254" + m[1] : null;
+    }
+
     function validate(values) {
       if (!TYPE_LABELS[values.partner_type]) return "Choose the service you want to partner as.";
       if (values.full_name.length < 2) return "Enter your full name.";
-      if (!/^\+?[0-9\s-]{9,15}$/.test(values.phone)) return "Enter a valid phone number.";
+      if (!normalisePhone(values.phone)) return "Enter a valid Kenyan mobile number, e.g. 0712345678.";
       if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(values.email)) return "Enter a valid email address.";
       if (values.location.length < 2) return "Tell us the town or area where you work.";
       if (values.experience_years !== null &&
@@ -307,6 +361,17 @@
       done.hidden = false;
       done.focus();
       window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    // The Edge Function replies { error: "..." } with a readable message.
+    async function functionErrorMessage(err) {
+      try {
+        if (err && err.context && typeof err.context.json === "function") {
+          var body = await err.context.json();
+          if (body && typeof body.error === "string") return body.error;
+        }
+      } catch (e) { /* fall through */ }
+      return "";
     }
 
     async function submit(event) {
@@ -331,9 +396,20 @@
 
       var problem = validate(values);
       if (problem) { setMessage(problem, "error"); return; }
+      values.phone = normalisePhone(values.phone);
 
       if (!supabase) {
         setMessage("Applications are temporarily unavailable. Please try again later.", "error");
+        return;
+      }
+
+      if (tsWidget === null) {
+        setMessage("The verification check could not load. Refresh the page and try again.", "error");
+        return;
+      }
+      var token = turnstileToken();
+      if (!token) {
+        setMessage("Please complete the verification check.", "error");
         return;
       }
 
@@ -343,24 +419,18 @@
 
       try {
         var user = await getUser();
-        var res = await supabase.from(TABLE).insert({
-          user_id: user ? user.id : null,
-          partner_type: values.partner_type,
-          full_name: values.full_name,
-          business_name: values.business_name || null,
-          phone: values.phone,
-          email: values.email,
-          location: values.location,
-          experience_years: values.experience_years,
-          details: values.details,
-          consent: true
+
+        // user_id is NOT sent: the function reads it from the session token.
+        var res = await supabase.functions.invoke(FUNCTION_NAME, {
+          body: Object.assign({}, values, {
+            website: form.website.value,
+            turnstile_token: token
+          })
         });
 
         if (res.error) {
-          if (res.error.code === "23505") {
-            setMessage("You already have an open application for this service with this email. We'll be in touch.", "error");
-            return;
-          }
+          var friendly = await functionErrorMessage(res.error);
+          if (friendly) { setMessage(friendly, "error"); return; }
           throw res.error;
         }
 
@@ -373,6 +443,7 @@
         console.error("MEI Partners: submit failed.", e);
         setMessage("We couldn't send your application. Check your connection and try again.", "error");
       } finally {
+        resetTurnstile(); // a Turnstile token works only once
         btn.disabled = false;
         btn.textContent = "Submit application";
       }
