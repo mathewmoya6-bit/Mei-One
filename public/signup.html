@@ -408,6 +408,14 @@
         font-size: 29px;
       }
     }
+
+    .roles{display:grid;gap:10px;margin:0 0 18px}
+    .role{display:flex;gap:12px;align-items:flex-start;padding:13px 14px;border:1.5px solid rgba(128,140,160,.4);border-radius:14px;cursor:pointer}
+    .role input{margin-top:3px;accent-color:#00B85C}
+    .role strong{display:block;font-size:15px}
+    .role small{display:block;opacity:.75;font-size:13px;line-height:1.35;margin-top:2px}
+    .role:has(input:checked){border-color:#00E676;box-shadow:0 0 0 3px rgba(0,230,118,.18)}
+    .roles-label{font-size:14px;font-weight:600;margin:0 0 8px;display:block}
   </style>
 </head>
 
@@ -439,6 +447,16 @@
     <div id="message" class="message" role="alert" aria-live="polite"></div>
 
     <form id="signupForm" novalidate>
+
+      <span class="roles-label">I want to</span>
+      <div class="roles" role="radiogroup" aria-label="Account type">
+        <label class="role"><input type="radio" name="role" value="customer" checked>
+          <span><strong>Use MEI One</strong><small>Request rides and other services as a customer.</small></span></label>
+        <label class="role"><input type="radio" name="role" value="driver">
+          <span><strong>Drive with MEI</strong><small>Apply to become a driver. We review every application.</small></span></label>
+        <label class="role"><input type="radio" name="role" value="partner">
+          <span><strong>Offer a service</strong><small>Towing, roadside, garage, marketplace or home services.</small></span></label>
+      </div>
 
       <div class="field">
         <label for="fullName">Full name</label>
@@ -499,7 +517,19 @@
 
   // Keep the ride intent when the person came from Rides.
   var suffix = service ? "?service=" + encodeURIComponent(service) : "";
-  var dashboard = service === "rides" || service === "ride" ? "dashboard.html?service=rides" : "dashboard.html";
+  var customerHome = service === "rides" || service === "ride" ? "dashboard.html?service=rides" : "dashboard.html";
+
+  function chosenRole() {
+    var r = form.querySelector('input[name="role"]:checked');
+    return r ? r.value : "customer";
+  }
+  // Where each role goes next. Driver/partner roles are NOT granted here:
+  // they apply, and an admin approves.
+  function nextPage(role) {
+    if (role === "driver") return "partner-apply.html?type=driver";
+    if (role === "partner") return "partner-apply.html";
+    return customerHome;
+  }
 
   $("loginLink").addEventListener("click", function () { window.location.href = "login.html" + suffix; });
 
@@ -528,7 +558,7 @@
     if (!supabase) return;
     try {
       var r = await supabase.auth.getSession();
-      if (r.data && r.data.session) window.location.replace(dashboard);
+      if (r.data && r.data.session) window.location.replace(nextPage(chosenRole()));
     } catch (e) { /* ignore */ }
   }
 
@@ -541,6 +571,7 @@
     var email = $("email").value.trim().toLowerCase();
     var phone = normalisePhone($("phone").value);
     var password = $("password").value;
+    var role = chosenRole();
 
     if (fullName.length < 2) return show("Enter your full name.");
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return show("Enter a valid email address.");
@@ -557,8 +588,8 @@
         email: email,
         password: password,
         options: {
-          data: { full_name: fullName, phone: phone },
-          emailRedirectTo: new URL("login.html" + suffix, window.location.href).href
+          data: { full_name: fullName, phone: phone, signup_intent: role },
+          emailRedirectTo: new URL(role === "customer" ? "login.html" + suffix : nextPage(role), window.location.href).href
         }
       });
       if (res.error) throw res.error;
@@ -571,10 +602,10 @@
       }
 
       if (res.data && res.data.session) {
-        show("Account created. Taking you to your dashboard...", "success");
-        setTimeout(function () { window.location.href = dashboard; }, 600);
+        show(role === "customer" ? "Account created. Taking you to your dashboard..." : "Account created. Next, complete your application...", "success");
+        setTimeout(function () { window.location.href = nextPage(role); }, 600);
       } else {
-        show("Account created. Check your email and confirm your address, then sign in.", "success");
+        show("Account created. Check your email and confirm your address" + (role === "customer" ? ", then sign in." : ", then finish your application."), "success");
         form.reset();
       }
     } catch (err) {
