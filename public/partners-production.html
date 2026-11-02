@@ -1,0 +1,306 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#071a2f">
+  <meta name="color-scheme" content="light">
+  <meta name="description" content="Partner with MEI One. Drivers, towing operators, roadside responders, garages, marketplace sellers and home service professionals across Kenya can apply online.">
+  <meta name="robots" content="index, follow">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="MEI One">
+  <meta property="og:title" content="Partner with MEI One">
+  <meta property="og:description" content="Grow your business with MEI One. Apply to join as a driver, towing operator, roadside responder, garage, seller or home service professional.">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Partner with MEI One">
+  <meta name="twitter:description" content="Apply to become an MEI One service or marketplace partner.">
+  <title>Become an MEI One Partner | Apply Online</title>
+
+  <link rel="icon" href="assets/favicon.png" type="image/png">
+  <link rel="stylesheet" href="css/styles.css?v=3">
+  <link rel="stylesheet" href="css/partners.css?v=2">
+
+  <!-- Establish the CDN connection before loading the Supabase browser library. -->
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <script src="js/config.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"
+          crossorigin="anonymous" defer></script>
+  <script src="js/supabase.js" defer></script>
+  <script src="js/site.js" defer></script>
+</head>
+
+<body>
+  <a class="skip-link" href="#main">Skip to main content</a>
+
+  <header class="site-header">
+    <div class="container nav-container">
+      <a class="brand" href="index.html" aria-label="MEI One home">
+        <span class="brand-mark" aria-hidden="true">MEI</span>
+        <span class="brand-name">One</span>
+      </a>
+
+      <button
+        class="mobile-menu-button"
+        id="mobileMenuButton"
+        type="button"
+        aria-label="Open navigation"
+        aria-controls="mainNavigation"
+        aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+
+      <nav class="main-navigation" id="mainNavigation" aria-label="Main navigation">
+        <a href="index.html#services">Services</a>
+        <a href="index.html#how-it-works">How It Works</a>
+        <a href="partners.html" aria-current="page">For Business</a>
+        <a href="index.html#about">About</a>
+        <a href="login.html" data-auth="login">Sign In</a>
+        <a href="dashboard.html" data-auth="dashboard" class="nav-dashboard">Dashboard</a>
+        <button type="button" data-modal="signup" class="button button-small button-primary">
+          Get Started
+        </button>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="pt-hero" aria-labelledby="pageTitle">
+      <div class="container">
+        <p class="section-label">MEI ONE PARTNER NETWORK</p>
+        <h1 id="pageTitle">Grow your business with MEI One</h1>
+        <p>
+          Whether you drive, tow, repair, sell or provide services at home,
+          MEI One gives you a way to connect with customers looking for the
+          services you offer. Apply online and our team will contact you
+          about the next steps.
+        </p>
+        <div class="pt-actions">
+          <a href="partner-apply.html" class="button button-primary button-large">
+            Apply to become a partner <span aria-hidden="true">→</span>
+          </a>
+          <a href="#how" class="button button-secondary button-large">How it works</a>
+        </div>
+        <p class="pt-hero-note">Applications are free. Submission does not guarantee approval or work.</p>
+      </div>
+    </section>
+
+    <section class="section services-section" id="types" aria-labelledby="typesHeading">
+      <div class="container">
+        <div class="section-heading">
+          <span class="section-label">WHO CAN PARTNER</span>
+          <h2 id="typesHeading">Choose the service you provide</h2>
+          <p>Select the category that best describes your work. You can submit separate applications for different services.</p>
+        </div>
+
+        <div class="services-grid">
+          <a href="partner-apply.html?type=driver" class="service-card">
+            <span class="service-icon" aria-hidden="true">🚗</span>
+            <h3>Ride &amp; delivery drivers</h3>
+            <p>Drivers using cars, vans and motorbikes to transport passengers or deliver parcels.</p>
+            <strong>Apply as a driver <span aria-hidden="true">→</span></strong>
+          </a>
+
+          <a href="partner-apply.html?type=towing" class="service-card">
+            <span class="service-icon" aria-hidden="true">🚙</span>
+            <h3>Towing operators</h3>
+            <p>Tow-truck and vehicle-recovery operators supporting customers after breakdowns or accidents.</p>
+            <strong>Apply as a towing operator <span aria-hidden="true">→</span></strong>
+          </a>
+
+          <a href="partner-apply.html?type=roadside" class="service-card">
+            <span class="service-icon" aria-hidden="true">🛠️</span>
+            <h3>Roadside responders</h3>
+            <p>Providers of jump-starts, tyre changes, fuel delivery and other roadside assistance.</p>
+            <strong>Apply as a responder <span aria-hidden="true">→</span></strong>
+          </a>
+
+          <a href="partner-apply.html?type=garage" class="service-card">
+            <span class="service-icon" aria-hidden="true">🔧</span>
+            <h3>Garages &amp; auto services</h3>
+            <p>Workshops, mechanics, vehicle detailers and automotive parts suppliers.</p>
+            <strong>Apply as an auto business <span aria-hidden="true">→</span></strong>
+          </a>
+
+          <a href="partner-apply.html?type=seller" class="service-card">
+            <span class="service-icon" aria-hidden="true">🛍️</span>
+            <h3>Marketplace sellers</h3>
+            <p>Businesses and individuals interested in listing products for MEI One customers.</p>
+            <strong>Apply as a seller <span aria-hidden="true">→</span></strong>
+          </a>
+
+          <a href="partner-apply.html?type=home" class="service-card">
+            <span class="service-icon" aria-hidden="true">🏠</span>
+            <h3>Home service professionals</h3>
+            <p>Plumbers, electricians, cleaners and other professionals offering services at customers' homes.</p>
+            <strong>Apply as a professional <span aria-hidden="true">→</span></strong>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <section class="section how-section" id="how" aria-labelledby="howHeading">
+      <div class="container">
+        <div class="section-heading centered">
+          <span class="section-label">THE PROCESS</span>
+          <h2 id="howHeading">From application to onboarding</h2>
+          <p>Here is what happens after you apply.</p>
+        </div>
+
+        <div class="steps-grid">
+          <article class="step-card">
+            <em aria-hidden="true">01</em>
+            <span aria-hidden="true">01</span>
+            <h3>Apply online</h3>
+            <p>Share your contact details, operating area and the service or products you provide.</p>
+          </article>
+
+          <article class="step-card">
+            <em aria-hidden="true">02</em>
+            <span aria-hidden="true">02</span>
+            <h3>Application review</h3>
+            <p>Our team reviews the information and may contact you by phone or email for clarification or supporting documents.</p>
+          </article>
+
+          <article class="step-card">
+            <em aria-hidden="true">03</em>
+            <span aria-hidden="true">03</span>
+            <h3>Onboarding</h3>
+            <p>Applicants who meet the requirements are guided through the applicable partner onboarding process.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="ready" aria-labelledby="readyHeading">
+      <div class="container">
+        <div class="section-heading">
+          <span class="section-label">BEFORE YOU APPLY</span>
+          <h2 id="readyHeading">A few details to prepare</h2>
+          <p>Having this information ready can make your application easier.</p>
+        </div>
+
+        <div class="pt-panel pt-narrow">
+          <ul class="pt-checks">
+            <li>A working phone number and email address.</li>
+            <li>The town, county or area where you operate.</li>
+            <li>A short description of your service, vehicle, equipment, trade or products.</li>
+            <li>For drivers and towing operators: relevant driving licence and vehicle information. Supporting documents may be requested during review.</li>
+            <li>For garages, sellers and home service professionals: business details, relevant experience or examples of your work, where available.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="faq" aria-labelledby="faqHeading">
+      <div class="container">
+        <div class="section-heading">
+          <span class="section-label">FREQUENTLY ASKED QUESTIONS</span>
+          <h2 id="faqHeading">What you may want to know</h2>
+        </div>
+
+        <div class="pt-faq">
+          <details>
+            <summary>Does it cost anything to apply?</summary>
+            <p>No. Submitting a partner application is free. Any applicable partner terms, fees or commercial arrangements will be explained during onboarding before you decide whether to proceed.</p>
+          </details>
+          <details>
+            <summary>Can I apply for more than one service?</summary>
+            <p>Yes. Submit a separate application for each service category you want to offer, such as driving and roadside assistance.</p>
+          </details>
+          <details>
+            <summary>Do I need an MEI One account to apply?</summary>
+            <p>You can submit an application without signing in. Account features and application-status access depend on the options available in the application portal.</p>
+          </details>
+          <details>
+            <summary>Will my application be approved automatically?</summary>
+            <p>No. Applications are reviewed. The team may request more information or supporting documents before making an onboarding decision.</p>
+          </details>
+          <details>
+            <summary>How will MEI One contact me?</summary>
+            <p>Our team will use the phone number or email address you provide in your application. Please make sure your contact details are accurate and active.</p>
+          </details>
+          <details>
+            <summary>Does applying guarantee customers or jobs?</summary>
+            <p>No. Applying or being onboarded does not guarantee a particular number of customer requests, bookings, sales or earnings.</p>
+          </details>
+          <details>
+            <summary>How will my information be used?</summary>
+            <p>Your application information is used to assess your application and communicate with you about the partner process. Please review the privacy information presented in the application before submitting your details.</p>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <section class="pt-cta" aria-labelledby="ctaHeading">
+      <div class="container">
+        <h2 id="ctaHeading">Ready to work with MEI One?</h2>
+        <p>Tell us what you offer. Our team will review your application and get in touch.</p>
+        <a href="partner-apply.html" class="button button-primary button-large">
+          Start your application <span aria-hidden="true">→</span>
+        </a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-grid">
+      <div class="footer-brand">
+        <a class="brand" href="index.html" aria-label="MEI One home">
+          <span class="brand-mark" aria-hidden="true">MEI</span>
+          <span class="brand-name">One</span>
+        </a>
+        <p>One platform for connected services.</p>
+      </div>
+
+      <nav class="footer-column" aria-label="Services">
+        <h2>Services</h2>
+        <a href="rides.html">MEI Rides</a>
+        <a href="delivery.html">MEI Delivery</a>
+        <a href="towing.html">MEI Towing</a>
+        <a href="roadside.html">Roadside Assistance</a>
+      </nav>
+
+      <nav class="footer-column" aria-label="More services">
+        <h2>More</h2>
+        <a href="https://auto-d.meipressgroup.com/" target="_blank" rel="noopener noreferrer">MEI Auto <span aria-hidden="true">↗</span></a>
+        <a href="marketplace.html">Marketplace</a>
+        <a href="home-services.html">Home Services</a>
+        <a href="https://www.meidriveafrica.com" target="_blank" rel="noopener noreferrer">MEI Learn <span aria-hidden="true">↗</span></a>
+      </nav>
+
+      <nav class="footer-column" aria-label="Platform">
+        <h2>Platform</h2>
+        <a href="index.html#how-it-works">How It Works</a>
+        <a href="partners.html" aria-current="page">Partners</a>
+        <a href="index.html#about">About</a>
+        <a href="login.html">Sign In</a>
+      </nav>
+    </div>
+
+    <div class="container footer-bottom">
+      <span>© <span data-current-year id="currentYear">2026</span> MEI One. All rights reserved.</span>
+      <span>Connected digital services.</span>
+    </div>
+  </footer>
+
+  <!-- Shared site modal. Keep IDs/data attributes aligned with js/site.js. -->
+  <div class="modal" id="globalModal" aria-hidden="true">
+    <div class="modal-backdrop" data-modal-close></div>
+    <div class="modal-dialog" role="dialog" aria-modal="true" aria-label="MEI One dialog">
+      <button type="button" class="modal-close" data-modal-close aria-label="Close dialog">
+        <span aria-hidden="true">×</span>
+      </button>
+      <div id="modalContent"></div>
+    </div>
+  </div>
+
+  <div class="toast-container" id="toastContainer"
+       role="status" aria-live="polite" aria-atomic="true"></div>
+
+  <noscript>
+    <div class="container">
+      <p>JavaScript is required for some MEI One account and interactive features. You can still use the partner application link if it is available in your browser.</p>
+    </div>
+  </noscript>
+</body>
+</html>
