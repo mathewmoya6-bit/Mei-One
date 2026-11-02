@@ -20,10 +20,9 @@
       "sb_publishable_P8gaG4CyyHuiKJJbW3t6Dw_we4UODZ_",
 
     /* --------------------------------------------------------
-       CLOUDFLARE TURNSTILE (public site key only, never the secret)
-       Get it from Cloudflare dashboard > Turnstile > your widget.
+       CLOUDFLARE TURNSTILE
        -------------------------------------------------------- */
-    turnstileSiteKey: "PASTE_YOUR_TURNSTILE_SITE_KEY_HERE",
+    turnstileSiteKey: "0x4AAAAAAFxLazVm6RMFUblv",
 
     /* --------------------------------------------------------
        SITE
