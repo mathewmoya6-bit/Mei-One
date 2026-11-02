@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#071a2f">
+  <meta name="description" content="MEI One connects mobility, delivery, vehicle care, home services, shopping and learning in one platform.">
+  <title>MEI One — One platform. More ways to move forward.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <div class="announcement"><span class="pulse"></span> MEI One is bringing everyday services together <a href="#services">Explore the platform <span>→</span></a></div>
+  <header class="header">
+    <div class="wrap nav-wrap">
+      <a class="brand" href="#" aria-label="MEI One home"><span class="brand-icon">MEI</span><span>One</span></a>
+      <button class="menu-toggle" id="menuToggle" aria-label="Toggle navigation" aria-expanded="false"><i></i><i></i><i></i></button>
+      <nav class="nav" id="mainNav">
+        <a href="#services">Explore services</a><a href="#how">How it works</a><a href="#business">For business</a>
+        <a href="partners.html" class="nav-partner">Become a partner</a>
+        <button class="btn btn-outline btn-small" data-open="signin">Sign in</button>
+        <button class="btn btn-primary btn-small" data-open="signup">Create account <span>↗</span></button>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="hero-orb orb-a"></div><div class="hero-orb orb-b"></div>
+      <div class="wrap hero-layout">
+        <div class="hero-copy">
+          <div class="kicker"><span class="kicker-line"></span> YOUR EVERYDAY SERVICES, CONNECTED</div>
+          <h1>One platform.<br><em>More ways</em> to move forward.</h1>
+          <p class="hero-lead">Book a ride, send a package, get vehicle help, find trusted home services or discover something new — all through the MEI One ecosystem.</p>
+          <div class="hero-buttons"><a class="btn btn-primary btn-large" href="#services">Explore services <span>→</span></a><button class="btn btn-glass btn-large" data-open="signup">Get started <span>↗</span></button></div>
+          <div class="hero-proof"><div class="proof-avatars"><b>M</b><b>E</b><b>I</b></div><div><strong>One connected experience</strong><small>Designed around everyday needs</small></div><span class="proof-divider"></span><div><strong>Built for Kenya</strong><small>Local services. Simple access.</small></div></div>
+        </div>
+        <div class="hero-visual">
+          <div class="visual-top"><div><span class="tiny-label">THE MEI ONE ECOSYSTEM</span><h2>What can we help with?</h2></div><span class="kenya-tag">KENYA <b>●</b></span></div>
+          <div class="quick-grid">
+            <a class="quick-card q-ride" href="rides.html"><span class="quick-icon">↗</span><span class="quick-emoji">🚘</span><strong>MEI Rides</strong><small>Get where you need to go</small><b class="card-arrow">↗</b></a>
+            <a class="quick-card q-delivery" href="delivery.html"><span class="quick-icon">↗</span><span class="quick-emoji">📦</span><strong>Delivery</strong><small>Send and receive with ease</small><b class="card-arrow">↗</b></a>
+            <a class="quick-card q-auto" href="https://auto-d.meipressgroup.com/"><span class="quick-icon">↗</span><span class="quick-emoji">🛠️</span><strong>MEI Auto</strong><small>Care for your vehicle</small><b class="card-arrow">↗</b></a>
+            <a class="quick-card q-home" href="home-services.html"><span class="quick-icon">↗</span><span class="quick-emoji">🏡</span><strong>Home services</strong><small>Help around your home</small><b class="card-arrow">↗</b></a>
+          </div>
+          <div class="visual-bottom"><div class="bottom-icon">✦</div><div><strong>Need help on the road?</strong><small>Find towing and roadside support.</small></div><a href="roadside.html" aria-label="Roadside assistance">→</a></div>
+          <div class="visual-caption"><span class="caption-dot"></span> ONE PLACE TO START. MORE WAYS TO GET IT DONE.</div>
+        </div>
+      </div>
+      <div class="hero-bottom-line"></div>
+    </section>
+
+    <section class="trust-strip"><div class="wrap trust-inner"><span>CONNECTED MEI SERVICES</span><b>Mobility</b><i></i><b>Automotive</b><i></i><b>Delivery</b><i></i><b>Home</b><i></i><b>Marketplace</b><i></i><b>Learning</b></div></section>
+
+    <section class="section services-section" id="services">
+      <div class="wrap">
+        <div class="section-head"><div><span class="eyebrow">EXPLORE MEI ONE</span><h2>What do you need <em>today?</em></h2><p>Start with a service. Each experience is designed to help you take the next step.</p></div><div class="service-search"><span>⌕</span><input id="serviceSearch" type="search" placeholder="Search services..." aria-label="Search services"></div></div>
+        <div class="service-grid" id="serviceGrid">
+          <a class="service-card" data-search="rides transport taxi mobility" href="rides.html"><div class="service-card-head"><span class="service-symbol symbol-blue">🚗</span><span class="service-number">01 / MOVE</span></div><h3>MEI Rides</h3><p>Explore convenient mobility options for your everyday journeys.</p><span class="service-link">Explore rides <b>↗</b></span></a>
+          <a class="service-card" data-search="delivery courier parcel package send" href="delivery.html"><div class="service-card-head"><span class="service-symbol symbol-orange">📦</span><span class="service-number">02 / SEND</span></div><h3>MEI Delivery</h3><p>Arrange delivery for packages, goods and everyday essentials.</p><span class="service-link">Explore delivery <b>↗</b></span></a>
+          <a class="service-card" data-search="towing recovery breakdown" href="towing.html"><div class="service-card-head"><span class="service-symbol symbol-purple">🚙</span><span class="service-number">03 / RECOVER</span></div><h3>MEI Towing</h3><p>Find vehicle recovery support when your journey is interrupted.</p><span class="service-link">Get recovery help <b>↗</b></span></a>
+          <a class="service-card" data-search="roadside emergency battery tyre fuel" href="roadside.html"><div class="service-card-head"><span class="service-symbol symbol-green">🧰</span><span class="service-number">04 / SUPPORT</span></div><h3>Roadside Assistance</h3><p>Get help with common vehicle issues while out on the road.</p><span class="service-link">Find assistance <b>↗</b></span></a>
+          <a class="service-card" data-search="auto garage mechanic inspection vehicle" href="https://auto-d.meipressgroup.com/"><div class="service-card-head"><span class="service-symbol symbol-yellow">🔧</span><span class="service-number">05 / CARE</span></div><h3>MEI Auto</h3><p>Access automotive tools, vehicle services and support.</p><span class="service-link">Open MEI Auto <b>↗</b></span></a>
+          <a class="service-card" data-search="marketplace shopping products shop" href="marketplace.html"><div class="service-card-head"><span class="service-symbol symbol-pink">🛍️</span><span class="service-number">06 / DISCOVER</span></div><h3>MEI Marketplace</h3><p>Discover products, services and opportunities in one place.</p><span class="service-link">Browse marketplace <b>↗</b></span></a>
+          <a class="service-card" data-search="home cleaning plumbing electrical repair" href="home-services.html"><div class="service-card-head"><span class="service-symbol symbol-teal">🏠</span><span class="service-number">07 / HOME</span></div><h3>MEI Home Services</h3><p>Find practical support for repairs, maintenance and home needs.</p><span class="service-link">Explore home services <b>↗</b></span></a>
+          <a class="service-card" data-search="learn driving training education courses" href="https://www.meidriveafrica.com"><div class="service-card-head"><span class="service-symbol symbol-indigo">🎓</span><span class="service-number">08 / LEARN</span></div><h3>MEI Learn</h3><p>Build practical knowledge and skills through connected learning.</p><span class="service-link">Visit MEI Learn <b>↗</b></span></a>
+        </div>
+        <p class="no-results" id="noResults" hidden>No services match your search. Try another keyword.</p>
+      </div>
+    </section>
+
+    <section class="feature-band" id="how"><div class="wrap feature-layout"><div class="feature-intro"><span class="eyebrow light">A SIMPLER WAY TO GET THINGS DONE</span><h2>Less searching.<br><em>More doing.</em></h2><p>MEI One is your starting point for a growing range of connected services.</p><a class="text-link" href="#services">Find your service <b>→</b></a></div><div class="steps"><article><span>01</span><div><h3>Choose what you need</h3><p>Explore the service categories and select the one that fits your task.</p></div><b>↗</b></article><article><span>02</span><div><h3>Continue to the service</h3><p>Open its dedicated experience and provide the details required.</p></div><b>↗</b></article><article><span>03</span><div><h3>Manage your next step</h3><p>Use the relevant service workflow to follow up and stay organised.</p></div><b>↗</b></article></div></div></section>
+
+    <section class="emergency"><div class="wrap emergency-box"><div class="emergency-symbol">SOS</div><div><span class="eyebrow">WHEN YOU NEED A HAND</span><h2>Vehicle trouble? Don't stay stranded.</h2><p>Go directly to towing and roadside support options.</p></div><div class="emergency-actions"><a href="towing.html" class="btn btn-dark">Towing support ↗</a><a href="roadside.html" class="btn btn-light">Roadside help ↗</a></div></div></section>
+
+    <section class="business-section" id="business"><div class="wrap business-layout"><div><span class="eyebrow">GROW WITH THE ECOSYSTEM</span><h2>Bring your service<br>to <em>MEI One.</em></h2><p>Are you a service provider, driver, merchant or business? Explore opportunities to connect with customers through the MEI One ecosystem.</p><a href="partners.html" class="btn btn-primary">Become a partner <span>→</span></a></div><div class="business-tiles"><div><span>01</span><b>Service providers</b><small>Offer your expertise</small></div><div><span>02</span><b>Drivers & operators</b><small>Power mobility services</small></div><div><span>03</span><b>Merchants</b><small>Showcase your products</small></div><div><span>04</span><b>Business partners</b><small>Build new opportunities</small></div></div></div></section>
+  </main>
+
+  <footer class="footer"><div class="wrap footer-main"><div class="footer-about"><a class="brand brand-footer" href="#"><span class="brand-icon">MEI</span><span>One</span></a><p>One connected platform for everyday services.</p><small>Part of the MEI ecosystem.</small></div><div class="footer-col"><b>Explore</b><a href="#services">All services</a><a href="rides.html">MEI Rides</a><a href="delivery.html">MEI Delivery</a><a href="marketplace.html">Marketplace</a></div><div class="footer-col"><b>Support</b><a href="towing.html">Towing</a><a href="roadside.html">Roadside assistance</a><a href="home-services.html">Home services</a><a href="partners.html">Partner with us</a></div><div class="footer-col"><b>MEI Network</b><a href="https://auto-d.meipressgroup.com/">MEI Auto ↗</a><a href="https://www.meidriveafrica.com">MEI Learn ↗</a><a href="#business">For business</a></div></div><div class="wrap footer-bottom"><span>© <span id="year"></span> MEI One. All rights reserved.</span><span>One platform. More ways forward.</span></div></footer>
+
+  <div class="modal" id="accountModal" aria-hidden="true"><div class="modal-backdrop" data-close></div><section class="modal-panel" role="dialog" aria-modal="true" aria-labelledby="modalTitle"><button class="modal-x" data-close aria-label="Close">×</button><div class="modal-mark">MEI <b>One</b></div><span class="eyebrow">WELCOME TO MEI ONE</span><h2 id="modalTitle">Create your account</h2><p id="modalDesc">A connected starting point for your MEI services.</p><form id="accountForm"><label>Full name<input name="name" placeholder="Your full name" autocomplete="name" required></label><label>Email address<input name="email" type="email" placeholder="you@example.com" autocomplete="email" required></label><label>Phone number<input name="phone" type="tel" placeholder="+254 7XX XXX XXX" autocomplete="tel" required></label><button class="btn btn-primary btn-full" type="submit" id="formSubmit">Continue <span>→</span></button><small class="form-note">Demo only: this form does not create an account or transmit personal information.</small></form><div class="modal-switch" id="modalSwitch">Already have an account? <button data-switch="signin">Sign in</button></div></section></div>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+</body>
+</html>
