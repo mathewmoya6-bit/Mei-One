@@ -309,6 +309,27 @@
       text-decoration: underline;
     }
 
+    /* Make the whole signup line clickable */
+    .signup-cta {
+      display: block;
+      color: #aebdce;
+      text-decoration: none;
+      font-weight: 500;
+      transition: color var(--transition);
+      cursor: pointer;
+    }
+
+    .signup-cta span {
+      color: var(--green);
+      font-weight: 700;
+      transition: color var(--transition);
+    }
+
+    .signup-cta:hover span {
+      color: var(--lime);
+      text-decoration: underline;
+    }
+
     @media (max-width: 480px) {
       .auth-card {
         padding: 30px 24px;
@@ -377,11 +398,10 @@
       </form>
 
       <div class="footer-links">
-        <!-- CHANGED: Signup link now points to signup.html instead of provider-signin -->
-        <div>
-          Don't have an account? 
-          <a href="/signup.html">Create one</a>
-        </div>
+        <!-- Full line is now a clickable link to /signup.html -->
+        <a class="signup-cta" href="/signup.html" id="createAccountLink">
+          Don't have an account? <span>Create one</span>
+        </a>
       </div>
     </div>
   </main>
@@ -529,6 +549,12 @@
         console.error("Password reset error:", error);
         showMessage(translateError(error), "error");
       }
+    });
+
+    // --- Create Account Redirect (ensures /signup.html navigation) ---
+    document.getElementById("createAccountLink").addEventListener("click", (event) => {
+      event.preventDefault();
+      window.location.href = "/signup.html";
     });
 
   </script>
