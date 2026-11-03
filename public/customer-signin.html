@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#071a2f">
   <meta name="description" content="Sign in or create your MEI One customer account.">
   <title>Customer Sign In | MEI One</title>
@@ -11,1072 +11,460 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="/js/config.js"></script>
-
   <style>
-    :root {
-      --navy: #071a2f;
-      --navy-light: #102b49;
-      --green: #00d68f;
-      --green-dark: #00a970;
-      --green-deep: #007a52;
-      --lime: #c7f36b;
-      --white: #ffffff;
-      --muted: #64748b;
-      --muted-light: #94a3b8;
-      --border: #e2e8f0;
-      --border-strong: #cbd5e1;
-      --background: #f1f5f9;
-      --danger: #dc2626;
-      --danger-bg: #fef2f2;
-      --danger-border: #fecaca;
-      --success: #047857;
-      --success-bg: #ecfdf5;
-      --success-border: #a7f3d0;
-      --info: #1d4ed8;
-      --info-bg: #eff6ff;
-      --info-border: #bfdbfe;
-      --radius: 12px;
-      --shadow-sm: 0 1px 2px rgba(7, 26, 47, .05);
-      --shadow-md: 0 4px 12px rgba(7, 26, 47, .08);
-      --shadow-lg: 0 20px 60px rgba(7, 26, 47, .12);
-      --transition: .18s cubic-bezier(.4, 0, .2, 1);
-    }
-
     * {
       box-sizing: border-box;
-      margin: 0;
-      padding: 0;
     }
-
-    html { -webkit-text-size-adjust: 100%; }
 
     body {
+      margin: 0;
       min-height: 100vh;
-      font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
-      background: var(--background);
-      background-image:
-        radial-gradient(circle at 15% 10%, rgba(0, 214, 143, .08), transparent 40%),
-        radial-gradient(circle at 85% 90%, rgba(0, 169, 112, .06), transparent 40%);
-      background-attachment: fixed;
-      color: var(--navy);
-      display: flex;
-      flex-direction: column;
-      line-height: 1.5;
-      -webkit-font-smoothing: antialiased;
-      -moz-osx-font-smoothing: grayscale;
+      padding: 20px;
+      display: grid;
+      place-items: center;
+      background: #071a2f;
+      color: #fff;
+      font-family: Inter, Arial, sans-serif;
     }
 
-    /* ---------- HEADER ---------- */
-    header {
-      background: rgba(7, 26, 47, .97);
-      backdrop-filter: saturate(180%) blur(10px);
-      -webkit-backdrop-filter: saturate(180%) blur(10px);
-      padding: 18px 6%;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 16px;
-      position: sticky;
-      top: 0;
-      z-index: 50;
-      border-bottom: 1px solid rgba(255, 255, 255, .06);
-    }
-
-    .brand {
-      color: var(--white);
-      font-size: 22px;
-      font-weight: 800;
-      letter-spacing: -.8px;
-      text-decoration: none;
-      transition: opacity var(--transition);
-    }
-
-    .brand:hover { opacity: .85; }
-
-    .brand span { color: var(--green); }
-
-    .home-link {
-      color: var(--white);
-      text-decoration: none;
-      font-size: 13px;
-      font-weight: 500;
-      opacity: .82;
-      padding: 8px 14px;
-      border-radius: 8px;
-      border: 1px solid rgba(255, 255, 255, .14);
-      transition: all var(--transition);
-    }
-
-    .home-link:hover {
-      opacity: 1;
-      background: rgba(255, 255, 255, .06);
-      border-color: rgba(255, 255, 255, .24);
-    }
-
-    /* ---------- MAIN ---------- */
-    main {
-      flex: 1;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 44px 18px;
-    }
-
-    .auth-card {
+    .card {
       width: 100%;
-      max-width: 460px;
-      background: var(--white);
-      border-radius: 20px;
-      padding: 38px;
-      box-shadow: var(--shadow-lg);
-      border: 1px solid rgba(226, 232, 240, .7);
-      animation: cardIn .4s cubic-bezier(.16, 1, .3, 1);
+      max-width: 430px;
+      padding: 35px;
+      background: #102640;
+      border: 1px solid rgba(255,255,255,.08);
+      border-radius: 18px;
+      box-shadow: 0 20px 60px rgba(0,0,0,.2);
     }
 
-    @keyframes cardIn {
-      from {
-        opacity: 0;
-        transform: translateY(12px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    .heading {
-      text-align: center;
-      margin-bottom: 26px;
-    }
-
-    .heading h1 {
+    .logo {
       font-size: 27px;
       font-weight: 800;
-      margin-bottom: 8px;
-      letter-spacing: -.7px;
-      line-height: 1.2;
+      color: #00ff88;
+      letter-spacing: -1px;
     }
 
-    .heading p {
-      color: var(--muted);
-      font-size: 14px;
+    h1 {
+      font-size: 25px;
+      margin: 25px 0 8px;
+    }
+
+    p {
+      color: #aebdce;
       line-height: 1.6;
-    }
-
-    /* ---------- TABS ---------- */
-    .tabs {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 4px;
-      background: #eef2f7;
-      padding: 5px;
-      border-radius: 11px;
-      margin-bottom: 26px;
-    }
-
-    .tab {
-      border: 0;
-      border-radius: 8px;
-      padding: 11px 12px;
-      font-weight: 600;
-      cursor: pointer;
-      color: #64748b;
-      background: transparent;
-      font-size: 13.5px;
-      font-family: inherit;
-      transition: all var(--transition);
-    }
-
-    .tab:hover:not(.active) { color: var(--navy); }
-
-    .tab.active {
-      background: var(--white);
-      color: var(--navy);
-      font-weight: 700;
-      box-shadow: var(--shadow-sm);
-    }
-
-    /* ---------- FORM FIELDS ---------- */
-    .field {
-      margin-bottom: 16px;
-    }
-
-    label {
-      display: block;
-      font-size: 13px;
-      font-weight: 600;
-      margin-bottom: 7px;
-      color: var(--navy);
-      letter-spacing: -.1px;
+      font-size: 14px;
     }
 
     input {
+      display: block;
       width: 100%;
-      padding: 13px 14px;
-      border: 1.5px solid var(--border);
-      border-radius: 10px;
+      padding: 14px;
+      margin: 12px 0;
+      border: 1px solid #38516c;
+      border-radius: 9px;
       outline: none;
-      font-size: 14px;
+      background: #071a2f;
+      color: white;
+      font-size: 15px;
       font-family: inherit;
-      color: var(--navy);
-      background: var(--white);
-      transition: border-color var(--transition), box-shadow var(--transition), background var(--transition);
     }
-
-    input::placeholder { color: var(--muted-light); }
-
-    input:hover:not(:focus) { border-color: var(--border-strong); }
 
     input:focus {
-      border-color: var(--green-dark);
-      box-shadow: 0 0 0 4px rgba(0, 214, 143, .13);
-      background: var(--white);
+      border-color: #00ff88;
+      box-shadow: 0 0 0 3px rgba(0,255,136,.1);
     }
 
-    input:invalid:not(:placeholder-shown):not(:focus) {
-      border-color: var(--danger-border);
-    }
-
-    .password-wrap {
-      position: relative;
-    }
-
-    .password-wrap input {
-      padding-right: 62px;
-    }
-
-    .toggle-password {
-      position: absolute;
-      right: 6px;
-      top: 50%;
-      transform: translateY(-50%);
+    button {
+      width: 100%;
+      padding: 14px;
+      margin-top: 12px;
       border: 0;
-      background: transparent;
-      color: var(--green-deep);
-      font-size: 12px;
-      font-weight: 700;
-      font-family: inherit;
+      border-radius: 9px;
+      background: #00ff88;
+      color: #071a2f;
+      font-weight: 800;
+      font-size: 15px;
       cursor: pointer;
-      padding: 8px 10px;
-      border-radius: 6px;
-      transition: background var(--transition);
-    }
-
-    .toggle-password:hover { background: rgba(0, 214, 143, .1); }
-
-    .toggle-password:focus-visible {
-      outline: 2px solid var(--green);
-      outline-offset: 2px;
-    }
-
-    /* ---------- FORGOT ROW ---------- */
-    .forgot-row {
-      text-align: right;
-      margin-top: -2px;
-      margin-bottom: 20px;
-    }
-
-    .text-link {
-      color: var(--green-deep);
-      font-size: 13px;
-      font-weight: 600;
       font-family: inherit;
+    }
+
+    button:disabled {
+      opacity: .6;
+      cursor: not-allowed;
+    }
+
+    .switch {
+      text-align: center;
+      margin-top: 20px;
+      font-size: 14px;
+      color: #aebdce;
+    }
+
+    a {
+      color: #00ff88;
       text-decoration: none;
-      cursor: pointer;
-      border: 0;
-      background: transparent;
-      transition: color var(--transition);
-      padding: 4px 0;
     }
 
-    .text-link:hover {
-      color: var(--green-dark);
+    a:hover {
       text-decoration: underline;
     }
 
-    /* ---------- BUTTON ---------- */
-    .primary-btn {
-      width: 100%;
-      border: 0;
-      border-radius: 10px;
-      padding: 15px;
-      background: var(--green);
-      color: var(--navy);
-      font-size: 15px;
-      font-weight: 700;
-      font-family: inherit;
-      cursor: pointer;
-      transition: all var(--transition);
-      position: relative;
-      letter-spacing: -.1px;
-      box-shadow: 0 2px 8px rgba(0, 214, 143, .25);
-    }
-
-    .primary-btn:hover:not(:disabled) {
-      background: var(--lime);
-      transform: translateY(-1px);
-      box-shadow: 0 6px 16px rgba(0, 214, 143, .35);
-    }
-
-    .primary-btn:active:not(:disabled) {
-      transform: translateY(0);
-      box-shadow: 0 2px 6px rgba(0, 214, 143, .25);
-    }
-
-    .primary-btn:focus-visible {
-      outline: 3px solid rgba(0, 214, 143, .4);
-      outline-offset: 2px;
-    }
-
-    .primary-btn:disabled {
-      opacity: .65;
-      cursor: not-allowed;
-      box-shadow: none;
-    }
-
-    /* ---------- MESSAGE ---------- */
-    .message {
-      display: none;
-      padding: 12px 14px;
-      border-radius: 10px;
+    .forgot {
+      text-align: right;
+      margin-top: 8px;
       font-size: 13px;
-      line-height: 1.55;
-      margin-bottom: 18px;
+    }
+
+    #message {
+      display: none;
+      padding: 12px;
+      margin-top: 16px;
+      border-radius: 8px;
       overflow-wrap: anywhere;
-      animation: msgIn .25s ease;
     }
 
-    @keyframes msgIn {
-      from { opacity: 0; transform: translateY(-4px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
-
-    .message.error {
+    #message.error {
       display: block;
-      color: var(--danger);
-      background: var(--danger-bg);
-      border: 1px solid var(--danger-border);
+      background: rgba(255,75,75,.12);
+      color: #ffaaaa;
     }
 
-    .message.success {
+    #message.success {
       display: block;
-      color: var(--success);
-      background: var(--success-bg);
-      border: 1px solid var(--success-border);
+      background: rgba(0,255,136,.1);
+      color: #00ff88;
     }
 
-    .message.info {
+    #message.info {
       display: block;
-      color: var(--info);
-      background: var(--info-bg);
-      border: 1px solid var(--info-border);
+      background: rgba(255,255,255,.07);
+      color: #d5e2ef;
     }
 
-    /* ---------- MISC ---------- */
-    .hidden { display: none !important; }
-
-    .terms {
-      color: var(--muted);
-      font-size: 12px;
-      line-height: 1.6;
-      text-align: center;
-      margin-top: 18px;
-      padding: 0 4px;
-    }
-
-    .terms a { color: var(--green-deep); text-decoration: none; }
-    .terms a:hover { text-decoration: underline; }
-
-    footer {
-      text-align: center;
-      color: var(--muted-light);
-      font-size: 12px;
-      padding: 20px;
-      font-weight: 500;
-    }
-
-    /* ---------- SR-ONLY ---------- */
-    .sr-only {
-      position: absolute;
-      width: 1px;
-      height: 1px;
-      padding: 0;
-      margin: -1px;
-      overflow: hidden;
-      clip: rect(0, 0, 0, 0);
-      white-space: nowrap;
-      border: 0;
-    }
-
-    /* ---------- RESPONSIVE ---------- */
     @media (max-width: 480px) {
-      main { padding: 28px 14px; }
-      .auth-card { padding: 28px 22px; border-radius: 16px; }
-      .heading h1 { font-size: 23px; }
-      header { padding: 15px 5%; }
-      .brand { font-size: 20px; }
-      .home-link { font-size: 12px; padding: 7px 11px; }
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-      *, *::before, *::after {
-        animation-duration: .01ms !important;
-        transition-duration: .01ms !important;
+      .card {
+        padding: 25px;
       }
     }
   </style>
 </head>
 
 <body>
-  <header>
-    <a class="brand" href="/">MEI <span>One</span></a>
-    <a class="home-link" href="/">← Home</a>
-  </header>
 
-  <main>
-    <section class="auth-card" aria-labelledby="pageTitle">
-      <div class="heading">
-        <h1 id="pageTitle">Welcome back</h1>
-        <p id="pageDescription">Sign in to your MEI One customer account.</p>
+  <main class="card">
+
+    <div class="logo">MEI ONE</div>
+
+    <p>Everything, connected.</p>
+
+    <h1 id="heading">Welcome back</h1>
+
+    <p id="description">
+      Sign in to manage your bookings and services.
+    </p>
+
+    <form id="authForm">
+
+      <!-- These fields ONLY show when "Create Account" is clicked -->
+      <input
+        id="name"
+        type="text"
+        placeholder="Full name"
+        autocomplete="name"
+        hidden
+      >
+
+      <input
+        id="email"
+        type="email"
+        placeholder="Email address"
+        autocomplete="email"
+        required
+      >
+
+      <!-- This field ONLY shows when "Create Account" is clicked -->
+      <input
+        id="phone"
+        type="tel"
+        placeholder="Phone number"
+        autocomplete="tel"
+        hidden
+      >
+
+      <input
+        id="password"
+        type="password"
+        placeholder="Password"
+        autocomplete="current-password"
+        required
+        minlength="6"
+      >
+
+      <div class="forgot" id="forgotWrapper">
+        <a href="#" id="forgotPassword">Forgot password?</a>
       </div>
 
-      <div id="tabs" class="tabs" role="tablist" aria-label="Authentication mode">
-        <button class="tab active" id="loginTab" type="button" role="tab" aria-selected="true" aria-controls="loginForm">Sign In</button>
-        <button class="tab" id="signupTab" type="button" role="tab" aria-selected="false" aria-controls="signupForm">Create Account</button>
-      </div>
+      <button type="submit" id="submitBtn">
+        Sign In
+      </button>
 
-      <div id="message" class="message" role="alert" aria-live="polite"></div>
+    </form>
 
-      <!-- SIGN IN -->
-      <form id="loginForm" novalidate>
-        <div class="field">
-          <label for="loginEmail">Email address</label>
-          <input
-            id="loginEmail"
-            type="email"
-            autocomplete="email"
-            placeholder="you@example.com"
-            required
-            spellcheck="false"
-            autocapitalize="off"
-          >
-        </div>
+    <p id="message" role="status" aria-live="polite"></p>
 
-        <div class="field">
-          <label for="loginPassword">Password</label>
-          <div class="password-wrap">
-            <input
-              id="loginPassword"
-              type="password"
-              autocomplete="current-password"
-              placeholder="Enter your password"
-              required
-            >
-            <button class="toggle-password" type="button"
-              data-target="loginPassword" aria-label="Show password">Show</button>
-          </div>
-        </div>
+    <div class="switch">
+      <span id="switchText">New to MEI One?</span>
+      <a href="#" id="toggle">Create account</a>
+    </div>
 
-        <div class="forgot-row">
-          <button type="button" class="text-link" id="forgotBtn">
-            Forgot password?
-          </button>
-        </div>
+    <div class="switch">
+      <a href="/provider-signin.html">
+        Are you a service provider?
+      </a>
+    </div>
 
-        <button class="primary-btn" id="loginBtn" type="submit">
-          Sign In
-        </button>
-      </form>
+    <div class="switch">
+      <a href="/index.html">← Back to MEI One</a>
+    </div>
 
-      <!-- SIGN UP -->
-      <form id="signupForm" class="hidden" novalidate>
-        <div class="field">
-          <label for="fullName">Full name</label>
-          <input
-            id="fullName"
-            type="text"
-            autocomplete="name"
-            placeholder="Your full name"
-            maxlength="120"
-            required
-          >
-        </div>
-
-        <div class="field">
-          <label for="signupPhone">Phone number <span style="color:var(--muted);font-weight:400">(optional)</span></label>
-          <input
-            id="signupPhone"
-            type="tel"
-            autocomplete="tel"
-            placeholder="e.g. 07XXXXXXXX"
-            maxlength="25"
-          >
-        </div>
-
-        <div class="field">
-          <label for="signupEmail">Email address</label>
-          <input
-            id="signupEmail"
-            type="email"
-            autocomplete="email"
-            placeholder="you@example.com"
-            required
-            spellcheck="false"
-            autocapitalize="off"
-          >
-        </div>
-
-        <div class="field">
-          <label for="signupPassword">Create password</label>
-          <div class="password-wrap">
-            <input
-              id="signupPassword"
-              type="password"
-              autocomplete="new-password"
-              placeholder="At least 8 characters"
-              minlength="8"
-              required
-            >
-            <button class="toggle-password" type="button"
-              data-target="signupPassword" aria-label="Show password">Show</button>
-          </div>
-        </div>
-
-        <div class="field">
-          <label for="confirmPassword">Confirm password</label>
-          <div class="password-wrap">
-            <input
-              id="confirmPassword"
-              type="password"
-              autocomplete="new-password"
-              placeholder="Enter password again"
-              minlength="8"
-              required
-            >
-            <button class="toggle-password" type="button"
-              data-target="confirmPassword" aria-label="Show password">Show</button>
-          </div>
-        </div>
-
-        <button class="primary-btn" id="signupBtn" type="submit">
-          Create Customer Account
-        </button>
-
-        <p class="terms">
-          By creating an account, you agree to use MEI One in accordance
-          with its applicable terms and policies.
-        </p>
-      </form>
-
-      <!-- FORGOT PASSWORD -->
-      <form id="forgotForm" class="hidden" novalidate>
-        <div class="field">
-          <label for="forgotEmail">Registered email address</label>
-          <input
-            id="forgotEmail"
-            type="email"
-            autocomplete="email"
-            placeholder="you@example.com"
-            required
-            spellcheck="false"
-            autocapitalize="off"
-          >
-        </div>
-
-        <button class="primary-btn" id="forgotSubmit" type="submit">
-          Send Password Reset Link
-        </button>
-
-        <p class="terms">
-          We will send a password recovery link if the account is eligible.
-        </p>
-      </form>
-
-      <!-- SET NEW PASSWORD -->
-      <form id="recoveryForm" class="hidden" novalidate>
-        <div class="field">
-          <label for="newPassword">New password</label>
-          <div class="password-wrap">
-            <input
-              id="newPassword"
-              type="password"
-              autocomplete="new-password"
-              minlength="8"
-              placeholder="At least 8 characters"
-              required
-            >
-            <button class="toggle-password" type="button"
-              data-target="newPassword" aria-label="Show password">Show</button>
-          </div>
-        </div>
-
-        <div class="field">
-          <label for="newPasswordConfirm">Confirm new password</label>
-          <div class="password-wrap">
-            <input
-              id="newPasswordConfirm"
-              type="password"
-              autocomplete="new-password"
-              minlength="8"
-              placeholder="Enter password again"
-              required
-            >
-            <button class="toggle-password" type="button"
-              data-target="newPasswordConfirm" aria-label="Show password">Show</button>
-          </div>
-        </div>
-
-        <button class="primary-btn" id="recoverySubmit" type="submit">
-          Update Password
-        </button>
-      </form>
-    </section>
   </main>
 
-  <footer>
-    © <span id="year"></span> MEI One. All rights reserved.
-  </footer>
+  <!-- Shared Supabase configuration -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="/js/config.js"></script>
 
   <script>
-    (() => {
-      "use strict";
+    "use strict";
 
-      /* ================= CONFIG ================= */
-      const DASHBOARD_PATH = "/customer-dashboard.html";
-      const SIGNIN_PATH = "/customer-signin.html";
-      const MIN_PASSWORD_LENGTH = 8;
+    const sb = window.MEI_SUPABASE;
 
-      const sb = window.MEI_SUPABASE;
-      const $ = (id) => document.getElementById(id);
+    const form = document.getElementById("authForm");
+    const message = document.getElementById("message");
+    const button = document.getElementById("submitBtn");
 
-      /* ================= DOM ================= */
-      const message      = $("message");
-      const loginForm    = $("loginForm");
-      const signupForm   = $("signupForm");
-      const forgotForm   = $("forgotForm");
-      const recoveryForm = $("recoveryForm");
+    const nameInput = document.getElementById("name");
+    const emailInput = document.getElementById("email");
+    const phoneInput = document.getElementById("phone");
+    const passwordInput = document.getElementById("password");
 
-      /* ================= STATE ================= */
-      let recoveryMode = false;
-      let busy = false;
+    const heading = document.getElementById("heading");
+    const description = document.getElementById("description");
+    const switchText = document.getElementById("switchText");
+    const toggle = document.getElementById("toggle");
+    const forgotWrapper = document.getElementById("forgotWrapper");
 
-      $("year").textContent = new Date().getFullYear();
+    let signup = false;
 
-      /* ================= UI HELPERS ================= */
-      function showMessage(text, type = "info") {
-        message.textContent = text;
-        message.className = "message " + type;
-        message.scrollIntoView({ behavior: "smooth", block: "nearest" });
+    function showMessage(text, type = "info") {
+      message.textContent = text;
+      message.className = type;
+    }
+
+    function setLoading(loading) {
+      button.disabled = loading;
+
+      if (loading) {
+        button.textContent = signup ? "Creating account..." : "Signing in...";
+      } else {
+        button.textContent = signup ? "Create Account" : "Sign In";
+      }
+    }
+
+    // Preserve requested service when redirecting.
+    function getDashboardUrl() {
+      const service = new URLSearchParams(window.location.search).get("service");
+
+      return service
+        ? "/customer-dashboard.html?service=" + encodeURIComponent(service)
+        : "/customer-dashboard.html";
+    }
+
+    // Switch between login and registration.
+    toggle.addEventListener("click", function (event) {
+      event.preventDefault();
+
+      signup = !signup;
+
+      // Toggle the name and phone fields visibility and requirement
+      nameInput.hidden = !signup;
+      phoneInput.hidden = !signup;
+      nameInput.required = signup;
+      phoneInput.required = signup;
+
+      // Update password autocomplete
+      passwordInput.autocomplete = signup ? "new-password" : "current-password";
+
+      // Hide "Forgot password" during signup
+      forgotWrapper.hidden = signup;
+
+      // Update text
+      heading.textContent = signup ? "Create your account" : "Welcome back";
+      description.textContent = signup
+        ? "Join MEI One and access our services."
+        : "Sign in to manage your bookings and services.";
+      switchText.textContent = signup ? "Already registered?" : "New to MEI One?";
+      toggle.textContent = signup ? "Sign in" : "Create account";
+      button.textContent = signup ? "Create Account" : "Sign In";
+
+      showMessage("");
+      message.className = "";
+    });
+
+    // Check Supabase availability.
+    if (!sb) {
+      showMessage(
+        "MEI One could not connect to Supabase. Check js/config.js and the script loading order.",
+        "error"
+      );
+      button.disabled = true;
+    }
+
+    // CUSTOMER AUTHENTICATION (SIGN IN / SIGN UP)
+    form.addEventListener("submit", async function (event) {
+      event.preventDefault();
+
+      if (!sb) return;
+
+      const email = emailInput.value.trim();
+      const password = passwordInput.value;
+
+      if (!email || !password) {
+        showMessage("Please enter your email and password.", "error");
+        return;
       }
 
-      function clearMessage() {
-        message.textContent = "";
-        message.className = "message";
-      }
-
-      function setBusy(button, busyText, isBusy) {
-        button.disabled = isBusy;
-        if (!button.dataset.originalText) {
-          button.dataset.originalText = button.textContent;
-        }
-        button.textContent = isBusy ? busyText : button.dataset.originalText;
-      }
-
-      function showForm(name) {
-        loginForm.classList.toggle("hidden", name !== "login");
-        signupForm.classList.toggle("hidden", name !== "signup");
-        forgotForm.classList.toggle("hidden", name !== "forgot");
-        recoveryForm.classList.toggle("hidden", name !== "recovery");
-
-        const showTabs = name === "login" || name === "signup";
-        $("tabs").classList.toggle("hidden", !showTabs);
-
-        $("loginTab").classList.toggle("active", name === "login");
-        $("signupTab").classList.toggle("active", name === "signup");
-        $("loginTab").setAttribute("aria-selected", name === "login");
-        $("signupTab").setAttribute("aria-selected", name === "signup");
-
-        const headings = {
-          login:    ["Welcome back",            "Sign in to your MEI One customer account."],
-          signup:   ["Create your account",     "Join MEI One and access connected services."],
-          forgot:   ["Reset your password",     "Enter your email to receive a recovery link."],
-          recovery: ["Choose a new password",   "Create a new password for your account."]
-        };
-
-        $("pageTitle").textContent = headings[name][0];
-        $("pageDescription").textContent = headings[name][1];
-        clearMessage();
-
-        // Move focus to the first input for keyboard users.
-        const firstInput = document
-          .getElementById(name + "Form")
-          ?.querySelector("input");
-        if (firstInput) {
-          setTimeout(() => firstInput.focus(), 60);
-        }
-      }
-
-      /* ================= URLS ================= */
-      function dashboardUrl() {
-        const service = new URLSearchParams(location.search).get("service");
-        return service
-          ? DASHBOARD_PATH + "?service=" + encodeURIComponent(service)
-          : DASHBOARD_PATH;
-      }
-
-      /* ================= ERRORS ================= */
-      function authError(error) {
-        const text = String(error?.message || "").toLowerCase();
-
-        if (text.includes("invalid login credentials")) {
-          return "Incorrect email or password. Please try again.";
-        }
-        if (text.includes("email not confirmed")) {
-          return "Please confirm your email address before signing in.";
-        }
-        if (text.includes("user already registered")) {
-          return "An account with this email already exists. Please sign in.";
-        }
-        if (text.includes("password should be at least")) {
-          return "Your password must meet the minimum length requirement.";
-        }
-        if (text.includes("rate limit") || text.includes("too many")) {
-          return "Too many attempts. Please wait a moment and try again.";
-        }
-        return error?.message || "Something went wrong. Please try again.";
-      }
-
-      /* ================= PROFILE VERIFICATION ================= */
-      async function getActiveCustomer(userId) {
-        const { data, error } = await sb
-          .from("profiles")
-          .select("id, full_name, account_status")
-          .eq("id", userId)
-          .maybeSingle();
-
-        if (error) {
-          throw new Error("Unable to verify your customer profile: " + error.message);
-        }
-
-        if (!data) {
-          throw new Error(
-            "Your login exists, but your customer profile has not been created. " +
-            "Please contact MEI One support."
-          );
-        }
-
-        const status = String(data.account_status || "").toLowerCase();
-
-        if (status !== "active") {
-          if (status === "suspended") {
-            throw new Error("Your customer account is suspended. Please contact support.");
-          }
-          if (status === "blocked") {
-            throw new Error("Your customer account is blocked. Please contact support.");
-          }
-          throw new Error("Your customer account is not active. Please contact support.");
-        }
-
-        return data;
-      }
-
-      async function signOutSafely() {
-        try {
-          await sb.auth.signOut();
-        } catch (error) {
-          console.error("Sign-out error:", error);
-        }
-      }
-
-      async function finishLogin(user) {
-        if (!user?.id) {
-          throw new Error("Authentication did not return a valid user account.");
-        }
-        await getActiveCustomer(user.id);
-        location.replace(dashboardUrl());
-      }
-
-      /* ================= SUPABASE CHECK ================= */
-      function checkSupabase() {
-        if (!sb || typeof sb.auth?.signInWithPassword !== "function") {
-          showMessage(
-            "MEI One configuration is missing. Check that /js/config.js loads correctly after the Supabase library.",
-            "error"
-          );
-
-          ["loginBtn", "signupBtn", "forgotSubmit", "recoverySubmit"]
-            .forEach(id => { const el = $(id); if (el) el.disabled = true; });
-
-          return false;
-        }
-        return true;
-      }
-
-      /* ================= PASSWORD TOGGLE ================= */
-      document.querySelectorAll(".toggle-password").forEach(button => {
-        button.addEventListener("click", () => {
-          const input = $(button.dataset.target);
-          if (!input) return;
-
-          const visible = input.type === "text";
-          input.type = visible ? "password" : "text";
-          button.textContent = visible ? "Show" : "Hide";
-          button.setAttribute("aria-label", visible ? "Show password" : "Hide password");
-        });
-      });
-
-      /* ================= TAB / LINK EVENTS ================= */
-      $("loginTab").addEventListener("click", () => showForm("login"));
-      $("signupTab").addEventListener("click", () => showForm("signup"));
-
-      $("forgotBtn").addEventListener("click", () => {
-        $("forgotEmail").value = $("loginEmail").value.trim();
-        showForm("forgot");
-      });
-
-      /* ================= SIGN IN ================= */
-      loginForm.addEventListener("submit", async (event) => {
-        event.preventDefault();
-        if (!checkSupabase() || busy) return;
-
-        const button = $("loginBtn");
-        const email = $("loginEmail").value.trim().toLowerCase();
-        const password = $("loginPassword").value;
-
-        if (!email || !password) {
-          showMessage("Please enter your email and password.", "error");
-          return;
-        }
-
-        busy = true;
-        setBusy(button, "Signing in...", true);
-        clearMessage();
-
-        try {
-          const { data, error } = await sb.auth.signInWithPassword({ email, password });
-          if (error) throw error;
-          await finishLogin(data.user);
-        } catch (error) {
-          await signOutSafely();
-          showMessage(authError(error), "error");
-        } finally {
-          busy = false;
-          setBusy(button, "", false);
-        }
-      });
-
-      /* ================= SIGN UP ================= */
-      signupForm.addEventListener("submit", async (event) => {
-        event.preventDefault();
-        if (!checkSupabase() || busy) return;
-
-        const button = $("signupBtn");
-        const fullName = $("fullName").value.trim();
-        const phone = $("signupPhone").value.trim();
-        const email = $("signupEmail").value.trim().toLowerCase();
-        const password = $("signupPassword").value;
-        const confirmPassword = $("confirmPassword").value;
-
-        if (fullName.length < 2) {
+      if (signup) {
+        if (!nameInput.value.trim()) {
           showMessage("Please enter your full name.", "error");
-          $("fullName").focus();
           return;
         }
-        if (password.length < MIN_PASSWORD_LENGTH) {
-          showMessage(`Your password must contain at least ${MIN_PASSWORD_LENGTH} characters.`, "error");
-          $("signupPassword").focus();
+        if (!phoneInput.value.trim()) {
+          showMessage("Please enter your phone number.", "error");
           return;
         }
-        if (password !== confirmPassword) {
-          showMessage("The passwords do not match.", "error");
-          $("confirmPassword").focus();
-          return;
-        }
+      }
 
-        busy = true;
-        setBusy(button, "Creating account...", true);
-        clearMessage();
+      setLoading(true);
+      showMessage("Please wait...", "info");
 
-        try {
+      try {
+        if (signup) {
+          // --- CREATE CUSTOMER ACCOUNT ---
           const { data, error } = await sb.auth.signUp({
             email,
             password,
             options: {
-              data: { full_name: fullName, phone },
-              emailRedirectTo: location.origin + SIGNIN_PATH
+              emailRedirectTo: window.location.origin + "/customer-dashboard.html",
+              data: {
+                full_name: nameInput.value.trim(),
+                phone: phoneInput.value.trim()
+              }
             }
           });
 
           if (error) throw error;
 
+          // If email confirmation is OFF, the user is signed in immediately.
           if (data.session && data.user) {
-            await finishLogin(data.user);
-          } else {
-            showMessage(
-              "Your registration has been submitted. Check your email and confirm your account before signing in. If you do not receive the email, check your spam folder.",
-              "success"
-            );
-            signupForm.reset();
-          }
-        } catch (error) {
-          showMessage(authError(error), "error");
-        } finally {
-          busy = false;
-          setBusy(button, "", false);
-        }
-      });
+            const { data: profile, error: profileError } = await sb
+              .from("profiles")
+              .select("id, account_status")
+              .eq("id", data.user.id)
+              .maybeSingle();
 
-      /* ================= FORGOT PASSWORD ================= */
-      forgotForm.addEventListener("submit", async (event) => {
-        event.preventDefault();
-        if (!checkSupabase() || busy) return;
+            if (profileError) throw new Error("Account created, but profile verification failed: " + profileError.message);
 
-        const button = $("forgotSubmit");
-        const email = $("forgotEmail").value.trim().toLowerCase();
-
-        if (!email) {
-          showMessage("Please enter your email address.", "error");
-          return;
-        }
-
-        busy = true;
-        setBusy(button, "Sending...", true);
-        clearMessage();
-
-        try {
-          const { error } = await sb.auth.resetPasswordForEmail(email, {
-            redirectTo: location.origin + SIGNIN_PATH
-          });
-          if (error) throw error;
-
-          showMessage(
-            "If an account exists for that email, a password recovery link will be sent. Open the link to choose a new password.",
-            "success"
-          );
-        } catch (error) {
-          showMessage(authError(error), "error");
-        } finally {
-          busy = false;
-          setBusy(button, "", false);
-        }
-      });
-
-      /* ================= UPDATE PASSWORD ================= */
-      recoveryForm.addEventListener("submit", async (event) => {
-        event.preventDefault();
-        if (!checkSupabase() || busy) return;
-
-        const button = $("recoverySubmit");
-        const password = $("newPassword").value;
-        const confirmation = $("newPasswordConfirm").value;
-
-        if (password.length < MIN_PASSWORD_LENGTH) {
-          showMessage(`Your new password must contain at least ${MIN_PASSWORD_LENGTH} characters.`, "error");
-          return;
-        }
-        if (password !== confirmation) {
-          showMessage("The passwords do not match.", "error");
-          return;
-        }
-
-        busy = true;
-        setBusy(button, "Updating password...", true);
-        clearMessage();
-
-        try {
-          const { error } = await sb.auth.updateUser({ password });
-          if (error) throw error;
-
-          recoveryMode = false;
-          await sb.auth.signOut();
-
-          showForm("login");
-          showMessage(
-            "Your password has been updated successfully. Please sign in with your new password.",
-            "success"
-          );
-        } catch (error) {
-          showMessage(authError(error), "error");
-        } finally {
-          busy = false;
-          setBusy(button, "", false);
-        }
-      });
-
-      /* ================= INITIALISE AUTH ================= */
-      async function initialiseAuth() {
-        if (!checkSupabase()) return;
-
-        try {
-          const url = new URL(location.href);
-          const queryType = url.searchParams.get("type");
-          const hashParams = new URLSearchParams(location.hash.replace(/^#/, ""));
-          const hashType = hashParams.get("type");
-
-          const isRecovery = queryType === "recovery" || hashType === "recovery";
-
-          if (isRecovery) {
-            const { data, error } = await sb.auth.getSession();
-            if (error) throw error;
-
-            if (!data.session) {
-              throw new Error(
-                "This password recovery link is invalid or has expired. Request a new one."
-              );
+            if (!profile) {
+              await sb.auth.signOut();
+              throw new Error("Your login was created, but your customer profile was not created. Please contact MEI One support.");
             }
 
-            recoveryMode = true;
-            showForm("recovery");
-            showMessage("Enter and confirm your new password.", "info");
-            return;
+            if (profile.account_status !== "active") {
+              await sb.auth.signOut();
+              throw new Error("Your account is awaiting activation. Please contact MEI One support.");
+            }
+
+            showMessage("Your account is ready. Redirecting...", "success");
+            window.location.replace(getDashboardUrl());
+
+          } else {
+            // If email confirmation is ON, they must check their email.
+            showMessage("Registration received. Please check your email to confirm your account before signing in.", "success");
           }
 
-          const { data, error } = await sb.auth.getSession();
+        } else {
+          // --- CUSTOMER LOGIN ---
+          const { data, error } = await sb.auth.signInWithPassword({ email, password });
+
           if (error) throw error;
 
-          if (data.session?.user && !recoveryMode) {
-            await finishLogin(data.session.user);
-            return;
+          if (!data.user) throw new Error("Unable to authenticate your account.");
+
+          // Verify they have an active customer profile
+          const { data: profile, error: profileError } = await sb
+            .from("profiles")
+            .select("id, account_status")
+            .eq("id", data.user.id)
+            .maybeSingle();
+
+          if (profileError) throw new Error("Unable to verify your customer profile: " + profileError.message);
+
+          if (!profile) {
+            await sb.auth.signOut();
+            throw new Error("No customer profile was found. Please contact MEI One support.");
           }
 
-          const errorDescription =
-            url.searchParams.get("error_description") ||
-            hashParams.get("error_description");
-
-          if (errorDescription) {
-            showMessage(
-              decodeURIComponent(errorDescription.replace(/\+/g, " ")),
-              "error"
-            );
-            return;
+          if (profile.account_status !== "active") {
+            await sb.auth.signOut();
+            throw new Error("Your account is not active. Please contact MEI One support.");
           }
 
-          if (url.searchParams.get("confirmed") === "true") {
-            showMessage(
-              "Your email has been confirmed. You can now sign in.",
-              "success"
-            );
-          }
-        } catch (error) {
-          showMessage(authError(error), "error");
+          showMessage("Sign in successful. Opening your dashboard...", "success");
+          window.location.replace(getDashboardUrl());
         }
+
+      } catch (error) {
+        console.error("MEI One customer authentication error:", error);
+        showMessage(error.message || "Something went wrong. Please try again.", "error");
+      } finally {
+        setLoading(false);
+      }
+    });
+
+    // PASSWORD RECOVERY
+    document.getElementById("forgotPassword").addEventListener("click", async function (event) {
+      event.preventDefault();
+
+      if (!sb) {
+        showMessage("Supabase is unavailable.", "error");
+        return;
       }
 
-      /* ================= AUTH STATE LISTENER ================= */
-      if (sb?.auth?.onAuthStateChange) {
-        sb.auth.onAuthStateChange((event) => {
-          if (event === "PASSWORD_RECOVERY") {
-            recoveryMode = true;
-            showForm("recovery");
-            showMessage("Enter and confirm your new password.", "info");
-          }
+      const email = emailInput.value.trim();
+
+      if (!email) {
+        showMessage("Enter your email address first.", "error");
+        return;
+      }
+
+      try {
+        showMessage("Sending password reset instructions...", "info");
+
+        const { error } = await sb.auth.resetPasswordForEmail(email, {
+          redirectTo: window.location.origin + "/customer-signin.html"
         });
-      }
 
-      initialiseAuth();
-    })();
+        if (error) throw error;
+
+        showMessage("If this email is registered, password reset instructions will be sent.", "success");
+
+      } catch (error) {
+        console.error("Password recovery error:", error);
+        showMessage(error.message, "error");
+      }
+    });
+
   </script>
+
 </body>
 </html>
