@@ -1,0 +1,116 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#071a2f">
+  <title>Customer Sign In | MEI One</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    *{box-sizing:border-box}
+    body{margin:0;background:#071a2f;color:#fff;font-family:Inter,Arial,sans-serif;min-height:100vh;display:grid;place-items:center;padding:20px}
+    .card{width:100%;max-width:430px;background:#102640;padding:35px;border-radius:18px}
+    .logo{font-size:27px;font-weight:800;color:#00ff88}
+    h1{font-size:25px;margin-bottom:8px}
+    p{color:#aebdce;line-height:1.5}
+    input{width:100%;padding:14px;margin:9px 0;border:1px solid #38516c;border-radius:9px;background:#071a2f;color:white;font-size:15px}
+    button{width:100%;padding:14px;border:0;border-radius:9px;background:#00ff88;color:#071a2f;font-weight:800;font-size:15px;cursor:pointer;margin-top:12px}
+    .switch{text-align:center;margin-top:20px;font-size:14px}
+    a{color:#00ff88;text-decoration:none}
+    #message{font-size:14px;margin-top:15px;overflow-wrap:anywhere}
+  </style>
+</head>
+<body>
+<div class="card">
+  <div class="logo">MEI ONE</div>
+  <p>Everything, connected.</p>
+  <h1 id="heading">Welcome back</h1>
+  <p id="description">Sign in to manage your bookings and services.</p>
+
+  <form id="authForm">
+    <input id="name" type="text" placeholder="Full name" autocomplete="name" hidden>
+    <input id="email" type="email" placeholder="Email address" autocomplete="email" required>
+    <input id="phone" type="tel" placeholder="Phone number" autocomplete="tel" hidden>
+    <input id="password" type="password" placeholder="Password" autocomplete="current-password" required minlength="6">
+    <button id="submitBtn" type="submit">Sign In</button>
+  </form>
+
+  <div class="switch">
+    <span id="switchText">New to MEI One?</span>
+    <a href="#" id="toggle">Create account</a>
+  </div>
+  <p id="message" role="status"></p>
+  <div class="switch">
+    <a href="/provider-signin.html">Are you a service provider?</a>
+  </div>
+</div>
+
+<script>
+const SUPABASE_URL = "https://tsvejnzxrxrrecgquxbq.supabase.co";
+const SUPABASE_KEY = "YOUR_SUPABASE_PUBLISHABLE_KEY";
+const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+let signup = false;
+
+const form = document.getElementById("authForm");
+const message = document.getElementById("message");
+
+document.getElementById("toggle").onclick = e => {
+  e.preventDefault();
+  signup = !signup;
+  document.getElementById("name").hidden = !signup;
+  document.getElementById("phone").hidden = !signup;
+  document.getElementById("name").required = signup;
+  document.getElementById("heading").textContent = signup ? "Create your account" : "Welcome back";
+  document.getElementById("description").textContent = signup ? "Join MEI One as a customer." : "Sign in to manage your bookings and services.";
+  document.getElementById("submitBtn").textContent = signup ? "Create Account" : "Sign In";
+  document.getElementById("switchText").textContent = signup ? "Already registered?" : "New to MEI One?";
+  e.target.textContent = signup ? "Sign in" : "Create account";
+};
+
+form.onsubmit = async e => {
+  e.preventDefault();
+  message.textContent = "Please wait...";
+  const email = document.getElementById("email").value.trim();
+  const password = document.getElementById("password").value;
+
+  try {
+    if (signup) {
+      const {data, error} = await sb.auth.signUp({
+        email, password,
+        options: {
+          data: {
+            full_name: document.getElementById("name").value.trim(),
+            phone: document.getElementById("phone").value.trim(),
+            account_type: "customer"
+          }
+        }
+      });
+      if (error) throw error;
+      message.textContent = data.session
+        ? "Account created. Redirecting..."
+        : "Account created. Check your email to confirm your address.";
+      if (data.session) location.href = "/customer/dashboard.html";
+    } else {
+      const {data, error} = await sb.auth.signInWithPassword({email, password});
+      if (error) throw error;
+
+      const {data: profile, error: profileError} = await sb
+        .from("profiles").select("id,account_status")
+        .eq("id", data.user.id).maybeSingle();
+
+      if (profileError) throw profileError;
+      if (profile?.account_status !== "active") {
+        await sb.auth.signOut();
+        throw new Error("Your account is not active. Please contact support.");
+      }
+      location.href = "/customer/dashboard.html";
+    }
+  } catch (error) {
+    message.textContent = error.message;
+  }
+};
+</script>
+</body>
+</html>
