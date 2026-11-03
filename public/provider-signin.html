@@ -1,13 +1,10 @@
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#071a2f">
   <meta name="description" content="Sign in to your MEI One provider account.">
-
   <title>Provider Sign In | MEI One</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -41,35 +38,35 @@
     }
 
     .logo {
-      color: #00ff88;
       font-size: 27px;
       font-weight: 800;
+      color: #00ff88;
       letter-spacing: -1px;
     }
 
     h1 {
-      margin: 25px 0 8px;
       font-size: 25px;
+      margin: 25px 0 8px;
     }
 
     p {
       color: #aebdce;
-      font-size: 14px;
       line-height: 1.6;
+      font-size: 14px;
     }
 
     input {
       display: block;
       width: 100%;
-      margin: 12px 0;
       padding: 14px;
+      margin: 12px 0;
       border: 1px solid #38516c;
       border-radius: 9px;
       outline: none;
       background: #071a2f;
-      color: #fff;
-      font-family: inherit;
+      color: white;
       font-size: 15px;
+      font-family: inherit;
     }
 
     input:focus {
@@ -79,16 +76,16 @@
 
     button {
       width: 100%;
-      margin-top: 12px;
       padding: 14px;
+      margin-top: 12px;
       border: 0;
       border-radius: 9px;
       background: #00ff88;
       color: #071a2f;
-      font-family: inherit;
-      font-size: 15px;
       font-weight: 800;
+      font-size: 15px;
       cursor: pointer;
+      font-family: inherit;
     }
 
     button:disabled {
@@ -96,17 +93,11 @@
       cursor: not-allowed;
     }
 
-    .forgot {
-      margin-top: 8px;
-      text-align: right;
-      font-size: 13px;
-    }
-
     .switch {
-      margin-top: 20px;
-      color: #aebdce;
-      font-size: 14px;
       text-align: center;
+      margin-top: 20px;
+      font-size: 14px;
+      color: #aebdce;
     }
 
     a {
@@ -120,12 +111,10 @@
 
     #message {
       display: none;
-      margin-top: 16px;
       padding: 12px;
+      margin-top: 16px;
       border-radius: 8px;
       overflow-wrap: anywhere;
-      font-size: 13px;
-      line-height: 1.5;
     }
 
     #message.error {
@@ -144,6 +133,12 @@
       display: block;
       background: rgba(255,255,255,.07);
       color: #d5e2ef;
+    }
+
+    .forgot {
+      text-align: right;
+      margin-top: 8px;
+      font-size: 13px;
     }
 
     @media (max-width: 480px) {
@@ -165,7 +160,7 @@
     <h1>Provider Sign In</h1>
 
     <p>
-      Sign in to manage your driver and service provider account.
+      Access your driver and service provider dashboard.
     </p>
 
     <form id="loginForm">
@@ -213,25 +208,19 @@
 
   </main>
 
-  <!-- Supabase and shared MEI configuration -->
+  <!-- Load Supabase before the MEI configuration -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="/js/config.js"></script>
 
   <script>
     "use strict";
 
+    // Use the shared MEI One Supabase client.
     const sb = window.MEI_SUPABASE;
 
     const form = document.getElementById("loginForm");
     const button = document.getElementById("loginButton");
     const message = document.getElementById("message");
-    const emailInput = document.getElementById("email");
-    const passwordInput = document.getElementById("password");
-    const forgotPassword = document.getElementById("forgotPassword");
-
-    let redirecting = false;
-
-    const PROVIDER_DASHBOARD = "/provider/dashboard.html";
 
     function showMessage(text, type = "info") {
       message.textContent = text;
@@ -240,37 +229,32 @@
 
     function setLoading(loading) {
       button.disabled = loading;
-      button.textContent = loading ? "Please wait..." : "Sign In";
+      button.textContent = loading ? "Signing in..." : "Sign In";
     }
 
-    function getDashboardUrl() {
-      return new URL(
-        PROVIDER_DASHBOARD,
-        window.location.origin
-      ).href;
-    }
-
-    // Confirm shared Supabase initialization.
+    // Check Supabase initialization.
     if (!sb) {
       showMessage(
-        "Connection unavailable. Please check the MEI One Supabase configuration.",
+        "MEI One could not connect to Supabase. Check your configuration and script loading order.",
         "error"
       );
 
       button.disabled = true;
-      form.querySelectorAll("input").forEach(input => {
-        input.disabled = true;
-      });
     }
 
     // PROVIDER SIGN IN
-    form.addEventListener("submit", async function(event) {
+    form.addEventListener("submit", async function (event) {
       event.preventDefault();
 
-      if (!sb || redirecting) return;
+      if (!sb) return;
 
-      const email = emailInput.value.trim();
-      const password = passwordInput.value;
+      const email = document
+        .getElementById("email")
+        .value.trim();
+
+      const password = document
+        .getElementById("password")
+        .value;
 
       if (!email || !password) {
         showMessage("Enter your email and password.", "error");
@@ -280,10 +264,9 @@
       setLoading(true);
       showMessage("Authenticating your account...", "info");
 
-      let authenticated = false;
-
       try {
-        // 1. Authenticate the user.
+
+        // Step 1: Authenticate with Supabase.
         const { data, error } = await sb.auth.signInWithPassword({
           email,
           password
@@ -295,9 +278,8 @@
           throw new Error("Authentication failed. Please try again.");
         }
 
-        authenticated = true;
-
-        // 2. Verify the driver's database record.
+        // Step 2: Check the authenticated user's driver record.
+        // The current drivers table uses id = auth.users.id.
         const {
           data: driver,
           error: driverError
@@ -308,51 +290,38 @@
           .maybeSingle();
 
         if (driverError) {
-          console.error("Driver verification error:", driverError);
-
           throw new Error(
-            "We could not verify your provider account. " +
+            "Unable to verify your provider account: " +
             driverError.message
           );
         }
 
-        // 3. Ensure the account is registered as a driver.
+        // Step 3: Reject accounts without a provider record.
         if (!driver) {
+          await sb.auth.signOut();
+
           throw new Error(
-            "No provider account was found for this login. " +
-            "Please apply to become a provider."
+            "No provider account was found. Please apply to become a provider."
           );
         }
 
-        // 4. Ensure the provider is active.
+        // Step 4: Check provider activation.
         if (driver.active !== true) {
+          await sb.auth.signOut();
+
           throw new Error(
-            "Your provider account is not active. " +
-            "Please contact MEI One support."
+            "Your provider account is inactive. Please contact MEI One support."
           );
         }
 
-        // 5. Redirect to the provider dashboard.
-        showMessage(
-          "Login successful. Redirecting to your provider dashboard...",
-          "success"
-        );
+        // Step 5: Allow access to provider dashboard.
+        showMessage("Sign in successful. Opening your dashboard...", "success");
 
-        redirecting = true;
-
-        window.location.replace(getDashboardUrl());
+        window.location.replace("/provider-dashboard.html");
 
       } catch (error) {
+
         console.error("MEI One provider sign-in error:", error);
-
-        // Clear the session when provider verification fails.
-        if (authenticated) {
-          const { error: signOutError } = await sb.auth.signOut();
-
-          if (signOutError) {
-            console.error("Sign-out error:", signOutError);
-          }
-        }
 
         showMessage(
           error.message || "Unable to sign in. Please try again.",
@@ -360,62 +329,53 @@
         );
 
       } finally {
-        if (!redirecting) {
-          setLoading(false);
-        }
+        setLoading(false);
       }
     });
 
     // PASSWORD RESET
-    forgotPassword.addEventListener("click", async function(event) {
-      event.preventDefault();
+    document
+      .getElementById("forgotPassword")
+      .addEventListener("click", async function (event) {
 
-      if (!sb) {
-        showMessage("Supabase connection is unavailable.", "error");
-        return;
-      }
+        event.preventDefault();
 
-      const email = emailInput.value.trim();
+        if (!sb) {
+          showMessage("Supabase is unavailable.", "error");
+          return;
+        }
 
-      if (!email) {
-        showMessage(
-          "Enter your email address first.",
-          "error"
-        );
-        emailInput.focus();
-        return;
-      }
+        const email = document
+          .getElementById("email")
+          .value.trim();
 
-      try {
-        forgotPassword.style.pointerEvents = "none";
+        if (!email) {
+          showMessage(
+            "Enter your email address first to reset your password.",
+            "error"
+          );
+          return;
+        }
 
-        showMessage(
-          "Sending password reset instructions...",
-          "info"
-        );
+        try {
+          showMessage("Sending password reset instructions...", "info");
 
-        const { error } = await sb.auth.resetPasswordForEmail(email, {
-          redirectTo: new URL(
-            "/provider-signin.html",
-            window.location.origin
-          ).href
-        });
+          const { error } = await sb.auth.resetPasswordForEmail(email, {
+            redirectTo: window.location.origin + "/provider-signin.html"
+          });
 
-        if (error) throw error;
+          if (error) throw error;
 
-        showMessage(
-          "If this email is registered, password reset instructions will be sent.",
-          "success"
-        );
+          showMessage(
+            "If this email is registered, password reset instructions will be sent.",
+            "success"
+          );
 
-      } catch (error) {
-        console.error("Password reset error:", error);
-        showMessage(error.message, "error");
-
-      } finally {
-        forgotPassword.style.pointerEvents = "";
-      }
-    });
+        } catch (error) {
+          console.error("Password reset error:", error);
+          showMessage(error.message, "error");
+        }
+      });
 
   </script>
 
