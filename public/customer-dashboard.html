@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="MEI One customer dashboard">
+  <title>MEI One — Customer Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/styles.css">
+  <style>
+    :root{--navy:#071a2f;--green:#00ff88;--muted:#718096;--line:#e7edf2;--bg:#f5f8fb}
+    *{box-sizing:border-box}body{margin:0;background:var(--bg);color:#152538;font-family:Inter,Arial,sans-serif}
+    button,input,select,textarea{font:inherit}.layout{min-height:100vh;display:grid;grid-template-columns:245px 1fr}
+    aside{background:var(--navy);color:white;padding:26px 18px;display:flex;flex-direction:column;gap:26px}
+    .brand{font-size:21px;font-weight:800}.brand span{color:var(--green)}.muted{color:var(--muted)}
+    .nav{display:grid;gap:7px}.nav button{border:0;background:transparent;color:#c6d2df;text-align:left;padding:12px;border-radius:10px;font-weight:600;cursor:pointer}
+    .nav button.active,.nav button:hover{background:#15324c;color:white}.nav button.active{box-shadow:inset 3px 0 var(--green)}
+    .aside-note{margin-top:auto;color:#a9bac9;font-size:12px;line-height:1.6}
+    main{min-width:0;padding:28px 34px 48px}.top{display:flex;justify-content:space-between;align-items:center;gap:15px;margin-bottom:27px}
+    h1{font-size:25px;margin:0 0 6px;letter-spacing:-.7px}.sub{font-size:13px;color:var(--muted)}
+    .user{display:flex;align-items:center;gap:9px;background:white;border:1px solid var(--line);padding:8px 12px;border-radius:30px;font-size:13px;font-weight:600}
+    .avatar{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;background:#e2fff1;color:#087746;font-weight:800}
+    .page{display:none}.page.active{display:block}.cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+    .card,.stat{background:white;border:1px solid var(--line);border-radius:15px;padding:19px;box-shadow:0 4px 18px #0b294008}
+    .stat small{font-size:12px;color:var(--muted);font-weight:600}.stat strong{display:block;font-size:27px;margin-top:9px}
+    .heading{display:flex;justify-content:space-between;align-items:center;gap:12px;margin:26px 0 13px}.heading h2{font-size:17px;margin:0}
+    .btn{border:0;border-radius:9px;padding:10px 14px;background:var(--navy);color:white;font-weight:700;cursor:pointer}
+    .btn.green{background:var(--green);color:#062b1b}.btn.light{background:#edf3f7;color:#26394d}.btn:disabled{opacity:.55;cursor:not-allowed}
+    .service-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:13px}
+    .service{border:1px solid var(--line);background:white;border-radius:14px;padding:18px;text-align:left;cursor:pointer}
+    .service:hover,.service.selected{border-color:#00b96b;box-shadow:0 0 0 2px #00ff8828}.service .ico{font-size:23px}
+    .service strong{display:block;margin:10px 0 5px}.service small{color:var(--muted);line-height:1.5}
+    .form{display:grid;grid-template-columns:1fr 1fr;gap:13px}.field{display:grid;gap:6px}.field.full{grid-column:1/-1}
+    label{font-size:12px;font-weight:700;color:#526579}input,select,textarea{width:100%;border:1px solid #dce5ec;border-radius:9px;padding:11px 12px;background:white;color:#152538}
+    textarea{min-height:90px;resize:vertical}.form-actions{grid-column:1/-1;display:flex;justify-content:flex-end}
+    .request{display:flex;justify-content:space-between;align-items:center;gap:14px}.request h3{font-size:14px;margin:0 0 6px}.request p{font-size:12px;color:var(--muted);margin:0;line-height:1.6}
+    .pill{display:inline-flex;padding:5px 9px;border-radius:20px;background:#edf3f7;color:#526579;font-size:11px;font-weight:700;text-transform:capitalize}
+    .empty{padding:28px;text-align:center;color:var(--muted);font-size:13px}.notice{padding:12px 14px;border-radius:10px;background:#eef7ff;color:#28577d;font-size:12px;line-height:1.6;margin-bottom:15px}
+    .notice.error{background:#fff0f0;color:#9b2c2c}.loading{text-align:center;padding:45px;color:var(--muted)}
+    .gate{max-width:450px;margin:12vh auto;background:white;border:1px solid var(--line);border-radius:18px;padding:28px;text-align:center}.gate p{color:var(--muted);font-size:13px;line-height:1.6}
+    @media(max-width:850px){.layout{grid-template-columns:1fr}aside{padding:15px;gap:12px}.aside-note{display:none}.nav{display:flex;overflow:auto}.nav button{white-space:nowrap}main{padding:22px 16px}.cards{grid-template-columns:repeat(2,minmax(0,1fr))}}
+    @media(max-width:560px){.top{align-items:flex-start;flex-direction:column}.service-grid{grid-template-columns:1fr 1fr}.form{grid-template-columns:1fr}.field.full,.form-actions{grid-column:1}.request{align-items:flex-start;flex-direction:column}}
+  </style>
+</head>
+<body>
+<div id="root"><div class="loading">Loading MEI One customer dashboard…</div></div>
+<script src="../js/config.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+(() => {
+  "use strict";
+  const C = window.MEI_CONFIG || window.APP_CONFIG || window.SUPABASE_CONFIG || {};
+  const URL = C.supabaseUrl || C.SUPABASE_URL || window.SUPABASE_URL;
+  const KEY = C.supabaseAnonKey || C.SUPABASE_ANON_KEY || C.anonKey || window.SUPABASE_ANON_KEY;
+  const root = document.getElementById("root");
+  let sb, user, profile, requests=[], selectedService="rides", page="overview";
+  const esc = v => String(v ?? "").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+  const pretty = s => String(s||"pending").replaceAll("_"," ");
+  const date = v => v ? new Date(v).toLocaleString() : "—";
+  function gate(title,msg,action="signin"){
+    root.innerHTML=`<div class="gate"><div class="brand" style="color:#071a2f">MEI <span style="color:#00b96b">ONE</span></div><h2>${esc(title)}</h2><p>${esc(msg)}</p><button class="btn green" id="gate-btn">${action==="signin"?"Sign in":"Reload"}</button></div>`;
+    document.getElementById("gate-btn").onclick=async()=>{if(action==="signin"){const {error}=await sb.auth.signInWithOAuth({provider:"google",options:{redirectTo:location.href}});if(error)alert(error.message)}else location.reload()};
+  }
+  function shell(){
+    const name=profile?.full_name || user.email || "Customer";
+    root.innerHTML=`<div class="layout"><aside><div class="brand">MEI <span>ONE</span></div><nav class="nav">
+      <button data-page="overview" class="active">Overview</button><button data-page="new">Book a service</button><button data-page="requests">My requests</button><button data-page="profile">My profile</button>
+      </nav><div class="aside-note">Everything, connected.<br>MEI One Customer Portal</div></aside>
+      <main><header class="top"><div><h1 id="title">Customer overview</h1><div class="sub">Book services and manage your requests.</div></div>
+      <div class="user"><span class="avatar">${esc(name.trim().charAt(0).toUpperCase())}</span>${esc(name)} <button class="btn light" id="logout">Sign out</button></div></header>
+      <div id="notice" class="notice" hidden></div>
+      <section id="page-overview" class="page active"></section><section id="page-new" class="page"></section>
+      <section id="page-requests" class="page"></section><section id="page-profile" class="page"></section></main></div>`;
+    root.querySelectorAll("[data-page]").forEach(b=>b.onclick=()=>showPage(b.dataset.page));
+    document.getElementById("logout").onclick=async()=>{const {error}=await sb.auth.signOut();if(error)alert(error.message);else location.reload()};
+    render();
+  }
+  function showPage(p){page=p;root.querySelectorAll(".page").forEach(x=>x.classList.toggle("active",x.id==="page-"+p));root.querySelectorAll("[data-page]").forEach(x=>x.classList.toggle("active",x.dataset.page===p));document.getElementById("title").textContent=({overview:"Customer overview",new:"Book a service",requests:"My requests",profile:"My profile"})[p]}
+  function requestCard(r){return `<article class="card request"><div><h3>${esc(r.title||r.service||"Service request")}</h3><p>${esc([r.pickup,r.dropoff].filter(Boolean).join(" → ")||r.details||"No extra details")}<br>Submitted ${esc(date(r.created_at))}</p></div><span class="pill">${esc(pretty(r.status))}</span></article>`}
+  function render(){
+    const pending=requests.filter(r=>!["completed","cancelled","rejected"].includes(r.status)).length;
+    document.getElementById("page-overview").innerHTML=`<div class="cards"><div class="stat"><small>Total requests</small><strong>${requests.length}</strong></div><div class="stat"><small>In progress</small><strong>${pending}</strong></div><div class="stat"><small>Completed</small><strong>${requests.filter(r=>r.status==="completed").length}</strong></div></div>
+      <div class="heading"><h2>What do you need today?</h2><button class="btn light" data-goto="new">Book a service</button></div>
+      <div class="service-grid">${serviceCards()}</div><div class="heading"><h2>Recent requests</h2><button class="btn light" data-goto="requests">View all</button></div>
+      <div class="cards" style="grid-template-columns:1fr">${requests.slice(0,4).map(requestCard).join("")||'<div class="card empty">You have not made any service requests yet.</div>'}</div>`;
+    document.getElementById("page-new").innerHTML=`<div class="heading"><h2>Select a service</h2></div><div class="service-grid">${serviceCards()}</div>
+      <div class="heading"><h2>Request details</h2></div><form class="card form" id="booking-form">
+        <div class="field"><label for="pickup">Pickup / location</label><input id="pickup" name="pickup" placeholder="Where should we pick you up?" required></div>
+        <div class="field"><label for="dropoff">Destination (if applicable)</label><input id="dropoff" name="dropoff" placeholder="Where are you going?"></div>
+        <div class="field full"><label for="details">Additional instructions</label><textarea id="details" name="details" placeholder="Tell us more about your request"></textarea></div>
+        <div class="form-actions"><button class="btn green" type="submit">Submit request</button></div></form>`;
+    document.getElementById("page-requests").innerHTML=`<div class="heading"><h2>Your service requests</h2><span class="pill">${requests.length} total</span></div><div class="cards" style="grid-template-columns:1fr">${requests.map(requestCard).join("")||'<div class="card empty">Your requests will appear here after booking.</div>'}</div>`;
+    document.getElementById("page-profile").innerHTML=`<div class="card"><div class="heading" style="margin-top:0"><h2>Personal details</h2></div><div class="cards" style="grid-template-columns:1fr 1fr">
+      <div><small class="muted">Name</small><p><strong>${esc(profile?.full_name||"—")}</strong></p></div><div><small class="muted">Email</small><p><strong>${esc(user.email||"—")}</strong></p></div>
+      <div><small class="muted">Phone</small><p><strong>${esc(profile?.phone||"—")}</strong></p></div><div><small class="muted">Account status</small><p><span class="pill">${esc(profile?.account_status||"Registered")}</span></p></div></div></div>`;
+    root.querySelectorAll("[data-goto]").forEach(b=>b.onclick=()=>showPage(b.dataset.goto));
+    root.querySelectorAll("[data-service]").forEach(b=>b.onclick=()=>{selectedService=b.dataset.service;render();showPage("new")});
+    document.getElementById("booking-form").onsubmit=submitRequest;
+    showPage(page);
+  }
+  function serviceCards(){return [
+    ["rides","🚗","Rides","Book a trip to your destination."],
+    ["delivery","📦","Delivery","Send packages and goods."],
+    ["roadside","🛠️","Roadside assistance","Get help when your vehicle breaks down."],
+    ["vehicle_care","🚘","Vehicle care","Find vehicle maintenance and care."],
+    ["driver_hire","🧑‍✈️","Hire a driver","Request a professional driver."],
+    ["other","＋","Other services","Tell us what you need."]
+  ].map(([id,ico,title,desc])=>`<button class="service ${selectedService===id?"selected":""}" data-service="${id}"><span class="ico">${ico}</span><strong>${title}</strong><small>${desc}</small></button>`).join("")}
+  async function submitRequest(e){
+    e.preventDefault();const form=e.currentTarget,btn=form.querySelector("button[type=submit]");btn.disabled=true;btn.textContent="Submitting…";
+    const fd=new FormData(form);
+    // Assumed service_requests write schema. Confirm these column names against your actual table before production.
+    const payload={customer_id:user.id,service:selectedService,status:"pending",title:selectedService.replaceAll("_"," "),pickup:fd.get("pickup"),dropoff:fd.get("dropoff")||null,details:fd.get("details")||null};
+    const {error}=await sb.from("service_requests").insert(payload);
+    if(error){console.error("Request creation failed:",error);showNotice("Could not submit your request. Check service_requests columns and INSERT RLS policy. Supabase: "+error.message,true);btn.disabled=false;btn.textContent="Submit request";return}
+    form.reset();showNotice("Your service request has been submitted.");await loadRequests();showPage("requests");
+  }
+  function showNotice(msg,isError=false){const n=document.getElementById("notice");n.textContent=msg;n.className="notice"+(isError?" error":"");n.hidden=false}
+  async function loadRequests(){
+    // If your table uses a different customer ownership column, adjust customer_id below.
+    const {data,error}=await sb.from("service_requests").select("id,service,status,title,details,pickup,dropoff,created_at").eq("customer_id",user.id).order("created_at",{ascending:false}).limit(100);
+    if(error){console.error("Customer requests query failed:",error);requests=[];showNotice("Your profile loaded, but requests could not be retrieved. Check customer_id, selected columns and SELECT RLS policy. Supabase: "+error.message,true)}
+    else requests=data||[];
+    render();
+  }
+  async function boot(){
+    if(!URL||!KEY||!window.supabase){gate("Configuration missing","Check ../js/config.js. It must expose your Supabase project URL and publishable/anon key.");return}
+    sb=window.supabase.createClient(URL,KEY);
+    const {data,error}=await sb.auth.getSession();
+    if(error){gate("Unable to verify session",error.message,"reload");return}
+    user=data.session?.user;if(!user){gate("Welcome to MEI One","Sign in with your customer account to manage bookings.");return}
+    const {data:p,error:pe}=await sb.from("profiles").select("id,full_name,phone,email,account_status").eq("id",user.id).maybeSingle();
+    if(pe)console.warn("Profile lookup:",pe);profile=p||null;
+    shell();await loadRequests();
+  }
+  boot().catch(e=>{console.error(e);gate("Something went wrong",e.message||"Unexpected error.","reload")});
+})();
+</script>
+</body>
+</html>
