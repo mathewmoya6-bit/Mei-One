@@ -1,0 +1,276 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="MEI One driver dashboard">
+  <title>MEI One — Driver Dashboard</title>
+  <link rel="icon" href="assets/favicon.ico">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/dashboard.css">
+  <style>
+    :root{--mei-navy:#071a2f;--mei-green:#00ff88;--mei-muted:#718096;--mei-border:#e7edf2;--mei-bg:#f5f8fb}
+    *{box-sizing:border-box}body{margin:0;font-family:Inter,Arial,sans-serif;background:var(--mei-bg);color:#152538}
+    button,input{font:inherit}.app{min-height:100vh;display:grid;grid-template-columns:250px 1fr}
+    .sidebar{background:var(--mei-navy);color:#fff;padding:26px 18px;display:flex;flex-direction:column;gap:26px}
+    .brand{font-size:21px;font-weight:800;letter-spacing:-.6px}.brand span{color:var(--mei-green)}
+    .side-label{font-size:10px;color:#91a4b8;text-transform:uppercase;letter-spacing:1.4px;margin:8px 10px}
+    .nav{display:grid;gap:7px}.nav button{border:0;background:transparent;color:#c6d2df;text-align:left;padding:12px 13px;border-radius:10px;cursor:pointer;font-weight:600}
+    .nav button.active,.nav button:hover{background:#15324c;color:#fff}.nav button.active{box-shadow:inset 3px 0 var(--mei-green)}
+    .side-bottom{margin-top:auto;color:#a9bac9;font-size:12px;line-height:1.6}
+    main{min-width:0;padding:28px 34px 48px}.topbar{display:flex;justify-content:space-between;align-items:center;gap:16px;margin-bottom:28px}
+    h1{font-size:25px;margin:0 0 6px;letter-spacing:-.7px}.sub{color:var(--mei-muted);font-size:13px}
+    .user-chip{display:flex;align-items:center;gap:10px;background:#fff;border:1px solid var(--mei-border);padding:8px 12px;border-radius:30px;font-size:13px;font-weight:600}
+    .avatar{width:30px;height:30px;border-radius:50%;background:#dfffee;color:#087746;display:grid;place-items:center;font-weight:800}
+    .page{display:none}.page.active{display:block}.grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:15px}
+    .panel,.stat{background:#fff;border:1px solid var(--mei-border);border-radius:15px;padding:19px;box-shadow:0 4px 18px #0b294008}
+    .stat small{color:var(--mei-muted);font-weight:600}.stat strong{display:block;font-size:27px;margin-top:9px;letter-spacing:-1px}
+    .section-head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin:27px 0 13px}
+    .section-head h2{font-size:17px;margin:0}.muted{color:var(--mei-muted)}
+    .btn{border:0;border-radius:9px;padding:10px 14px;font-weight:700;cursor:pointer;background:var(--mei-navy);color:white}
+    .btn.green{background:var(--mei-green);color:#062b1b}.btn.light{background:#edf3f7;color:#26394d}.btn:disabled{opacity:.55;cursor:not-allowed}
+    .list{display:grid;gap:12px}.job{display:flex;justify-content:space-between;align-items:center;gap:16px}
+    .job h3{font-size:14px;margin:0 0 6px}.job p{font-size:12px;color:var(--mei-muted);margin:0;line-height:1.6}
+    .job-actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap}.pill{display:inline-flex;padding:5px 9px;border-radius:20px;background:#edf3f7;color:#526579;font-size:11px;font-weight:700;text-transform:capitalize}
+    .pill.good{background:#e2fff1;color:#087746}.empty{padding:30px;text-align:center;color:var(--mei-muted);font-size:13px}
+    .profile-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px}.field{padding:14px;border:1px solid var(--mei-border);border-radius:11px}.field small{display:block;color:var(--mei-muted);margin-bottom:6px}.field strong{font-size:13px;overflow-wrap:anywhere}
+    .notice{padding:12px 14px;border-radius:10px;background:#eef7ff;color:#28577d;font-size:12px;line-height:1.6;margin-bottom:16px}
+    .error{background:#fff0f0;color:#9b2c2c}.loading{padding:45px;text-align:center;color:var(--mei-muted)}
+    .gate{max-width:460px;margin:12vh auto;background:#fff;border:1px solid var(--mei-border);border-radius:18px;padding:28px;text-align:center}
+    .gate h2{margin-top:0}.gate p{color:var(--mei-muted);line-height:1.6;font-size:13px}
+    @media(max-width:900px){.app{grid-template-columns:1fr}.sidebar{padding:15px;gap:12px}.side-label,.side-bottom{display:none}.nav{display:flex;overflow:auto}.nav button{white-space:nowrap}.grid{grid-template-columns:repeat(2,minmax(0,1fr))}main{padding:22px 17px}}
+    @media(max-width:560px){.topbar{align-items:flex-start;flex-direction:column}.grid{grid-template-columns:1fr 1fr}.profile-grid{grid-template-columns:1fr}.job{align-items:flex-start;flex-direction:column}.job-actions{width:100%}.job-actions .btn{flex:1}}
+  </style>
+</head>
+<body>
+  <div id="root">
+    <div class="loading">Loading MEI One driver dashboard…</div>
+  </div>
+
+  <!-- Keep your existing js/config.js and js/supabase.js files. -->
+  <script src="js/config.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
+  (() => {
+    "use strict";
+
+    const CONFIG = window.MEI_CONFIG || window.APP_CONFIG || window.SUPABASE_CONFIG || {};
+    const SUPABASE_URL = CONFIG.supabaseUrl || CONFIG.SUPABASE_URL || window.SUPABASE_URL;
+    const SUPABASE_KEY = CONFIG.supabaseAnonKey || CONFIG.SUPABASE_ANON_KEY ||
+                         CONFIG.anonKey || window.SUPABASE_ANON_KEY;
+    const root = document.getElementById("root");
+
+    let sb, sessionUser, driver, profile, jobs = [];
+    let currentPage = "overview";
+
+    const esc = value => String(value ?? "").replace(/[&<>"']/g, c =>
+      ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;" }[c]));
+    const money = value => {
+      const n = Number(value);
+      return Number.isFinite(n) ? new Intl.NumberFormat("en-KE", {
+        style:"currency", currency:"KES", maximumFractionDigits:0
+      }).format(n) : "—";
+    };
+    const dateText = value => value ? new Date(value).toLocaleString() : "—";
+    const setMessage = (message, isError=false) => {
+      const el = document.getElementById("notice");
+      if (el) { el.textContent = message; el.className = "notice" + (isError ? " error" : ""); el.hidden = false; }
+    };
+    const hideMessage = () => { const el=document.getElementById("notice"); if(el) el.hidden=true; };
+
+    function gate(title, message, actionLabel="Sign in", action="signin") {
+      root.innerHTML = `<div class="gate"><div class="brand" style="color:#071a2f">MEI <span>ONE</span></div>
+        <h2>${esc(title)}</h2><p>${esc(message)}</p>
+        <button class="btn green" id="gate-action">${esc(actionLabel)}</button></div>`;
+      document.getElementById("gate-action").onclick = async () => {
+        if (action === "signin") {
+          const { error } = await sb.auth.signInWithOAuth({
+            provider:"google",
+            options:{ redirectTo:window.location.href }
+          });
+          if (error) alert(error.message);
+        } else if (action === "reload") location.reload();
+      };
+    }
+
+    function shell() {
+      const name = driver?.name || profile?.full_name || sessionUser.email || "Driver";
+      const initial = name.trim().charAt(0).toUpperCase() || "D";
+      root.innerHTML = `
+      <div class="app">
+        <aside class="sidebar">
+          <div class="brand">MEI <span>ONE</span></div>
+          <div><div class="side-label">Workspace</div><nav class="nav">
+            <button data-page="overview" class="active">Overview</button>
+            <button data-page="available">Available jobs</button>
+            <button data-page="trips">My trips</button>
+            <button data-page="earnings">Earnings</button>
+            <button data-page="profile">Driver profile</button>
+          </nav></div>
+          <div class="side-bottom">Drive safe, arrive alive.<br>MEI One Driver Portal</div>
+        </aside>
+        <main>
+          <header class="topbar">
+            <div><h1 id="page-title">Driver overview</h1><div class="sub">Manage your work and trips in one place.</div></div>
+            <div class="user-chip"><span class="avatar">${esc(initial)}</span><span>${esc(name)}</span>
+              <button class="btn light" id="signout">Sign out</button></div>
+          </header>
+          <div id="notice" class="notice" hidden></div>
+          <section id="page-overview" class="page active"></section>
+          <section id="page-available" class="page"></section>
+          <section id="page-trips" class="page"></section>
+          <section id="page-earnings" class="page"></section>
+          <section id="page-profile" class="page"></section>
+        </main>
+      </div>`;
+      root.querySelectorAll("[data-page]").forEach(btn => btn.addEventListener("click", () => showPage(btn.dataset.page)));
+      document.getElementById("signout").onclick = async () => {
+        const {error} = await sb.auth.signOut();
+        if(error) alert(error.message); else location.reload();
+      };
+      renderAll();
+    }
+
+    function showPage(page) {
+      currentPage = page;
+      root.querySelectorAll(".page").forEach(el => el.classList.toggle("active", el.id === "page-"+page));
+      root.querySelectorAll("[data-page]").forEach(el => el.classList.toggle("active", el.dataset.page === page));
+      const titles = {overview:"Driver overview",available:"Available jobs",trips:"My trips",earnings:"Earnings",profile:"Driver profile"};
+      document.getElementById("page-title").textContent = titles[page] || "Driver dashboard";
+    }
+
+    function jobCard(job, mode) {
+      const status = String(job.status || "pending").replaceAll("_"," ");
+      const title = job.title || job.service || "Service request";
+      const route = [job.pickup, job.dropoff].filter(Boolean).join(" → ");
+      const description = job.details || route || "No additional trip details";
+      const price = job.price == null ? "Fare not set" : money(job.price);
+      let actions = "";
+      if (mode === "available") actions = `<button class="btn green" data-action="accept" data-id="${esc(job.id)}">Accept job</button>`;
+      if (mode === "trips") {
+        if (job.status === "accepted") actions = `<button class="btn green" data-action="start" data-id="${esc(job.id)}">Start trip</button>`;
+        else if (job.status === "in_progress") actions = `<button class="btn green" data-action="complete" data-id="${esc(job.id)}">Complete trip</button>`;
+      }
+      return `<article class="panel job"><div><h3>${esc(title)}</h3><p>${esc(description)}</p>
+        <p>${esc(job.customer_name || "Customer")} · ${esc(dateText(job.created_at))}</p></div>
+        <div class="job-actions"><span class="pill">${esc(status)}</span><strong>${esc(price)}</strong>${actions}</div></article>`;
+    }
+
+    function attachJobActions() {
+      root.querySelectorAll("[data-action]").forEach(btn => btn.addEventListener("click", async () => {
+        btn.disabled = true;
+        const id = btn.dataset.id, action = btn.dataset.action;
+        const updates = action === "accept" ? {provider_id:sessionUser.id,status:"accepted"} :
+                        action === "start" ? {status:"in_progress"} :
+                        {status:"completed",completed_at:new Date().toISOString()};
+        const {error} = await sb.from("service_requests").update(updates).eq("id",id);
+        if(error) { console.error("Job update failed:",error); alert("Could not update this job: "+error.message); btn.disabled=false; return; }
+        await loadJobs();
+      }));
+    }
+
+    function renderAll() {
+      const available = jobs.filter(j => j.status === "pending" && !j.provider_id &&
+        ["rides","delivery"].includes(String(j.service || "").toLowerCase()));
+      const mine = jobs.filter(j => j.provider_id === sessionUser.id);
+      const completed = mine.filter(j => j.status === "completed");
+      const earnings = completed.reduce((sum,j) => sum + (Number(j.price)||0),0);
+
+      document.getElementById("page-overview").innerHTML = `
+        <div class="grid">
+          <div class="stat"><small>Available jobs</small><strong>${available.length}</strong></div>
+          <div class="stat"><small>My trips</small><strong>${mine.length}</strong></div>
+          <div class="stat"><small>Completed trips</small><strong>${completed.length}</strong></div>
+          <div class="stat"><small>Completed trip value</small><strong style="font-size:21px">${esc(money(earnings))}</strong></div>
+        </div>
+        <div class="section-head"><h2>Latest available jobs</h2><button class="btn light" data-goto="available">View all</button></div>
+        <div class="list">${available.slice(0,3).map(j=>jobCard(j,"available")).join("") || '<div class="panel empty">No available jobs at the moment.</div>'}</div>
+        <div class="section-head"><h2>Recent trips</h2><button class="btn light" data-goto="trips">View trips</button></div>
+        <div class="list">${mine.slice(0,3).map(j=>jobCard(j,"trips")).join("") || '<div class="panel empty">You have no assigned trips yet.</div>'}</div>`;
+      document.getElementById("page-available").innerHTML = `<div class="section-head"><h2>Jobs ready for acceptance</h2><span class="pill">${available.length} available</span></div>
+        <div class="list">${available.map(j=>jobCard(j,"available")).join("") || '<div class="panel empty">There are no available jobs right now. Check again shortly.</div>'}</div>`;
+      document.getElementById("page-trips").innerHTML = `<div class="section-head"><h2>Trips assigned to you</h2><span class="pill">${mine.length} total</span></div>
+        <div class="list">${mine.map(j=>jobCard(j,"trips")).join("") || '<div class="panel empty">No trips have been assigned to your account.</div>'}</div>`;
+      document.getElementById("page-earnings").innerHTML = `<div class="grid">
+        <div class="stat"><small>Completed trip value</small><strong>${esc(money(earnings))}</strong></div>
+        <div class="stat"><small>Completed trips</small><strong>${completed.length}</strong></div></div>
+        <div class="section-head"><h2>Completed work</h2></div>
+        <div class="list">${completed.map(j=>jobCard(j,"earnings")).join("") || '<div class="panel empty">Completed trips will appear here.</div>'}</div>
+        <p class="sub" style="margin-top:14px">This is the total value recorded in trip requests, not a confirmed payout or settlement statement.</p>`;
+      document.getElementById("page-profile").innerHTML = `<div class="panel">
+        <div class="section-head" style="margin-top:0"><h2>Driver details</h2><span class="pill ${driver.active ? "good":""}">${driver.active ? "Active":"Inactive"}</span></div>
+        <div class="profile-grid">
+          <div class="field"><small>Full name</small><strong>${esc(driver.name || profile?.full_name || "—")}</strong></div>
+          <div class="field"><small>Email</small><strong>${esc(sessionUser.email || "—")}</strong></div>
+          <div class="field"><small>Phone</small><strong>${esc(profile?.phone || "—")}</strong></div>
+          <div class="field"><small>Vehicle</small><strong>${esc(driver.vehicle_description || "Pending")}</strong></div>
+          <div class="field"><small>Number plate</small><strong>${esc(driver.plate || "Pending")}</strong></div>
+          <div class="field"><small>Account ID</small><strong>${esc(sessionUser.id)}</strong></div>
+        </div></div>`;
+      root.querySelectorAll("[data-goto]").forEach(b=>b.addEventListener("click",()=>showPage(b.dataset.goto)));
+      attachJobActions();
+      showPage(currentPage);
+    }
+
+    async function loadJobs() {
+      // These columns match the service_requests structure expected by the original dashboard.
+      const {data,error} = await sb.from("service_requests")
+        .select("id,service,status,provider_id,title,details,pickup,dropoff,price,customer_name,created_at,completed_at")
+        .order("created_at",{ascending:false}).limit(200);
+      if(error) {
+        console.error("service_requests query failed:",error);
+        setMessage("Your driver account loaded, but jobs could not be loaded. Check the service_requests columns and SELECT policy. Details: "+error.message,true);
+        jobs=[];
+      } else { jobs=data || []; hideMessage(); }
+      renderAll();
+    }
+
+    async function boot() {
+      if(!SUPABASE_URL || !SUPABASE_KEY || !window.supabase) {
+        gate("Configuration missing","Check js/config.js. It must expose your Supabase project URL and publishable/anon key.");
+        return;
+      }
+      sb = window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+      const {data,error} = await sb.auth.getSession();
+      if(error) { console.error(error); gate("Unable to verify session",error.message,"Try again","reload"); return; }
+      sessionUser = data.session?.user;
+      if(!sessionUser) { gate("Welcome to MEI One","Sign in with the account registered as a driver to open your dashboard."); return; }
+
+      // Actual schema: drivers.id references auth.users.id. Do not query partners.user_id.
+      const [driverResult,profileResult] = await Promise.all([
+        sb.from("drivers").select("id,name,vehicle_description,plate,active").eq("id",sessionUser.id).maybeSingle(),
+        sb.from("profiles").select("id,full_name,phone,email,avatar_url,account_status").eq("id",sessionUser.id).maybeSingle()
+      ]);
+      if(driverResult.error) {
+        console.error("Driver lookup failed:",driverResult.error);
+        gate("Driver account could not be loaded",
+          "The drivers lookup failed. Confirm the drivers SELECT policy allows auth.uid() = id. Database says: "+driverResult.error.message,
+          "Retry","reload");
+        return;
+      }
+      driver = driverResult.data;
+      profile = profileResult.error ? null : profileResult.data;
+      if(profileResult.error) console.warn("Optional profile lookup failed:",profileResult.error);
+      if(!driver) {
+        gate("Driver profile not found","You are signed in, but no row exists in public.drivers where id equals your Auth user ID. Ask an administrator to create or link your driver record.","Refresh","reload");
+        return;
+      }
+      if(driver.active === false) {
+        gate("Driver account inactive","Your driver profile exists but is not active. Contact MEI One support to have the account reviewed.");
+        return;
+      }
+      shell();
+      await loadJobs();
+    }
+
+    boot().catch(error => {
+      console.error("Dashboard startup error:",error);
+      gate("Something went wrong",error.message || "Unexpected dashboard error.","Reload","reload");
+    });
+  })();
+  </script>
+</body>
+</html>
