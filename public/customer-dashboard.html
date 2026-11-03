@@ -1,19 +1,17 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#071a2f">
-  <meta name="description" content="MEI One Customer Dashboard">
+  <meta name="description" content="Your secure MEI One customer dashboard.">
+  <meta name="robots" content="noindex, nofollow">
   <title>Customer Dashboard | MEI One</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-
-  <!-- Load Supabase and Shared Config -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="/js/config.js"></script>
 
   <style>
     :root {
@@ -21,14 +19,13 @@
       --navy-light: #102b49;
       --green: #00d68f;
       --green-dark: #00a970;
-      --green-deep: #007a52;
-      --lime: #c7f36b;
-      --white: #ffffff;
+      --white: #fff;
       --muted: #64748b;
       --border: #e2e8f0;
       --background: #f1f5f9;
       --danger: #dc2626;
-      --transition: .2s cubic-bezier(.4, 0, .2, 1);
+      --radius: 16px;
+      --shadow: 0 4px 20px rgba(7, 26, 47, .06);
     }
 
     * {
@@ -39,32 +36,36 @@
 
     body {
       min-height: 100vh;
-      font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
-      background: var(--background);
-      color: var(--navy);
       display: flex;
       flex-direction: column;
+      background: var(--background);
+      color: var(--navy);
+      font-family: Inter, Arial, sans-serif;
       line-height: 1.5;
       -webkit-font-smoothing: antialiased;
     }
 
-    /* ---------- HEADER ---------- */
+    button, a {
+      font: inherit;
+    }
+
     header {
       background: var(--navy);
-      padding: 18px 6%;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
       color: var(--white);
+      padding: 17px 6%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
       box-shadow: 0 4px 12px rgba(0,0,0,.1);
     }
 
     .brand {
+      color: var(--white);
+      text-decoration: none;
       font-size: 24px;
       font-weight: 800;
       letter-spacing: -.8px;
-      text-decoration: none;
-      color: var(--white);
     }
 
     .brand span {
@@ -74,117 +75,113 @@
     .header-actions {
       display: flex;
       align-items: center;
-      gap: 20px;
+      gap: 18px;
     }
 
     .user-greeting {
       font-size: 14px;
-      font-weight: 500;
-      opacity: 0.9;
+      font-weight: 600;
     }
 
     .btn-logout {
       background: transparent;
       color: var(--white);
-      border: 1px solid rgba(255,255,255,.2);
-      padding: 8px 16px;
+      border: 1px solid rgba(255,255,255,.3);
+      padding: 9px 16px;
       border-radius: 8px;
       font-size: 13px;
       font-weight: 600;
       cursor: pointer;
-      font-family: inherit;
-      transition: all var(--transition);
     }
 
     .btn-logout:hover {
       background: rgba(255,255,255,.1);
-      border-color: rgba(255,255,255,.4);
     }
 
-    /* ---------- MAIN DASHBOARD ---------- */
+    .btn-logout:disabled {
+      opacity: .6;
+      cursor: not-allowed;
+    }
+
     main {
       flex: 1;
-      padding: 40px 6%;
+      width: 100%;
       max-width: 1200px;
       margin: 0 auto;
-      width: 100%;
+      padding: 40px 6%;
     }
 
     .page-title {
       font-size: 28px;
       font-weight: 800;
-      margin-bottom: 8px;
       letter-spacing: -.5px;
+      margin-bottom: 7px;
     }
 
     .page-subtitle {
       color: var(--muted);
       font-size: 15px;
-      margin-bottom: 32px;
+      margin-bottom: 30px;
     }
 
-    /* Loading State */
+    .state {
+      padding: 22px;
+      border-radius: 12px;
+      margin: 20px 0;
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
     #loadingState {
       text-align: center;
       padding: 60px 20px;
       color: var(--muted);
-      font-weight: 500;
-      font-size: 15px;
     }
 
-    /* Error State */
     #errorState {
       display: none;
       background: #fef2f2;
       border: 1px solid #fecaca;
-      color: #dc2626;
-      padding: 20px;
-      border-radius: 12px;
-      text-align: center;
-      font-weight: 500;
+      color: #991b1b;
     }
 
-    /* Dashboard Content */
     #dashboardContent {
-      display: none; /* Hidden until data loads */
+      display: none;
     }
 
     .grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-      gap: 24px;
-      margin-bottom: 32px;
+      grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
+      gap: 22px;
     }
 
     .card {
       background: var(--white);
-      border-radius: 16px;
-      padding: 28px;
-      box-shadow: 0 4px 20px rgba(7, 26, 47, .05);
       border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 26px;
+      box-shadow: var(--shadow);
     }
 
-    .card h3 {
-      font-size: 18px;
-      font-weight: 700;
-      margin-bottom: 16px;
-      color: var(--navy);
+    .card h2 {
       display: flex;
       align-items: center;
       gap: 10px;
+      color: var(--navy);
+      font-size: 18px;
+      margin-bottom: 22px;
     }
 
-    .card h3::before {
+    .card h2::before {
       content: "";
-      display: block;
       width: 4px;
       height: 20px;
+      border-radius: 3px;
       background: var(--green);
-      border-radius: 2px;
     }
 
     .profile-item {
-      margin-bottom: 16px;
+      margin-bottom: 18px;
     }
 
     .profile-item:last-child {
@@ -192,26 +189,27 @@
     }
 
     .profile-label {
-      font-size: 12px;
       color: var(--muted);
+      font-size: 11px;
+      font-weight: 700;
       text-transform: uppercase;
-      letter-spacing: 0.5px;
-      font-weight: 600;
-      margin-bottom: 4px;
+      letter-spacing: .6px;
+      margin-bottom: 5px;
     }
 
     .profile-value {
-      font-size: 16px;
-      font-weight: 500;
       color: var(--navy);
+      font-size: 15px;
+      font-weight: 600;
+      overflow-wrap: anywhere;
     }
 
     .status-badge {
       display: inline-block;
-      padding: 4px 12px;
+      padding: 5px 12px;
       border-radius: 20px;
-      font-size: 12px;
-      font-weight: 700;
+      font-size: 11px;
+      font-weight: 800;
       text-transform: uppercase;
     }
 
@@ -223,52 +221,60 @@
 
     .status-badge.inactive {
       background: #fef2f2;
-      color: #dc2626;
+      color: #b91c1c;
       border: 1px solid #fecaca;
+    }
+
+    .card-description {
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.7;
+      margin-bottom: 20px;
     }
 
     .btn-primary {
       display: inline-block;
+      padding: 12px 20px;
       background: var(--green);
       color: var(--navy);
+      border-radius: 9px;
       text-decoration: none;
-      padding: 12px 24px;
-      border-radius: 10px;
-      font-weight: 700;
       font-size: 14px;
-      transition: all var(--transition);
-      border: none;
-      cursor: pointer;
-      text-align: center;
-      box-shadow: 0 4px 15px rgba(0, 214, 143, .2);
+      font-weight: 800;
+      transition: background .2s, transform .2s;
     }
 
     .btn-primary:hover {
-      background: var(--lime);
-      transform: translateY(-2px);
-      box-shadow: 0 6px 20px rgba(0, 214, 143, .3);
+      background: #65f0bd;
+      transform: translateY(-1px);
     }
 
-    .empty-state {
+    .footer {
+      padding: 22px 6%;
+      text-align: center;
       color: var(--muted);
-      font-size: 14px;
-      font-style: italic;
-      padding: 10px 0;
+      font-size: 12px;
     }
 
-    /* ---------- RESPONSIVE ---------- */
     @media (max-width: 600px) {
-      .header-actions {
-        gap: 12px;
+      header {
+        padding: 15px 20px;
       }
+
       .user-greeting {
-        display: none; /* Hide greeting on small screens */
+        display: none;
       }
+
       main {
-        padding: 24px 20px;
+        padding: 28px 20px;
       }
+
       .page-title {
         font-size: 24px;
+      }
+
+      .card {
+        padding: 22px;
       }
     }
   </style>
@@ -277,82 +283,107 @@
 <body>
 
   <header>
-    <a class="brand" href="/">MEI <span>One</span></a>
+    <a class="brand" href="/index.html">MEI <span>One</span></a>
+
     <div class="header-actions">
       <span class="user-greeting" id="headerName">Loading...</span>
-      <button class="btn-logout" id="logoutBtn">Sign Out</button>
+      <button class="btn-logout" id="logoutBtn" type="button">
+        Sign Out
+      </button>
     </div>
   </header>
 
   <main>
-    <h1 class="page-title">Dashboard</h1>
-    <p class="page-subtitle">Welcome back to your MEI One customer portal.</p>
+    <h1 class="page-title">Customer Dashboard</h1>
+    <p class="page-subtitle">
+      Welcome to your MEI One customer portal.
+    </p>
 
-    <!-- Loading Indicator -->
-    <div id="loadingState">Verifying your secure session...</div>
+    <div id="loadingState" class="state" role="status" aria-live="polite">
+      Verifying your secure session...
+    </div>
 
-    <!-- Error Indicator -->
-    <div id="errorState"></div>
+    <div id="errorState" class="state" role="alert"></div>
 
-    <!-- Actual Dashboard UI -->
-    <div id="dashboardContent">
+    <section id="dashboardContent" aria-label="Customer dashboard">
       <div class="grid">
-        
-        <!-- Profile Card -->
-        <div class="card">
-          <h3>My Profile</h3>
+
+        <article class="card">
+          <h2>My Profile</h2>
+
           <div class="profile-item">
             <div class="profile-label">Full Name</div>
-            <div class="profile-value" id="profileName">-</div>
+            <div class="profile-value" id="profileName">—</div>
           </div>
+
           <div class="profile-item">
             <div class="profile-label">Email Address</div>
-            <div class="profile-value" id="profileEmail">-</div>
+            <div class="profile-value" id="profileEmail">—</div>
           </div>
+
           <div class="profile-item">
             <div class="profile-label">Account Status</div>
-            <div id="profileStatus">-</div>
+            <div id="profileStatus">—</div>
           </div>
-        </div>
+        </article>
 
-        <!-- Quick Actions Card -->
-        <div class="card">
-          <h3>Quick Actions</h3>
-          <p style="color: var(--muted); font-size: 14px; margin-bottom: 20px; line-height: 1.6;">
-            Need to book a new service or manage your existing bookings? Explore the MEI One network.
+        <article class="card">
+          <h2>Explore MEI One</h2>
+          <p class="card-description">
+            Discover available services and manage your needs through
+            the MEI One platform.
           </p>
           <a href="/index.html" class="btn-primary">Browse Services</a>
-        </div>
+        </article>
 
-        <!-- Recent Bookings Placeholder -->
-        <div class="card">
-          <h3>Recent Bookings</h3>
-          <div class="empty-state">You have no recent bookings.</div>
-          <!-- Future integration: fetch from `bookings` table here -->
-        </div>
+        <article class="card">
+          <h2>Account Security</h2>
+          <p class="card-description">
+            Your account is protected by MEI One authentication.
+            Always sign out when using a shared device.
+          </p>
+          <button class="btn-primary" id="securityLogoutBtn" type="button">
+            Sign Out Securely
+          </button>
+        </article>
 
       </div>
-    </div>
+    </section>
   </main>
+
+  <footer class="footer">
+    © <span id="currentYear"></span> MEI One. All rights reserved.
+  </footer>
+
+  <!-- Supabase client and shared project configuration -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="/js/config.js"></script>
 
   <script>
     "use strict";
 
-    // 1. Initialize shared Supabase client
+    const SIGNIN_PATH = "/customer-signin.html";
     const sb = window.MEI_SUPABASE;
+
     const $ = (id) => document.getElementById(id);
 
-    // 2. UI State Handlers
-    function showLoading() {
+    let redirecting = false;
+    let authSubscription = null;
+
+    $("currentYear").textContent = new Date().getFullYear();
+
+    function showLoading(text = "Verifying your secure session...") {
+      $("loadingState").textContent = text;
       $("loadingState").style.display = "block";
       $("errorState").style.display = "none";
       $("dashboardContent").style.display = "none";
     }
 
-    function showError(msg) {
+    function showError(text) {
       $("loadingState").style.display = "none";
+      $("dashboardContent").style.display = "none";
+      $("errorState").textContent = text;
       $("errorState").style.display = "block";
-      $("errorState").textContent = msg;
     }
 
     function showDashboard() {
@@ -361,93 +392,175 @@
       $("dashboardContent").style.display = "block";
     }
 
-    // 3. Sign Out Logic
-    $("logoutBtn").addEventListener("click", async () => {
-      if (!sb) return;
-      $("logoutBtn").textContent = "Signing out...";
-      $("logoutBtn").disabled = true;
-      await sb.auth.signOut();
-      window.location.replace("/customer-signin.html");
-    });
+    function redirectToSignIn() {
+      if (redirecting) return;
+      redirecting = true;
+      window.location.replace(SIGNIN_PATH);
+    }
 
-    // 4. Core Authentication & Data Fetching
-    async function initDashboard() {
-      if (!sb) {
-        showError("System configuration error. Could not connect to Supabase.");
+    function firstName(fullName) {
+      const cleanName = String(fullName || "").trim();
+      return cleanName ? cleanName.split(/\s+/)[0] : "Customer";
+    }
+
+    function renderProfile(profile, user) {
+      const name = String(profile.full_name || "").trim() || "Customer";
+      const email = String(user.email || "").trim() || "No email available";
+      const status = String(profile.account_status || "").trim().toLowerCase();
+
+      $("headerName").textContent = "Hi, " + firstName(name);
+      $("profileName").textContent = name;
+      $("profileEmail").textContent = email;
+
+      const badge = document.createElement("span");
+      badge.className = "status-badge " +
+        (status === "active" ? "active" : "inactive");
+      badge.textContent = status || "Unknown";
+
+      const statusContainer = $("profileStatus");
+      statusContainer.replaceChildren(badge);
+    }
+
+    async function loadCustomerDashboard() {
+      if (!sb || !sb.auth) {
+        showError(
+          "Supabase configuration is unavailable. Check that /js/config.js is correct and loads successfully."
+        );
         return;
       }
 
+      showLoading();
+
       try {
-        // A. Check for an active session
-        const { data: { session }, error: sessionError } = await sb.auth.getSession();
-        
+        // 1. Confirm that the visitor has a valid login session.
+        const {
+          data: sessionData,
+          error: sessionError
+        } = await sb.auth.getSession();
+
         if (sessionError) throw sessionError;
-        
-        // If no session, immediately kick back to login
-        if (!session) {
-          window.location.replace("/customer-signin.html");
+
+        const session = sessionData?.session;
+
+        if (!session || !session.user) {
+          redirectToSignIn();
           return;
         }
 
-        // B. Fetch the customer's profile from the database
-        const { data: profile, error: profileError } = await sb
+        // 2. Verify the customer's database profile.
+        const {
+          data: profile,
+          error: profileError
+        } = await sb
           .from("profiles")
-          .select("full_name, account_status")
+          .select("id, full_name, account_status")
           .eq("id", session.user.id)
           .maybeSingle();
 
-        if (profileError) throw new Error(profileError.message);
-
-        if (!profile) {
-          throw new Error("Profile data missing. Please contact support.");
+        if (profileError) {
+          throw new Error(
+            "Could not verify your customer profile. " +
+            "Please check your account permissions or contact support."
+          );
         }
 
-        // C. Security Gate: Block inactive or suspended accounts
-        if (profile.account_status !== "active") {
+        if (!profile) {
           await sb.auth.signOut();
-          window.location.replace("/customer-signin.html");
+          showError(
+            "Your customer profile could not be found. Please contact MEI One support."
+          );
           return;
         }
 
-        // D. Populate the UI with safe data
-        const name = profile.full_name || "Customer";
-        const email = session.user.email || "No email provided";
-        const status = profile.account_status;
+        // 3. Only active customer accounts can use this dashboard.
+        const accountStatus = String(
+          profile.account_status || ""
+        ).trim().toLowerCase();
 
-        // Update header
-        $("headerName").textContent = `Hi, ${name.split(' ')[0]}`;
+        if (accountStatus !== "active") {
+          await sb.auth.signOut();
+          redirectToSignIn();
+          return;
+        }
 
-        // Update profile card
-        $("profileName").textContent = name;
-        $("profileEmail").textContent = email;
+        // 4. Populate the page using textContent, not untrusted HTML.
+        renderProfile(profile, session.user);
 
-        // Setup Status Badge
-        const badge = document.createElement("span");
-        badge.className = `status-badge ${status === 'active' ? 'active' : 'inactive'}`;
-        badge.textContent = status;
-        $("profileStatus").innerHTML = "";
-        $("profileStatus").appendChild(badge);
-
-        // Show dashboard
         showDashboard();
 
       } catch (error) {
-        console.error("Dashboard error:", error);
-        showError(error.message || "An unexpected error occurred while loading your dashboard.");
+        console.error("MEI One customer dashboard error:", error);
+
+        showError(
+          error.message ||
+          "We could not load your dashboard. Please refresh and try again."
+        );
       }
     }
 
-    // 5. Listen for Auth State Changes (e.g., if token expires while on page)
-    if (sb?.auth?.onAuthStateChange) {
-      sb.auth.onAuthStateChange((event, session) => {
-        if (event === "SIGNED_OUT" || !session) {
-          window.location.replace("/customer-signin.html");
-        }
+    async function signOutCustomer() {
+      if (!sb || !sb.auth) {
+        redirectToSignIn();
+        return;
+      }
+
+      const buttons = [
+        $("logoutBtn"),
+        $("securityLogoutBtn")
+      ];
+
+      buttons.forEach((button) => {
+        button.disabled = true;
+        button.textContent = "Signing out...";
       });
+
+      try {
+        const { error } = await sb.auth.signOut();
+
+        if (error) throw error;
+
+        redirectToSignIn();
+
+      } catch (error) {
+        console.error("MEI One sign-out error:", error);
+
+        buttons.forEach((button) => {
+          button.disabled = false;
+        });
+
+        $("logoutBtn").textContent = "Sign Out";
+        $("securityLogoutBtn").textContent = "Sign Out Securely";
+
+        showError(
+          "We could not complete sign-out. Please try again. " +
+          (error.message || "")
+        );
+      }
     }
 
-    // 6. Fire it up
-    initDashboard();
+    $("logoutBtn").addEventListener("click", signOutCustomer);
+    $("securityLogoutBtn").addEventListener("click", signOutCustomer);
+
+    // Respond to explicit sign-out events in this browser session.
+    // Do not redirect on INITIAL_SESSION with a null session;
+    // loadCustomerDashboard handles the initial session check.
+    if (sb?.auth?.onAuthStateChange) {
+      const { data } = sb.auth.onAuthStateChange((event) => {
+        if (event === "SIGNED_OUT") {
+          redirectToSignIn();
+        }
+      });
+
+      authSubscription = data?.subscription || null;
+    }
+
+    // Start the dashboard.
+    loadCustomerDashboard();
+
+    // Clean up the auth listener when the page is being unloaded.
+    window.addEventListener("pagehide", () => {
+      authSubscription?.unsubscribe();
+    });
   </script>
 
 </body>
