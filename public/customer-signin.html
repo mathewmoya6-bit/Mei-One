@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -13,9 +12,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
   <style>
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
 
     body {
       margin: 0;
@@ -45,10 +42,7 @@
       letter-spacing: -1px;
     }
 
-    h1 {
-      font-size: 25px;
-      margin: 25px 0 8px;
-    }
+    h1 { font-size: 25px; margin: 25px 0 8px; }
 
     p {
       color: #aebdce;
@@ -65,7 +59,7 @@
       border-radius: 9px;
       outline: none;
       background: #071a2f;
-      color: white;
+      color: #fff;
       font-size: 15px;
       font-family: inherit;
     }
@@ -89,10 +83,7 @@
       font-family: inherit;
     }
 
-    button:disabled {
-      opacity: .6;
-      cursor: not-allowed;
-    }
+    button:disabled { opacity: .6; cursor: not-allowed; }
 
     .switch {
       text-align: center;
@@ -101,20 +92,10 @@
       color: #aebdce;
     }
 
-    a {
-      color: #00ff88;
-      text-decoration: none;
-    }
+    a { color: #00ff88; text-decoration: none; }
+    a:hover { text-decoration: underline; }
 
-    a:hover {
-      text-decoration: underline;
-    }
-
-    .forgot {
-      text-align: right;
-      margin-top: 8px;
-      font-size: 13px;
-    }
+    .forgot { text-align: right; margin-top: 8px; font-size: 13px; }
 
     #message {
       display: none;
@@ -124,29 +105,11 @@
       overflow-wrap: anywhere;
     }
 
-    #message.error {
-      display: block;
-      background: rgba(255,75,75,.12);
-      color: #ffaaaa;
-    }
+    #message.error   { display: block; background: rgba(255,75,75,.12);  color: #ffaaaa; }
+    #message.success { display: block; background: rgba(0,255,136,.1);  color: #00ff88; }
+    #message.info    { display: block; background: rgba(255,255,255,.07); color: #d5e2ef; }
 
-    #message.success {
-      display: block;
-      background: rgba(0,255,136,.1);
-      color: #00ff88;
-    }
-
-    #message.info {
-      display: block;
-      background: rgba(255,255,255,.07);
-      color: #d5e2ef;
-    }
-
-    @media (max-width: 480px) {
-      .card {
-        padding: 25px;
-      }
-    }
+    @media (max-width: 480px) { .card { padding: 25px; } }
   </style>
 </head>
 
@@ -160,34 +123,16 @@
 
     <h1 id="heading">Welcome back</h1>
 
-    <p id="description">
-      Sign in to manage your bookings and services.
-    </p>
+    <p id="description">Sign in to manage your bookings and services.</p>
 
     <form id="authForm">
-
-      <input
-        id="name"
-        type="text"
-        placeholder="Full name"
-        autocomplete="name"
-        hidden
-      >
 
       <input
         id="email"
         type="email"
         placeholder="Email address"
-        autocomplete="email"
+        autocomplete="username"
         required
-      >
-
-      <input
-        id="phone"
-        type="tel"
-        placeholder="Phone number"
-        autocomplete="tel"
-        hidden
       >
 
       <input
@@ -203,23 +148,19 @@
         <a href="#" id="forgotPassword">Forgot password?</a>
       </div>
 
-      <button type="submit" id="submitBtn">
-        Sign In
-      </button>
+      <button type="submit" id="submitBtn">Sign In</button>
 
     </form>
 
     <p id="message" role="status" aria-live="polite"></p>
 
     <div class="switch">
-      <span id="switchText">New to MEI One?</span>
-      <a href="#" id="toggle">Create account</a>
+      <span id="switchText">Not registered?</span>
+      <a href="#" id="toggle">Create an account</a>
     </div>
 
     <div class="switch">
-      <a href="/provider-signin.html">
-        Are you a service provider?
-      </a>
+      <a href="/provider-signin.html">Are you a service provider?</a>
     </div>
 
     <div class="switch">
@@ -228,30 +169,26 @@
 
   </main>
 
-  <!-- Shared Supabase configuration -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="/js/config.js"></script>
 
   <script>
     "use strict";
 
-    // Use the shared MEI One client.
     const sb = window.MEI_SUPABASE;
+    const $ = (id) => document.getElementById(id);
 
-    const form = document.getElementById("authForm");
-    const message = document.getElementById("message");
-    const button = document.getElementById("submitBtn");
+    const form        = $("authForm");
+    const message     = $("message");
+    const button      = $("submitBtn");
+    const emailInput  = $("email");
+    const passwordInput = $("password");
 
-    const nameInput = document.getElementById("name");
-    const emailInput = document.getElementById("email");
-    const phoneInput = document.getElementById("phone");
-    const passwordInput = document.getElementById("password");
-
-    const heading = document.getElementById("heading");
-    const description = document.getElementById("description");
-    const switchText = document.getElementById("switchText");
-    const toggle = document.getElementById("toggle");
-    const forgotWrapper = document.getElementById("forgotWrapper");
+    const heading     = $("heading");
+    const description = $("description");
+    const switchText  = $("switchText");
+    const toggle      = $("toggle");
+    const forgotWrapper = $("forgotWrapper");
 
     let signup = false;
 
@@ -262,310 +199,152 @@
 
     function setLoading(loading) {
       button.disabled = loading;
-
-      if (loading) {
-        button.textContent = signup
-          ? "Creating account..."
-          : "Signing in...";
-      } else {
-        button.textContent = signup
-          ? "Create Account"
-          : "Sign In";
-      }
+      button.textContent = loading
+        ? (signup ? "Creating account..." : "Signing in...")
+        : (signup ? "Create Account" : "Sign In");
     }
 
-    // Preserve requested service when redirecting.
-    function getDashboardUrl() {
-      const service = new URLSearchParams(
-        window.location.search
-      ).get("service");
-
+    function dashboardUrl() {
+      const service = new URLSearchParams(location.search).get("service");
       return service
-        ? "/customer/dashboard.html?service=" +
-            encodeURIComponent(service)
-        : "/customer/dashboard.html";
+        ? "/customer-dashboard.html?service=" + encodeURIComponent(service)
+        : "/customer-dashboard.html";
     }
 
-    // Switch between login and registration.
-    toggle.addEventListener("click", function (event) {
-      event.preventDefault();
-
+    // ---- Toggle: Sign In <-> Create Account ----
+    toggle.addEventListener("click", (e) => {
+      e.preventDefault();
       signup = !signup;
 
-      nameInput.hidden = !signup;
-      phoneInput.hidden = !signup;
-
-      nameInput.required = signup;
-      phoneInput.required = signup;
-
-      passwordInput.autocomplete = signup
-        ? "new-password"
-        : "current-password";
-
+      passwordInput.autocomplete = signup ? "new-password" : "current-password";
       forgotWrapper.hidden = signup;
 
-      heading.textContent = signup
-        ? "Create your account"
-        : "Welcome back";
-
+      heading.textContent     = signup ? "Create your account" : "Welcome back";
       description.textContent = signup
         ? "Join MEI One and access our services."
         : "Sign in to manage your bookings and services.";
-
-      switchText.textContent = signup
-        ? "Already registered?"
-        : "New to MEI One?";
-
-      toggle.textContent = signup
-        ? "Sign in"
-        : "Create account";
-
-      button.textContent = signup
-        ? "Create Account"
-        : "Sign In";
+      switchText.textContent  = signup ? "Already registered?" : "Not registered?";
+      toggle.textContent      = signup ? "Sign in" : "Create an account";
+      button.textContent      = signup ? "Create Account" : "Sign In";
 
       showMessage("");
       message.className = "";
     });
 
-    // Check Supabase availability.
     if (!sb) {
-      showMessage(
-        "MEI One could not connect to Supabase. Check js/config.js and the script loading order.",
-        "error"
-      );
-
+      showMessage("MEI One could not connect to Supabase. Check js/config.js and script order.", "error");
       button.disabled = true;
     }
 
-    // CUSTOMER AUTHENTICATION
-    form.addEventListener("submit", async function (event) {
-      event.preventDefault();
-
+    // ---- Submit: Sign In or Create Account ----
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
       if (!sb) return;
 
       const email = emailInput.value.trim();
       const password = passwordInput.value;
 
       if (!email || !password) {
-        showMessage(
-          "Please enter your email and password.",
-          "error"
-        );
-        return;
-      }
-
-      if (signup) {
-        if (!nameInput.value.trim()) {
-          showMessage("Please enter your full name.", "error");
-          return;
-        }
-
-        if (!phoneInput.value.trim()) {
-          showMessage("Please enter your phone number.", "error");
-          return;
-        }
+        return showMessage("Please enter your email and password.", "error");
       }
 
       setLoading(true);
       showMessage("Please wait...", "info");
 
       try {
-
         if (signup) {
-
-          // CREATE CUSTOMER ACCOUNT
+          // ---- CREATE ACCOUNT ----
           const { data, error } = await sb.auth.signUp({
             email,
             password,
-
             options: {
-              emailRedirectTo:
-                window.location.origin + "/customer/dashboard.html",
-
-              // Metadata is profile information only.
-              // It is NOT trusted for authorization.
-              data: {
-                full_name: nameInput.value.trim(),
-                phone: phoneInput.value.trim()
-              }
+              emailRedirectTo: location.origin + "/customer-dashboard.html"
             }
           });
-
           if (error) throw error;
 
+          // If email confirmation is disabled, session exists immediately.
           if (data.session && data.user) {
-
-            // Check whether the database profile exists.
-            const {
-              data: profile,
-              error: profileError
-            } = await sb
+            const { data: profile, error: pe } = await sb
               .from("profiles")
               .select("id, account_status")
               .eq("id", data.user.id)
               .maybeSingle();
 
-            if (profileError) {
-              throw new Error(
-                "Account created, but profile verification failed: " +
-                profileError.message
-              );
-            }
+            if (pe) throw new Error("Account created, but profile verification failed: " + pe.message);
 
             if (!profile) {
               await sb.auth.signOut();
-
-              throw new Error(
-                "Your login was created, but your customer profile was not created. Please contact MEI One support."
-              );
+              throw new Error("Your login was created, but your customer profile was not created. Please contact MEI One support.");
             }
 
             if (profile.account_status !== "active") {
               await sb.auth.signOut();
-
-              throw new Error(
-                "Your account is awaiting activation. Please contact MEI One support."
-              );
+              throw new Error("Your account is awaiting activation. Please contact MEI One support.");
             }
 
-            showMessage(
-              "Your account is ready. Redirecting...",
-              "success"
-            );
-
-            window.location.replace(getDashboardUrl());
-
+            showMessage("Your account is ready. Redirecting...", "success");
+            location.replace(dashboardUrl());
           } else {
-
-            showMessage(
-              "Registration received. Please check your email to confirm your account before signing in.",
-              "success"
-            );
-
+            showMessage("Registration received. Please check your email to confirm your account before signing in.", "success");
           }
 
         } else {
-
-          // CUSTOMER LOGIN
-          const { data, error } = await sb.auth.signInWithPassword({
-            email,
-            password
-          });
-
+          // ---- SIGN IN ----
+          const { data, error } = await sb.auth.signInWithPassword({ email, password });
           if (error) throw error;
+          if (!data.user) throw new Error("Unable to authenticate your account.");
 
-          if (!data.user) {
-            throw new Error("Unable to authenticate your account.");
-          }
-
-          // Verify customer profile.
-          const {
-            data: profile,
-            error: profileError
-          } = await sb
+          const { data: profile, error: pe } = await sb
             .from("profiles")
             .select("id, account_status")
             .eq("id", data.user.id)
             .maybeSingle();
 
-          if (profileError) {
-            throw new Error(
-              "Unable to verify your customer profile: " +
-              profileError.message
-            );
-          }
+          if (pe) throw new Error("Unable to verify your customer profile: " + pe.message);
 
           if (!profile) {
             await sb.auth.signOut();
-
-            throw new Error(
-              "No customer profile was found. Please contact MEI One support."
-            );
+            throw new Error("No customer profile was found. Please contact MEI One support.");
           }
 
           if (profile.account_status !== "active") {
             await sb.auth.signOut();
-
-            throw new Error(
-              "Your account is not active. Please contact MEI One support."
-            );
+            throw new Error("Your account is not active. Please contact MEI One support.");
           }
 
-          showMessage(
-            "Sign in successful. Opening your dashboard...",
-            "success"
-          );
-
-          window.location.replace(getDashboardUrl());
+          showMessage("Sign in successful. Opening your dashboard...", "success");
+          location.replace(dashboardUrl());
         }
 
-      } catch (error) {
-
-        console.error("MEI One customer authentication error:", error);
-
-        showMessage(
-          error.message || "Something went wrong. Please try again.",
-          "error"
-        );
-
+      } catch (err) {
+        console.error("MEI One customer auth error:", err);
+        showMessage(err.message || "Something went wrong. Please try again.", "error");
       } finally {
         setLoading(false);
       }
     });
 
-    // PASSWORD RECOVERY
-    document
-      .getElementById("forgotPassword")
-      .addEventListener("click", async function (event) {
+    // ---- Password recovery ----
+    $("forgotPassword").addEventListener("click", async (e) => {
+      e.preventDefault();
+      if (!sb) return showMessage("Supabase is unavailable.", "error");
 
-        event.preventDefault();
+      const email = emailInput.value.trim();
+      if (!email) return showMessage("Enter your email address first.", "error");
 
-        if (!sb) {
-          showMessage("Supabase is unavailable.", "error");
-          return;
-        }
-
-        const email = emailInput.value.trim();
-
-        if (!email) {
-          showMessage(
-            "Enter your email address first.",
-            "error"
-          );
-          return;
-        }
-
-        try {
-
-          showMessage(
-            "Sending password reset instructions...",
-            "info"
-          );
-
-          const { error } = await sb.auth.resetPasswordForEmail(
-            email,
-            {
-              redirectTo:
-                window.location.origin + "/customer-signin.html"
-            }
-          );
-
-          if (error) throw error;
-
-          showMessage(
-            "If this email is registered, password reset instructions will be sent.",
-            "success"
-          );
-
-        } catch (error) {
-
-          console.error("Password recovery error:", error);
-
-          showMessage(error.message, "error");
-        }
-      });
-
+      try {
+        showMessage("Sending password reset instructions...", "info");
+        const { error } = await sb.auth.resetPasswordForEmail(email, {
+          redirectTo: location.origin + "/customer-signin.html"
+        });
+        if (error) throw error;
+        showMessage("If this email is registered, password reset instructions will be sent.", "success");
+      } catch (err) {
+        console.error("Password recovery error:", err);
+        showMessage(err.message, "error");
+      }
+    });
   </script>
 
 </body>
