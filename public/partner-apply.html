@@ -1,1251 +1,187 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#071a2f">
-  <meta name="description" content="Apply to become a MEI One partner: driver, towing operator, roadside responder, garage, marketplace seller or home service professional.">
-
-  <title>Apply to partner | MEI One</title>
-
+  <meta name="robots" content="noindex">
+  <title>Provider application | MEI One</title>
   <link rel="icon" href="assets/favicon.png" type="image/png">
-  <link rel="stylesheet" href="css/styles.css?v=3">
-  <link rel="stylesheet" href="css/partners.css?v=3">
-</head>
 
+  <style>
+    :root{--navy:#06111f;--green:#b7ff00;--green-hover:#c8ff3d;--white:#fff;--text:#e8f0f7;--muted:#91a4b8;--border:rgba(255,255,255,.10)}
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{min-height:100vh;padding:24px;display:flex;align-items:center;justify-content:center;
+      font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--white);
+      background:radial-gradient(circle at 85% 10%,rgba(183,255,0,.11),transparent 28%),radial-gradient(circle at 10% 90%,rgba(0,120,255,.08),transparent 32%),var(--navy)}
+    button,input,select{font:inherit}button{cursor:pointer}
+    .page{width:100%;max-width:480px}
+    .brand{text-align:center;margin-bottom:24px}
+    .brand-mark{width:68px;height:68px;margin:0 auto 14px;display:flex;align-items:center;justify-content:center;border-radius:20px;background:var(--green);color:var(--navy);font-size:23px;font-weight:950;letter-spacing:-1px}
+    .brand h1{font-size:32px;line-height:1;font-weight:950;letter-spacing:-1.5px}
+    .card{padding:30px;border:1px solid var(--border);border-radius:24px;background:linear-gradient(180deg,rgba(16,38,61,.96),rgba(7,19,33,.98));box-shadow:0 25px 70px rgba(0,0,0,.4)}
+    .card-header{margin-bottom:24px}
+    .card-header h2{font-size:25px;font-weight:900;letter-spacing:-.8px}
+    .card-header p{margin-top:7px;color:var(--muted);font-size:14px;line-height:1.5}
+    .message{display:none;margin-bottom:18px;padding:13px 14px;border-radius:12px;font-size:13px;line-height:1.5}
+    .message.show{display:block}
+    .message.error{color:#ffdce0;background:rgba(255,100,116,.10);border:1px solid rgba(255,100,116,.28)}
+    .message.success{color:#d9ffeb;background:rgba(93,227,160,.10);border:1px solid rgba(93,227,160,.28)}
+    .field{margin-bottom:17px}
+    .field label{display:block;margin-bottom:8px;color:var(--text);font-size:13px;font-weight:800}
+    .field input,.field select{width:100%;height:52px;padding:0 15px;border:1px solid rgba(255,255,255,.12);border-radius:13px;outline:none;background:rgba(0,0,0,.2);color:var(--white);transition:border-color .2s,box-shadow .2s}
+    .field select option{background:#0a1a2b;color:#fff}
+    .field input::placeholder{color:#62778b}
+    .field input:focus,.field select:focus{border-color:var(--green);box-shadow:0 0 0 3px rgba(183,255,0,.10)}
+    .field small{display:block;margin-top:6px;color:var(--muted);font-size:12px}
+    .primary-button{width:100%;min-height:54px;border:0;border-radius:14px;background:var(--green);color:#07101b;font-size:15px;font-weight:950;transition:transform .2s,background .2s,opacity .2s}
+    .primary-button:hover:not(:disabled){background:var(--green-hover);transform:translateY(-1px)}
+    .primary-button:disabled{opacity:.55;cursor:not-allowed;transform:none}
+    .link-row{margin-top:18px;text-align:center;font-size:13px;color:var(--muted)}
+    .link-row button{border:0;background:transparent;color:var(--green);font-weight:800;font-size:13px}
+    .spinner{width:17px;height:17px;display:inline-block;vertical-align:middle;margin-right:8px;border:2px solid rgba(0,0,0,.22);border-top-color:#07101b;border-radius:50%;animation:spin .7s linear infinite}
+    @keyframes spin{to{transform:rotate(360deg)}}
+    [hidden]{display:none !important}
+    @media (max-width:520px){body{padding:15px}.card{padding:22px;border-radius:20px}.brand h1{font-size:29px}}
+  </style>
+</head>
 <body>
 
-  <!-- HEADER -->
-  <header class="site-header">
-    <div class="container nav-container">
-
-      <a class="brand" href="index.html" aria-label="MEI One home">
-        <span class="brand-mark" aria-hidden="true">MEI</span>
-        <span class="brand-name">One</span>
-      </a>
-
-      <button
-        class="mobile-menu-button"
-        id="mobileMenuButton"
-        type="button"
-        aria-label="Open navigation"
-        aria-controls="mainNavigation"
-        aria-expanded="false">
-        <span></span>
-        <span></span>
-        <span></span>
-      </button>
-
-      <nav class="main-navigation" id="mainNavigation" aria-label="Main navigation">
-        <a href="index.html#services">Services</a>
-        <a href="index.html#how-it-works">How It Works</a>
-        <a href="partners.html" aria-current="page">For Business</a>
-        <a href="index.html#about">About</a>
-        <a href="login.html" data-auth="login">Sign In</a>
-        <a href="dashboard.html" data-auth="dashboard" class="nav-dashboard">Dashboard</a>
-        <button type="button" data-modal="signup" class="button button-small button-primary">
-          Get Started
-        </button>
-      </nav>
-
-    </div>
+<main class="page">
+  <header class="brand">
+    <div class="brand-mark">MEI</div>
+    <h1>MEI One</h1>
   </header>
 
-  <!-- PAGE INTRODUCTION -->
-  <div class="pt-head">
-    <div class="container">
-      <h1>Apply to partner with MEI One</h1>
-      <p>
-        Tell us about you and what you offer.
-        The MEI team will review your application and get back to you.
-      </p>
+  <section class="card">
+    <div class="card-header">
+      <h2>Provider application</h2>
+      <p>Tell us about your service. We review every application and email you when it's approved.</p>
     </div>
-  </div>
 
-  <!-- MAIN CONTENT -->
-  <main id="main" class="pt-wrap">
+    <div id="message" class="message" role="alert" aria-live="polite"></div>
 
-    <!-- APPLICATION FORM -->
-    <section class="pt-panel" id="formPanel" aria-labelledby="formHeading">
-
-      <h2 id="formHeading">Your application</h2>
-      <p>Fields marked with * are required.</p>
-
-      <form id="partnerForm" class="pt-form" novalidate>
-
-        <label class="pt-field">
-          I want to partner as *
-
-          <select name="partner_type" id="partnerType" required>
-            <option value="">Choose a service</option>
-          </select>
-        </label>
-
-        <div class="pt-row">
-
-          <label class="pt-field">
-            Full name *
-
-            <input
-              name="full_name"
-              type="text"
-              required
-              minlength="2"
-              maxlength="100"
-              autocomplete="name">
-          </label>
-
-          <label class="pt-field">
-            Business name <small>(if you have one)</small>
-
-            <input
-              name="business_name"
-              type="text"
-              maxlength="120"
-              autocomplete="organization">
-          </label>
-
-        </div>
-
-        <div class="pt-row">
-
-          <label class="pt-field">
-            Phone number *
-
-            <input
-              name="phone"
-              type="tel"
-              required
-              maxlength="20"
-              autocomplete="tel"
-              placeholder="07XXXXXXXX">
-          </label>
-
-          <label class="pt-field">
-            Email *
-
-            <input
-              name="email"
-              type="email"
-              required
-              maxlength="120"
-              autocomplete="email"
-              placeholder="you@example.com">
-          </label>
-
-        </div>
-
-        <div class="pt-row">
-
-          <label class="pt-field">
-            Town or area where you work *
-
-            <input
-              name="location"
-              type="text"
-              required
-              minlength="2"
-              maxlength="120"
-              placeholder="e.g. Westlands, Nairobi">
-          </label>
-
-          <label class="pt-field">
-            Years of experience <small>(optional)</small>
-
-            <input
-              name="experience_years"
-              type="number"
-              min="0"
-              max="60"
-              step="1"
-              inputmode="numeric">
-          </label>
-
-        </div>
-
-        <label class="pt-field">
-          What do you offer? *
-
-          <textarea
-            name="details"
-            id="details"
-            required
-            minlength="10"
-            maxlength="1000"
-            placeholder="Tell us about your vehicle, tools, trade or products and the areas you cover."></textarea>
-
-          <small id="detailsHint">
-            The more specific you are, the faster we can review.
-          </small>
-        </label>
-
-        <!-- HONEYPOT -->
-        <div class="pt-hp" aria-hidden="true">
-          <label>
-            Website
-            <input
-              name="website"
-              type="text"
-              tabindex="-1"
-              autocomplete="off">
-          </label>
-        </div>
-
-        <!-- CLOUDFLARE TURNSTILE -->
-        <div id="turnstileBox" style="min-height:65px"></div>
-
-        <!-- CONSENT -->
-        <label class="pt-consent">
-
-          <input type="checkbox" name="consent" required>
-
-          <span>
-            I agree that MEI One may use these details to review my application
-            and contact me about it, as described in the
-
-            <a href="privacy.html" target="_blank" rel="noopener">Privacy Policy</a>
-            and
-            <a href="terms.html" target="_blank" rel="noopener">Terms</a>.
-            *
-          </span>
-
-        </label>
-
-        <!-- FORM MESSAGE -->
-        <p
-          class="pt-message"
-          id="formMessage"
-          aria-live="polite"
-          role="status">
-        </p>
-
-        <button
-          type="submit"
-          class="button button-primary button-large pt-block"
-          id="submitBtn">
-          Submit application
-        </button>
-
-      </form>
-    </section>
-
-    <!-- SUCCESS SCREEN -->
-    <section
-      class="pt-panel pt-success"
-      id="successPanel"
-      hidden
-      tabindex="-1"
-      aria-labelledby="successHeading">
-
-      <h2 id="successHeading">Application received</h2>
-
-      <p>Thank you for applying to partner with MEI One.</p>
-
-      <p>Here is what happens next:</p>
-
-      <ul>
-        <li>The MEI team reviews your application.</li>
-        <li>We contact you on the phone number or email you provided.</li>
-        <li>We may ask for supporting documents, such as a licence or business permit.</li>
-      </ul>
-
-      <a href="partners.html" class="button button-primary pt-block">
-        Back to partners
-      </a>
-
-      <button type="button" class="pt-ghost" id="applyAgain">
-        Apply for another service
-      </button>
-
-    </section>
-
-    <!-- MY APPLICATIONS -->
-    <section
-      class="pt-panel"
-      id="myApps"
-      hidden
-      aria-labelledby="myAppsHeading">
-
-      <h2 id="myAppsHeading">Your applications</h2>
-
-      <p>Applications you submitted while signed in.</p>
-
-      <div id="myAppsList" aria-live="polite"></div>
-
-    </section>
-
-  </main>
-
-  <!-- FOOTER -->
-  <footer class="site-footer">
-
-    <div class="container footer-grid">
-
-      <div class="footer-brand">
-
-        <a class="brand" href="index.html" aria-label="MEI One home">
-          <span class="brand-mark" aria-hidden="true">MEI</span>
-          <span class="brand-name">One</span>
-        </a>
-
-        <p>One platform for connected services.</p>
-
+    <form id="applyForm" novalidate>
+      <div class="field" id="typeField">
+        <label for="type">Service you offer</label>
+        <select id="type" name="type" required>
+          <option value="">Choose one</option>
+          <option value="driver">Driver (rides and deliveries)</option>
+          <option value="towing">Towing</option>
+          <option value="roadside">Roadside assistance</option>
+          <option value="garage">Garage / auto services</option>
+          <option value="marketplace">Marketplace seller</option>
+          <option value="home">Home services</option>
+        </select>
       </div>
 
-      <nav class="footer-column" aria-label="Services">
+      <div class="field">
+        <label for="business">Business or trading name</label>
+        <input id="business" name="business" type="text" placeholder="e.g. Kamau Recovery Services" maxlength="120" required>
+        <small id="bizHint">Drivers can use their own name.</small>
+      </div>
 
-        <h3>Services</h3>
+      <div class="field">
+        <label for="phone">Business phone</label>
+        <input id="phone" name="phone" type="tel" autocomplete="tel" placeholder="07XX XXX XXX" maxlength="20" required>
+      </div>
 
-        <a href="rides.html">MEI Rides</a>
-        <a href="delivery.html">MEI Delivery</a>
-        <a href="towing.html">MEI Towing</a>
-        <a href="roadside.html">Roadside Assistance</a>
+      <button type="submit" class="primary-button" id="applySubmit">Submit application</button>
+    </form>
 
-      </nav>
+    <div class="link-row"><button type="button" id="signOut">Sign out</button></div>
+  </section>
+</main>
 
-      <nav class="footer-column" aria-label="More services">
+<script src="js/config.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js" crossorigin="anonymous"></script>
+<script src="js/supabase.js"></script>
 
-        <h3>More</h3>
+<script>
+(function () {
+  "use strict";
 
-        <a href="https://auto-d.meipressgroup.com/">
-          MEI Auto <span aria-hidden="true">↗</span>
-        </a>
+  var $ = function (id) { return document.getElementById(id); };
+  var form = $("applyForm"), message = $("message"), btn = $("applySubmit");
+  var sb = window.supabaseClient || window.MEISupabase || null;
+  var params = new URLSearchParams(window.location.search);
+  var VALID = ["driver", "towing", "roadside", "garage", "marketplace", "home"];
+  var lockedType = VALID.indexOf(params.get("type")) > -1 ? params.get("type") : "";
+  var user = null;
 
-        <a href="marketplace.html">Marketplace</a>
-        <a href="home-services.html">Home Services</a>
+  function show(text, type) { message.textContent = text; message.className = text ? "message show " + (type || "error") : "message"; }
 
-        <a href="https://www.meidriveafrica.com">
-          MEI Learn <span aria-hidden="true">↗</span>
-        </a>
+  function normalisePhone(raw) {
+    var d = String(raw).replace(/[\s\-()]/g, "");
+    var m = d.match(/^(?:\+?254|0)([17]\d{8})$/);
+    return m ? "0" + m[1] : null;
+  }
 
-      </nav>
+  $("signOut").addEventListener("click", async function () {
+    try { if (sb) await sb.auth.signOut(); } catch (e) {}
+    window.location.replace("login.html");
+  });
 
-      <nav class="footer-column" aria-label="Platform">
+  form.addEventListener("submit", async function (event) {
+    event.preventDefault();
+    show("");
 
-        <h3>Platform</h3>
+    var type = lockedType || $("type").value;
+    var business = $("business").value.trim();
+    var phone = normalisePhone($("phone").value);
 
-        <a href="index.html#how-it-works">How It Works</a>
-        <a href="partners.html">Partners</a>
-        <a href="index.html#about">About</a>
-        <a href="login.html">Sign In</a>
-        <a href="privacy.html">Privacy Policy</a>
-        <a href="terms.html">Terms</a>
+    if (VALID.indexOf(type) === -1) return show("Choose the service you offer.");
+    if (business.length < 2) return show("Enter your business or trading name.");
+    if (!phone) return show("Enter a valid Kenyan mobile number, e.g. 0712345678.");
 
-      </nav>
+    btn.disabled = true;
+    var label = btn.textContent;
+    btn.innerHTML = '<span class="spinner"></span>Submitting...';
 
-    </div>
-
-    <div class="container footer-bottom">
-
-      <span>
-        ©
-        <span data-current-year id="currentYear">2026</span>
-        MEI One. All rights reserved.
-      </span>
-
-      <span>Connected digital services.</span>
-
-    </div>
-
-  </footer>
-
-  <!-- GLOBAL MODAL -->
-  <div class="modal" id="globalModal" aria-hidden="true">
-
-    <div class="modal-backdrop" data-modal-close></div>
-
-    <div
-      class="modal-dialog"
-      role="dialog"
-      aria-modal="true"
-      aria-label="MEI One">
-
-      <button
-        type="button"
-        class="modal-close"
-        data-modal-close
-        aria-label="Close dialog">
-        <span aria-hidden="true">×</span>
-      </button>
-
-      <div id="modalContent"></div>
-
-    </div>
-
-  </div>
-
-  <!-- TOAST CONTAINER -->
-  <div
-    class="toast-container"
-    id="toastContainer"
-    role="status"
-    aria-live="polite"
-    aria-atomic="true">
-  </div>
-
-  <!-- CORE SCRIPTS -->
-  <script src="js/config.js" defer></script>
-
-  <script
-    src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"
-    integrity="sha384-0w2KAL2YHP6wKOkUDzkCDGgVvfmHnj02DHeQ6XcHOgTfFsGyonKOpShMH1x6nk9o"
-    crossorigin="anonymous"
-    defer>
-  </script>
-
-  <!-- Cloudflare Turnstile -->
-  <script
-    src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit"
-    async
-    defer>
-  </script>
-
-  <script src="js/supabase.js" defer></script>
-  <script src="js/site.js" defer></script>
-
-  <!-- PARTNER APPLICATION LOGIC -->
-  <script>
-  document.addEventListener("DOMContentLoaded", function () {
-
-    "use strict";
-
-    /* =========================================
-       CONFIGURATION
-    ========================================= */
-
-    var supabase = window.supabaseClient || null;
-
-    var CONFIG =
-      window.MEI_CONFIG ||
-      window.MEIConfig ||
-      window.CONFIG ||
-      {};
-
-    var TABLE = "partner_applications";
-    var FUNCTION_NAME = "submit-partner-application";
-
-    var TIMEZONE =
-      (CONFIG.settings && CONFIG.settings.timezone) ||
-      "Africa/Nairobi";
-
-    var TYPES = [
-      [
-        "driver",
-        "Ride and delivery driver",
-        "Vehicle type, licence class, years driving and the areas you cover."
-      ],
-      [
-        "towing",
-        "Towing operator",
-        "Trucks or trailers you run, the vehicles you can recover and your coverage area."
-      ],
-      [
-        "roadside",
-        "Roadside responder",
-        "Services you provide (jump-start, tyre change, fuel delivery), your tools and coverage area."
-      ],
-      [
-        "garage",
-        "Garage or auto service",
-        "Services you offer, where your workshop is and how many mechanics you have."
-      ],
-      [
-        "seller",
-        "Marketplace seller",
-        "What you sell, where you ship from and how you deliver."
-      ],
-      [
-        "home",
-        "Home service professional",
-        "Your trade, your tools and the areas you serve."
-      ]
-    ];
-
-    var TYPE_LABELS = {};
-
-    TYPES.forEach(function (item) {
-      TYPE_LABELS[item[0]] = item[1];
+    // Status and is_online are forced by the database rules: new rows are always pending and offline.
+    var r = await sb.from("partners").insert({
+      user_id: user.id, type: type, business_name: business, phone: phone,
+      status: "pending", is_online: false
     });
 
-    var STATUS_LABELS = {
-      new: "Received",
-      reviewing: "In review",
-      docs_requested: "Documents needed",
-      approved: "Approved",
-      rejected: "Not approved"
-    };
-
-    var dateFormat = new Intl.DateTimeFormat("en-KE", {
-      dateStyle: "medium",
-      timeZone: TIMEZONE
-    });
-
-    /* =========================================
-       ELEMENT HELPERS
-    ========================================= */
-
-    function $(selector, parent) {
-      return (parent || document).querySelector(selector);
-    }
-
-    function el(tag, className, text) {
-      var node = document.createElement(tag);
-
-      if (className) {
-        node.className = className;
-      }
-
-      if (text !== undefined) {
-        node.textContent = text;
-      }
-
-      return node;
-    }
-
-    var form = $("#partnerForm");
-    var select = $("#partnerType");
-    var message = $("#formMessage");
-    var submitBtn = $("#submitBtn");
-
-    if (!form || !select || !message || !submitBtn) {
-      console.error("MEI Partners: Required form elements are missing.");
+    if (r.error) {
+      console.error("MEI One: application failed.", r.error);
+      // 23505 = already applied
+      if (r.error.code === "23505") return window.location.replace("provider-dashboard.html");
+      show("We couldn't submit your application. Please try again.");
+      btn.disabled = false; btn.textContent = label;
       return;
     }
 
-    function setMessage(text, type) {
-      message.textContent = text || "";
-      message.dataset.type = type || "info";
-    }
-
-    /* =========================================
-       SUPABASE CONFIGURATION
-    ========================================= */
-
-    function checkSupabase() {
-
-      if (!window.supabaseClient) {
-        console.error(
-          "MEI Partners: Supabase client was not initialized. Check js/config.js and js/supabase.js."
-        );
-
-        return false;
-      }
-
-      supabase = window.supabaseClient;
-
-      if (
-        typeof supabase.functions === "undefined" ||
-        typeof supabase.from !== "function"
-      ) {
-        console.error("MEI Partners: Invalid Supabase client.");
-        return false;
-      }
-
-      return true;
-    }
-
-    /* =========================================
-       CLOUDFLARE TURNSTILE
-    ========================================= */
-
-    var tsWidget = null;
-    var tsError = false;
-    var tsTimer = null;
-
-    function mountTurnstile() {
-
-      var siteKey =
-        CONFIG.turnstileSiteKey ||
-        CONFIG.TURNSTILE_SITE_KEY;
-
-      if (!siteKey) {
-
-        tsError = true;
-
-        console.error(
-          "MEI Partners: Turnstile site key is missing from js/config.js."
-        );
-
-        return;
-      }
-
-      var tries = 0;
-
-      tsTimer = setInterval(function () {
-
-        tries++;
-
-        if (
-          window.turnstile &&
-          typeof window.turnstile.render === "function"
-        ) {
-
-          clearInterval(tsTimer);
-
-          try {
-
-            tsWidget = window.turnstile.render(
-              "#turnstileBox",
-              {
-                sitekey: siteKey,
-                theme: "auto",
-
-                callback: function () {
-                  tsError = false;
-                  console.log("MEI Partners: Turnstile verification completed.");
-                },
-
-                "expired-callback": function () {
-                  setMessage(
-                    "Your security verification has expired. Please verify again.",
-                    "error"
-                  );
-                },
-
-                "timeout-callback": function () {
-                  setMessage(
-                    "The security verification timed out. Please try again.",
-                    "error"
-                  );
-                },
-
-                "error-callback": function (errorCode) {
-
-                  tsError = true;
-
-                  console.error(
-                    "MEI Partners: Turnstile error:",
-                    errorCode
-                  );
-
-                  setMessage(
-                    "Security verification failed. Refresh the page and try again.",
-                    "error"
-                  );
-
-                  return true;
-                }
-              }
-            );
-
-            if (tsWidget === undefined) {
-              tsError = true;
-              console.error("MEI Partners: Turnstile widget could not be created.");
-            }
-
-          } catch (error) {
-
-            tsError = true;
-
-            console.error(
-              "MEI Partners: Turnstile rendering failed.",
-              error
-            );
-          }
-
-        } else if (tries >= 100) {
-
-          clearInterval(tsTimer);
-
-          tsError = true;
-
-          console.error(
-            "MEI Partners: Cloudflare Turnstile script did not load."
-          );
-
-          setMessage(
-            "Security verification could not load. Check your connection and refresh the page.",
-            "error"
-          );
-        }
-
-      }, 100);
-    }
-
-    function turnstileToken() {
-
-      if (
-        !window.turnstile ||
-        tsWidget === null ||
-        tsWidget === undefined
-      ) {
-        return "";
-      }
-
-      try {
-        return window.turnstile.getResponse(tsWidget) || "";
-      } catch (error) {
-        console.error("MEI Partners: Unable to read verification token.", error);
-        return "";
-      }
-    }
-
-    function resetTurnstile() {
-
-      if (
-        window.turnstile &&
-        tsWidget !== null &&
-        tsWidget !== undefined
-      ) {
-
-        try {
-          window.turnstile.reset(tsWidget);
-        } catch (error) {
-          console.warn("MEI Partners: Turnstile reset failed.", error);
-        }
-      }
-    }
-
-    mountTurnstile();
-
-    /* =========================================
-       PARTNER TYPES
-    ========================================= */
-
-    TYPES.forEach(function (item) {
-
-      var option = el("option", "", item[1]);
-
-      option.value = item[0];
-
-      select.appendChild(option);
-    });
-
-    function syncHint() {
-
-      var match = TYPES.filter(function (item) {
-        return item[0] === select.value;
-      })[0];
-
-      $("#detailsHint").textContent = match
-        ? "Include: " + match[2]
-        : "The more specific you are, the faster we can review.";
-    }
-
-    select.addEventListener("change", syncHint);
-
-    var wanted = new URLSearchParams(
-      window.location.search
-    ).get("type");
-
-    if (wanted && TYPE_LABELS[wanted]) {
-      select.value = wanted;
-    }
-
-    syncHint();
-
-    /* =========================================
-       USER SESSION
-    ========================================= */
-
-    async function getUser() {
-
-      if (!checkSupabase()) {
-        return null;
-      }
-
-      try {
-
-        var result = await supabase.auth.getSession();
-
-        if (result.error) {
-          console.warn("MEI Partners: Session lookup warning.", result.error);
-          return null;
-        }
-
-        return (
-          result.data &&
-          result.data.session &&
-          result.data.session.user
-        ) || null;
-
-      } catch (error) {
-
-        console.error(
-          "MEI Partners: Unable to retrieve session.",
-          error
-        );
-
-        return null;
-      }
-    }
-
-    function prefill(user) {
-
-      if (!user) return;
-
-      var meta = user.user_metadata || {};
-
-      if (!form.email.value && user.email) {
-        form.email.value = user.email;
-      }
-
-      if (
-        !form.full_name.value &&
-        (meta.full_name || meta.name)
-      ) {
-        form.full_name.value =
-          meta.full_name || meta.name;
-      }
-
-      if (!form.phone.value && meta.phone) {
-        form.phone.value = meta.phone;
-      }
-    }
-
-    /* =========================================
-       PHONE NORMALISATION
-    ========================================= */
-
-    function normalisePhone(raw) {
-
-      var value = String(raw || "").replace(/[\s-]/g, "");
-
-      var match =
-        /^0([17]\d{8})$/.exec(value) ||
-        /^\+?254([17]\d{8})$/.exec(value);
-
-      return match
-        ? "+254" + match[1]
-        : null;
-    }
-
-    /* =========================================
-       FORM VALIDATION
-    ========================================= */
-
-    function validate(values) {
-
-      if (!TYPE_LABELS[values.partner_type]) {
-        return "Choose the service you want to partner as.";
-      }
-
-      if (values.full_name.length < 2) {
-        return "Enter your full name.";
-      }
-
-      if (!normalisePhone(values.phone)) {
-        return "Enter a valid Kenyan mobile number, e.g. 0712345678.";
-      }
-
-      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(values.email)) {
-        return "Enter a valid email address.";
-      }
-
-      if (values.location.length < 2) {
-        return "Tell us the town or area where you work.";
-      }
-
-      if (
-        values.experience_years !== null &&
-        (
-          !Number.isInteger(values.experience_years) ||
-          values.experience_years < 0 ||
-          values.experience_years > 60
-        )
-      ) {
-        return "Years of experience must be a number between 0 and 60.";
-      }
-
-      if (values.details.length < 10) {
-        return "Tell us a little more about what you offer.";
-      }
-
-      if (!values.consent) {
-        return "Please tick the consent box before submitting.";
-      }
-
-      return "";
-    }
-
-    /* =========================================
-       SUCCESS SCREEN
-    ========================================= */
-
-    function showSuccess() {
-
-      $("#formPanel").hidden = true;
-
-      var success = $("#successPanel");
-
-      success.hidden = false;
-      success.focus();
-
-      window.scrollTo({
-        top: 0,
-        behavior: "smooth"
-      });
-    }
-
-    /* =========================================
-       EDGE FUNCTION ERROR HANDLING
-    ========================================= */
-
-    async function functionErrorMessage(error) {
-
-      if (!error) return "";
-
-      try {
-
-        if (
-          error.context &&
-          typeof error.context.json === "function"
-        ) {
-
-          var body = await error.context.json();
-
-          if (body && typeof body.error === "string") {
-            return body.error;
-          }
-
-          if (body && typeof body.message === "string") {
-            return body.message;
-          }
-
-        }
-
-      } catch (readError) {
-
-        console.warn(
-          "MEI Partners: Unable to read function error response.",
-          readError
-        );
-      }
-
-      return error.message || "";
-    }
-
-    /* =========================================
-       SUBMIT APPLICATION
-    ========================================= */
-
-    async function submit(event) {
-
-      event.preventDefault();
-
-      setMessage("", "info");
-
-      // Honeypot protection.
-      if (form.website.value) {
-        showSuccess();
-        return;
-      }
-
-      var years = form.experience_years.value.trim();
-
-      var values = {
-
-        partner_type: select.value,
-
-        full_name:
-          form.full_name.value.trim(),
-
-        business_name:
-          form.business_name.value.trim(),
-
-        phone:
-          form.phone.value.trim(),
-
-        email:
-          form.email.value.trim().toLowerCase(),
-
-        location:
-          form.location.value.trim(),
-
-        experience_years:
-          years === "" ? null : Number(years),
-
-        details:
-          form.details.value.trim(),
-
-        consent:
-          form.consent.checked
-      };
-
-      var problem = validate(values);
-
-      if (problem) {
-        setMessage(problem, "error");
-        return;
-      }
-
-      values.phone = normalisePhone(values.phone);
-
-      if (!checkSupabase()) {
-
-        setMessage(
-          "Applications are temporarily unavailable. Please try again later.",
-          "error"
-        );
-
-        return;
-      }
-
-      if (
-        tsError ||
-        tsWidget === null ||
-        tsWidget === undefined
-      ) {
-
-        setMessage(
-          "The security verification is unavailable. Refresh the page and try again.",
-          "error"
-        );
-
-        return;
-      }
-
-      var token = turnstileToken();
-
-      if (!token) {
-
-        setMessage(
-          "Please complete the Cloudflare security verification.",
-          "error"
-        );
-
-        return;
-      }
-
-      submitBtn.disabled = true;
-      submitBtn.textContent = "Sending...";
-
-      try {
-
-        var user = await getUser();
-
-        // The Edge Function reads user_id from the authenticated JWT.
-        var result = await supabase.functions.invoke(
-          FUNCTION_NAME,
-          {
-            body: Object.assign({}, values, {
-              website: form.website.value,
-              turnstile_token: token
-            })
-          }
-        );
-
-        console.log("MEI Partners: Submission response.", {
-          hasError: !!result.error,
-          hasData: !!result.data
-        });
-
-        if (result.error) {
-
-          var readableError =
-            await functionErrorMessage(result.error);
-
-          console.error(
-            "MEI Partners: Edge Function returned an error.",
-            result.error
-          );
-
-          setMessage(
-            readableError ||
-            "The application server could not process your request. Please try again.",
-            "error"
-          );
-
-          return;
-        }
-
-        if (result.data && result.data.error) {
-
-          console.error(
-            "MEI Partners: Application rejected.",
-            result.data.error
-          );
-
-          setMessage(
-            result.data.error,
-            "error"
-          );
-
-          return;
-        }
-
-        if (
-          !result.data ||
-          result.data.ok !== true
-        ) {
-
-          console.error(
-            "MEI Partners: Unexpected server response.",
-            result.data
-          );
-
-          setMessage(
-            "We received an unexpected response from the server. Please try again.",
-            "error"
-          );
-
-          return;
-        }
-
-        // Successful application.
-        form.reset();
-
-        select.value = "";
-
-        syncHint();
-
-        showSuccess();
-
-        if (user) {
-          loadMyApplications(user);
-        }
-
-      } catch (error) {
-
-        console.error(
-          "MEI Partners: Application submission failed.",
-          error
-        );
-
-        var errorText =
-          await functionErrorMessage(error);
-
-        setMessage(
-          errorText
-            ? "Submission failed: " + errorText
-            : "Unable to reach the application server. Check your internet connection and try again.",
-          "error"
-        );
-
-      } finally {
-
-        // Turnstile tokens are single-use.
-        resetTurnstile();
-
-        submitBtn.disabled = false;
-
-        submitBtn.textContent = "Submit application";
-      }
-    }
-
-    form.addEventListener("submit", submit);
-
-    /* =========================================
-       APPLY AGAIN
-    ========================================= */
-
-    $("#applyAgain").addEventListener("click", function () {
-
-      $("#successPanel").hidden = true;
-
-      $("#formPanel").hidden = false;
-
-      getUser().then(prefill);
-
-      select.focus();
-
-      resetTurnstile();
-    });
-
-    /* =========================================
-       MY APPLICATIONS
-    ========================================= */
-
-    async function loadMyApplications(user) {
-
-      var box = $("#myApps");
-      var list = $("#myAppsList");
-
-      try {
-
-        var result = await supabase
-          .from(TABLE)
-          .select("id, partner_type, status, created_at")
-          .eq("user_id", user.id)
-          .order("created_at", {
-            ascending: false
-          })
-          .limit(20);
-
-        if (result.error) {
-          throw result.error;
-        }
-
-        var rows = result.data || [];
-
-        if (!rows.length) {
-          box.hidden = true;
-          return;
-        }
-
-        list.replaceChildren();
-
-        rows.forEach(function (row) {
-
-          var item = el("article", "pt-app");
-
-          var left = el("div");
-
-          left.appendChild(
-            el(
-              "strong",
-              "",
-              TYPE_LABELS[row.partner_type] || row.partner_type
-            )
-          );
-
-          left.appendChild(
-            el(
-              "small",
-              "",
-              "Applied " +
-              dateFormat.format(new Date(row.created_at))
-            )
-          );
-
-          item.appendChild(left);
-
-          var chip = el(
-            "span",
-            "pt-chip",
-            STATUS_LABELS[row.status] || row.status
-          );
-
-          chip.dataset.status = row.status;
-
-          item.appendChild(chip);
-
-          list.appendChild(item);
-
-        });
-
-        box.hidden = false;
-
-      } catch (error) {
-
-        console.warn(
-          "MEI Partners: Unable to load applications.",
-          error
-        );
-
-        box.hidden = true;
-      }
-    }
-
-    /* =========================================
-       INITIALISE PAGE
-    ========================================= */
-
-    getUser().then(function (user) {
-
-      prefill(user);
-
-      if (user) {
-        loadMyApplications(user);
-      }
-
-    });
-
-    console.log("MEI One Partner Application page initialised.");
-
+    show("Application submitted. Taking you to your status page...", "success");
+    setTimeout(function () { window.location.replace("provider-dashboard.html"); }, 800);
   });
-  </script>
+
+  async function boot() {
+    if (!sb) return show("MEI One could not connect right now. Please try again later.");
+
+    var s = await sb.auth.getSession();
+    if (!s.data || !s.data.session) {
+      window.location.replace("login.html?next=partner-apply.html");
+      return;
+    }
+    user = s.data.session.user;
+
+    // Already applied? Go straight to the dashboard (it shows pending / approved / rejected).
+    var r = await sb.from("partners").select("id").eq("user_id", user.id).maybeSingle();
+    if (r.data) return window.location.replace("provider-dashboard.html");
+
+    var meta = user.user_metadata || {};
+    if (meta.phone) $("phone").value = meta.phone;
+    if (lockedType) {
+      $("type").value = lockedType;
+      $("typeField").hidden = true;
+    }
+  }
+
+  boot().catch(function (e) { console.error(e); show("Something went wrong. Please refresh."); });
+})();
+</script>
 
 </body>
 </html>
