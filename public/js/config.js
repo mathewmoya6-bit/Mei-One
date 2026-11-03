@@ -9,7 +9,7 @@
   const MEI_CONFIG = {
     appName: "MEI One",
     appShortName: "MEI",
-    appVersion: "1.0.0",
+    appVersion: "1.1.0",
 
     /* --------------------------------------------------------
        SUPABASE
@@ -38,7 +38,8 @@
     routes: {
       home: "index.html",
       login: "login.html",
-      dashboard: "dashboard.html"
+      dashboard: "dashboard.html",
+      providerDashboard: "provider-dashboard.html"
     },
 
     /* --------------------------------------------------------
@@ -108,6 +109,103 @@
         icon: "🎓",
         route: "https://www.meidriveafrica.com",
         external: true
+      }
+    },
+
+    /* --------------------------------------------------------
+       PROVIDER TYPES
+       Key = partners.type.
+       serves   = service_requests.service values the role can see
+       flow     = { currentStatus: [nextStatus, buttonLabel] }
+       sections = dashboard sections the role gets
+       -------------------------------------------------------- */
+    providerTypes: {
+      driver: {
+        label: "Driver",
+        serves: ["rides", "delivery"],
+        job: "ride or delivery",
+        jobs: "Trips",
+        tagline: "Rides and deliveries near you.",
+        offerSub: "Rides and deliveries waiting for a driver.",
+        flow: {
+          accepted: ["arrived", "I've arrived"],
+          arrived: ["in_progress", "Start trip"],
+          in_progress: ["completed", "Complete trip"]
+        },
+        sections: ["overview", "available", "jobs", "earnings", "profile"]
+      },
+
+      towing: {
+        label: "Towing",
+        serves: ["towing"],
+        job: "tow",
+        jobs: "Tow jobs",
+        tagline: "Recovery requests from stranded customers.",
+        offerSub: "Customers waiting for a tow truck.",
+        flow: {
+          accepted: ["en_route", "On my way"],
+          en_route: ["arrived", "Arrived"],
+          arrived: ["completed", "Mark complete"]
+        },
+        sections: ["overview", "available", "jobs", "earnings", "profile"]
+      },
+
+      roadside: {
+        label: "Roadside",
+        serves: ["roadside"],
+        job: "call-out",
+        jobs: "Call-outs",
+        tagline: "Help drivers get moving again.",
+        offerSub: "Roadside help requests near you.",
+        flow: {
+          accepted: ["en_route", "On my way"],
+          en_route: ["completed", "Mark complete"]
+        },
+        sections: ["overview", "available", "jobs", "earnings", "profile"]
+      },
+
+      garage: {
+        label: "Garage / Auto",
+        serves: ["auto"],
+        job: "service booking",
+        jobs: "Bookings",
+        tagline: "Servicing and repair bookings.",
+        offerSub: "Customers asking for a service or repair.",
+        flow: {
+          accepted: ["in_progress", "Start service"],
+          in_progress: ["completed", "Mark complete"]
+        },
+        sections: ["overview", "available", "jobs", "earnings", "profile"]
+      },
+
+      marketplace: {
+        label: "Marketplace seller",
+        serves: ["marketplace"],
+        job: "order",
+        jobs: "Orders",
+        tagline: "Orders from customers shopping on MEI One.",
+        offerSub: "New orders for your products.",
+        flow: {
+          accepted: ["packed", "Mark packed"],
+          packed: ["shipped", "Mark shipped"],
+          shipped: ["completed", "Delivered"]
+        },
+        sections: ["overview", "available", "jobs", "products", "earnings", "profile"]
+      },
+
+      home: {
+        label: "Home services",
+        serves: ["home-services"],
+        job: "home job",
+        jobs: "Home jobs",
+        tagline: "Home service requests in your area.",
+        offerSub: "Customers who need help at home.",
+        flow: {
+          accepted: ["en_route", "On my way"],
+          en_route: ["in_progress", "Start job"],
+          in_progress: ["completed", "Mark complete"]
+        },
+        sections: ["overview", "available", "jobs", "earnings", "profile"]
       }
     },
 
