@@ -210,11 +210,26 @@
       background-position: right 16px center;
       padding-right: 40px;
       cursor: pointer;
+      max-height: 320px;
+    }
+
+    select option,
+    select optgroup {
+      background: var(--navy-700);
+      color: var(--white);
+    }
+
+    select optgroup {
+      font-weight: 700;
+      font-style: normal;
+      color: var(--green);
+      padding: 6px 0;
     }
 
     select option {
-      background: var(--navy-700);
+      font-weight: 400;
       color: var(--white);
+      padding-left: 10px;
     }
 
     textarea {
@@ -529,14 +544,80 @@
         </div>
 
         <div class="field">
-          <label for="serviceType">Service type</label>
+          <label for="serviceType">Primary service</label>
           <select id="serviceType" required>
-            <option value="" disabled selected>Select a service</option>
-            <option value="driver">Driver / Transport</option>
-            <option value="delivery">Delivery / Courier</option>
-            <option value="home-services">Home Services</option>
-            <option value="professional">Professional Services</option>
-            <option value="other">Other</option>
+            <option value="" disabled selected>Select your main service</option>
+
+            <optgroup label="Transport &amp; Mobility">
+              <option value="ride-hailing">Ride Hailing / Taxi</option>
+              <option value="private-driver">Private Driver</option>
+              <option value="airport-transfer">Airport Transfer</option>
+              <option value="boda-boda">Boda Boda / Motorbike</option>
+              <option value="tuk-tuk">Tuk Tuk</option>
+              <option value="car-rental">Car Rental</option>
+              <option value="chauffeur">Chauffeur Service</option>
+              <option value="school-transport">School Transport</option>
+            </optgroup>
+
+            <optgroup label="Delivery &amp; Logistics">
+              <option value="food-delivery">Food Delivery</option>
+              <option value="package-delivery">Package / Parcel Delivery</option>
+              <option value="courier">Courier Service</option>
+              <option value="grocery-delivery">Grocery Delivery</option>
+              <option value="furniture-delivery">Furniture Delivery</option>
+              <option value="freight">Freight / Heavy Cargo</option>
+              <option value="moving">Moving Services</option>
+            </optgroup>
+
+            <optgroup label="Home Services">
+              <option value="cleaning">House Cleaning</option>
+              <option value="plumbing">Plumbing</option>
+              <option value="electrical">Electrical Work</option>
+              <option value="painting">Painting</option>
+              <option value="carpentry">Carpentry</option>
+              <option value="masonry">Masonry</option>
+              <option value="welding">Welding &amp; Metalwork</option>
+              <option value="ac-repair">AC &amp; Refrigeration</option>
+              <option value="appliance-repair">Appliance Repair</option>
+              <option value="pest-control">Pest Control</option>
+              <option value="landscaping">Landscaping &amp; Gardening</option>
+              <option value="pool-cleaning">Pool Cleaning</option>
+              <option value="security">Security Services</option>
+            </optgroup>
+
+            <optgroup label="Beauty &amp; Wellness">
+              <option value="hair-styling">Hair Styling / Barber</option>
+              <option value="makeup">Makeup Artist</option>
+              <option value="nails">Nail Technician</option>
+              <option value="massage">Massage Therapy</option>
+              <option value="spa">Spa Services</option>
+              <option value="fitness-trainer">Personal Trainer</option>
+              <option value="yoga">Yoga Instructor</option>
+            </optgroup>
+
+            <optgroup label="Professional Services">
+              <option value="tutoring">Tutoring / Education</option>
+              <option value="accounting">Accounting &amp; Bookkeeping</option>
+              <option value="legal">Legal Consulting</option>
+              <option value="it-support">IT Support</option>
+              <option value="web-design">Web / Graphic Design</option>
+              <option value="photography">Photography / Videography</option>
+              <option value="event-planning">Event Planning</option>
+              <option value="catering">Catering</option>
+              <option value="translation">Translation Services</option>
+            </optgroup>
+
+            <optgroup label="Health &amp; Care">
+              <option value="nursing">Home Nursing</option>
+              <option value="elderly-care">Elderly Care</option>
+              <option value="childcare">Childcare / Nanny</option>
+              <option value="physiotherapy">Physiotherapy</option>
+              <option value="pet-care">Pet Care / Grooming</option>
+            </optgroup>
+
+            <optgroup label="Other">
+              <option value="other">Other (please specify below)</option>
+            </optgroup>
           </select>
         </div>
       </div>
@@ -728,7 +809,7 @@
       if (!phone) fail(phoneInput, "Please enter your phone number.");
       else if (phone.replace(/\D/g, "").length < 7) fail(phoneInput, "Please enter a valid phone number.");
       if (!city) fail(cityInput, "Please enter your city.");
-      if (!service) fail(serviceTypeInput, "Please select a service type.");
+      if (!service) fail(serviceTypeInput, "Please select your primary service.");
       if (!experience) fail(experienceInput, "Please select your experience level.");
       if (!password) fail(passwordInput, "Please create a password.");
       else if (password.length < 8) fail(passwordInput, "Password must be at least 8 characters.");
@@ -774,8 +855,6 @@
 
       try {
         // 1. Create the auth user with provider metadata.
-        //    Your DB trigger (or the explicit profile/driver inserts below)
-        //    should create the corresponding rows.
         const { data: signUpData, error: signUpError } = await sb.auth.signUp({
           email,
           password,
@@ -818,7 +897,6 @@
         if (appError) throw appError;
 
         // 3. Create the driver record (inactive until approved).
-        //    If a DB trigger already creates it, this upsert is a no-op.
         const { error: driverError } = await sb
           .from("drivers")
           .upsert(
@@ -837,7 +915,6 @@
 
         if (driverError) {
           console.warn("Driver row could not be created:", driverError.message);
-          // Not fatal — application record already saved.
         }
 
         // 4. Done — swap the form for the success panel.
