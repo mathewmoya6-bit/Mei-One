@@ -4,146 +4,446 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#071a2f">
-  <meta name="description" content="Sign in to your MEI One provider account.">
-  <title>Provider Sign In | MEI One</title>
+  <meta name="description" content="Apply to become a MEI One service provider.">
+  <title>Become a Provider | MEI One</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
   <style>
+    :root {
+      --navy: #071a2f;
+      --navy-800: #0b2138;
+      --navy-700: #102640;
+      --green: #00ff88;
+      --green-dark: #00d68f;
+      --green-dim: rgba(0, 255, 136, .1);
+      --white: #ffffff;
+      --muted: #aebdce;
+      --muted-dim: #7f95ab;
+      --border: #38516c;
+      --danger: #ff4b4b;
+      --danger-text: #ffaaaa;
+      --danger-bg: rgba(255, 75, 75, .12);
+      --success-text: #00ff88;
+      --success-bg: rgba(0, 255, 136, .1);
+      --info-text: #d5e2ef;
+      --info-bg: rgba(255, 255, 255, .07);
+      --transition: .2s cubic-bezier(.4, 0, .2, 1);
+      --radius: 12px;
+    }
+
     * {
       box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html, body {
+      height: 100%;
     }
 
     body {
-      margin: 0;
       min-height: 100vh;
-      padding: 20px;
+      padding: 24px;
       display: grid;
       place-items: center;
-      background: #071a2f;
-      color: #fff;
-      font-family: Inter, Arial, sans-serif;
+      background: var(--navy);
+      background-image:
+        radial-gradient(circle at 15% 10%, rgba(0, 255, 136, .12), transparent 40%),
+        radial-gradient(circle at 85% 90%, rgba(0, 214, 143, .08), transparent 40%);
+      background-attachment: fixed;
+      color: var(--white);
+      font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+      line-height: 1.55;
+      -webkit-font-smoothing: antialiased;
     }
 
+    /* ---------- CARD ---------- */
     .card {
       width: 100%;
-      max-width: 430px;
-      padding: 35px;
-      background: #102640;
-      border: 1px solid rgba(255,255,255,.08);
-      border-radius: 18px;
-      box-shadow: 0 20px 60px rgba(0,0,0,.2);
+      max-width: 560px;
+      padding: 36px;
+      background: var(--navy-700);
+      border: 1px solid rgba(255, 255, 255, .08);
+      border-radius: 20px;
+      box-shadow:
+        0 24px 80px rgba(0, 0, 0, .4),
+        0 0 0 1px rgba(0, 255, 136, .03);
+      animation: slideUp .5s cubic-bezier(.16, 1, .3, 1);
+    }
+
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(18px); }
+      to { opacity: 1; transform: translateY(0); }
     }
 
     .logo {
-      font-size: 27px;
+      display: inline-block;
+      font-size: 26px;
       font-weight: 800;
-      color: #00ff88;
+      color: var(--green);
       letter-spacing: -1px;
+      text-decoration: none;
+      transition: opacity var(--transition);
+    }
+
+    .logo:hover { opacity: .85; }
+
+    .logo span {
+      color: var(--white);
+      font-weight: 500;
+    }
+
+    .eyebrow {
+      margin-top: 20px;
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1.2px;
+      color: var(--muted-dim);
     }
 
     h1 {
-      font-size: 25px;
-      margin: 25px 0 8px;
+      font-size: 26px;
+      font-weight: 800;
+      letter-spacing: -.5px;
+      margin: 6px 0 8px;
     }
 
-    p {
-      color: #aebdce;
-      line-height: 1.6;
-      font-size: 14px;
+    .subtitle {
+      color: var(--muted);
+      font-size: 14.5px;
+      margin-bottom: 28px;
     }
 
-    input {
+    /* ---------- STEPS ---------- */
+    .steps {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 28px;
+    }
+
+    .step {
+      flex: 1;
+      height: 4px;
+      border-radius: 99px;
+      background: rgba(255, 255, 255, .1);
+      transition: background var(--transition);
+    }
+
+    .step.active {
+      background: var(--green);
+    }
+
+    /* ---------- FORM ---------- */
+    .field {
+      margin-bottom: 18px;
+    }
+
+    .field-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    label {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+
+    label .optional {
+      color: var(--muted-dim);
+      font-weight: 400;
+    }
+
+    input,
+    select,
+    textarea {
       display: block;
       width: 100%;
-      padding: 14px;
-      margin: 12px 0;
-      border: 1px solid #38516c;
-      border-radius: 9px;
+      padding: 14px 16px;
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius);
       outline: none;
-      background: #071a2f;
-      color: white;
+      background: rgba(7, 26, 47, .6);
+      color: var(--white);
       font-size: 15px;
       font-family: inherit;
+      transition: all var(--transition);
     }
 
-    input:focus {
-      border-color: #00ff88;
-      box-shadow: 0 0 0 3px rgba(0,255,136,.1);
+    input::placeholder,
+    textarea::placeholder {
+      color: #5a738e;
     }
 
-    button {
-      width: 100%;
-      padding: 14px;
-      margin-top: 12px;
-      border: 0;
-      border-radius: 9px;
-      background: #00ff88;
-      color: #071a2f;
-      font-weight: 800;
-      font-size: 15px;
+    input:hover:not(:disabled),
+    select:hover:not(:disabled),
+    textarea:hover:not(:disabled) {
+      border-color: #4a6a8a;
+    }
+
+    input:focus,
+    select:focus,
+    textarea:focus {
+      border-color: var(--green);
+      background: rgba(7, 26, 47, .9);
+      box-shadow: 0 0 0 4px var(--green-dim);
+    }
+
+    input.invalid,
+    select.invalid,
+    textarea.invalid {
+      border-color: var(--danger);
+      box-shadow: 0 0 0 4px rgba(255, 75, 75, .1);
+    }
+
+    select {
+      appearance: none;
+      background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2212%22%20height%3D%2212%22%20viewBox%3D%220%200%2012%2012%22%3E%3Cpath%20fill%3D%22%23aebdce%22%20d%3D%22M6%208L1%203h10z%22%2F%3E%3C%2Fsvg%3E");
+      background-repeat: no-repeat;
+      background-position: right 16px center;
+      padding-right: 40px;
       cursor: pointer;
+    }
+
+    select option {
+      background: var(--navy-700);
+      color: var(--white);
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 100px;
+      line-height: 1.5;
+    }
+
+    .field-hint {
+      font-size: 12px;
+      color: var(--muted-dim);
+      margin-top: 6px;
+    }
+
+    /* ---------- CHECKBOX ---------- */
+    .checkbox-field {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      margin: 22px 0;
+    }
+
+    .checkbox-field input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      flex-shrink: 0;
+      margin-top: 2px;
+      accent-color: var(--green);
+      cursor: pointer;
+      padding: 0;
+    }
+
+    .checkbox-field label {
+      margin: 0;
+      font-weight: 400;
+      font-size: 13.5px;
+      color: var(--muted);
+      cursor: pointer;
+    }
+
+    .checkbox-field a {
+      color: var(--green);
+      font-weight: 600;
+    }
+
+    /* ---------- BUTTONS ---------- */
+    .primary-btn {
+      width: 100%;
+      padding: 15px;
+      border: 0;
+      border-radius: var(--radius);
+      background: var(--green);
+      color: var(--navy);
+      font-weight: 800;
+      font-size: 15.5px;
       font-family: inherit;
-    }
-
-    button:disabled {
-      opacity: .6;
-      cursor: not-allowed;
-    }
-
-    .switch {
-      text-align: center;
-      margin-top: 20px;
-      font-size: 14px;
-      color: #aebdce;
-    }
-
-    a {
-      color: #00ff88;
+      cursor: pointer;
+      transition: all var(--transition);
+      box-shadow: 0 4px 15px rgba(0, 255, 136, .25);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
       text-decoration: none;
     }
 
-    a:hover {
-      text-decoration: underline;
+    .primary-btn:hover:not(:disabled) {
+      background: #5cffb0;
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px rgba(0, 255, 136, .35);
     }
 
+    .primary-btn:active:not(:disabled) {
+      transform: translateY(0);
+    }
+
+    .primary-btn:disabled {
+      opacity: .6;
+      cursor: not-allowed;
+      box-shadow: none;
+    }
+
+    .spinner {
+      width: 16px;
+      height: 16px;
+      border: 2px solid rgba(7, 26, 47, .3);
+      border-top-color: var(--navy);
+      border-radius: 50%;
+      animation: spin .6s linear infinite;
+      display: none;
+    }
+
+    .primary-btn.loading .spinner {
+      display: inline-block;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* ---------- MESSAGE ---------- */
     #message {
       display: none;
-      padding: 12px;
-      margin-top: 16px;
-      border-radius: 8px;
+      padding: 13px 15px;
+      border-radius: var(--radius);
+      font-size: 13.5px;
+      font-weight: 500;
       overflow-wrap: anywhere;
+      line-height: 1.5;
+      margin-bottom: 18px;
+      animation: fadeIn .3s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-4px); }
+      to { opacity: 1; transform: translateY(0); }
     }
 
     #message.error {
       display: block;
-      background: rgba(255,75,75,.12);
-      color: #ffaaaa;
+      background: var(--danger-bg);
+      color: var(--danger-text);
+      border: 1px solid rgba(255, 75, 75, .25);
     }
 
     #message.success {
       display: block;
-      background: rgba(0,255,136,.1);
-      color: #00ff88;
+      background: var(--success-bg);
+      color: var(--success-text);
+      border: 1px solid rgba(0, 255, 136, .25);
     }
 
     #message.info {
       display: block;
-      background: rgba(255,255,255,.07);
-      color: #d5e2ef;
+      background: var(--info-bg);
+      color: var(--info-text);
+      border: 1px solid rgba(255, 255, 255, .1);
     }
 
-    .forgot {
-      text-align: right;
-      margin-top: 8px;
-      font-size: 13px;
+    /* ---------- SUCCESS STATE ---------- */
+    .success-panel {
+      display: none;
+      text-align: center;
+      padding: 20px 0;
     }
 
-    @media (max-width: 480px) {
-      .card {
-        padding: 25px;
+    .success-panel.visible {
+      display: block;
+      animation: fadeIn .4s ease;
+    }
+
+    .success-icon {
+      width: 64px;
+      height: 64px;
+      margin: 0 auto 20px;
+      border-radius: 50%;
+      background: var(--success-bg);
+      border: 2px solid var(--green);
+      display: grid;
+      place-items: center;
+      font-size: 30px;
+      color: var(--green);
+    }
+
+    .success-panel h2 {
+      font-size: 22px;
+      font-weight: 800;
+      margin-bottom: 10px;
+    }
+
+    .success-panel p {
+      color: var(--muted);
+      font-size: 14.5px;
+      margin-bottom: 24px;
+    }
+
+    /* ---------- LINKS ---------- */
+    .switch {
+      text-align: center;
+      font-size: 14px;
+      color: var(--muted);
+      margin-top: 18px;
+    }
+
+    a {
+      color: var(--green);
+      text-decoration: none;
+      font-weight: 600;
+      transition: color var(--transition);
+    }
+
+    a:hover {
+      color: #5cffb0;
+      text-decoration: underline;
+    }
+
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--muted-dim);
+      font-weight: 500;
+    }
+
+    .back-link:hover {
+      color: var(--white);
+      text-decoration: none;
+    }
+
+    /* ---------- ACCESSIBILITY ---------- */
+    :focus-visible {
+      outline: 2px solid var(--green);
+      outline-offset: 3px;
+    }
+
+    @media (max-width: 560px) {
+      body { padding: 16px; }
+      .card { padding: 28px 22px; }
+      h1 { font-size: 23px; }
+      .field-row { grid-template-columns: 1fr; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        animation-duration: .01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: .01ms !important;
       }
     }
   </style>
@@ -151,241 +451,409 @@
 
 <body>
 
-  <main class="card">
+  <main class="card" role="main">
 
-    <div class="logo">MEI ONE</div>
+    <a class="logo" href="/index.html" aria-label="MEI One home">
+      MEI <span>One</span>
+    </a>
 
-    <p>MEI One Provider Portal</p>
+    <p class="eyebrow">Provider Application</p>
 
-    <h1>Provider Sign In</h1>
+    <h1>Become a Provider</h1>
 
-    <p>
-      Access your driver and service provider dashboard.
+    <p class="subtitle">
+      Join MEI One and start earning by offering your services to customers.
     </p>
 
-    <form id="loginForm">
+    <div class="steps" aria-hidden="true">
+      <div class="step active"></div>
+      <div class="step active"></div>
+      <div class="step"></div>
+    </div>
 
-      <input
-        id="email"
-        type="email"
-        placeholder="Email address"
-        autocomplete="username"
-        required
-      >
+    <div id="message" role="status" aria-live="polite"></div>
 
-      <input
-        id="password"
-        type="password"
-        placeholder="Password"
-        autocomplete="current-password"
-        required
-      >
+    <!-- FORM -->
+    <form id="applyForm" novalidate>
 
-      <div class="forgot">
-        <a href="#" id="forgotPassword">Forgot password?</a>
+      <div class="field">
+        <label for="fullName">Full name</label>
+        <input
+          id="fullName"
+          type="text"
+          placeholder="Jane Doe"
+          autocomplete="name"
+          spellcheck="false"
+          required
+        >
       </div>
 
-      <button type="submit" id="loginButton">
-        Sign In
+      <div class="field-row">
+        <div class="field">
+          <label for="email">Email address</label>
+          <input
+            id="email"
+            type="email"
+            placeholder="you@example.com"
+            autocomplete="email"
+            spellcheck="false"
+            inputmode="email"
+            required
+          >
+        </div>
+
+        <div class="field">
+          <label for="phone">Phone number</label>
+          <input
+            id="phone"
+            type="tel"
+            placeholder="+254 700 000 000"
+            autocomplete="tel"
+            inputmode="tel"
+            required
+          >
+        </div>
+      </div>
+
+      <div class="field-row">
+        <div class="field">
+          <label for="city">City</label>
+          <input
+            id="city"
+            type="text"
+            placeholder="Nairobi"
+            autocomplete="address-level2"
+            spellcheck="false"
+            required
+          >
+        </div>
+
+        <div class="field">
+          <label for="serviceType">Service type</label>
+          <select id="serviceType" required>
+            <option value="" disabled selected>Select a service</option>
+            <option value="driver">Driver / Transport</option>
+            <option value="delivery">Delivery / Courier</option>
+            <option value="home-services">Home Services</option>
+            <option value="professional">Professional Services</option>
+            <option value="other">Other</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="experience">Years of experience</label>
+        <select id="experience" required>
+          <option value="" disabled selected>Select experience level</option>
+          <option value="0-1">Less than 1 year</option>
+          <option value="1-3">1 – 3 years</option>
+          <option value="3-5">3 – 5 years</option>
+          <option value="5-10">5 – 10 years</option>
+          <option value="10+">10+ years</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label for="password">Create a password</label>
+        <input
+          id="password"
+          type="password"
+          placeholder="At least 8 characters"
+          autocomplete="new-password"
+          minlength="8"
+          required
+        >
+        <p class="field-hint">You'll use this password to sign in once approved.</p>
+      </div>
+
+      <div class="field">
+        <label for="bio">Tell us about yourself <span class="optional">(optional)</span></label>
+        <textarea
+          id="bio"
+          placeholder="Briefly describe your experience, skills, and why you want to join MEI One..."
+          maxlength="500"
+        ></textarea>
+        <p class="field-hint"><span id="bioCount">0</span> / 500 characters</p>
+      </div>
+
+      <div class="checkbox-field">
+        <input type="checkbox" id="terms" required>
+        <label for="terms">
+          I agree to the
+          <a href="/terms.html" target="_blank" rel="noopener">Terms of Service</a>
+          and
+          <a href="/privacy.html" target="_blank" rel="noopener">Privacy Policy</a>.
+        </label>
+      </div>
+
+      <button type="submit" class="primary-btn" id="submitBtn">
+        <span class="spinner" aria-hidden="true"></span>
+        <span id="submitBtnText">Submit Application</span>
       </button>
 
     </form>
 
-    <p id="message" role="status" aria-live="polite"></p>
-
-    <div class="switch">
-      New provider?
-      <!-- CHANGED: Now redirects to /partner-apply.html -->
-      <a href="/partner-apply.html" id="applyProviderLink">Apply to become a provider</a>
+    <!-- SUCCESS PANEL -->
+    <div class="success-panel" id="successPanel" role="alert">
+      <div class="success-icon" aria-hidden="true">✓</div>
+      <h2>Application received!</h2>
+      <p>
+        Thank you for applying to become a MEI One provider. Our team will review
+        your application and get back to you within 2–3 business days. You'll be
+        able to sign in once your account is approved.
+      </p>
+      <a class="primary-btn" href="/provider-signin.html">Back to Sign In</a>
     </div>
 
     <div class="switch">
-      <a href="/customer-signin.html">Customer sign in</a>
+      Already have a provider account?
+      <a href="/provider-signin.html">Sign in</a>
     </div>
 
     <div class="switch">
-      <a href="/index.html">← Back to MEI One</a>
+      <a href="/index.html" class="back-link">
+        <span aria-hidden="true">←</span> Back to MEI One
+      </a>
     </div>
 
   </main>
 
-  <!-- Load Supabase before the MEI configuration -->
+  <!-- Supabase JS -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <!-- MEI One shared config (creates window.MEI_SUPABASE) -->
   <script src="/js/config.js"></script>
 
   <script>
     "use strict";
 
-    // Use the shared MEI One Supabase client.
+    // Shared client created by /js/config.js
     const sb = window.MEI_SUPABASE;
 
-    const form = document.getElementById("loginForm");
-    const button = document.getElementById("loginButton");
+    const form = document.getElementById("applyForm");
+    const submitBtn = document.getElementById("submitBtn");
+    const submitBtnText = document.getElementById("submitBtnText");
     const message = document.getElementById("message");
+    const successPanel = document.getElementById("successPanel");
 
+    const fullNameInput = document.getElementById("fullName");
+    const emailInput = document.getElementById("email");
+    const phoneInput = document.getElementById("phone");
+    const cityInput = document.getElementById("city");
+    const serviceTypeInput = document.getElementById("serviceType");
+    const experienceInput = document.getElementById("experience");
+    const passwordInput = document.getElementById("password");
+    const bioInput = document.getElementById("bio");
+    const termsInput = document.getElementById("terms");
+    const bioCount = document.getElementById("bioCount");
+
+    // --- UI helpers ---
     function showMessage(text, type = "info") {
       message.textContent = text;
       message.className = type;
+      message.scrollIntoView({ behavior: "smooth", block: "nearest" });
+    }
+
+    function clearMessage() {
+      message.textContent = "";
+      message.className = "";
     }
 
     function setLoading(loading) {
-      button.disabled = loading;
-      button.textContent = loading ? "Signing in..." : "Sign In";
+      submitBtn.disabled = loading;
+      submitBtn.classList.toggle("loading", loading);
+      submitBtnText.textContent = loading ? "Submitting..." : "Submit Application";
     }
 
-    // Check Supabase initialization.
+    function markInvalid(input, invalid) {
+      input.classList.toggle("invalid", invalid);
+    }
+
+    // --- Bio counter ---
+    bioInput.addEventListener("input", () => {
+      bioCount.textContent = bioInput.value.length;
+    });
+
+    // --- Clear invalid on input ---
+    [
+      fullNameInput, emailInput, phoneInput, cityInput,
+      serviceTypeInput, experienceInput, passwordInput, termsInput
+    ].forEach((el) => {
+      el.addEventListener("input", () => markInvalid(el, false));
+      el.addEventListener("change", () => markInvalid(el, false));
+    });
+
+    // --- Email regex ---
+    const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    // --- Friendly error mapping ---
+    function translateError(error) {
+      const msg = String(error?.message || "").toLowerCase();
+      if (msg.includes("user already registered") || msg.includes("already been registered")) {
+        return "An account with this email already exists. Try signing in instead.";
+      }
+      if (msg.includes("password should be")) {
+        return "Your password is too weak. Please choose a stronger password.";
+      }
+      if (msg.includes("rate limit") || msg.includes("too many")) {
+        return "Too many attempts. Please wait a moment and try again.";
+      }
+      if (msg.includes("duplicate") || msg.includes("unique")) {
+        return "An application with this email has already been submitted.";
+      }
+      return error?.message || "Something went wrong. Please try again.";
+    }
+
+    // --- Validation ---
+    function validateForm() {
+      const errors = [];
+      let firstInvalid = null;
+
+      function fail(input, msg) {
+        markInvalid(input, true);
+        errors.push(msg);
+        if (!firstInvalid) firstInvalid = input;
+      }
+
+      const name = fullNameInput.value.trim();
+      const email = emailInput.value.trim().toLowerCase();
+      const phone = phoneInput.value.trim();
+      const city = cityInput.value.trim();
+      const service = serviceTypeInput.value;
+      const experience = experienceInput.value;
+      const password = passwordInput.value;
+
+      if (!name) fail(fullNameInput, "Please enter your full name.");
+      if (!email) fail(emailInput, "Please enter your email address.");
+      else if (!EMAIL_RE.test(email)) fail(emailInput, "Please enter a valid email address.");
+      if (!phone) fail(phoneInput, "Please enter your phone number.");
+      else if (phone.replace(/\D/g, "").length < 7) fail(phoneInput, "Please enter a valid phone number.");
+      if (!city) fail(cityInput, "Please enter your city.");
+      if (!service) fail(serviceTypeInput, "Please select a service type.");
+      if (!experience) fail(experienceInput, "Please select your experience level.");
+      if (!password) fail(passwordInput, "Please create a password.");
+      else if (password.length < 8) fail(passwordInput, "Password must be at least 8 characters.");
+      if (!termsInput.checked) fail(termsInput, "Please accept the Terms of Service and Privacy Policy.");
+
+      return { errors, firstInvalid };
+    }
+
+    // --- Supabase availability ---
     if (!sb) {
       showMessage(
         "MEI One could not connect to Supabase. Check your configuration and script loading order.",
         "error"
       );
-
-      button.disabled = true;
+      submitBtn.disabled = true;
     }
 
-    // PROVIDER SIGN IN
+    // --- Submit ---
     form.addEventListener("submit", async function (event) {
       event.preventDefault();
-
       if (!sb) return;
 
-      const email = document
-        .getElementById("email")
-        .value.trim();
+      clearMessage();
 
-      const password = document
-        .getElementById("password")
-        .value;
-
-      if (!email || !password) {
-        showMessage("Enter your email and password.", "error");
+      const { errors, firstInvalid } = validateForm();
+      if (errors.length) {
+        showMessage(errors[0], "error");
+        if (firstInvalid) firstInvalid.focus();
         return;
       }
 
       setLoading(true);
-      showMessage("Authenticating your account...", "info");
+      showMessage("Creating your provider account...", "info");
+
+      const fullName = fullNameInput.value.trim();
+      const email = emailInput.value.trim().toLowerCase();
+      const phone = phoneInput.value.trim();
+      const city = cityInput.value.trim();
+      const serviceType = serviceTypeInput.value;
+      const experience = experienceInput.value;
+      const password = passwordInput.value;
+      const bio = bioInput.value.trim() || null;
 
       try {
-
-        // Step 1: Authenticate with Supabase.
-        const { data, error } = await sb.auth.signInWithPassword({
+        // 1. Create the auth user with provider metadata.
+        //    Your DB trigger (or the explicit profile/driver inserts below)
+        //    should create the corresponding rows.
+        const { data: signUpData, error: signUpError } = await sb.auth.signUp({
           email,
-          password
+          password,
+          options: {
+            data: {
+              full_name: fullName,
+              role: "provider",
+              phone,
+              city,
+              service_type: serviceType,
+              experience
+            },
+            emailRedirectTo:
+              window.location.origin + "/provider-signin.html"
+          }
         });
 
-        if (error) throw error;
-
-        if (!data.user) {
-          throw new Error("Authentication failed. Please try again.");
+        if (signUpError) throw signUpError;
+        if (!signUpData?.user) {
+          throw new Error("Account creation failed. Please try again.");
         }
 
-        // Step 2: Check the authenticated user's driver record.
-        // The current drivers table uses id = auth.users.id.
-        const {
-          data: driver,
-          error: driverError
-        } = await sb
+        const userId = signUpData.user.id;
+
+        // 2. Persist the application record.
+        const { error: appError } = await sb
+          .from("provider_applications")
+          .insert({
+            user_id: userId,
+            full_name: fullName,
+            email,
+            phone,
+            city,
+            service_type: serviceType,
+            experience,
+            bio,
+            status: "pending"
+          });
+
+        if (appError) throw appError;
+
+        // 3. Create the driver record (inactive until approved).
+        //    If a DB trigger already creates it, this upsert is a no-op.
+        const { error: driverError } = await sb
           .from("drivers")
-          .select("id, name, active")
-          .eq("id", data.user.id)
-          .maybeSingle();
+          .upsert(
+            {
+              id: userId,
+              name: fullName,
+              email,
+              phone,
+              city,
+              service_type: serviceType,
+              experience,
+              active: false
+            },
+            { onConflict: "id" }
+          );
 
         if (driverError) {
-          throw new Error(
-            "Unable to verify your provider account: " +
-            driverError.message
-          );
+          console.warn("Driver row could not be created:", driverError.message);
+          // Not fatal — application record already saved.
         }
 
-        // Step 3: Reject accounts without a provider record.
-        if (!driver) {
-          await sb.auth.signOut();
-
-          throw new Error(
-            "No provider account was found. Please apply to become a provider."
-          );
-        }
-
-        // Step 4: Check provider activation.
-        if (driver.active !== true) {
-          await sb.auth.signOut();
-
-          throw new Error(
-            "Your provider account is inactive. Please contact MEI One support."
-          );
-        }
-
-        // Step 5: Allow access to provider dashboard.
-        showMessage("Sign in successful. Opening your dashboard...", "success");
-
-        window.location.replace("/provider-dashboard.html");
+        // 4. Done — swap the form for the success panel.
+        form.style.display = "none";
+        const steps = document.querySelector(".steps");
+        if (steps) steps.style.display = "none";
+        clearMessage();
+        successPanel.classList.add("visible");
+        successPanel.scrollIntoView({ behavior: "smooth", block: "nearest" });
 
       } catch (error) {
-
-        console.error("MEI One provider sign-in error:", error);
-
-        showMessage(
-          error.message || "Unable to sign in. Please try again.",
-          "error"
-        );
-
-      } finally {
+        console.error("Provider application error:", error);
+        showMessage(translateError(error), "error");
         setLoading(false);
       }
     });
-
-    // PASSWORD RESET
-    document
-      .getElementById("forgotPassword")
-      .addEventListener("click", async function (event) {
-
-        event.preventDefault();
-
-        if (!sb) {
-          showMessage("Supabase is unavailable.", "error");
-          return;
-        }
-
-        const email = document
-          .getElementById("email")
-          .value.trim();
-
-        if (!email) {
-          showMessage(
-            "Enter your email address first to reset your password.",
-            "error"
-          );
-          return;
-        }
-
-        try {
-          showMessage("Sending password reset instructions...", "info");
-
-          const { error } = await sb.auth.resetPasswordForEmail(email, {
-            redirectTo: window.location.origin + "/provider-signin.html"
-          });
-
-          if (error) throw error;
-
-          showMessage(
-            "If this email is registered, password reset instructions will be sent.",
-            "success"
-          );
-
-        } catch (error) {
-          console.error("Password reset error:", error);
-          showMessage(error.message, "error");
-        }
-      });
-
-    // APPLY TO BECOME A PROVIDER — explicit redirect to /partner-apply.html
-    document
-      .getElementById("applyProviderLink")
-      .addEventListener("click", function (event) {
-        event.preventDefault();
-        window.location.href = "/partner-apply.html";
-      });
-
   </script>
 
 </body>
