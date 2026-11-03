@@ -1,435 +1,876 @@
-doctype html>
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
+<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="description" content="MEI One brings rides, delivery, roadside help, garage services, vehicle valuation and everyday services together in one place.">
-<title>MEI One — Everything, connected</title>
+<meta name="theme-color" content="#102b25">
+<title>MEI One — Everything, Connected</title>
+
 <style>
 :root {
-  --site-primary: #071a2f;
-  --site-secondary: #00d68f;
-  --site-background: #f4f8f7;
-  --site-on-primary: #ffffff;
-  --site-on-secondary: #06251d;
-  --site-on-background: #102238;
-  --site-font-body: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  --site-font-heading: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  --site-heading-scale: 1;
-  --site-spacing-scale: 1;
-  --site-radius-scale: 1;
-  --site-decoration-opacity: 1;
-  --navy: #071a2f;
-  --navy-soft: #102b48;
-  --green: #00d68f;
-  --ink: #102238;
-  --muted: #667789;
-  --line: #e3ebe9;
-  --surface: #ffffff;
-  --surface-soft: #f7faf9;
-  --shadow: 0 22px 60px rgba(7, 26, 47, .10);
+  --navy:#102b25;
+  --navy-dark:#071a2f;
+  --green:#c7f36b;
+  --green-dark:#15835c;
+  --background:#f5f8f3;
+  --surface:#fff;
+  --ink:#142b27;
+  --muted:#62746a;
+  --line:#e7ece4;
+  --radius:18px;
+  --shadow:0 18px 42px rgba(31,61,42,.09);
+  --font:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
 }
-* { box-sizing: border-box; }
-html { scroll-behavior: smooth; }
-body { margin: 0; font-family: var(--site-font-body); color: var(--ink); background: var(--site-background); }
-button, a { font: inherit; }
-a { color: inherit; text-decoration: none; }
-button { cursor: pointer; }
-#app { min-height: 100vh; width: 100%; border-radius: 0; background-color: var(--site-background); color: var(--site-on-background); overflow: hidden; }
-.container { width: min(1160px, calc(100% - 48px)); margin: 0 auto; }
-.site-header { background: var(--navy); color: #fff; position: relative; z-index: 5; }
-.navbar { min-height: 82px; display: flex; align-items: center; justify-content: space-between; gap: 28px; }
-.brand { display: inline-flex; align-items: center; gap: 11px; font-weight: 850; letter-spacing: -.7px; font-size: 23px; }
-.brand-mark { width: 39px; height: 39px; border-radius: 13px; background: var(--green); color: var(--navy); display: grid; place-items: center; font-size: 22px; font-weight: 950; box-shadow: 0 8px 22px rgba(0,214,143,.22); }
-.brand small { display: block; color: #9bb0c2; font-size: 9px; letter-spacing: 2px; font-weight: 700; margin-top: 1px; }
-.nav-links { display: flex; align-items: center; gap: 30px; color: #c8d4df; font-size: 13px; font-weight: 650; }
-.nav-links a:hover { color: var(--green); }
-.nav-actions { display: flex; align-items: center; gap: 12px; }
-.btn { display: inline-flex; justify-content: center; align-items: center; gap: 9px; border: 0; border-radius: 12px; padding: 13px 19px; font-weight: 750; font-size: 13px; transition: transform .2s, box-shadow .2s, background .2s; }
-.btn:hover { transform: translateY(-2px); }
-.btn-primary { background: var(--green); color: var(--navy); box-shadow: 0 10px 24px rgba(0,214,143,.18); }
-.btn-primary:hover { background: #16e6a1; box-shadow: 0 14px 28px rgba(0,214,143,.25); }
-.btn-outline { color: #fff; border: 1px solid rgba(255,255,255,.24); background: transparent; }
-.btn-dark { color: #fff; background: var(--navy); }
-.menu-toggle { display: none; border: 1px solid rgba(255,255,255,.2); background: transparent; color: white; border-radius: 10px; padding: 9px 12px; }
-.hero { background: var(--navy); color: white; position: relative; overflow: hidden; }
-.hero:before, .hero:after { content: ""; position: absolute; border-radius: 50%; pointer-events: none; opacity: var(--site-decoration-opacity); }
-.hero:before { width: 560px; height: 560px; border: 1px solid rgba(0,214,143,.12); right: -130px; top: -290px; }
-.hero:after { width: 420px; height: 420px; border: 1px solid rgba(255,255,255,.08); right: -65px; top: -220px; }
-.hero-grid { min-height: 570px; display: grid; grid-template-columns: 1.04fr .96fr; align-items: center; gap: 55px; padding: 76px 0 86px; position: relative; z-index: 1; }
-.eyebrow { display: inline-flex; align-items: center; gap: 9px; color: var(--green); font-size: 11px; text-transform: uppercase; letter-spacing: 1.8px; font-weight: 850; }
-.eyebrow:before { content: ""; width: 22px; height: 2px; background: var(--green); }
-.hero h1 { max-width: 650px; font-family: var(--site-font-heading); font-size: calc(58px * var(--site-heading-scale)); line-height: 1.04; letter-spacing: -3.6px; margin: 22px 0 22px; }
-.hero h1 span { color: var(--green); }
-.hero-copy { max-width: 520px; color: #b7c6d4; line-height: 1.8; font-size: 16px; }
-.hero-actions { display: flex; align-items: center; gap: 14px; margin-top: 31px; flex-wrap: wrap; }
-.hero-note { display: flex; align-items: center; gap: 10px; color: #9fb2c3; font-size: 11px; margin-top: 26px; }
-.hero-note strong { color: #fff; }
-.hero-art { min-height: 390px; display: grid; place-items: center; position: relative; }
-.orbit { width: min(410px, 100%); aspect-ratio: 1; border-radius: 50%; border: 1px solid rgba(0,214,143,.24); display: grid; place-items: center; position: relative; }
-.orbit:before { content: ""; position: absolute; inset: 27px; border: 1px dashed rgba(255,255,255,.15); border-radius: 50%; }
-.phone { width: 220px; height: 365px; border: 7px solid #233e58; border-radius: 34px; background: #f9fcfb; color: var(--navy); padding: 18px 14px; box-shadow: 0 35px 70px rgba(0,0,0,.35); transform: rotate(-5deg); position: relative; z-index: 2; }
-.phone-notch { width: 62px; height: 13px; background: #233e58; border-radius: 0 0 10px 10px; position: absolute; top: 0; left: calc(50% - 31px); }
-.phone-top { display: flex; justify-content: space-between; align-items: center; font-size: 10px; font-weight: 850; margin: 9px 0 20px; }
-.phone-greeting { font-size: 10px; color: #718091; }
-.phone-title { font-size: 18px; font-weight: 900; line-height: 1.15; margin: 4px 0 14px; }
-.phone-search { background: #eef4f2; border-radius: 10px; padding: 11px; font-size: 9px; color: #83918f; margin-bottom: 15px; }
-.phone-label { font-size: 9px; font-weight: 850; margin-bottom: 9px; }
-.phone-services { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
-.phone-service { background: #f0f6f4; border-radius: 10px; padding: 10px 3px 8px; text-align: center; font-size: 8px; font-weight: 750; }
-.phone-service i { display: block; font-style: normal; font-size: 19px; margin-bottom: 5px; }
-.phone-banner { background: var(--navy); color: white; border-radius: 12px; margin-top: 15px; padding: 12px; font-size: 9px; line-height: 1.5; }
-.phone-banner b { color: var(--green); display: block; font-size: 11px; }
-.float-card { position: absolute; z-index: 3; background: white; color: var(--navy); border-radius: 14px; box-shadow: 0 16px 40px rgba(0,0,0,.2); padding: 13px 16px; font-size: 10px; }
-.float-card strong { display: block; font-size: 12px; margin-bottom: 3px; }
-.float-one { left: -5px; top: 70px; transform: rotate(-4deg); }
-.float-two { right: -8px; bottom: 55px; transform: rotate(4deg); }
-.float-icon { display: inline-grid; place-items: center; width: 27px; height: 27px; border-radius: 9px; background: #e4fbf2; margin-right: 7px; font-size: 15px; vertical-align: middle; }
-.trust-strip { background: #fff; border-bottom: 1px solid var(--line); }
-.trust-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 20px; padding: 22px 0; }
-.trust-item { display: flex; align-items: center; gap: 11px; color: #667789; font-size: 11px; font-weight: 650; }
-.trust-item b { display: block; color: var(--navy); font-size: 12px; margin-bottom: 2px; }
-.trust-icon { width: 36px; height: 36px; display: grid; place-items: center; border-radius: 11px; background: #e9fbf4; color: #087b57; font-size: 17px; flex: 0 0 auto; }
-.section { padding: 88px 0; }
-.section-heading { display: flex; justify-content: space-between; align-items: end; gap: 30px; margin-bottom: 34px; }
-.kicker { color: #079568; font-size: 10px; font-weight: 900; text-transform: uppercase; letter-spacing: 1.7px; }
-.section h2 { font-size: calc(36px * var(--site-heading-scale)); letter-spacing: -1.6px; line-height: 1.13; margin: 11px 0 0; color: var(--navy); }
-.section-intro { color: var(--muted); max-width: 450px; line-height: 1.7; font-size: 13px; margin: 0; }
-.services-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 16px; }
-.service-card { border: 1px solid var(--line); border-radius: calc(18px * var(--site-radius-scale)); padding: 22px; background: var(--surface); min-height: 190px; transition: transform .2s, box-shadow .2s, border-color .2s; position: relative; overflow: hidden; }
-.service-card:hover { transform: translateY(-5px); box-shadow: var(--shadow); border-color: rgba(0,214,143,.6); }
-.service-icon { width: 48px; height: 48px; border-radius: 15px; display: grid; place-items: center; background: #e9fbf4; font-size: 23px; margin-bottom: 18px; }
-.service-card h3 { margin: 0 0 7px; color: var(--navy); font-size: 15px; letter-spacing: -.3px; }
-.service-card p { margin: 0; color: var(--muted); font-size: 11px; line-height: 1.6; max-width: 230px; }
-.service-arrow { position: absolute; right: 20px; bottom: 19px; color: #0b9c6e; font-size: 18px; }
-.service-card.featured { background: var(--navy); border-color: var(--navy); }
-.service-card.featured h3 { color: #fff; }
-.service-card.featured p { color: #b3c2cf; }
-.service-card.featured .service-icon { background: rgba(0,214,143,.14); }
-.service-card.featured .service-arrow { color: var(--green); }
-.band { background: var(--navy); color: white; padding: 70px 0; position: relative; overflow: hidden; }
-.band-grid { display: grid; grid-template-columns: 1fr 1fr; align-items: center; gap: 50px; }
-.band h2 { color: white; font-size: calc(37px * var(--site-heading-scale)); line-height: 1.12; letter-spacing: -1.6px; margin: 13px 0; }
-.band p { color: #b6c5d2; line-height: 1.75; font-size: 13px; max-width: 480px; }
-.steps { display: grid; grid-template-columns: repeat(3,1fr); gap: 12px; }
-.step { padding: 19px; border: 1px solid rgba(255,255,255,.13); background: rgba(255,255,255,.045); border-radius: 15px; }
-.step-number { color: var(--green); font-size: 10px; font-weight: 900; letter-spacing: 1px; }
-.step h3 { font-size: 13px; margin: 15px 0 7px; }
-.step p { font-size: 10px; line-height: 1.6; margin: 0; }
-.popular { background: #fff; }
-.popular-grid { display: grid; grid-template-columns: 1.1fr .9fr; gap: 18px; }
-.popular-card { min-height: 255px; border-radius: 20px; padding: 28px; position: relative; overflow: hidden; background: #e8f8f1; }
-.popular-card.dark { background: #102d4b; color: #fff; }
-.popular-card h3 { font-size: 22px; letter-spacing: -.8px; max-width: 260px; margin: 13px 0 9px; }
-.popular-card p { color: #61766e; font-size: 12px; line-height: 1.65; max-width: 280px; }
-.popular-card.dark p { color: #b6c6d3; }
-.popular-card .btn { margin-top: 12px; }
-.popular-visual { position: absolute; right: 24px; bottom: 15px; font-size: 100px; opacity: .8; transform: rotate(-9deg); }
-.popular-card.dark .popular-visual { opacity: .18; font-size: 145px; right: 10px; bottom: -5px; }
-.partner-cta { background: #e9fbf4; }
-.partner-box { display: flex; align-items: center; justify-content: space-between; gap: 30px; padding: 38px 42px; border-radius: 22px; background: #fff; border: 1px solid #d9f3e8; }
-.partner-box h2 { color: var(--navy); font-size: 28px; letter-spacing: -1px; margin: 0 0 8px; }
-.partner-box p { color: var(--muted); font-size: 12px; margin: 0; line-height: 1.7; max-width: 550px; }
-.site-footer { background: #061426; color: white; padding: 58px 0 24px; }
-.footer-grid { display: grid; grid-template-columns: 1.5fr 1fr 1fr 1fr; gap: 35px; padding-bottom: 42px; }
-.footer-brand p { color: #94a7b9; max-width: 270px; font-size: 11px; line-height: 1.8; }
-.footer-col h4 { color: #fff; font-size: 11px; margin: 4px 0 16px; }
-.footer-col a { display: block; color: #94a7b9; font-size: 11px; margin: 11px 0; }
-.footer-col a:hover { color: var(--green); }
-.footer-bottom { border-top: 1px solid rgba(255,255,255,.1); padding-top: 20px; display: flex; justify-content: space-between; gap: 20px; color: #7890a4; font-size: 10px; }
-.modal-backdrop { display: none; position: fixed; inset: 0; z-index: 20; background: rgba(3,15,28,.68); padding: 20px; align-items: center; justify-content: center; }
-.modal-backdrop.open { display: flex; }
-.modal { width: min(440px,100%); background: #fff; color: var(--ink); border-radius: 20px; padding: 28px; box-shadow: 0 30px 90px rgba(0,0,0,.3); }
-.modal-head { display: flex; justify-content: space-between; align-items: center; }
-.modal-head h3 { margin: 0; font-size: 20px; color: var(--navy); }
-.close { border: 0; background: #eef3f2; border-radius: 9px; width: 34px; height: 34px; font-size: 18px; }
-.modal p { color: var(--muted); font-size: 12px; line-height: 1.6; }
-.modal label { display: block; font-size: 11px; font-weight: 750; margin: 16px 0 7px; }
-.modal input, .modal select { width: 100%; border: 1px solid #dce6e3; border-radius: 10px; padding: 13px; font: inherit; font-size: 12px; outline: none; }
-.modal input:focus, .modal select:focus { border-color: #00b97a; box-shadow: 0 0 0 3px rgba(0,214,143,.12); }
-.modal .btn { width: 100%; margin-top: 20px; }
-.toast { position: fixed; z-index: 30; bottom: 22px; left: 50%; transform: translate(-50%,20px); background: #071a2f; color: white; border: 1px solid rgba(0,214,143,.35); padding: 13px 18px; border-radius: 12px; font-size: 12px; opacity: 0; pointer-events: none; transition: .25s; box-shadow: var(--shadow); }
-.toast.show { opacity: 1; transform: translate(-50%,0); }
-:focus-visible { outline: 3px solid #00d68f; outline-offset: 3px; }
-/* MEI One visual refresh: a brighter, editorial super-app experience */
-body { background: #f7f8f2; color: #102238; }
-#app { background: #f7f8f2; }
-.site-header { background: #fff; color: var(--navy); box-shadow: 0 1px 0 rgba(7,26,47,.06); }
-.brand { color: var(--navy); }
-.brand small { color: #718091; }
-.nav-links { color: #536477; }
-.nav-links a:hover { color: #079568; }
-.btn-outline { color: var(--navy); border-color: #dce5e0; background: #fff; }
-.btn-outline:hover { border-color: var(--green); background: #f1fff8; }
-.btn-primary { background: #b8f36b; color: #102238; box-shadow: 0 9px 22px rgba(130,190,67,.18); }
-.btn-primary:hover { background: #a9eb55; box-shadow: 0 13px 26px rgba(130,190,67,.25); }
-.hero { background: #f2f6ed; color: var(--navy); }
-.hero:before { width: 650px; height: 650px; border-color: rgba(0,130,88,.10); right: -190px; top: -340px; }
-.hero:after { border-color: rgba(7,26,47,.08); }
-.hero-grid { min-height: 610px; padding: 78px 0 82px; gap: 42px; }
-.eyebrow { color: #087b57; }
-.eyebrow:before { background: #b8f36b; height: 4px; border-radius: 4px; }
-.hero h1 { color: #102238; font-size: calc(66px * var(--site-heading-scale)); letter-spacing: -4.4px; line-height: .99; max-width: 620px; }
-.hero h1 span { color: #07865f; }
-.hero-copy { color: #596b78; font-size: 16px; max-width: 490px; }
-.hero-note { color: #667789; }
-.hero-note strong { color: var(--navy); }
-.hero-art { min-height: 430px; }
-.orbit { width: min(440px,100%); background: radial-gradient(circle at 50% 48%, #e2f5d1 0, #e8f3e7 54%, rgba(232,243,231,0) 72%); border: 1px solid rgba(8,134,95,.16); }
-.orbit:before { border-color: rgba(7,26,47,.12); }
-.phone { width: 238px; height: 390px; border: 6px solid #17334a; border-radius: 32px; background: #fff; box-shadow: 0 32px 75px rgba(22,48,60,.22); transform: rotate(-3deg); }
-.phone-notch { background: #17334a; }
-.phone-top { color: #102238; }
-.phone-search { background: #f0f4ee; border: 1px solid #e5ece2; color: #68796f; }
-.phone-service { background: #f2f7ed; }
-.phone-banner { background: #102b48; }
-.float-card { border: 1px solid rgba(7,26,47,.06); box-shadow: 0 16px 40px rgba(22,48,60,.13); }
-.float-icon { background: #eaf8d9; color: #087b57; }
-.trust-strip { background: #fff; }
-.trust-icon { background: #eff8e7; color: #087b57; }
-.section { padding: 96px 0; }
-.section h2 { letter-spacing: -1.9px; }
-.service-card { border-radius: 20px; border-color: #e8ece5; box-shadow: 0 5px 18px rgba(20,44,35,.025); }
-.service-card:hover { box-shadow: 0 18px 42px rgba(20,44,35,.09); border-color: #b8e98c; }
-.service-icon { background: #eff8e7; }
-.service-card.featured { background: #b8f36b; border-color: #b8f36b; }
-.service-card.featured h3 { color: #102238; }
-.service-card.featured p { color: #455c42; }
-.service-card.featured .service-icon { background: rgba(255,255,255,.58); }
-.service-card.featured .service-arrow { color: #102238; }
-.band { background: #102b48; }
-.band .eyebrow { color: #b8f36b; }
-.band .eyebrow:before { background: #b8f36b; }
-.step { border-radius: 18px; background: rgba(255,255,255,.07); }
-.step-number { color: #b8f36b; }
-.popular { background: #fff; }
-.popular-card { background: #eff8e7; border-radius: 22px; }
-.popular-card.dark { background: #102b48; }
-.partner-cta { background: #eff8e7; }
-.partner-box { border-radius: 24px; border-color: #e1edd8; box-shadow: 0 12px 34px rgba(20,44,35,.04); }
-.site-footer { background: #071a2f; }
-@media (max-width: 900px) {
-  .hero h1 { font-size: calc(54px * var(--site-heading-scale)); }
+
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;font-family:var(--font);background:var(--background);color:var(--ink)}
+button,a{font:inherit}
+a{color:inherit;text-decoration:none}
+button{cursor:pointer}
+.container{width:min(1160px,calc(100% - 48px));margin:auto}
+
+/* HEADER */
+.site-header{
+  position:sticky;top:0;z-index:10;
+  background:#fff;
+  box-shadow:0 1px 0 rgba(17,48,37,.07);
 }
-@media (max-width: 680px) {
-  .site-header { background: #fff; }
-  .nav-links { background: #fff; color: #536477; border-top-color: #edf0ea; box-shadow: 0 15px 25px rgba(7,26,47,.08); }
-  .hero-grid { padding: 58px 0 40px; }
-  .hero h1 { font-size: calc(47px * var(--site-heading-scale)); letter-spacing: -3px; }
-  .hero-art { min-height: 350px; }
-  .orbit { width: 330px; }
-  .phone { transform: scale(.9) rotate(-3deg); }
-  .section { padding: 70px 0; }
+.navbar{
+  min-height:78px;display:flex;align-items:center;
+  justify-content:space-between;gap:25px;
 }
-@media (max-width: 900px) {
-  .nav-links { gap: 16px; }
-  .hero-grid { gap: 25px; }
-  .hero h1 { font-size: calc(48px * var(--site-heading-scale)); }
-  .services-grid { grid-template-columns: repeat(2,1fr); }
-  .trust-grid { grid-template-columns: repeat(2,1fr); }
-  .footer-grid { grid-template-columns: 1.3fr 1fr 1fr; }
+.brand{
+  display:inline-flex;align-items:center;gap:11px;
+  color:var(--navy);font-size:22px;font-weight:900;
+  letter-spacing:-.7px;
 }
-@media (max-width: 680px) {
-  .container { width: min(100% - 34px, 540px); }
-  .navbar { min-height: 70px; }
-  .menu-toggle { display: inline-flex; }
-  .nav-links { display: none; position: absolute; top: 70px; left: 0; right: 0; background: #0a213a; padding: 18px 24px 22px; flex-direction: column; align-items: stretch; gap: 18px; border-top: 1px solid rgba(255,255,255,.1); }
-  .nav-links.open { display: flex; }
-  .nav-actions .btn-outline { display: none; }
-  .nav-actions .btn { padding: 11px 13px; font-size: 11px; }
-  .hero-grid { grid-template-columns: 1fr; padding: 60px 0 40px; gap: 10px; }
-  .hero h1 { font-size: calc(44px * var(--site-heading-scale)); letter-spacing: -2.6px; }
-  .hero-copy { font-size: 14px; }
-  .hero-art { min-height: 360px; }
-  .orbit { width: 330px; max-width: 90%; }
-  .phone { transform: scale(.9) rotate(-5deg); }
-  .float-one { left: 0; top: 45px; }
-  .float-two { right: -3px; bottom: 25px; }
-  .trust-grid { gap: 17px 12px; }
-  .trust-item { font-size: 10px; }
-  .trust-item b { font-size: 11px; }
-  .section { padding: 65px 0; }
-  .section-heading { display: block; }
-  .section-intro { margin-top: 14px; }
-  .section h2 { font-size: calc(31px * var(--site-heading-scale)); }
-  .services-grid { gap: 10px; }
-  .service-card { min-height: 180px; padding: 17px; }
-  .service-card p { font-size: 10px; }
-  .band { padding: 58px 0; }
-  .band-grid { grid-template-columns: 1fr; gap: 25px; }
-  .band h2 { font-size: 32px; }
-  .steps { gap: 8px; }
-  .step { padding: 13px; }
-  .step h3 { font-size: 11px; }
-  .step p { font-size: 9px; }
-  .popular-grid { grid-template-columns: 1fr; }
-  .popular-card { min-height: 225px; }
-  .partner-box { display: block; padding: 28px 23px; }
-  .partner-box .btn { margin-top: 20px; }
-  .footer-grid { grid-template-columns: 1fr 1fr; }
-  .footer-brand { grid-column: 1 / -1; }
-  .footer-bottom { flex-direction: column; }
+.brand-mark{
+  width:40px;height:40px;border-radius:13px;
+  background:var(--green);color:var(--navy);
+  display:grid;place-items:center;font-size:22px;font-weight:950;
 }
-@media (prefers-reduced-motion: reduce) { *, *:before, *:after { scroll-behavior: auto !important; transition-duration: .01ms !important; animation-duration: .01ms !important; } }
-/* Careem-inspired customer app layout */
-body,#app { background:#f5f8f3; color:#142b27; }
-.site-header { background:#fff; color:#102b26; box-shadow:0 1px 0 rgba(17,48,37,.07); }
-.brand { color:#102b26; }
-.brand-mark { background:#c7f36b; color:#153328; box-shadow:none; }
-.brand small { color:#73847b; }
-.nav-links { color:#52665e; }
-.nav-links a:hover { color:#13875d; }
-.btn-primary { background:#c7f36b; color:#153328; box-shadow:0 8px 18px rgba(137,190,72,.16); }
-.btn-primary:hover { background:#b9eb57; }
-.btn-outline { color:#18372d; border:1px solid #dce6dd; background:#fff; }
-.menu-toggle { color:#18372d; border-color:#dce6dd; }
-.hero { background:linear-gradient(115deg,#e5f6df 0%,#f3f8e9 56%,#eaf5e7 100%); color:#142b27; }
-.hero:before { width:650px;height:650px;right:-230px;top:-350px;border-color:rgba(32,132,83,.10); }
-.hero:after { border-color:rgba(32,132,83,.08); }
-.hero-grid { min-height:570px; grid-template-columns:.9fr 1.1fr; gap:30px; padding:56px 0 58px; }
-.eyebrow { color:#15835c; }
-.eyebrow:before { background:#b8ed65; height:4px; border-radius:4px; }
-.hero h1 { color:#15352b; font-size:calc(54px * var(--site-heading-scale)); letter-spacing:-3px; line-height:1.02; max-width:540px; }
-.hero h1 span { color:#15835c; }
-.hero-copy { color:#62746a; max-width:450px; font-size:14px; line-height:1.75; }
-.hero-note,.hero-note strong { color:#52675c; }
-.hero-art { min-height:440px; }
-.orbit { width:min(470px,100%); border:0; background:radial-gradient(circle,#d4efbd 0,#e8f3df 54%,rgba(232,243,223,0) 72%); }
-.orbit:before { border:1px dashed rgba(29,95,64,.18); }
-.phone { width:250px;height:410px;border:6px solid #172d2b;border-radius:35px;background:#fbfdf9;padding:19px 15px;box-shadow:0 28px 65px rgba(30,62,43,.22);transform:rotate(-2deg); }
-.phone-notch { background:#172d2b; }
-.phone-top { color:#18352b; }
-.phone-search { background:#edf3eb;border:1px solid #e0e9dc;color:#78877e; }
-.phone-service { background:#f0f5ed;border:1px solid #e8eee4; }
-.phone-banner { background:#baf064;color:#173328; }
-.phone-banner b { color:#173328; }
-.float-card { border:1px solid #e8eee5;box-shadow:0 14px 35px rgba(30,62,43,.13); }
-.float-icon,.trust-icon { background:#e8f5dc;color:#16845b; }
-.trust-strip { background:#fff; }
-.section { padding:78px 0; }
-.section h2 { color:#15352b; }
-.kicker { color:#16845b; }
-.services-grid { grid-template-columns:repeat(4,minmax(0,1fr)); gap:13px; }
-.service-card { min-height:166px;padding:18px;border-radius:17px;background:#fff;border-color:#e7ece4;box-shadow:0 3px 12px rgba(31,61,42,.025); }
-.service-card:hover { border-color:#b8e78c;box-shadow:0 12px 28px rgba(31,61,42,.08); }
-.service-icon { width:44px;height:44px;border-radius:14px;background:#f0f5eb;font-size:22px;margin-bottom:13px; }
-.service-card.featured { background:#c7f36b;border-color:#c7f36b; }
-.service-card.featured h3 { color:#15352b; }
-.service-card.featured p { color:#4f654a; }
-.service-card.featured .service-icon { background:rgba(255,255,255,.65); }
-.service-card.featured .service-arrow { color:#15352b; }
-.band { background:#153b31; }
-.band .eyebrow,.band .step-number { color:#c7f36b; }
-.band .eyebrow:before { background:#c7f36b; }
-.step { background:rgba(255,255,255,.07);border-radius:16px; }
-.popular { background:#fff; }
-.popular-card { background:#edf6e8;border-radius:20px; }
-.popular-card.dark { background:#153b31; }
-.partner-cta { background:#eaf4e4; }
-.partner-box { border-color:#e0eadb;border-radius:20px; }
-.site-footer { background:#102b25; }
-@media(max-width:900px) {
- .hero-grid { grid-template-columns:1fr 1fr;gap:16px; }
- .hero h1 { font-size:calc(45px * var(--site-heading-scale)); }
- .services-grid { grid-template-columns:repeat(2,minmax(0,1fr)); }
+.brand small{
+  display:block;color:#73847b;font-size:9px;
+  letter-spacing:2px;margin-top:2px;
 }
-@media(max-width:680px) {
- .site-header { background:#fff; }
- .nav-links { background:#fff;color:#52665e;border-top-color:#e8eee5;box-shadow:0 14px 25px rgba(20,50,35,.08); }
- .hero-grid { grid-template-columns:1fr;padding:46px 0 24px;gap:0; }
- .hero h1 { font-size:calc(43px * var(--site-heading-scale));letter-spacing:-2.5px; }
- .hero-art { min-height:350px;margin-top:8px; }
- .orbit { width:330px; }
- .phone { transform:scale(.88) rotate(-2deg); }
- .float-one { left:0;top:44px; }
- .float-two { right:0;bottom:20px; }
- .section { padding:60px 0; }
- .services-grid { grid-template-columns:repeat(2,minmax(0,1fr)); }
- .service-card { min-height:160px;padding:15px; }
+.nav-links{display:flex;align-items:center;gap:27px;color:#52665e;font-size:13px;font-weight:650}
+.nav-links a:hover{color:var(--green-dark)}
+.nav-actions{display:flex;align-items:center;gap:10px}
+.btn{
+  display:inline-flex;justify-content:center;align-items:center;gap:9px;
+  border:0;border-radius:12px;padding:13px 19px;
+  font-weight:750;font-size:13px;transition:.2s;
+}
+.btn:hover{transform:translateY(-2px)}
+.btn-primary{background:var(--green);color:var(--navy);box-shadow:0 8px 18px rgba(137,190,72,.16)}
+.btn-primary:hover{background:#b9eb57}
+.btn-outline{background:#fff;color:var(--navy);border:1px solid #dce6dd}
+.btn-outline:hover{border-color:var(--green-dark);background:#f5fff0}
+.btn-dark{background:var(--navy);color:white}
+.menu-toggle{
+  display:none;border:1px solid #dce6dd;background:white;
+  color:var(--navy);border-radius:10px;padding:9px 12px;
+}
+
+/* HERO */
+.hero{
+  background:linear-gradient(115deg,#e5f6df 0%,#f3f8e9 56%,#eaf5e7 100%);
+  position:relative;overflow:hidden;
+}
+.hero:before,.hero:after{
+  content:"";position:absolute;border-radius:50%;
+  pointer-events:none;border:1px solid rgba(32,132,83,.09);
+}
+.hero:before{width:650px;height:650px;right:-230px;top:-350px}
+.hero:after{width:420px;height:420px;right:-110px;top:-240px}
+.hero-grid{
+  min-height:570px;display:grid;grid-template-columns:.9fr 1.1fr;
+  gap:30px;align-items:center;padding:56px 0 58px;
+  position:relative;z-index:1;
+}
+.eyebrow{
+  display:inline-flex;align-items:center;gap:9px;
+  color:var(--green-dark);font-size:11px;
+  text-transform:uppercase;letter-spacing:1.8px;font-weight:850;
+}
+.eyebrow:before{content:"";width:22px;height:4px;border-radius:4px;background:var(--green)}
+.hero h1{
+  max-width:540px;color:#15352b;
+  font-size:clamp(43px,5vw,62px);
+  letter-spacing:-3.5px;line-height:1.02;margin:22px 0;
+}
+.hero h1 span{color:var(--green-dark)}
+.hero-copy{max-width:470px;color:var(--muted);font-size:15px;line-height:1.8}
+.hero-actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:28px}
+.hero-note{margin-top:25px;color:#52675c;font-size:11px}
+.hero-art{min-height:440px;display:grid;place-items:center;position:relative}
+.orbit{
+  width:min(470px,100%);aspect-ratio:1;border-radius:50%;
+  display:grid;place-items:center;
+  background:radial-gradient(circle,#d4efbd 0,#e8f3df 54%,transparent 72%);
+  position:relative;
+}
+.orbit:before{
+  content:"";position:absolute;inset:25px;
+  border:1px dashed rgba(29,95,64,.18);border-radius:50%;
+}
+.phone{
+  width:250px;height:410px;border:6px solid #172d2b;
+  border-radius:35px;background:#fbfdf9;padding:19px 15px;
+  box-shadow:0 28px 65px rgba(30,62,43,.22);
+  transform:rotate(-2deg);position:relative;z-index:2;
+}
+.phone-notch{
+  width:62px;height:13px;background:#172d2b;
+  border-radius:0 0 10px 10px;position:absolute;
+  top:0;left:calc(50% - 31px);
+}
+.phone-top{display:flex;justify-content:space-between;font-size:10px;font-weight:850;margin:9px 0 20px}
+.phone-greeting{font-size:10px;color:#718091}
+.phone-title{font-size:18px;font-weight:900;line-height:1.15;margin:4px 0 14px}
+.phone-search{background:#edf3eb;border:1px solid #e0e9dc;border-radius:10px;padding:11px;font-size:9px;color:#78877e;margin-bottom:15px}
+.phone-label{font-size:9px;font-weight:850;margin-bottom:9px}
+.phone-services{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.phone-service{background:#f0f5ed;border:1px solid #e8eee4;border-radius:10px;padding:10px 3px 8px;text-align:center;font-size:8px;font-weight:750}
+.phone-service i{display:block;font-style:normal;font-size:19px;margin-bottom:5px}
+.phone-banner{background:#baf064;color:#173328;border-radius:12px;margin-top:15px;padding:12px;font-size:9px;line-height:1.5}
+.phone-banner b{display:block;font-size:11px}
+.float-card{
+  position:absolute;z-index:3;background:white;color:var(--navy);
+  border:1px solid #e8eee5;border-radius:14px;
+  box-shadow:0 14px 35px rgba(30,62,43,.13);
+  padding:13px 16px;font-size:10px;
+}
+.float-card strong{display:block;font-size:12px;margin-bottom:3px}
+.float-icon{
+  display:inline-grid;place-items:center;width:27px;height:27px;
+  border-radius:9px;background:#e8f5dc;color:#16845b;
+  margin-right:7px;font-size:15px;vertical-align:middle;
+}
+.float-one{left:0;top:65px;transform:rotate(-4deg)}
+.float-two{right:0;bottom:55px;transform:rotate(4deg)}
+
+/* TRUST */
+.trust-strip{background:white;border-bottom:1px solid var(--line)}
+.trust-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;padding:22px 0}
+.trust-item{display:flex;align-items:center;gap:11px;color:#667789;font-size:11px;font-weight:650}
+.trust-item b{display:block;color:var(--navy);font-size:12px;margin-bottom:2px}
+.trust-icon{
+  width:36px;height:36px;display:grid;place-items:center;
+  border-radius:11px;background:#e8f5dc;color:#16845b;
+  font-size:17px;flex-shrink:0;
+}
+
+/* SECTIONS */
+.section{padding:78px 0}
+.section-heading{
+  display:flex;justify-content:space-between;align-items:end;
+  gap:30px;margin-bottom:34px;
+}
+.kicker{
+  color:#16845b;font-size:10px;font-weight:900;
+  text-transform:uppercase;letter-spacing:1.7px;
+}
+.section h2{
+  font-size:clamp(29px,3.5vw,36px);
+  letter-spacing:-1.6px;line-height:1.13;
+  margin:11px 0 0;color:#15352b;
+}
+.section-intro{color:var(--muted);max-width:450px;line-height:1.7;font-size:13px;margin:0}
+
+/* SERVICES */
+.services-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:13px}
+.service-card{
+  border:1px solid #e7ece4;border-radius:17px;padding:18px;
+  background:white;min-height:166px;position:relative;
+  overflow:hidden;transition:.2s;
+  box-shadow:0 3px 12px rgba(31,61,42,.025);
+}
+.service-card:hover{
+  transform:translateY(-5px);border-color:#b8e78c;
+  box-shadow:0 12px 28px rgba(31,61,42,.08);
+}
+.service-icon{
+  width:44px;height:44px;border-radius:14px;
+  display:grid;place-items:center;background:#f0f5eb;
+  font-size:22px;margin-bottom:13px;
+}
+.service-card h3{margin:0 0 7px;color:var(--navy);font-size:15px}
+.service-card p{margin:0;color:var(--muted);font-size:11px;line-height:1.6;max-width:230px}
+.service-arrow{position:absolute;right:18px;bottom:17px;color:#0b9c6e;font-size:18px}
+.service-card.featured{background:#c7f36b;border-color:#c7f36b}
+.service-card.featured h3{color:#15352b}
+.service-card.featured p{color:#4f654a}
+.service-card.featured .service-icon{background:rgba(255,255,255,.65)}
+.service-card.featured .service-arrow{color:#15352b}
+
+/* HOW IT WORKS */
+.band{background:#153b31;color:white;padding:70px 0}
+.band-grid{display:grid;grid-template-columns:1fr 1fr;align-items:center;gap:50px}
+.band h2{color:white;font-size:clamp(30px,3.5vw,37px);line-height:1.12;letter-spacing:-1.6px;margin:13px 0}
+.band p{color:#b6c5d2;line-height:1.75;font-size:13px;max-width:480px}
+.band .eyebrow,.band .step-number{color:#c7f36b}
+.band .eyebrow:before{background:#c7f36b}
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.step{
+  padding:19px;border:1px solid rgba(255,255,255,.13);
+  background:rgba(255,255,255,.07);border-radius:16px;
+}
+.step-number{font-size:10px;font-weight:900;letter-spacing:1px}
+.step h3{font-size:13px;margin:15px 0 7px}
+.step p{font-size:10px;line-height:1.6;margin:0}
+
+/* POPULAR */
+.popular{background:#fff}
+.popular-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:18px}
+.popular-card{
+  min-height:255px;border-radius:20px;padding:28px;
+  position:relative;overflow:hidden;background:#edf6e8;
+}
+.popular-card.dark{background:#153b31;color:white}
+.popular-card h3{font-size:22px;letter-spacing:-.8px;max-width:260px;margin:13px 0 9px}
+.popular-card p{color:#61766e;font-size:12px;line-height:1.65;max-width:280px}
+.popular-card.dark p{color:#b6c6d3}
+.popular-card .btn{margin-top:12px}
+.popular-visual{position:absolute;right:24px;bottom:15px;font-size:100px;opacity:.8;transform:rotate(-9deg)}
+.popular-card.dark .popular-visual{opacity:.18;font-size:145px;right:10px;bottom:-5px}
+
+/* PROVIDER CTA */
+.partner-cta{background:#eaf4e4}
+.partner-box{
+  display:flex;align-items:center;justify-content:space-between;gap:30px;
+  padding:38px 42px;border-radius:20px;background:white;
+  border:1px solid #e0eadb;
+}
+.partner-box h2{color:var(--navy);font-size:28px;letter-spacing:-1px;margin:0 0 8px}
+.partner-box p{color:var(--muted);font-size:12px;margin:0;line-height:1.7;max-width:550px}
+
+/* FOOTER */
+.site-footer{background:#102b25;color:white;padding:58px 0 24px}
+.footer-grid{display:grid;grid-template-columns:1.5fr 1fr 1fr 1fr;gap:35px;padding-bottom:42px}
+.footer-brand p{color:#94a7b9;max-width:270px;font-size:11px;line-height:1.8}
+.footer-col h4{color:white;font-size:11px;margin:4px 0 16px}
+.footer-col a{display:block;color:#94a7b9;font-size:11px;margin:11px 0}
+.footer-col a:hover{color:var(--green)}
+.footer-bottom{
+  border-top:1px solid rgba(255,255,255,.1);padding-top:20px;
+  display:flex;justify-content:space-between;gap:20px;
+  color:#94a7b9;font-size:10px;
+}
+
+/* ACCOUNT CHOICE MODAL */
+.modal-backdrop{
+  display:none;position:fixed;inset:0;z-index:30;
+  background:rgba(3,15,28,.68);padding:20px;
+  align-items:center;justify-content:center;
+}
+.modal-backdrop.open{display:flex}
+.modal{
+  width:min(440px,100%);background:white;color:var(--ink);
+  border-radius:20px;padding:28px;
+  box-shadow:0 30px 90px rgba(0,0,0,.3);
+  animation:modalIn .2s ease-out;
+}
+@keyframes modalIn{
+  from{opacity:0;transform:translateY(12px)}
+  to{opacity:1;transform:translateY(0)}
+}
+.modal-head{display:flex;justify-content:space-between;align-items:center}
+.modal-head h3{margin:0;font-size:21px;color:var(--navy)}
+.close{
+  border:0;background:#eef3f2;border-radius:9px;
+  width:35px;height:35px;font-size:20px;color:var(--navy);
+}
+.modal p{color:var(--muted);font-size:13px;line-height:1.6}
+.account-option{
+  display:flex;align-items:center;gap:14px;
+  border:1px solid var(--line);border-radius:14px;
+  padding:16px;margin-top:13px;transition:.2s;
+}
+.account-option:hover{border-color:#a9d77c;background:#f7fff1;transform:translateY(-2px)}
+.account-option-icon{
+  width:44px;height:44px;border-radius:12px;
+  background:#eff8e7;display:grid;place-items:center;font-size:22px;
+  flex-shrink:0;
+}
+.account-option strong{display:block;font-size:14px;color:var(--navy)}
+.account-option small{display:block;font-size:11px;color:var(--muted);margin-top:4px}
+.account-option .arrow{margin-left:auto;color:#16845b;font-size:19px}
+.modal-footer{text-align:center;margin-top:19px;font-size:11px;color:var(--muted)}
+.modal-footer a{color:#16845b;font-weight:750}
+
+/* ACCESSIBILITY */
+:focus-visible{outline:3px solid #16845b;outline-offset:3px}
+@media(prefers-reduced-motion:reduce){
+  *,*:before,*:after{scroll-behavior:auto!important;transition-duration:.01ms!important;animation-duration:.01ms!important}
+}
+
+/* TABLET */
+@media(max-width:900px){
+  .nav-links{gap:15px}
+  .hero-grid{grid-template-columns:1fr 1fr;gap:16px}
+  .hero h1{font-size:45px}
+  .services-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .trust-grid{grid-template-columns:repeat(2,1fr)}
+  .footer-grid{grid-template-columns:1.3fr 1fr 1fr}
+}
+
+/* MOBILE */
+@media(max-width:680px){
+  .container{width:min(100% - 34px,540px)}
+  .navbar{min-height:70px}
+  .menu-toggle{display:inline-flex}
+  .nav-links{
+    display:none;position:absolute;top:70px;left:0;right:0;
+    background:white;padding:20px 24px;
+    flex-direction:column;align-items:stretch;gap:18px;
+    border-top:1px solid #e8eee5;
+    box-shadow:0 14px 25px rgba(20,50,35,.08);
+  }
+  .nav-links.open{display:flex}
+  .nav-actions .btn{padding:10px 12px;font-size:11px}
+  .hero-grid{grid-template-columns:1fr;padding:46px 0 24px;gap:0}
+  .hero h1{font-size:43px;letter-spacing:-2.5px}
+  .hero-copy{font-size:14px}
+  .hero-art{min-height:350px;margin-top:8px}
+  .orbit{width:330px;max-width:90%}
+  .phone{transform:scale(.88) rotate(-2deg)}
+  .float-one{left:0;top:44px}
+  .float-two{right:0;bottom:20px}
+  .trust-grid{gap:17px 12px}
+  .trust-item{font-size:10px}
+  .trust-item b{font-size:11px}
+  .section{padding:60px 0}
+  .section-heading{display:block}
+  .section-intro{margin-top:14px}
+  .section h2{font-size:31px}
+  .services-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+  .service-card{min-height:160px;padding:15px}
+  .service-card p{font-size:10px}
+  .band{padding:58px 0}
+  .band-grid{grid-template-columns:1fr;gap:25px}
+  .band h2{font-size:32px}
+  .steps{gap:8px}
+  .step{padding:13px}
+  .step h3{font-size:11px}
+  .step p{font-size:9px}
+  .popular-grid{grid-template-columns:1fr}
+  .popular-card{min-height:225px}
+  .partner-box{display:block;padding:28px 23px}
+  .partner-box .btn{margin-top:20px}
+  .footer-grid{grid-template-columns:1fr 1fr}
+  .footer-brand{grid-column:1/-1}
+  .footer-bottom{flex-direction:column}
 }
 </style>
 </head>
+
 <body>
 <div id="app">
+
+<!-- HEADER -->
 <header class="site-header">
   <div class="container navbar">
-    <a class="brand" href="#home" aria-label="MEI One home"><span class="brand-mark">M</span><span>MEI ONE<small>EVERYTHING, CONNECTED</small></span></a>
+
+    <a class="brand" href="#home" aria-label="MEI One home">
+      <span class="brand-mark">M</span>
+      <span>MEI ONE<small>EVERYTHING, CONNECTED</small></span>
+    </a>
+
     <nav class="nav-links" id="navLinks" aria-label="Main navigation">
-      <a href="#services">Services</a><a href="#how">How it works</a><a href="#popular">Explore MEI</a><a href="#partners">Become a partner</a>
+      <a href="#services">Services</a>
+      <a href="#how">How it works</a>
+      <a href="#popular">Explore MEI</a>
+      <a href="#partners">Become a partner</a>
     </nav>
-    <div class="nav-actions"><button class="btn btn-outline" data-modal="signin">Sign in</button><button class="btn btn-primary" data-modal="signup">Get started <span>↗</span></button><button class="menu-toggle" id="menuToggle" aria-label="Toggle navigation" aria-expanded="false">☰</button></div>
+
+    <div class="nav-actions">
+      <button class="btn btn-outline" data-account-modal>Sign In</button>
+      <button class="btn btn-primary" data-account-modal>
+        Get Started <span>↗</span>
+      </button>
+      <button class="menu-toggle" id="menuToggle"
+        aria-label="Toggle navigation" aria-expanded="false">☰</button>
+    </div>
+
   </div>
 </header>
+
 <main id="home">
+
+<!-- HERO -->
 <section class="hero">
   <div class="container hero-grid">
+
     <div>
       <div class="eyebrow">One platform. Many possibilities.</div>
+
       <h1>Life moves better when <span>everything</span> connects.</h1>
-      <p class="hero-copy">From getting there to getting things done, MEI One brings everyday services together in one simple, dependable experience.</p>
-      <div class="hero-actions"><a class="btn btn-primary" href="#services">Explore services <span>→</span></a><button class="btn btn-outline" data-modal="signup">Create your account</button></div>
-      <div class="hero-note"><span style="color:var(--green)">●</span> Built around convenience, access and <strong>everyday mobility.</strong></div>
+
+      <p class="hero-copy">
+        From getting there to getting things done, MEI One brings
+        everyday services together in one simple, dependable experience.
+      </p>
+
+      <div class="hero-actions">
+        <a class="btn btn-primary" href="#services">Explore services →</a>
+        <button class="btn btn-outline" data-account-modal>
+          Create your account
+        </button>
+      </div>
+
+      <div class="hero-note">
+        <span style="color:#16845b">●</span>
+        Built around convenience, access and
+        <strong> everyday mobility.</strong>
+      </div>
     </div>
-    <div class="hero-art" aria-label="Illustration of MEI One mobile service experience">
+
+    <div class="hero-art" aria-label="MEI One mobile service experience">
       <div class="orbit"></div>
-      <div class="phone"><div class="phone-notch"></div><div class="phone-top"><span>MEI ONE</span><span>•••</span></div><div class="phone-greeting">Good day 👋</div><div class="phone-title">What can we<br>help you with?</div><div class="phone-search">⌕ &nbsp; Find a service</div><div class="phone-label">EXPLORE SERVICES</div><div class="phone-services"><div class="phone-service"><i>🚘</i>Rides</div><div class="phone-service"><i>📦</i>Delivery</div><div class="phone-service"><i>🛻</i>Towing</div><div class="phone-service"><i>🔧</i>Garages</div><div class="phone-service"><i>📊</i>Valuation</div><div class="phone-service"><i>🏠</i>Home</div></div><div class="phone-banner"><b>MEI One, all in one place</b>Your everyday services, made simpler.</div></div>
-      <div class="float-card float-one"><span class="float-icon">✓</span><strong>One simple experience</strong>Services in one place</div>
-      <div class="float-card float-two"><span class="float-icon">⚡</span><strong>Help when you need it</strong>Everyday support, connected</div>
+
+      <div class="phone">
+        <div class="phone-notch"></div>
+        <div class="phone-top"><span>MEI ONE</span><span>•••</span></div>
+        <div class="phone-greeting">Good day 👋</div>
+        <div class="phone-title">What can we<br>help you with?</div>
+        <div class="phone-search">⌕ &nbsp; Find a service</div>
+        <div class="phone-label">EXPLORE SERVICES</div>
+
+        <div class="phone-services">
+          <div class="phone-service"><i>🚘</i>Rides</div>
+          <div class="phone-service"><i>📦</i>Delivery</div>
+          <div class="phone-service"><i>🛻</i>Towing</div>
+          <div class="phone-service"><i>🔧</i>Garages</div>
+          <div class="phone-service"><i>📊</i>Valuation</div>
+          <div class="phone-service"><i>🏠</i>Home</div>
+        </div>
+
+        <div class="phone-banner">
+          <b>MEI One, all in one place</b>
+          Your everyday services, made simpler.
+        </div>
+      </div>
+
+      <div class="float-card float-one">
+        <span class="float-icon">✓</span>
+        <strong>One simple experience</strong>
+        Services in one place
+      </div>
+
+      <div class="float-card float-two">
+        <span class="float-icon">⚡</span>
+        <strong>Help when you need it</strong>
+        Everyday support, connected
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- TRUST -->
+<section class="trust-strip">
+  <div class="container trust-grid">
+
+    <div class="trust-item">
+      <span class="trust-icon">◎</span>
+      <span><b>Multiple services</b>One convenient platform</span>
+    </div>
+
+    <div class="trust-item">
+      <span class="trust-icon">↗</span>
+      <span><b>Simple to get started</b>Clear customer journey</span>
+    </div>
+
+    <div class="trust-item">
+      <span class="trust-icon">⌖</span>
+      <span><b>Local service access</b>Designed for everyday needs</span>
+    </div>
+
+    <div class="trust-item">
+      <span class="trust-icon">♡</span>
+      <span><b>Customer first</b>Built around your day</span>
+    </div>
+
+  </div>
+</section>
+
+<!-- SERVICES -->
+<section class="section" id="services">
+  <div class="container">
+
+    <div class="section-heading">
+      <div>
+        <div class="kicker">Discover MEI One</div>
+        <h2>What do you need today?</h2>
+      </div>
+      <p class="section-intro">
+        Choose a service and take the next step. More ways to move,
+        manage and get things done—all connected through MEI One.
+      </p>
+    </div>
+
+    <div class="services-grid">
+
+      <a class="service-card featured" href="customer-signin.html?service=rides">
+        <div class="service-icon">🚘</div>
+        <h3>MEI Rides</h3>
+        <p>Convenient transport options for your everyday journeys.</p>
+        <span class="service-arrow">↗</span>
+      </a>
+
+      <a class="service-card" href="customer-signin.html?service=delivery">
+        <div class="service-icon">📦</div>
+        <h3>Delivery</h3>
+        <p>Move parcels, goods and essentials from one place to another.</p>
+        <span class="service-arrow">↗</span>
+      </a>
+
+      <a class="service-card" href="customer-signin.html?service=towing">
+        <div class="service-icon">🛻</div>
+        <h3>Towing</h3>
+        <p>Request vehicle recovery and towing assistance when needed.</p>
+        <span class="service-arrow">↗</span>
+      </a>
+
+      <a class="service-card" href="customer-signin.html?service=roadside">
+        <div class="service-icon">🧰</div>
+        <h3>Roadside Assistance</h3>
+        <p>Get help with unexpected vehicle trouble on the road.</p>
+        <span class="service-arrow">↗</span>
+      </a>
+
+      <a class="service-card" href="customer-signin.html?service=garage">
+        <div class="service-icon">🔧</div>
+        <h3>Garage Services</h3>
+        <p>Find garage services for vehicle repairs, maintenance and servicing.</p>
+        <span class="service-arrow">↗</span>
+      </a>
+
+      <a class="service-card" href="https://auto-d.meipressgroup.com/"
+         target="_blank" rel="noopener">
+        <div class="service-icon">🚘</div>
+        <h3>Vehicle Valuation</h3>
+        <p>Explore professional vehicle valuation and inspection services through Auto-D.</p>
+        <span class="service-arrow">↗</span>
+      </a>
+
+      <a class="service-card" href="customer-signin.html?service=home">
+        <div class="service-icon">🏠</div>
+        <h3>Home Services</h3>
+        <p>Find practical support for tasks around your home.</p>
+        <span class="service-arrow">↗</span>
+      </a>
+
+      <a class="service-card" href="customer-signin.html?service=marketplace">
+        <div class="service-icon">🛒</div>
+        <h3>Marketplace</h3>
+        <p>Discover products, offers and services in one place.</p>
+        <span class="service-arrow">↗</span>
+      </a>
+
+      <a class="service-card" href="https://www.meidriveafrica.com"
+         target="_blank" rel="noopener">
+        <div class="service-icon">🎓</div>
+        <h3>Learning & Driver Training</h3>
+        <p>Build safer driving skills with MEI Drive Africa.</p>
+        <span class="service-arrow">↗</span>
+      </a>
+
     </div>
   </div>
 </section>
-<section class="trust-strip"><div class="container trust-grid">
-  <div class="trust-item"><span class="trust-icon">◎</span><span><b>Multiple services</b>One convenient platform</span></div>
-  <div class="trust-item"><span class="trust-icon">↗</span><span><b>Simple to get started</b>Clear customer journey</span></div>
-  <div class="trust-item"><span class="trust-icon">⌖</span><span><b>Local service access</b>Designed for everyday needs</span></div>
-  <div class="trust-item"><span class="trust-icon">♡</span><span><b>Customer first</b>Built around your day</span></div>
-</div></section>
-<section class="section" id="services"><div class="container">
-  <div class="section-heading"><div><div class="kicker">Discover MEI One</div><h2>What do you need today?</h2></div><p class="section-intro">Choose a service and take the next step. More ways to move, manage and get things done—all connected through MEI One.</p></div>
-  <div class="services-grid">
-    <a class="service-card featured" href="#get-started" data-service="Rides"><div class="service-icon">🚘</div><h3>MEI Rides</h3><p>Convenient transport options for your everyday journeys.</p><span class="service-arrow">↗</span></a>
-    <a class="service-card" href="#get-started" data-service="Delivery"><div class="service-icon">📦</div><h3>Delivery</h3><p>Move parcels, goods and essentials from one place to another.</p><span class="service-arrow">↗</span></a>
-    <a class="service-card" href="#get-started" data-service="Towing"><div class="service-icon">🛻</div><h3>Towing</h3><p>Request vehicle recovery and towing assistance when needed.</p><span class="service-arrow">↗</span></a>
-    <a class="service-card" href="#get-started" data-service="Roadside Assistance"><div class="service-icon">🧰</div><h3>Roadside Assistance</h3><p>Get help with unexpected vehicle trouble on the road.</p><span class="service-arrow">↗</span></a>
-    <a class="service-card" href="#get-started" data-service="Garage Services"><div class="service-icon">🔧</div><h3>Garage Services</h3><p>Find garage services for vehicle repairs, maintenance and servicing.</p><span class="service-arrow">↗</span></a>
-    <a class="service-card" href="https://auto-d.meipressgroup.com/" target="_blank" rel="noopener"><div class="service-icon">🚘</div><h3>Vehicle Valuation</h3><p>Explore professional vehicle valuation and inspection services through Auto-D.</p><span class="service-arrow">↗</span></a>
-    <a class="service-card" href="#get-started" data-service="Home Services"><div class="service-icon">🏠</div><h3>Home Services</h3><p>Find practical support for tasks around your home.</p><span class="service-arrow">↗</span></a>
-    <a class="service-card" href="#get-started" data-service="Marketplace"><div class="service-icon">🛒</div><h3>Marketplace</h3><p>Discover products, offers and services in one place.</p><span class="service-arrow">↗</span></a>
-    <a class="service-card" href="https://www.meidriveafrica.com" target="_blank" rel="noopener"><div class="service-icon">🎓</div><h3>Learning & Driver Training</h3><p>Build safer driving skills with MEI Drive Africa.</p><span class="service-arrow">↗</span></a>
+
+<!-- HOW IT WORKS -->
+<section class="band" id="how">
+  <div class="container band-grid">
+
+    <div>
+      <div class="eyebrow">Easy from the start</div>
+      <h2>Your next service is just a few steps away.</h2>
+      <p>
+        MEI One is designed to make finding and requesting services
+        straightforward. Start with what you need, share the essential
+        details and follow the next steps presented for that service.
+      </p>
+      <a class="btn btn-primary" href="#services">Find your service →</a>
+    </div>
+
+    <div class="steps">
+      <div class="step">
+        <div class="step-number">01 / CHOOSE</div>
+        <h3>Select a service</h3>
+        <p>Browse the service categories and choose what you need.</p>
+      </div>
+
+      <div class="step">
+        <div class="step-number">02 / DETAILS</div>
+        <h3>Tell us what you need</h3>
+        <p>Provide the information needed to make a request.</p>
+      </div>
+
+      <div class="step">
+        <div class="step-number">03 / NEXT STEP</div>
+        <h3>Continue with MEI</h3>
+        <p>Review the request journey and follow the service instructions.</p>
+      </div>
+    </div>
+
   </div>
-</div></section>
-<section class="band" id="how"><div class="container band-grid">
-  <div><div class="eyebrow">Easy from the start</div><h2>Your next service is just a few steps away.</h2><p>MEI One is designed to make finding and requesting services straightforward. Start with what you need, share the essential details and follow the next steps presented for that service.</p><a class="btn btn-primary" href="#services">Find your service <span>→</span></a></div>
-  <div class="steps"><div class="step"><div class="step-number">01 / CHOOSE</div><h3>Select a service</h3><p>Browse the service categories and choose what you need.</p></div><div class="step"><div class="step-number">02 / DETAILS</div><h3>Tell us what you need</h3><p>Provide the information needed to make a request.</p></div><div class="step"><div class="step-number">03 / NEXT STEP</div><h3>Continue with MEI</h3><p>Review the request journey and follow the service instructions.</p></div></div>
-</div></section>
-<section class="section popular" id="popular"><div class="container">
-  <div class="section-heading"><div><div class="kicker">More from the MEI network</div><h2>Explore the connected experience.</h2></div><p class="section-intro">Access specialist services across the MEI ecosystem, with a consistent focus on practical solutions and customer convenience.</p></div>
-  <div class="popular-grid"><article class="popular-card"><div class="kicker">Vehicle services</div><h3>Know more about your vehicle.</h3><p>Explore vehicle inspection, valuation and related services through Auto-D.</p><a class="btn btn-dark" href="https://auto-d.meipressgroup.com/" target="_blank" rel="noopener">Explore Auto-D ↗</a><div class="popular-visual" aria-hidden="true">🚙</div></article><article class="popular-card dark"><div class="kicker">Learning & safety</div><h3>Drive safe. Arrive alive.</h3><p>Discover driver training and road-safety learning with MEI Drive Africa.</p><a class="btn btn-primary" href="https://www.meidriveafrica.com" target="_blank" rel="noopener">Explore MEI Drive ↗</a><div class="popular-visual" aria-hidden="true">🎓</div></article></div>
-</div></section>
-<section class="section partner-cta" id="partners"><div class="container"><div class="partner-box"><div><div class="kicker">Grow with MEI One</div><h2>Are you a service provider?</h2><p>Join the MEI One partner network and make your services easier for customers to discover. Apply to become a partner and take the next step with our team.</p></div><a class="btn btn-dark" href="partners.html">Become a partner <span>↗</span></a></div></div></section>
-<section class="section" id="get-started" style="padding-top:62px;padding-bottom:62px"><div class="container" style="text-align:center"><div class="kicker">Your everyday, connected</div><h2 style="max-width:650px;margin:12px auto">One place to begin. More ways to get things done.</h2><p class="section-intro" style="margin:14px auto 24px">Create your MEI One customer profile to get started. Account and booking services will be connected during the backend integration phase.</p><button class="btn btn-primary" data-modal="signup">Get started with MEI One ↗</button></div></section>
+</section>
+
+<!-- EXPLORE MEI -->
+<section class="section popular" id="popular">
+  <div class="container">
+
+    <div class="section-heading">
+      <div>
+        <div class="kicker">More from the MEI network</div>
+        <h2>Explore the connected experience.</h2>
+      </div>
+      <p class="section-intro">
+        Access specialist services across the MEI ecosystem,
+        with a consistent focus on practical solutions and convenience.
+      </p>
+    </div>
+
+    <div class="popular-grid">
+
+      <article class="popular-card">
+        <div class="kicker">Vehicle services</div>
+        <h3>Know more about your vehicle.</h3>
+        <p>Explore vehicle inspection, valuation and related services through Auto-D.</p>
+        <a class="btn btn-dark" href="https://auto-d.meipressgroup.com/"
+           target="_blank" rel="noopener">Explore Auto-D ↗</a>
+        <div class="popular-visual" aria-hidden="true">🚙</div>
+      </article>
+
+      <article class="popular-card dark">
+        <div class="kicker">Learning & safety</div>
+        <h3>Drive safe. Arrive alive.</h3>
+        <p>Discover driver training and road-safety learning with MEI Drive Africa.</p>
+        <a class="btn btn-primary" href="https://www.meidriveafrica.com"
+           target="_blank" rel="noopener">Explore MEI Drive ↗</a>
+        <div class="popular-visual" aria-hidden="true">🎓</div>
+      </article>
+
+    </div>
+  </div>
+</section>
+
+<!-- PROVIDER CTA -->
+<section class="section partner-cta" id="partners">
+  <div class="container">
+    <div class="partner-box">
+
+      <div>
+        <div class="kicker">Grow with MEI One</div>
+        <h2>Are you a service provider?</h2>
+        <p>
+          Join the MEI One partner network and make your services
+          easier for customers to discover. Apply to become a partner
+          and take the next step with our team.
+        </p>
+      </div>
+
+      <a class="btn btn-dark" href="provider/register.html">
+        Become a provider ↗
+      </a>
+
+    </div>
+  </div>
+</section>
+
+<!-- FINAL CALL TO ACTION -->
+<section class="section" id="get-started" style="padding-top:62px;padding-bottom:62px">
+  <div class="container" style="text-align:center">
+
+    <div class="kicker">Your everyday, connected</div>
+
+    <h2 style="max-width:650px;margin:12px auto">
+      One place to begin. More ways to get things done.
+    </h2>
+
+    <p class="section-intro" style="margin:14px auto 24px">
+      Create your MEI One customer profile to explore services,
+      manage bookings and stay connected.
+    </p>
+
+    <button class="btn btn-primary" data-account-modal>
+      Get started with MEI One ↗
+    </button>
+
+  </div>
+</section>
+
 </main>
-<footer class="site-footer"><div class="container"><div class="footer-grid"><div class="footer-brand"><a class="brand" href="#home"><span class="brand-mark">M</span><span>MEI ONE<small>EVERYTHING, CONNECTED</small></span></a><p>Connecting everyday services through one convenient customer experience.</p></div><div class="footer-col"><h4>Explore</h4><a href="#services">All services</a><a href="#how">How it works</a><a href="#popular">MEI network</a></div><div class="footer-col"><h4>For partners</h4><a href="partners.html">Become a partner</a><a href="partners.html">Partner application</a></div><div class="footer-col"><h4>MEI services</h4><a href="https://auto-d.meipressgroup.com/" target="_blank" rel="noopener">Auto-D</a><a href="https://www.meidriveafrica.com" target="_blank" rel="noopener">MEI Drive Africa</a></div></div><div class="footer-bottom"><span>© <span id="year"></span> MEI One. All rights reserved.</span><span>Part of MEI Press Holdings Ltd.</span></div></div></footer>
+
+<!-- FOOTER -->
+<footer class="site-footer">
+  <div class="container">
+
+    <div class="footer-grid">
+
+      <div class="footer-brand">
+        <a class="brand" href="#home">
+          <span class="brand-mark">M</span>
+          <span>MEI ONE<small>EVERYTHING, CONNECTED</small></span>
+        </a>
+        <p>
+          Connecting everyday services through one convenient
+          customer experience.
+        </p>
+      </div>
+
+      <div class="footer-col">
+        <h4>Explore</h4>
+        <a href="#services">All services</a>
+        <a href="#how">How it works</a>
+        <a href="#popular">MEI network</a>
+      </div>
+
+      <div class="footer-col">
+        <h4>Customer account</h4>
+        <a href="customer-signin.html">Customer Sign In</a>
+        <a href="customer-signin.html?mode=signup">Create Customer Account</a>
+      </div>
+
+      <div class="footer-col">
+        <h4>For providers</h4>
+        <a href="provider-signin.html">Provider Sign In</a>
+        <a href="provider/register.html">Become a Provider</a>
+      </div>
+
+    </div>
+
+    <div class="footer-bottom">
+      <span>© <span id="year"></span> MEI One. All rights reserved.</span>
+      <span>Part of MEI Press Holdings Ltd.</span>
+    </div>
+
+  </div>
+</footer>
+
 </div>
-<div class="modal-backdrop" id="modalBackdrop" role="dialog" aria-modal="true" aria-labelledby="modalTitle"><div class="modal"><div class="modal-head"><h3 id="modalTitle">Get started with MEI One</h3><button class="close" id="closeModal" aria-label="Close dialog">×</button></div><p id="modalDescription">Create your MEI One account or sign in to continue.</p><form id="demoForm"><label for="fullName">Full name</label><input id="fullName" name="fullName" autocomplete="name" placeholder="Your full name"><label for="email">Email address</label><input id="email" name="email" type="email" autocomplete="email" placeholder="you@example.com"><label for="phone">Phone number</label><input id="phone" name="phone" type="tel" autocomplete="tel" placeholder="+254 7XX XXX XXX"><button class="btn btn-primary" type="submit" id="formSubmit">Continue</button></form></div></div>
-<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<!-- ACCOUNT SELECTION MODAL -->
+<div class="modal-backdrop" id="accountModal"
+     role="dialog" aria-modal="true"
+     aria-labelledby="modalTitle">
+
+  <div class="modal">
+
+    <div class="modal-head">
+      <h3 id="modalTitle">Welcome to MEI One</h3>
+      <button class="close" id="closeModal" aria-label="Close dialog">×</button>
+    </div>
+
+    <p>
+      Choose how you would like to use MEI One.
+      You will be directed to the appropriate account portal.
+    </p>
+
+    <a class="account-option" href="customer-signin.html">
+      <span class="account-option-icon">👤</span>
+      <span>
+        <strong>Continue as Customer</strong>
+        <small>Book rides, delivery and other services.</small>
+      </span>
+      <span class="arrow">→</span>
+    </a>
+
+    <a class="account-option" href="provider-signin.html">
+      <span class="account-option-icon">🚘</span>
+      <span>
+        <strong>Continue as Provider</strong>
+        <small>Manage jobs, trips and service requests.</small>
+      </span>
+      <span class="arrow">→</span>
+    </a>
+
+    <div class="modal-footer">
+      Are you new to MEI One?
+      <a href="customer-signin.html?mode=signup">Create a customer account</a>
+    </div>
+
+  </div>
+</div>
+
 <script>
-const $ = (s, root=document) => root.querySelector(s);
-const $$ = (s, root=document) => [...root.querySelectorAll(s)];
-const backdrop = $('#modalBackdrop');
-let currentMode = 'signup';
-function toast(message) { const el=$('#toast'); el.textContent=message; el.classList.add('show'); window.clearTimeout(toast.timer); toast.timer=window.setTimeout(()=>el.classList.remove('show'),3200); }
-function openModal(mode='signup', service='') { currentMode=mode; $('#modalTitle').textContent=mode==='signin'?'Welcome back':'Get started with MEI One'; $('#modalDescription').textContent=service?`You selected ${service}. Create an account or sign in to continue.`:'Create your MEI One account or sign in to continue.'; $('#formSubmit').textContent=mode==='signin'?'Continue to sign in':'Continue'; backdrop.classList.add('open'); $('#fullName').closest('label')?.remove(); $('#fullName').style.display=mode==='signin'?'none':'block'; $('#fullName').previousElementSibling.style.display=mode==='signin'?'none':'block'; $('#fullName').required=mode!=='signin'; $('#email').focus(); }
-function closeModal() { backdrop.classList.remove('open'); }
-$$('[data-modal]').forEach(button=>button.addEventListener('click',()=>openModal(button.dataset.modal)));
-$$('[data-service]').forEach(card=>card.addEventListener('click',event=>{event.preventDefault();openModal('signup',card.dataset.service);}));
-$('#closeModal').addEventListener('click',closeModal);
-backdrop.addEventListener('click',event=>{if(event.target===backdrop)closeModal();});
-document.addEventListener('keydown',event=>{if(event.key==='Escape')closeModal();});
-$('#demoForm').addEventListener('submit',event=>{event.preventDefault();window.location.href=currentMode==='signin'?'login.html':'signup.html';});
-$('#menuToggle').addEventListener('click',()=>{const nav=$('#navLinks');const open=nav.classList.toggle('open');$('#menuToggle').setAttribute('aria-expanded',String(open));});
-$$('#navLinks a').forEach(link=>link.addEventListener('click',()=>{$('#navLinks').classList.remove('open');$('#menuToggle').setAttribute('aria-expanded','false');}));
-$('#year').textContent=new Date().getFullYear();
+"use strict";
+
+/* MEI ONE HOMEPAGE INTERACTIONS */
+
+const $ = (selector, root = document) =>
+  root.querySelector(selector);
+
+const $$ = (selector, root = document) =>
+  [...root.querySelectorAll(selector)];
+
+const accountModal = $("#accountModal");
+const menuToggle = $("#menuToggle");
+const navLinks = $("#navLinks");
+
+/* Open account selection */
+function openAccountModal() {
+  accountModal.classList.add("open");
+  $("#closeModal").focus();
+}
+
+/* Close account selection */
+function closeAccountModal() {
+  accountModal.classList.remove("open");
+}
+
+/* Header and hero account buttons */
+$$("[data-account-modal]").forEach(button => {
+  button.addEventListener("click", openAccountModal);
+});
+
+/* Close modal */
+$("#closeModal").addEventListener("click", closeAccountModal);
+
+/* Close when clicking backdrop */
+accountModal.addEventListener("click", event => {
+  if (event.target === accountModal) {
+    closeAccountModal();
+  }
+});
+
+/* Escape key */
+document.addEventListener("keydown", event => {
+  if (event.key === "Escape") {
+    closeAccountModal();
+  }
+});
+
+/* Mobile navigation */
+menuToggle.addEventListener("click", () => {
+  const isOpen = navLinks.classList.toggle("open");
+
+  menuToggle.setAttribute(
+    "aria-expanded",
+    String(isOpen)
+  );
+
+  menuToggle.textContent = isOpen ? "×" : "☰";
+});
+
+/* Close mobile navigation after selecting a section */
+$$('#navLinks a').forEach(link => {
+  link.addEventListener("click", () => {
+    navLinks.classList.remove("open");
+    menuToggle.setAttribute("aria-expanded", "false");
+    menuToggle.textContent = "☰";
+  });
+});
+
+/* Footer year */
+$("#year").textContent = new Date().getFullYear();
 </script>
+
 </body>
 </html>
