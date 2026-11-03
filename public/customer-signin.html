@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -7,6 +6,10 @@
   <meta name="theme-color" content="#071a2f">
   <meta name="description" content="Sign in or create your MEI One customer account.">
   <title>Customer Sign In | MEI One</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="/js/config.js"></script>
@@ -17,13 +20,28 @@
       --navy-light: #102b49;
       --green: #00d68f;
       --green-dark: #00a970;
+      --green-deep: #007a52;
       --lime: #c7f36b;
       --white: #ffffff;
-      --muted: #718096;
-      --border: #e5eaf0;
-      --background: #f4f7fa;
-      --danger: #c62828;
-      --success: #087f5b;
+      --muted: #64748b;
+      --muted-light: #94a3b8;
+      --border: #e2e8f0;
+      --border-strong: #cbd5e1;
+      --background: #f1f5f9;
+      --danger: #dc2626;
+      --danger-bg: #fef2f2;
+      --danger-border: #fecaca;
+      --success: #047857;
+      --success-bg: #ecfdf5;
+      --success-border: #a7f3d0;
+      --info: #1d4ed8;
+      --info-bg: #eff6ff;
+      --info-border: #bfdbfe;
+      --radius: 12px;
+      --shadow-sm: 0 1px 2px rgba(7, 26, 47, .05);
+      --shadow-md: 0 4px 12px rgba(7, 26, 47, .08);
+      --shadow-lg: 0 20px 60px rgba(7, 26, 47, .12);
+      --transition: .18s cubic-bezier(.4, 0, .2, 1);
     }
 
     * {
@@ -32,69 +50,113 @@
       padding: 0;
     }
 
+    html { -webkit-text-size-adjust: 100%; }
+
     body {
       min-height: 100vh;
-      font-family: Inter, Arial, sans-serif;
+      font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
       background: var(--background);
+      background-image:
+        radial-gradient(circle at 15% 10%, rgba(0, 214, 143, .08), transparent 40%),
+        radial-gradient(circle at 85% 90%, rgba(0, 169, 112, .06), transparent 40%);
+      background-attachment: fixed;
       color: var(--navy);
       display: flex;
       flex-direction: column;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
     }
 
+    /* ---------- HEADER ---------- */
     header {
-      background: var(--navy);
-      padding: 19px 6%;
+      background: rgba(7, 26, 47, .97);
+      backdrop-filter: saturate(180%) blur(10px);
+      -webkit-backdrop-filter: saturate(180%) blur(10px);
+      padding: 18px 6%;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      gap: 15px;
+      gap: 16px;
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      border-bottom: 1px solid rgba(255, 255, 255, .06);
     }
 
     .brand {
-      color: white;
-      font-size: 23px;
+      color: var(--white);
+      font-size: 22px;
       font-weight: 800;
-      letter-spacing: -1px;
+      letter-spacing: -.8px;
       text-decoration: none;
+      transition: opacity var(--transition);
     }
 
-    .brand span {
-      color: var(--green);
-    }
+    .brand:hover { opacity: .85; }
+
+    .brand span { color: var(--green); }
 
     .home-link {
-      color: white;
+      color: var(--white);
       text-decoration: none;
-      font-size: 14px;
-      opacity: .9;
+      font-size: 13px;
+      font-weight: 500;
+      opacity: .82;
+      padding: 8px 14px;
+      border-radius: 8px;
+      border: 1px solid rgba(255, 255, 255, .14);
+      transition: all var(--transition);
     }
 
+    .home-link:hover {
+      opacity: 1;
+      background: rgba(255, 255, 255, .06);
+      border-color: rgba(255, 255, 255, .24);
+    }
+
+    /* ---------- MAIN ---------- */
     main {
       flex: 1;
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 40px 18px;
+      padding: 44px 18px;
     }
 
     .auth-card {
       width: 100%;
       max-width: 460px;
-      background: white;
-      border-radius: 18px;
-      padding: 36px;
-      box-shadow: 0 15px 50px rgba(7, 26, 47, .09);
+      background: var(--white);
+      border-radius: 20px;
+      padding: 38px;
+      box-shadow: var(--shadow-lg);
+      border: 1px solid rgba(226, 232, 240, .7);
+      animation: cardIn .4s cubic-bezier(.16, 1, .3, 1);
+    }
+
+    @keyframes cardIn {
+      from {
+        opacity: 0;
+        transform: translateY(12px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
 
     .heading {
       text-align: center;
-      margin-bottom: 25px;
+      margin-bottom: 26px;
     }
 
     .heading h1 {
       font-size: 27px;
-      margin-bottom: 9px;
+      font-weight: 800;
+      margin-bottom: 8px;
       letter-spacing: -.7px;
+      line-height: 1.2;
     }
 
     .heading p {
@@ -103,59 +165,78 @@
       line-height: 1.6;
     }
 
+    /* ---------- TABS ---------- */
     .tabs {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 5px;
-      background: #f0f3f6;
+      gap: 4px;
+      background: #eef2f7;
       padding: 5px;
-      border-radius: 10px;
-      margin-bottom: 25px;
+      border-radius: 11px;
+      margin-bottom: 26px;
     }
 
     .tab {
       border: 0;
       border-radius: 8px;
-      padding: 12px;
-      font-weight: 700;
+      padding: 11px 12px;
+      font-weight: 600;
       cursor: pointer;
-      color: #607080;
+      color: #64748b;
       background: transparent;
-      font-size: 14px;
+      font-size: 13.5px;
+      font-family: inherit;
+      transition: all var(--transition);
     }
+
+    .tab:hover:not(.active) { color: var(--navy); }
 
     .tab.active {
-      background: white;
+      background: var(--white);
       color: var(--navy);
-      box-shadow: 0 2px 8px rgba(0,0,0,.06);
+      font-weight: 700;
+      box-shadow: var(--shadow-sm);
     }
 
+    /* ---------- FORM FIELDS ---------- */
     .field {
-      margin-bottom: 17px;
+      margin-bottom: 16px;
     }
 
     label {
       display: block;
       font-size: 13px;
-      font-weight: 700;
-      margin-bottom: 8px;
+      font-weight: 600;
+      margin-bottom: 7px;
+      color: var(--navy);
+      letter-spacing: -.1px;
     }
 
     input {
       width: 100%;
       padding: 13px 14px;
-      border: 1px solid var(--border);
-      border-radius: 9px;
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
       outline: none;
       font-size: 14px;
+      font-family: inherit;
       color: var(--navy);
-      background: white;
-      transition: border .2s, box-shadow .2s;
+      background: var(--white);
+      transition: border-color var(--transition), box-shadow var(--transition), background var(--transition);
     }
+
+    input::placeholder { color: var(--muted-light); }
+
+    input:hover:not(:focus) { border-color: var(--border-strong); }
 
     input:focus {
       border-color: var(--green-dark);
-      box-shadow: 0 0 0 3px rgba(0, 214, 143, .12);
+      box-shadow: 0 0 0 4px rgba(0, 214, 143, .13);
+      background: var(--white);
+    }
+
+    input:invalid:not(:placeholder-shown):not(:focus) {
+      border-color: var(--danger-border);
     }
 
     .password-wrap {
@@ -163,96 +244,138 @@
     }
 
     .password-wrap input {
-      padding-right: 65px;
+      padding-right: 62px;
     }
 
     .toggle-password {
       position: absolute;
-      right: 12px;
+      right: 6px;
       top: 50%;
       transform: translateY(-50%);
       border: 0;
-      background: none;
-      color: var(--green-dark);
+      background: transparent;
+      color: var(--green-deep);
       font-size: 12px;
       font-weight: 700;
+      font-family: inherit;
       cursor: pointer;
+      padding: 8px 10px;
+      border-radius: 6px;
+      transition: background var(--transition);
     }
 
+    .toggle-password:hover { background: rgba(0, 214, 143, .1); }
+
+    .toggle-password:focus-visible {
+      outline: 2px solid var(--green);
+      outline-offset: 2px;
+    }
+
+    /* ---------- FORGOT ROW ---------- */
     .forgot-row {
       text-align: right;
-      margin-top: -5px;
+      margin-top: -2px;
       margin-bottom: 20px;
     }
 
     .text-link {
-      color: var(--green-dark);
+      color: var(--green-deep);
       font-size: 13px;
-      font-weight: 700;
+      font-weight: 600;
+      font-family: inherit;
       text-decoration: none;
       cursor: pointer;
       border: 0;
       background: transparent;
+      transition: color var(--transition);
+      padding: 4px 0;
     }
 
+    .text-link:hover {
+      color: var(--green-dark);
+      text-decoration: underline;
+    }
+
+    /* ---------- BUTTON ---------- */
     .primary-btn {
       width: 100%;
       border: 0;
-      border-radius: 9px;
+      border-radius: 10px;
       padding: 15px;
       background: var(--green);
       color: var(--navy);
       font-size: 15px;
-      font-weight: 800;
+      font-weight: 700;
+      font-family: inherit;
       cursor: pointer;
-      transition: .2s;
+      transition: all var(--transition);
+      position: relative;
+      letter-spacing: -.1px;
+      box-shadow: 0 2px 8px rgba(0, 214, 143, .25);
     }
 
-    .primary-btn:hover {
+    .primary-btn:hover:not(:disabled) {
       background: var(--lime);
       transform: translateY(-1px);
+      box-shadow: 0 6px 16px rgba(0, 214, 143, .35);
+    }
+
+    .primary-btn:active:not(:disabled) {
+      transform: translateY(0);
+      box-shadow: 0 2px 6px rgba(0, 214, 143, .25);
+    }
+
+    .primary-btn:focus-visible {
+      outline: 3px solid rgba(0, 214, 143, .4);
+      outline-offset: 2px;
     }
 
     .primary-btn:disabled {
-      opacity: .6;
+      opacity: .65;
       cursor: not-allowed;
-      transform: none;
+      box-shadow: none;
     }
 
+    /* ---------- MESSAGE ---------- */
     .message {
       display: none;
       padding: 12px 14px;
-      border-radius: 8px;
+      border-radius: 10px;
       font-size: 13px;
-      line-height: 1.5;
+      line-height: 1.55;
       margin-bottom: 18px;
       overflow-wrap: anywhere;
+      animation: msgIn .25s ease;
+    }
+
+    @keyframes msgIn {
+      from { opacity: 0; transform: translateY(-4px); }
+      to   { opacity: 1; transform: translateY(0); }
     }
 
     .message.error {
       display: block;
       color: var(--danger);
-      background: #fff0f0;
-      border: 1px solid #ffd6d6;
+      background: var(--danger-bg);
+      border: 1px solid var(--danger-border);
     }
 
     .message.success {
       display: block;
       color: var(--success);
-      background: #eafaf3;
-      border: 1px solid #c6f0dc;
+      background: var(--success-bg);
+      border: 1px solid var(--success-border);
     }
 
     .message.info {
       display: block;
-      color: #24527a;
-      background: #edf6ff;
-      border: 1px solid #cfe5fa;
+      color: var(--info);
+      background: var(--info-bg);
+      border: 1px solid var(--info-border);
     }
 
-    .hidden {
-      display: none !important;
-    }
+    /* ---------- MISC ---------- */
+    .hidden { display: none !important; }
 
     .terms {
       color: var(--muted);
@@ -260,22 +383,47 @@
       line-height: 1.6;
       text-align: center;
       margin-top: 18px;
+      padding: 0 4px;
     }
+
+    .terms a { color: var(--green-deep); text-decoration: none; }
+    .terms a:hover { text-decoration: underline; }
 
     footer {
       text-align: center;
-      color: var(--muted);
+      color: var(--muted-light);
       font-size: 12px;
       padding: 20px;
+      font-weight: 500;
     }
 
-    @media(max-width: 480px) {
-      .auth-card {
-        padding: 27px 21px;
-      }
+    /* ---------- SR-ONLY ---------- */
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
 
-      .heading h1 {
-        font-size: 24px;
+    /* ---------- RESPONSIVE ---------- */
+    @media (max-width: 480px) {
+      main { padding: 28px 14px; }
+      .auth-card { padding: 28px 22px; border-radius: 16px; }
+      .heading h1 { font-size: 23px; }
+      header { padding: 15px 5%; }
+      .brand { font-size: 20px; }
+      .home-link { font-size: 12px; padding: 7px 11px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: .01ms !important;
+        transition-duration: .01ms !important;
       }
     }
   </style>
@@ -284,25 +432,25 @@
 <body>
   <header>
     <a class="brand" href="/">MEI <span>One</span></a>
-    <a class="home-link" href="/">Back to home</a>
+    <a class="home-link" href="/">← Home</a>
   </header>
 
   <main>
-    <section class="auth-card">
+    <section class="auth-card" aria-labelledby="pageTitle">
       <div class="heading">
         <h1 id="pageTitle">Welcome back</h1>
         <p id="pageDescription">Sign in to your MEI One customer account.</p>
       </div>
 
-      <div id="tabs" class="tabs">
-        <button class="tab active" id="loginTab" type="button">Sign In</button>
-        <button class="tab" id="signupTab" type="button">Create Account</button>
+      <div id="tabs" class="tabs" role="tablist" aria-label="Authentication mode">
+        <button class="tab active" id="loginTab" type="button" role="tab" aria-selected="true" aria-controls="loginForm">Sign In</button>
+        <button class="tab" id="signupTab" type="button" role="tab" aria-selected="false" aria-controls="signupForm">Create Account</button>
       </div>
 
       <div id="message" class="message" role="alert" aria-live="polite"></div>
 
       <!-- SIGN IN -->
-      <form id="loginForm">
+      <form id="loginForm" novalidate>
         <div class="field">
           <label for="loginEmail">Email address</label>
           <input
@@ -311,6 +459,8 @@
             autocomplete="email"
             placeholder="you@example.com"
             required
+            spellcheck="false"
+            autocapitalize="off"
           >
         </div>
 
@@ -325,7 +475,7 @@
               required
             >
             <button class="toggle-password" type="button"
-              data-target="loginPassword">Show</button>
+              data-target="loginPassword" aria-label="Show password">Show</button>
           </div>
         </div>
 
@@ -341,7 +491,7 @@
       </form>
 
       <!-- SIGN UP -->
-      <form id="signupForm" class="hidden">
+      <form id="signupForm" class="hidden" novalidate>
         <div class="field">
           <label for="fullName">Full name</label>
           <input
@@ -355,7 +505,7 @@
         </div>
 
         <div class="field">
-          <label for="signupPhone">Phone number</label>
+          <label for="signupPhone">Phone number <span style="color:var(--muted);font-weight:400">(optional)</span></label>
           <input
             id="signupPhone"
             type="tel"
@@ -373,6 +523,8 @@
             autocomplete="email"
             placeholder="you@example.com"
             required
+            spellcheck="false"
+            autocapitalize="off"
           >
         </div>
 
@@ -388,7 +540,7 @@
               required
             >
             <button class="toggle-password" type="button"
-              data-target="signupPassword">Show</button>
+              data-target="signupPassword" aria-label="Show password">Show</button>
           </div>
         </div>
 
@@ -404,7 +556,7 @@
               required
             >
             <button class="toggle-password" type="button"
-              data-target="confirmPassword">Show</button>
+              data-target="confirmPassword" aria-label="Show password">Show</button>
           </div>
         </div>
 
@@ -419,7 +571,7 @@
       </form>
 
       <!-- FORGOT PASSWORD -->
-      <form id="forgotForm" class="hidden">
+      <form id="forgotForm" class="hidden" novalidate>
         <div class="field">
           <label for="forgotEmail">Registered email address</label>
           <input
@@ -428,6 +580,8 @@
             autocomplete="email"
             placeholder="you@example.com"
             required
+            spellcheck="false"
+            autocapitalize="off"
           >
         </div>
 
@@ -441,7 +595,7 @@
       </form>
 
       <!-- SET NEW PASSWORD -->
-      <form id="recoveryForm" class="hidden">
+      <form id="recoveryForm" class="hidden" novalidate>
         <div class="field">
           <label for="newPassword">New password</label>
           <div class="password-wrap">
@@ -454,20 +608,24 @@
               required
             >
             <button class="toggle-password" type="button"
-              data-target="newPassword">Show</button>
+              data-target="newPassword" aria-label="Show password">Show</button>
           </div>
         </div>
 
         <div class="field">
           <label for="newPasswordConfirm">Confirm new password</label>
-          <input
-            id="newPasswordConfirm"
-            type="password"
-            autocomplete="new-password"
-            minlength="8"
-            placeholder="Enter password again"
-            required
-          >
+          <div class="password-wrap">
+            <input
+              id="newPasswordConfirm"
+              type="password"
+              autocomplete="new-password"
+              minlength="8"
+              placeholder="Enter password again"
+              required
+            >
+            <button class="toggle-password" type="button"
+              data-target="newPasswordConfirm" aria-label="Show password">Show</button>
+          </div>
         </div>
 
         <button class="primary-btn" id="recoverySubmit" type="submit">
@@ -485,27 +643,32 @@
     (() => {
       "use strict";
 
+      /* ================= CONFIG ================= */
       const DASHBOARD_PATH = "/customer-dashboard.html";
       const SIGNIN_PATH = "/customer-signin.html";
+      const MIN_PASSWORD_LENGTH = 8;
 
       const sb = window.MEI_SUPABASE;
-
       const $ = (id) => document.getElementById(id);
 
-      const message = $("message");
-      const loginForm = $("loginForm");
-      const signupForm = $("signupForm");
-      const forgotForm = $("forgotForm");
+      /* ================= DOM ================= */
+      const message      = $("message");
+      const loginForm    = $("loginForm");
+      const signupForm   = $("signupForm");
+      const forgotForm   = $("forgotForm");
       const recoveryForm = $("recoveryForm");
 
+      /* ================= STATE ================= */
       let recoveryMode = false;
       let busy = false;
 
       $("year").textContent = new Date().getFullYear();
 
+      /* ================= UI HELPERS ================= */
       function showMessage(text, type = "info") {
         message.textContent = text;
         message.className = "message " + type;
+        message.scrollIntoView({ behavior: "smooth", block: "nearest" });
       }
 
       function clearMessage() {
@@ -515,10 +678,10 @@
 
       function setBusy(button, busyText, isBusy) {
         button.disabled = isBusy;
-        button.dataset.originalText ||= button.textContent;
-        button.textContent = isBusy
-          ? busyText
-          : button.dataset.originalText;
+        if (!button.dataset.originalText) {
+          button.dataset.originalText = button.textContent;
+        }
+        button.textContent = isBusy ? busyText : button.dataset.originalText;
       }
 
       function showForm(name) {
@@ -527,26 +690,35 @@
         forgotForm.classList.toggle("hidden", name !== "forgot");
         recoveryForm.classList.toggle("hidden", name !== "recovery");
 
-        $("tabs").classList.toggle(
-          "hidden",
-          name === "forgot" || name === "recovery"
-        );
+        const showTabs = name === "login" || name === "signup";
+        $("tabs").classList.toggle("hidden", !showTabs);
 
         $("loginTab").classList.toggle("active", name === "login");
         $("signupTab").classList.toggle("active", name === "signup");
+        $("loginTab").setAttribute("aria-selected", name === "login");
+        $("signupTab").setAttribute("aria-selected", name === "signup");
 
         const headings = {
-          login: ["Welcome back", "Sign in to your MEI One customer account."],
-          signup: ["Create your account", "Join MEI One and access connected services."],
-          forgot: ["Reset your password", "Enter your email to receive a recovery link."],
-          recovery: ["Choose a new password", "Create a new password for your account."]
+          login:    ["Welcome back",            "Sign in to your MEI One customer account."],
+          signup:   ["Create your account",     "Join MEI One and access connected services."],
+          forgot:   ["Reset your password",     "Enter your email to receive a recovery link."],
+          recovery: ["Choose a new password",   "Create a new password for your account."]
         };
 
         $("pageTitle").textContent = headings[name][0];
         $("pageDescription").textContent = headings[name][1];
         clearMessage();
+
+        // Move focus to the first input for keyboard users.
+        const firstInput = document
+          .getElementById(name + "Form")
+          ?.querySelector("input");
+        if (firstInput) {
+          setTimeout(() => firstInput.focus(), 60);
+        }
       }
 
+      /* ================= URLS ================= */
       function dashboardUrl() {
         const service = new URLSearchParams(location.search).get("service");
         return service
@@ -554,28 +726,29 @@
           : DASHBOARD_PATH;
       }
 
+      /* ================= ERRORS ================= */
       function authError(error) {
         const text = String(error?.message || "").toLowerCase();
 
         if (text.includes("invalid login credentials")) {
           return "Incorrect email or password. Please try again.";
         }
-
         if (text.includes("email not confirmed")) {
           return "Please confirm your email address before signing in.";
         }
-
         if (text.includes("user already registered")) {
           return "An account with this email already exists. Please sign in.";
         }
-
         if (text.includes("password should be at least")) {
           return "Your password must meet the minimum length requirement.";
         }
-
+        if (text.includes("rate limit") || text.includes("too many")) {
+          return "Too many attempts. Please wait a moment and try again.";
+        }
         return error?.message || "Something went wrong. Please try again.";
       }
 
+      /* ================= PROFILE VERIFICATION ================= */
       async function getActiveCustomer(userId) {
         const { data, error } = await sb
           .from("profiles")
@@ -600,11 +773,9 @@
           if (status === "suspended") {
             throw new Error("Your customer account is suspended. Please contact support.");
           }
-
           if (status === "blocked") {
             throw new Error("Your customer account is blocked. Please contact support.");
           }
-
           throw new Error("Your customer account is not active. Please contact support.");
         }
 
@@ -623,11 +794,11 @@
         if (!user?.id) {
           throw new Error("Authentication did not return a valid user account.");
         }
-
         await getActiveCustomer(user.id);
         location.replace(dashboardUrl());
       }
 
+      /* ================= SUPABASE CHECK ================= */
       function checkSupabase() {
         if (!sb || typeof sb.auth?.signInWithPassword !== "function") {
           showMessage(
@@ -635,20 +806,15 @@
             "error"
           );
 
-          [
-            $("loginBtn"),
-            $("signupBtn"),
-            $("forgotSubmit"),
-            $("recoverySubmit")
-          ].forEach(button => button.disabled = true);
+          ["loginBtn", "signupBtn", "forgotSubmit", "recoverySubmit"]
+            .forEach(id => { const el = $(id); if (el) el.disabled = true; });
 
           return false;
         }
-
         return true;
       }
 
-      // Toggle password visibility.
+      /* ================= PASSWORD TOGGLE ================= */
       document.querySelectorAll(".toggle-password").forEach(button => {
         button.addEventListener("click", () => {
           const input = $(button.dataset.target);
@@ -657,9 +823,11 @@
           const visible = input.type === "text";
           input.type = visible ? "password" : "text";
           button.textContent = visible ? "Show" : "Hide";
+          button.setAttribute("aria-label", visible ? "Show password" : "Hide password");
         });
       });
 
+      /* ================= TAB / LINK EVENTS ================= */
       $("loginTab").addEventListener("click", () => showForm("login"));
       $("signupTab").addEventListener("click", () => showForm("signup"));
 
@@ -668,7 +836,7 @@
         showForm("forgot");
       });
 
-      // CUSTOMER SIGN IN
+      /* ================= SIGN IN ================= */
       loginForm.addEventListener("submit", async (event) => {
         event.preventDefault();
         if (!checkSupabase() || busy) return;
@@ -677,18 +845,18 @@
         const email = $("loginEmail").value.trim().toLowerCase();
         const password = $("loginPassword").value;
 
+        if (!email || !password) {
+          showMessage("Please enter your email and password.", "error");
+          return;
+        }
+
         busy = true;
         setBusy(button, "Signing in...", true);
         clearMessage();
 
         try {
-          const { data, error } = await sb.auth.signInWithPassword({
-            email,
-            password
-          });
-
+          const { data, error } = await sb.auth.signInWithPassword({ email, password });
           if (error) throw error;
-
           await finishLogin(data.user);
         } catch (error) {
           await signOutSafely();
@@ -699,7 +867,7 @@
         }
       });
 
-      // CUSTOMER REGISTRATION
+      /* ================= SIGN UP ================= */
       signupForm.addEventListener("submit", async (event) => {
         event.preventDefault();
         if (!checkSupabase() || busy) return;
@@ -713,16 +881,17 @@
 
         if (fullName.length < 2) {
           showMessage("Please enter your full name.", "error");
+          $("fullName").focus();
           return;
         }
-
-        if (password.length < 8) {
-          showMessage("Your password must contain at least 8 characters.", "error");
+        if (password.length < MIN_PASSWORD_LENGTH) {
+          showMessage(`Your password must contain at least ${MIN_PASSWORD_LENGTH} characters.`, "error");
+          $("signupPassword").focus();
           return;
         }
-
         if (password !== confirmPassword) {
           showMessage("The passwords do not match.", "error");
+          $("confirmPassword").focus();
           return;
         }
 
@@ -735,10 +904,7 @@
             email,
             password,
             options: {
-              data: {
-                full_name: fullName,
-                phone: phone
-              },
+              data: { full_name: fullName, phone },
               emailRedirectTo: location.origin + SIGNIN_PATH
             }
           });
@@ -762,13 +928,18 @@
         }
       });
 
-      // REQUEST PASSWORD RESET
+      /* ================= FORGOT PASSWORD ================= */
       forgotForm.addEventListener("submit", async (event) => {
         event.preventDefault();
         if (!checkSupabase() || busy) return;
 
         const button = $("forgotSubmit");
         const email = $("forgotEmail").value.trim().toLowerCase();
+
+        if (!email) {
+          showMessage("Please enter your email address.", "error");
+          return;
+        }
 
         busy = true;
         setBusy(button, "Sending...", true);
@@ -778,7 +949,6 @@
           const { error } = await sb.auth.resetPasswordForEmail(email, {
             redirectTo: location.origin + SIGNIN_PATH
           });
-
           if (error) throw error;
 
           showMessage(
@@ -793,7 +963,7 @@
         }
       });
 
-      // UPDATE PASSWORD AFTER RECOVERY
+      /* ================= UPDATE PASSWORD ================= */
       recoveryForm.addEventListener("submit", async (event) => {
         event.preventDefault();
         if (!checkSupabase() || busy) return;
@@ -802,11 +972,10 @@
         const password = $("newPassword").value;
         const confirmation = $("newPasswordConfirm").value;
 
-        if (password.length < 8) {
-          showMessage("Your new password must contain at least 8 characters.", "error");
+        if (password.length < MIN_PASSWORD_LENGTH) {
+          showMessage(`Your new password must contain at least ${MIN_PASSWORD_LENGTH} characters.`, "error");
           return;
         }
-
         if (password !== confirmation) {
           showMessage("The passwords do not match.", "error");
           return;
@@ -818,7 +987,6 @@
 
         try {
           const { error } = await sb.auth.updateUser({ password });
-
           if (error) throw error;
 
           recoveryMode = false;
@@ -837,25 +1005,20 @@
         }
       });
 
-      // Detect email confirmation and password recovery callbacks.
+      /* ================= INITIALISE AUTH ================= */
       async function initialiseAuth() {
         if (!checkSupabase()) return;
 
         try {
           const url = new URL(location.href);
           const queryType = url.searchParams.get("type");
-          const hashParams = new URLSearchParams(
-            location.hash.replace(/^#/, "")
-          );
+          const hashParams = new URLSearchParams(location.hash.replace(/^#/, ""));
           const hashType = hashParams.get("type");
 
-          const isRecovery =
-            queryType === "recovery" ||
-            hashType === "recovery";
+          const isRecovery = queryType === "recovery" || hashType === "recovery";
 
           if (isRecovery) {
             const { data, error } = await sb.auth.getSession();
-
             if (error) throw error;
 
             if (!data.session) {
@@ -870,17 +1033,12 @@
             return;
           }
 
-          // Process a confirmation or sign-in session returned by Supabase.
           const { data, error } = await sb.auth.getSession();
-
           if (error) throw error;
 
-          if (data.session?.user) {
-            // Do not redirect from a password recovery session.
-            if (!recoveryMode) {
-              await finishLogin(data.session.user);
-              return;
-            }
+          if (data.session?.user && !recoveryMode) {
+            await finishLogin(data.session.user);
+            return;
           }
 
           const errorDescription =
@@ -888,7 +1046,10 @@
             hashParams.get("error_description");
 
           if (errorDescription) {
-            showMessage(decodeURIComponent(errorDescription.replace(/\+/g, " ")), "error");
+            showMessage(
+              decodeURIComponent(errorDescription.replace(/\+/g, " ")),
+              "error"
+            );
             return;
           }
 
@@ -903,9 +1064,9 @@
         }
       }
 
-      // Listen for Supabase authentication events.
+      /* ================= AUTH STATE LISTENER ================= */
       if (sb?.auth?.onAuthStateChange) {
-        sb.auth.onAuthStateChange((event, session) => {
+        sb.auth.onAuthStateChange((event) => {
           if (event === "PASSWORD_RECOVERY") {
             recoveryMode = true;
             showForm("recovery");
