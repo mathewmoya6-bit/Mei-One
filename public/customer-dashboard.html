@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -9,400 +8,216 @@
   <meta name="description" content="MEI One customer dashboard. Browse services and manage requests.">
   <title>Customer Dashboard | MEI One</title>
 
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="/js/config.js"></script>
 
   <style>
     :root {
       --navy: #071a2f;
-      --navy2: #102b49;
+      --navy-light: #102b49;
       --green: #00d68f;
       --green-dark: #00ad73;
+      --green-glow: rgba(0, 214, 143, 0.15);
       --bg: #f4f7fa;
       --white: #ffffff;
       --text: #172b40;
-      --muted: #718096;
-      --border: #e4eaf0;
-      --danger: #d93045;
-      --shadow: 0 8px 30px rgba(7,26,47,.07);
-      font-family: Inter, -apple-system, BlinkMacSystemFont,
-        "Segoe UI", Roboto, Arial, sans-serif;
+      --muted: #64748b;
+      --border: #e2e8f0;
+      --danger: #dc2626;
+      --shadow-sm: 0 2px 8px rgba(7, 26, 47, 0.04);
+      --shadow-md: 0 8px 24px rgba(7, 26, 47, 0.08);
+      --radius: 14px;
+      --transition: .2s ease;
+      font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
     }
 
     * { box-sizing: border-box; }
-
-    body {
-      margin: 0;
-      background: var(--bg);
-      color: var(--text);
-    }
-
+    body { margin: 0; background: var(--bg); color: var(--text); -webkit-font-smoothing: antialiased; }
     button, input, textarea, select { font: inherit; }
-
     button { cursor: pointer; }
 
+    /* ---------- HEADER ---------- */
     .topbar {
       background: var(--navy);
-      color: white;
+      color: var(--white);
       padding: 16px 5%;
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 16px;
+      box-shadow: 0 4px 12px rgba(0,0,0,.1);
     }
-
-    .brand {
-      font-size: 22px;
-      font-weight: 850;
-      letter-spacing: -.7px;
-    }
-
+    .brand { font-size: 22px; font-weight: 800; letter-spacing: -.7px; }
     .brand span { color: var(--green); }
-
-    .top-right {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-    }
-
-    .user-label {
-      color: #d4e1ec;
-      font-size: 13px;
-    }
-
+    .top-right { display: flex; align-items: center; gap: 16px; }
+    .user-label { color: #d4e1ec; font-size: 13px; font-weight: 500; }
     .logout {
-      background: transparent;
-      border: 1px solid rgba(255,255,255,.35);
-      color: white;
-      padding: 9px 14px;
-      border-radius: 9px;
+      background: transparent; border: 1px solid rgba(255,255,255,.25); color: var(--white);
+      padding: 8px 16px; border-radius: 8px; font-size: 13px; font-weight: 600;
+      transition: var(--transition);
     }
+    .logout:hover { background: rgba(255,255,255,.1); border-color: rgba(255,255,255,.4); }
 
-    .logout:hover { background: rgba(255,255,255,.1); }
+    /* ---------- LAYOUT ---------- */
+    .container { width: min(1180px, 92%); margin: 32px auto 60px; }
 
-    .container {
-      width: min(1180px, 92%);
-      margin: 28px auto 60px;
-    }
-
+    /* ---------- WELCOME BANNER ---------- */
     .welcome {
-      background: linear-gradient(120deg, var(--navy), var(--navy2));
-      color: white;
-      border-radius: 18px;
-      padding: 30px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 20px;
-      margin-bottom: 24px;
+      background: linear-gradient(135deg, var(--navy) 0%, var(--navy-light) 100%);
+      color: var(--white); border-radius: var(--radius); padding: 32px;
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 20px; margin-bottom: 28px; position: relative; overflow: hidden;
+      box-shadow: var(--shadow-md);
     }
-
-    .welcome h1 {
-      margin: 0 0 8px;
-      font-size: clamp(23px, 4vw, 32px);
+    .welcome::after {
+      content: ""; position: absolute; right: -20px; top: -40px;
+      width: 200px; height: 200px; background: var(--green);
+      filter: blur(90px); opacity: .2; border-radius: 50%;
     }
+    .welcome h1 { margin: 0 0 8px; font-size: clamp(24px, 4vw, 32px); font-weight: 800; letter-spacing: -.5px; }
+    .welcome p { margin: 0; color: #c5d4e2; font-size: 15px; }
+    .welcome-mark { font-size: 48px; opacity: .8; z-index: 1; }
 
-    .welcome p {
-      margin: 0;
-      color: #c5d4e2;
-      line-height: 1.6;
-    }
-
-    .welcome-mark {
-      font-size: 48px;
-      opacity: .9;
-    }
-
+    /* ---------- TABS ---------- */
     .tabs {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      margin: 22px 0;
+      display: flex; gap: 8px; margin-bottom: 24px; overflow-x: auto;
+      padding-bottom: 4px; scrollbar-width: none;
     }
-
+    .tabs::-webkit-scrollbar { display: none; }
     .tab {
-      border: 1px solid var(--border);
-      background: white;
-      color: var(--text);
-      padding: 11px 17px;
-      border-radius: 10px;
-      font-weight: 650;
+      background: var(--white); border: 1px solid var(--border); color: var(--muted);
+      padding: 12px 20px; border-radius: 10px; font-weight: 600; font-size: 14px;
+      white-space: nowrap; transition: var(--transition);
     }
+    .tab:hover { border-color: #cbd5e1; color: var(--text); }
+    .tab.active { background: var(--navy); color: var(--white); border-color: var(--navy); }
 
-    .tab.active {
-      background: var(--navy);
-      color: white;
-      border-color: var(--navy);
-    }
-
-    .section { display: none; }
+    /* ---------- SECTIONS ---------- */
+    .section { display: none; animation: fadeIn .3s ease; }
     .section.active { display: block; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
 
-    .section-heading {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      margin: 25px 0 17px;
-    }
+    .section-heading { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; margin-bottom: 20px; }
+    .section-heading h2 { font-size: 22px; font-weight: 800; margin: 0; letter-spacing: -.4px; }
+    .section-heading p { color: var(--muted); font-size: 14px; margin: 4px 0 0; }
 
-    .section-heading h2 {
-      font-size: 21px;
-      margin: 0;
-    }
-
-    .section-heading p {
-      color: var(--muted);
-      font-size: 13px;
-      margin: 5px 0 0;
-    }
-
-    .service-grid {
-      display: grid;
-      grid-template-columns: repeat(4, minmax(0, 1fr));
-      gap: 16px;
-    }
-
+    /* ---------- SERVICES GRID ---------- */
+    .service-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 20px; }
     .service-card {
-      background: white;
-      border: 1px solid var(--border);
-      border-radius: 15px;
-      padding: 20px;
-      box-shadow: var(--shadow);
-      display: flex;
-      flex-direction: column;
-      min-height: 205px;
-      transition: transform .15s, box-shadow .15s;
+      background: var(--white); border: 1px solid var(--border); border-radius: var(--radius);
+      padding: 24px; box-shadow: var(--shadow-sm); display: flex; flex-direction: column;
+      transition: transform var(--transition), box-shadow var(--transition);
     }
-
-    .service-card:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 12px 30px rgba(7,26,47,.11);
-    }
-
+    .service-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-md); border-color: #cbd5e1; }
     .service-icon {
-      width: 52px;
-      height: 52px;
-      display: grid;
-      place-items: center;
-      border-radius: 14px;
-      background: #eafaf4;
-      font-size: 27px;
-      margin-bottom: 15px;
+      width: 56px; height: 56px; display: grid; place-items: center;
+      border-radius: 16px; background: #eafaf4; font-size: 28px; margin-bottom: 16px;
     }
+    .service-card h3 { font-size: 17px; font-weight: 700; margin: 0 0 8px; color: var(--navy); }
+    .service-card p { color: var(--muted); font-size: 13.5px; line-height: 1.6; margin: 0 0 20px; flex: 1; }
 
-    .service-card h3 {
-      font-size: 16px;
-      margin: 0 0 7px;
-    }
-
-    .service-card p {
-      color: var(--muted);
-      font-size: 13px;
-      line-height: 1.55;
-      margin: 0 0 17px;
-      flex: 1;
-    }
-
+    /* ---------- BUTTONS ---------- */
     .primary-btn {
-      border: 0;
-      background: var(--green);
-      color: var(--navy);
-      padding: 11px 15px;
-      border-radius: 9px;
-      font-weight: 750;
+      background: var(--green); color: var(--navy); border: 0; padding: 12px 20px;
+      border-radius: 10px; font-weight: 700; font-size: 14px; transition: var(--transition);
+      box-shadow: 0 2px 8px var(--green-glow);
     }
-
-    .primary-btn:hover { background: #00ed9d; }
-
+    .primary-btn:hover:not(:disabled) { background: #00ed9d; transform: translateY(-1px); }
+    .primary-btn:disabled { opacity: .6; cursor: not-allowed; }
     .secondary-btn {
-      border: 1px solid var(--border);
-      background: white;
-      color: var(--text);
-      padding: 10px 14px;
-      border-radius: 9px;
-      font-weight: 650;
+      background: var(--white); border: 1px solid var(--border); color: var(--text);
+      padding: 10px 16px; border-radius: 10px; font-weight: 600; font-size: 14px;
+      transition: var(--transition);
     }
-
+    .secondary-btn:hover { background: #f8fafc; border-color: #cbd5e1; }
     .full-btn { width: 100%; }
 
+    /* ---------- PANELS & FORMS ---------- */
     .panel {
-      background: white;
-      border: 1px solid var(--border);
-      border-radius: 15px;
-      padding: 22px;
-      box-shadow: var(--shadow);
-      margin-bottom: 18px;
+      background: var(--white); border: 1px solid var(--border); border-radius: var(--radius);
+      padding: 28px; box-shadow: var(--shadow-sm); margin-bottom: 20px;
     }
-
-    .form-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 15px;
-    }
-
-    .field {
-      display: flex;
-      flex-direction: column;
-      gap: 7px;
-    }
-
+    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    .field { display: flex; flex-direction: column; gap: 8px; }
     .field.full { grid-column: 1 / -1; }
-
-    .field label {
-      font-size: 13px;
-      font-weight: 700;
+    .field label { font-size: 13px; font-weight: 700; color: var(--navy); }
+    .field input, .field textarea, .field select {
+      width: 100%; border: 1px solid var(--border); border-radius: 10px;
+      padding: 13px 14px; outline: none; background: var(--white); color: var(--text);
+      transition: var(--transition); font-size: 14px;
     }
-
-    .field input,
-    .field textarea,
-    .field select {
-      width: 100%;
-      border: 1px solid #dce4eb;
-      border-radius: 9px;
-      padding: 12px;
-      outline: none;
-      background: white;
-      color: var(--text);
+    .field input:focus, .field textarea:focus, .field select:focus {
+      border-color: var(--green-dark); box-shadow: 0 0 0 3px var(--green-glow);
     }
+    .field textarea { min-height: 110px; resize: vertical; }
+    .hint { color: var(--muted); font-size: 12.5px; line-height: 1.5; }
 
-    .field input:focus,
-    .field textarea:focus,
-    .field select:focus {
-      border-color: var(--green-dark);
-      box-shadow: 0 0 0 3px rgba(0,214,143,.12);
-    }
-
-    .field textarea {
-      min-height: 105px;
-      resize: vertical;
-    }
-
-    .hint {
-      color: var(--muted);
-      font-size: 12px;
-      line-height: 1.5;
-    }
-
-    .message {
-      display: none;
-      padding: 12px 14px;
-      border-radius: 9px;
-      font-size: 13px;
-      line-height: 1.5;
-      margin: 14px 0;
-    }
-
+    /* ---------- MESSAGES ---------- */
+    .message { display: none; padding: 14px; border-radius: 10px; font-size: 13.5px; line-height: 1.5; margin: 16px 0; font-weight: 500; }
     .message.show { display: block; }
-    .message.error { background: #fff0f1; color: #a61e2d; }
-    .message.success { background: #eafaf3; color: #08764f; }
-    .message.info { background: #edf5ff; color: #174b83; }
+    .message.error { background: #fef2f2; color: #b91c1c; border: 1px solid #fecaca; }
+    .message.success { background: #ecfdf5; color: #047857; border: 1px solid #a7f3d0; }
+    .message.info { background: #eff6ff; color: #1d4ed8; border: 1px solid #bfdbfe; }
 
-    .request-list {
-      display: grid;
-      gap: 13px;
-    }
-
-    .request-card {
-      background: white;
-      border: 1px solid var(--border);
-      border-radius: 13px;
-      padding: 17px;
-    }
-
-    .request-top {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      gap: 12px;
-    }
-
-    .request-card h3 {
-      margin: 0 0 6px;
-      font-size: 15px;
-    }
-
-    .request-card p {
-      margin: 5px 0;
-      font-size: 13px;
-      color: var(--muted);
-      line-height: 1.5;
-      overflow-wrap: anywhere;
-    }
-
+    /* ---------- REQUESTS LIST ---------- */
+    .request-list { display: grid; gap: 16px; }
+    .request-card { background: var(--white); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; box-shadow: var(--shadow-sm); }
+    .request-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; margin-bottom: 12px; }
+    .request-card h3 { margin: 0 0 4px; font-size: 16px; font-weight: 700; color: var(--navy); }
+    .request-card p { margin: 6px 0; font-size: 13.5px; color: var(--text); line-height: 1.5; overflow-wrap: anywhere; }
+    .request-card p strong { color: var(--muted); font-weight: 600; }
+    
     .status {
-      display: inline-block;
-      padding: 6px 10px;
-      border-radius: 20px;
-      background: #fff5dd;
-      color: #956200;
-      font-size: 11px;
-      font-weight: 800;
-      text-transform: capitalize;
-      white-space: nowrap;
+      display: inline-block; padding: 6px 12px; border-radius: 20px;
+      font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; white-space: nowrap;
     }
+    .status.pending { background: #fef9c3; color: #a16207; }
+    .status.accepted { background: #eff6ff; color: #1d4ed8; }
+    .status.in_progress { background: #f3e8ff; color: #6b21a8; }
+    .status.completed { background: #ecfdf5; color: #047857; }
+    .status.cancelled { background: #fef2f2; color: #b91c1c; }
 
-    .status.accepted { background: #e7f1ff; color: #205b9b; }
-    .status.in_progress { background: #e9e8ff; color: #4b43a0; }
-    .status.completed { background: #e7f8ef; color: #147345; }
-    .status.cancelled { background: #fff0f1; color: #a61e2d; }
-
-    .profile-row {
-      display: flex;
-      justify-content: space-between;
-      gap: 12px;
-      padding: 13px 0;
-      border-bottom: 1px solid var(--border);
-    }
-
+    /* ---------- PROFILE ---------- */
+    .profile-row { display: flex; justify-content: space-between; align-items: center; gap: 16px; padding: 16px 0; border-bottom: 1px solid var(--border); }
     .profile-row:last-child { border-bottom: 0; }
-    .profile-row span:first-child { color: var(--muted); font-size: 13px; }
-    .profile-row span:last-child { font-size: 14px; font-weight: 650; text-align: right; overflow-wrap: anywhere; }
+    .profile-row span:first-child { color: var(--muted); font-size: 14px; font-weight: 500; }
+    .profile-row span:last-child { font-size: 15px; font-weight: 600; text-align: right; overflow-wrap: anywhere; }
 
-    .empty {
-      text-align: center;
-      color: var(--muted);
-      padding: 35px 15px;
-      background: white;
-      border: 1px dashed #d4dde6;
-      border-radius: 13px;
-      line-height: 1.6;
+    /* ---------- LOADING & EMPTY ---------- */
+    .loading { color: var(--muted); padding: 40px; text-align: center; font-weight: 500; font-size: 15px; }
+    .loading::after {
+      content: ""; display: block; width: 24px; height: 24px; margin: 16px auto 0;
+      border: 3px solid var(--border); border-top-color: var(--green-dark);
+      border-radius: 50%; animation: spin 1s linear infinite;
     }
+    @keyframes spin { 100% { transform: rotate(360deg); } }
 
-    .loading {
-      color: var(--muted);
-      padding: 25px;
-      text-align: center;
-    }
+    .empty { text-align: center; color: var(--muted); padding: 40px 20px; background: var(--white); border: 2px dashed var(--border); border-radius: var(--radius); line-height: 1.6; font-size: 14px; }
 
-    .footer {
-      text-align: center;
-      color: var(--muted);
-      font-size: 12px;
-      padding: 25px 10px;
-    }
+    /* ---------- FOOTER ---------- */
+    .footer { text-align: center; color: var(--muted); font-size: 13px; padding: 30px 10px; font-weight: 500; }
 
-    @media(max-width: 900px) {
-      .service-grid { grid-template-columns: repeat(2, minmax(0,1fr)); }
-    }
-
-    @media(max-width: 560px) {
+    /* ---------- RESPONSIVE ---------- */
+    @media(max-width: 768px) {
       .topbar { padding: 14px 4%; }
-      .brand { font-size: 19px; }
+      .brand { font-size: 20px; }
       .user-label { display: none; }
-      .container { width: 92%; margin-top: 18px; }
-      .welcome { padding: 23px; }
-      .welcome-mark { font-size: 35px; }
-      .service-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
-      .service-card { padding: 14px; min-height: 200px; }
-      .service-icon { width: 44px; height: 44px; font-size: 23px; }
+      .container { width: 92%; margin-top: 24px; }
+      .welcome { padding: 24px; flex-direction: column; text-align: center; }
+      .welcome-mark { display: none; }
+      .section-heading { flex-direction: column; align-items: flex-start; gap: 10px; }
       .form-grid { grid-template-columns: 1fr; }
       .field.full { grid-column: auto; }
-      .panel { padding: 16px; }
+      .panel { padding: 20px; }
     }
-
-    @media(max-width: 360px) {
+    @media(max-width: 480px) {
       .service-grid { grid-template-columns: 1fr; }
+      .profile-row { flex-direction: column; align-items: flex-start; gap: 4px; }
+      .profile-row span:last-child { text-align: left; }
     }
   </style>
 </head>
@@ -412,7 +227,7 @@
 <header class="topbar">
   <div class="brand">MEI <span>One</span></div>
   <div class="top-right">
-    <span class="user-label" id="headerUser">Customer account</span>
+    <span class="user-label" id="headerUser">Loading...</span>
     <button class="logout" id="logoutBtn" type="button">Sign out</button>
   </div>
 </header>
@@ -428,7 +243,7 @@
   </section>
 
   <nav class="tabs" aria-label="Customer dashboard navigation">
-    <button class="tab active" data-tab="home" type="button">Home</button>
+    <button class="tab active" data-tab="home" type="button">Explore Services</button>
     <button class="tab" data-tab="requests" type="button">My Requests</button>
     <button class="tab" data-tab="profile" type="button">My Profile</button>
   </nav>
@@ -441,7 +256,6 @@
         <p>Choose a service to get started.</p>
       </div>
     </div>
-
     <div id="serviceMessage" class="message"></div>
     <div id="servicesGrid" class="service-grid">
       <div class="loading">Loading available services...</div>
@@ -461,7 +275,6 @@
     <div class="panel">
       <form id="requestForm">
         <div class="form-grid">
-
           <div class="field full">
             <label for="selectedService">Selected service</label>
             <select id="selectedService" required></select>
@@ -469,39 +282,32 @@
 
           <div class="field full">
             <label for="requestTitle">Request title</label>
-            <input id="requestTitle" maxlength="150"
-              placeholder="Briefly describe what you need" required>
+            <input id="requestTitle" maxlength="150" placeholder="Briefly describe what you need" required>
           </div>
 
           <div class="field full">
             <label for="requestDetails">Description / Instructions</label>
-            <textarea id="requestDetails" maxlength="5000"
-              placeholder="Explain what you need, including any important details." required></textarea>
+            <textarea id="requestDetails" maxlength="5000" placeholder="Explain what you need, including any important details." required></textarea>
           </div>
 
           <div class="field" id="pickupField">
             <label for="pickup">Pickup / Service location</label>
-            <input id="pickup" maxlength="500"
-              placeholder="Enter pickup or service address">
+            <input id="pickup" maxlength="500" placeholder="Enter pickup or service address">
           </div>
 
           <div class="field" id="dropoffField">
             <label for="dropoff">Destination</label>
-            <input id="dropoff" maxlength="500"
-              placeholder="Enter destination, if applicable">
+            <input id="dropoff" maxlength="500" placeholder="Enter destination, if applicable">
           </div>
 
           <div class="field full">
             <label for="requestNotes">Additional notes (optional)</label>
-            <textarea id="requestNotes" maxlength="3000"
-              placeholder="Any other instructions?"></textarea>
+            <textarea id="requestNotes" maxlength="3000" placeholder="Any other instructions?"></textarea>
           </div>
 
           <div class="field full">
             <div class="hint">
-              By submitting, you authorize MEI One to share the request
-              with an eligible service provider. Submission does not
-              guarantee immediate provider acceptance.
+              By submitting, you authorize MEI One to share the request with an eligible service provider. Submission does not guarantee immediate provider acceptance.
             </div>
           </div>
 
@@ -511,7 +317,6 @@
               Submit Service Request
             </button>
           </div>
-
         </div>
       </form>
     </div>
@@ -563,13 +368,10 @@
 
     <div class="panel">
       <h3>Account security</h3>
-      <p class="hint">
-        Keep your password private. If you need to reset your password,
-        use the password recovery option on the sign-in page.
+      <p class="hint" style="margin-bottom: 16px;">
+        Keep your password private. If you need to reset your password, use the password recovery option on the sign-in page.
       </p>
-      <button class="secondary-btn" id="securityBtn" type="button">
-        Go to Sign In
-      </button>
+      <button class="secondary-btn" id="securityBtn" type="button">Go to Sign In</button>
     </div>
   </section>
 
@@ -583,12 +385,21 @@
 (() => {
   "use strict";
 
+  /* =========================================================
+     CONFIGURATION & CONSTANTS
+     ========================================================= */
   const SIGNIN_PATH = "/customer-signin.html";
   const AUTO_D_URL = "https://auto-d.meipressgroup.com";
   const MEI_LEARN_URL = "https://www.meidriveafrica.com";
 
+  const SERVICE_LINKS = { auto: AUTO_D_URL, learn: MEI_LEARN_URL };
+  const TRANSPORT_SERVICES = new Set(["rides", "delivery", "towing", "roadside"]);
+
   const $ = (id) => document.getElementById(id);
 
+  /* =========================================================
+     STATE
+     ========================================================= */
   let sb = null;
   let currentUser = null;
   let currentProfile = null;
@@ -596,197 +407,154 @@
   let authSubscription = null;
   let authRedirecting = false;
 
-  const SERVICE_LINKS = {
-    auto: AUTO_D_URL,
-    learn: MEI_LEARN_URL
-  };
-
-  const TRANSPORT_SERVICES = new Set([
-    "rides", "delivery", "towing", "roadside"
-  ]);
-
+  /* =========================================================
+     HELPERS
+     ========================================================= */
   function escapeHTML(value) {
     return String(value ?? "").replace(/[&<>"']/g, (char) => ({
-      "&": "&amp;",
-      "<": "&lt;",
-      ">": "&gt;",
-      '"': "&quot;",
-      "'": "&#39;"
+      "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
     })[char]);
   }
 
   function showMessage(id, message, type = "info") {
-    const element = $(id);
-    if (!element) return;
-
-    element.textContent = message;
-    element.className = "message show " + type;
+    const el = $(id);
+    if (!el) return;
+    el.textContent = message;
+    el.className = "message show " + type;
   }
 
   function hideMessage(id) {
-    const element = $(id);
-    if (!element) return;
+    const el = $(id);
+    if (!el) return;
+    el.textContent = "";
+    el.className = "message";
+  }
 
-    element.textContent = "";
-    element.className = "message";
+  function formatDate(value) {
+    if (!value) return "Date unavailable";
+    const date = new Date(value);
+    if (Number.isNaN(date.getTime())) return "Date unavailable";
+    return date.toLocaleString(undefined, {
+      month: "short", day: "numeric", year: "numeric",
+      hour: "numeric", minute: "2-digit"
+    });
   }
 
   function showTab(tabName) {
-    document.querySelectorAll(".tab").forEach(button => {
-      button.classList.toggle("active", button.dataset.tab === tabName);
+    document.querySelectorAll(".tab").forEach(btn => {
+      btn.classList.toggle("active", btn.dataset.tab === tabName);
     });
-
-    document.querySelectorAll(".section").forEach(section => {
-      section.classList.toggle(
-        "active",
-        section.id === "section-" + tabName
-      );
+    document.querySelectorAll(".section").forEach(sec => {
+      sec.classList.toggle("active", sec.id === "section-" + tabName);
     });
-
     window.scrollTo({ top: 0, behavior: "smooth" });
-
     if (tabName === "requests") loadRequests();
   }
 
-  function getServiceById(id) {
-    return services.find(service => service.id === id);
-  }
-
-  function getServiceByCode(code) {
-    return services.find(service => service.service_code === code);
-  }
+  function getServiceById(id) { return services.find(s => s.id === id); }
 
   function openExternalService(url) {
     const opened = window.open(url, "_blank", "noopener,noreferrer");
-
-    // Fallback for browsers that block new tabs.
     if (!opened) window.location.href = url;
   }
 
+  /* =========================================================
+     INITIALIZATION & AUTH GUARD
+     ========================================================= */
   async function initialize() {
     if (!window.supabase || !window.MEI_SUPABASE) {
-      document.body.innerHTML =
-        '<main style="padding:40px;font-family:Arial">' +
-        '<h2>Configuration error</h2>' +
-        '<p>MEI One could not load its Supabase configuration. ' +
-        'Please check /js/config.js.</p></main>';
+      document.body.innerHTML = `<main style="padding:40px;font-family:sans-serif;text-align:center;">
+        <h2>Configuration error</h2>
+        <p>Could not load Supabase configuration. Check /js/config.js.</p>
+      </main>`;
       return;
     }
 
-    // /js/config.js must expose an initialized Supabase client.
     sb = window.MEI_SUPABASE;
 
-    if (!sb || !sb.auth || typeof sb.from !== "function") {
-      document.body.innerHTML =
-        '<main style="padding:40px;font-family:Arial">' +
-        '<h2>Configuration error</h2>' +
-        '<p>window.MEI_SUPABASE is not an initialized Supabase client.</p>' +
-        '</main>';
-      return;
-    }
-
+    // 1. Check Session
     const { data, error } = await sb.auth.getSession();
-
-    if (error) {
-      console.error("Session check failed:", error);
-      window.location.replace(SIGNIN_PATH);
-      return;
-    }
-
-    if (!data.session) {
+    if (error || !data.session) {
       window.location.replace(SIGNIN_PATH);
       return;
     }
 
     currentUser = data.session.user;
 
-    const profileResult = await sb
+    // 2. Fetch Profile
+    const { data: profile, error: profileError } = await sb
       .from("profiles")
-      .select("id, full_name, phone, email, account_status")
+      .select("id, full_name, phone, account_status")
       .eq("id", currentUser.id)
       .maybeSingle();
 
-    if (profileResult.error) {
-      console.error("Profile loading failed:", profileResult.error);
+    if (profileError || !profile) {
+      console.error("Profile error:", profileError);
       alert("We could not load your customer profile. Please sign in again.");
       await sb.auth.signOut();
       window.location.replace(SIGNIN_PATH);
       return;
     }
 
-    if (!profileResult.data) {
-      alert("Your customer profile was not found. Please contact support.");
-      await sb.auth.signOut();
-      window.location.replace(SIGNIN_PATH);
-      return;
-    }
+    currentProfile = profile;
 
-    currentProfile = profileResult.data;
-
-    const accountStatus = String(
-      currentProfile.account_status || ""
-    ).trim().toLowerCase();
-
-    if (accountStatus !== "active") {
+    // 3. Check Account Status
+    const status = String(profile.account_status || "").trim().toLowerCase();
+    if (status !== "active") {
       alert("Your account is not active. Please contact MEI One support.");
       await sb.auth.signOut();
       window.location.replace(SIGNIN_PATH);
       return;
     }
 
+    // 4. Setup UI & Listen for Logout
     renderProfile();
     await loadServices();
 
-    const authResult = sb.auth.onAuthStateChange((event) => {
+    const { data: authData } = sb.auth.onAuthStateChange((event) => {
       if (event === "SIGNED_OUT" && !authRedirecting) {
         authRedirecting = true;
         window.location.replace(SIGNIN_PATH);
       }
     });
-
-    authSubscription = authResult.data.subscription;
+    if (authData?.subscription) authSubscription = authData.subscription;
   }
 
   function renderProfile() {
-    const name = currentProfile.full_name ||
-      currentUser.user_metadata?.full_name ||
-      "Customer";
-
-    const email = currentProfile.email || currentUser.email || "—";
+    const name = currentProfile.full_name || currentUser.user_metadata?.full_name || "Customer";
+    // FIX: Fallback to Auth session email since profiles table usually doesn't store email
+    const email = currentUser.email || "—"; 
     const phone = currentProfile.phone || "Not provided";
 
     $("welcomeName").textContent = name;
-    $("headerUser").textContent = name;
+    $("headerUser").textContent = `Hi, ${name.split(" ")[0]}`;
     $("profileName").textContent = name;
     $("profileEmail").textContent = email;
     $("profilePhone").textContent = phone;
     $("profileStatus").textContent = currentProfile.account_status || "Unknown";
   }
 
+  /* =========================================================
+     SERVICES
+     ========================================================= */
   async function loadServices() {
-    $("servicesGrid").innerHTML =
-      '<div class="loading">Loading available services...</div>';
+    $("servicesGrid").innerHTML = '<div class="loading">Loading available services...</div>';
 
     const { data, error } = await sb
       .from("services")
-      .select(
-        "id, service_code, service_name, description, icon, route, is_active, display_order"
-      )
+      .select("id, service_code, service_name, description, icon, route, is_active, display_order")
       .eq("is_active", true)
       .order("display_order", { ascending: true });
 
     if (error) {
       console.error("Service loading failed:", error);
-      $("servicesGrid").innerHTML =
-        '<div class="empty">Unable to load services. Please refresh the page.</div>';
+      $("servicesGrid").innerHTML = '<div class="empty">Unable to load services. Please refresh the page.</div>';
       return;
     }
 
     services = data || [];
-
     if (!services.length) {
-      $("servicesGrid").innerHTML =
-        '<div class="empty">No services are currently available.</div>';
+      $("servicesGrid").innerHTML = '<div class="empty">No services are currently available.</div>';
       return;
     }
 
@@ -796,54 +564,45 @@
   function renderServices() {
     $("servicesGrid").innerHTML = services.map(service => {
       const code = String(service.service_code || "").toLowerCase();
-      const externalUrl = SERVICE_LINKS[code];
-
-      const actionLabel = externalUrl
-        ? "Open Service"
-        : "Request Service";
+      const isExternal = !!SERVICE_LINKS[code];
+      const actionLabel = isExternal ? "Open Service" : "Request Service";
 
       return `
         <article class="service-card">
           <div class="service-icon">${escapeHTML(service.icon || "✦")}</div>
           <h3>${escapeHTML(service.service_name)}</h3>
           <p>${escapeHTML(service.description || "Explore this MEI One service.")}</p>
-          <button
-            class="primary-btn full-btn service-action"
-            type="button"
-            data-service-id="${escapeHTML(service.id)}"
-          >${actionLabel}</button>
+          <button class="primary-btn full-btn service-action" type="button" data-service-id="${escapeHTML(service.id)}">
+            ${actionLabel}
+          </button>
         </article>
       `;
     }).join("");
 
-    document.querySelectorAll(".service-action").forEach(button => {
-      button.addEventListener("click", () => {
-        const service = getServiceById(button.dataset.serviceId);
-        if (service) handleServiceAction(service);
+    document.querySelectorAll(".service-action").forEach(btn => {
+      btn.addEventListener("click", () => {
+        const service = getServiceById(btn.dataset.serviceId);
+        if (!service) return;
+        
+        const code = String(service.service_code || "").toLowerCase();
+        if (SERVICE_LINKS[code]) {
+          openExternalService(SERVICE_LINKS[code]);
+        } else {
+          openRequestForm(service);
+        }
       });
     });
   }
 
-  function handleServiceAction(service) {
-    const code = String(service.service_code || "").toLowerCase();
-
-    if (SERVICE_LINKS[code]) {
-      openExternalService(SERVICE_LINKS[code]);
-      return;
-    }
-
-    openRequestForm(service);
-  }
-
+  /* =========================================================
+     REQUEST FORM
+     ========================================================= */
   function openRequestForm(service) {
     $("selectedService").innerHTML = services.map(item => `
-      <option value="${escapeHTML(item.id)}">
-        ${escapeHTML(item.service_name)}
-      </option>
+      <option value="${escapeHTML(item.id)}">${escapeHTML(item.service_name)}</option>
     `).join("");
 
     $("selectedService").value = service.id;
-
     $("requestTitle").value = service.service_name + " request";
     $("requestDetails").value = "";
     $("pickup").value = "";
@@ -852,7 +611,6 @@
 
     hideMessage("requestMessage");
     updateRequestFields();
-
     showTab("request");
   }
 
@@ -860,46 +618,33 @@
     const selected = getServiceById($("selectedService").value);
     const code = String(selected?.service_code || "").toLowerCase();
 
-    const needsTransportFields = TRANSPORT_SERVICES.has(code);
+    const needsPickup = TRANSPORT_SERVICES.has(code);
+    const needsDropoff = ["rides", "delivery", "towing"].includes(code);
 
-    $("pickupField").style.display = needsTransportFields ? "flex" : "none";
-    $("dropoffField").style.display =
-      ["rides", "delivery", "towing"].includes(code) ? "flex" : "none";
+    $("pickupField").style.display = needsPickup ? "flex" : "none";
+    $("dropoffField").style.display = needsDropoff ? "flex" : "none";
 
-    $("pickup").required = needsTransportFields;
-    $("dropoff").required = ["rides", "delivery", "towing"].includes(code);
+    $("pickup").required = needsPickup;
+    $("dropoff").required = needsDropoff;
 
-    if (code === "roadside") {
-      $("pickup").placeholder = "Where is your vehicle located?";
-    } else {
-      $("pickup").placeholder = "Enter pickup or service address";
-    }
+    $("pickup").placeholder = code === "roadside" 
+      ? "Where is your vehicle located?" 
+      : "Enter pickup or service address";
   }
 
   async function submitRequest(event) {
     event.preventDefault();
     hideMessage("requestMessage");
 
-    if (!currentUser) {
-      window.location.replace(SIGNIN_PATH);
-      return;
-    }
-
     const service = getServiceById($("selectedService").value);
-
     if (!service) {
       showMessage("requestMessage", "Please select a valid service.", "error");
       return;
     }
 
     const code = String(service.service_code || "").toLowerCase();
-
     if (SERVICE_LINKS[code]) {
-      showMessage(
-        "requestMessage",
-        "This service opens on its dedicated website instead of creating a service request.",
-        "info"
-      );
+      showMessage("requestMessage", "This service opens externally instead of creating a request.", "info");
       return;
     }
 
@@ -910,45 +655,24 @@
     const notes = $("requestNotes").value.trim();
 
     if (!title || !details) {
-      showMessage(
-        "requestMessage",
-        "Please enter a request title and description.",
-        "error"
-      );
+      showMessage("requestMessage", "Please enter a request title and description.", "error");
       return;
     }
-
     if (TRANSPORT_SERVICES.has(code) && !pickup) {
-      showMessage(
-        "requestMessage",
-        "Please enter the pickup or vehicle location.",
-        "error"
-      );
+      showMessage("requestMessage", "Please enter the pickup or vehicle location.", "error");
       return;
     }
-
     if (["rides", "delivery", "towing"].includes(code) && !dropoff) {
-      showMessage(
-        "requestMessage",
-        "Please enter the destination.",
-        "error"
-      );
+      showMessage("requestMessage", "Please enter the destination.", "error");
       return;
     }
 
-    const button = $("submitRequest");
-    button.disabled = true;
-    button.textContent = "Submitting...";
+    const btn = $("submitRequest");
+    btn.disabled = true;
+    btn.textContent = "Submitting...";
 
-    const customerName = currentProfile.full_name ||
-      currentUser.user_metadata?.full_name ||
-      "Customer";
+    const customerName = currentProfile.full_name || currentUser.user_metadata?.full_name || "Customer";
 
-    /*
-      These fields already exist in public.service_requests.
-      Both the short and address-style pickup/dropoff columns
-      are populated for compatibility with existing workflows.
-    */
     const payload = {
       user_id: currentUser.id,
       service_id: service.id,
@@ -969,104 +693,48 @@
       const { data, error } = await sb
         .from("service_requests")
         .insert(payload)
-        .select("id, status, requested_at")
+        .select("id")
         .single();
 
-      if (error) {
-        console.error("Request submission failed:", error);
-        showMessage(
-          "requestMessage",
-          "Your request could not be submitted. " + error.message,
-          "error"
-        );
-        return;
-      }
+      if (error) throw error;
 
-      showMessage(
-        "requestMessage",
-        "Your request was submitted successfully. Reference: " + data.id,
-        "success"
-      );
-
+      showMessage("requestMessage", "Request submitted successfully! Reference: " + data.id, "success");
       $("requestForm").reset();
-
+      
       await loadRequests();
-
-      setTimeout(() => {
-        showTab("requests");
-      }, 1300);
+      setTimeout(() => showTab("requests"), 1500);
 
     } catch (error) {
-      console.error("Unexpected request error:", error);
-      showMessage(
-        "requestMessage",
-        "An unexpected error occurred. Please try again.",
-        "error"
-      );
+      console.error("Request submission failed:", error);
+      showMessage("requestMessage", "Submission failed: " + error.message, "error");
     } finally {
-      button.disabled = false;
-      button.textContent = "Submit Service Request";
+      btn.disabled = false;
+      btn.textContent = "Submit Service Request";
     }
   }
 
-  function formatDate(value) {
-    if (!value) return "Date unavailable";
-
-    const date = new Date(value);
-
-    if (Number.isNaN(date.getTime())) return "Date unavailable";
-
-    return date.toLocaleString();
-  }
-
-  function statusClass(status) {
-    const value = String(status || "pending")
-      .toLowerCase()
-      .replace(/\s+/g, "_");
-
-    return value;
-  }
-
+  /* =========================================================
+     REQUESTS LIST
+     ========================================================= */
   async function loadRequests() {
     if (!currentUser) return;
-
-    $("requestsList").innerHTML =
-      '<div class="loading">Loading your requests...</div>';
-
+    $("requestsList").innerHTML = '<div class="loading">Loading your requests...</div>';
     hideMessage("requestsMessage");
 
     const { data, error } = await sb
       .from("service_requests")
       .select(`
-        id,
-        service_id,
-        request_type,
-        status,
-        pickup_address,
-        destination_address,
-        notes,
-        requested_at,
-        accepted_at,
-        started_at,
-        completed_at,
-        cancelled_at,
-        service,
-        provider_id,
-        title,
-        details,
-        pickup,
-        dropoff,
-        price,
-        customer_name
+        id, service_id, request_type, status, pickup_address, destination_address, 
+        notes, requested_at, accepted_at, started_at, completed_at, cancelled_at, 
+        service, provider_id, title, details, pickup, dropoff, price, customer_name
       `)
       .eq("user_id", currentUser.id)
       .order("requested_at", { ascending: false })
       .limit(50);
 
     if (error) {
-      console.error("Request history loading failed:", error);
-      $("requestsList").innerHTML =
-        '<div class="empty">Unable to load requests. Please try again.</div>';
+      console.error("History loading failed:", error);
+      $("requestsList").innerHTML = '<div class="empty">Unable to load requests. Please try again.</div>';
       return;
     }
 
@@ -1084,70 +752,50 @@
       return;
     }
 
-    $("requestsList").innerHTML = requests.map(request => {
-      const service = getServiceById(request.service_id);
-
-      const serviceName = service?.service_name ||
-        request.title ||
-        request.service ||
-        request.request_type ||
-        "Service request";
-
-      const status = String(request.status || "pending").toLowerCase();
-
-      const pickup = request.pickup || request.pickup_address;
-      const dropoff = request.dropoff || request.destination_address;
+    $("requestsList").innerHTML = requests.map(req => {
+      const service = getServiceById(req.service_id);
+      const serviceName = service?.service_name || req.title || req.service || req.request_type || "Service request";
+      const status = String(req.status || "pending").toLowerCase().replace(/\s+/g, "_");
+      
+      const pickup = req.pickup || req.pickup_address;
+      const dropoff = req.dropoff || req.destination_address;
 
       return `
         <article class="request-card">
           <div class="request-top">
             <div>
               <h3>${escapeHTML(serviceName)}</h3>
-              <p>${escapeHTML(request.title || "Service request")}</p>
+              <p style="color:var(--muted); margin:0;">${escapeHTML(req.title || "Service request")}</p>
             </div>
-            <span class="status ${escapeHTML(statusClass(status))}">
-              ${escapeHTML(status.replace(/_/g, " "))}
-            </span>
+            <span class="status ${escapeHTML(status)}">${escapeHTML(status.replace(/_/g, " "))}</span>
           </div>
 
-          ${request.details ? `
-            <p><strong>Details:</strong> ${escapeHTML(request.details)}</p>
-          ` : ""}
-
-          ${pickup ? `
-            <p><strong>Pickup / Location:</strong> ${escapeHTML(pickup)}</p>
-          ` : ""}
-
-          ${dropoff ? `
-            <p><strong>Destination:</strong> ${escapeHTML(dropoff)}</p>
-          ` : ""}
-
-          <p><strong>Submitted:</strong> ${escapeHTML(formatDate(request.requested_at))}</p>
-
-          ${request.provider_id ? `
-            <p><strong>Provider assigned:</strong> Assigned</p>
-          ` : `
-            <p><strong>Provider:</strong> Awaiting assignment</p>
-          `}
-
-          <p><strong>Reference:</strong> ${escapeHTML(request.id)}</p>
+          ${req.details ? `<p><strong>Details:</strong> ${escapeHTML(req.details)}</p>` : ""}
+          ${pickup ? `<p><strong>Pickup:</strong> ${escapeHTML(pickup)}</p>` : ""}
+          ${dropoff ? `<p><strong>Destination:</strong> ${escapeHTML(dropoff)}</p>` : ""}
+          
+          <p style="margin-top: 12px; font-size: 12px; color: var(--muted);">
+            Submitted: ${escapeHTML(formatDate(req.requested_at))} · Ref: ${escapeHTML(req.id.split('-')[0])}
+          </p>
         </article>
       `;
     }).join("");
   }
 
+  /* =========================================================
+     ACTIONS & LISTENERS
+     ========================================================= */
   async function signOut() {
-    const button = $("logoutBtn");
-    button.disabled = true;
-    button.textContent = "Signing out...";
+    const btn = $("logoutBtn");
+    btn.disabled = true;
+    btn.textContent = "Signing out...";
 
     const { error } = await sb.auth.signOut();
-
     if (error) {
       console.error("Sign out failed:", error);
+      btn.disabled = false;
+      btn.textContent = "Sign out";
       alert("Unable to sign out. Please try again.");
-      button.disabled = false;
-      button.textContent = "Sign out";
       return;
     }
 
@@ -1155,24 +803,22 @@
     window.location.replace(SIGNIN_PATH);
   }
 
-  document.querySelectorAll(".tab").forEach(button => {
-    button.addEventListener("click", () => showTab(button.dataset.tab));
+  // Global Event Listeners
+  document.querySelectorAll(".tab").forEach(btn => {
+    btn.addEventListener("click", () => showTab(btn.dataset.tab));
   });
-
   $("requestForm").addEventListener("submit", submitRequest);
   $("selectedService").addEventListener("change", updateRequestFields);
   $("backToServices").addEventListener("click", () => showTab("home"));
   $("refreshRequests").addEventListener("click", loadRequests);
   $("logoutBtn").addEventListener("click", signOut);
-
-  $("securityBtn").addEventListener("click", () => {
-    window.location.href = SIGNIN_PATH;
-  });
+  $("securityBtn").addEventListener("click", () => window.location.href = SIGNIN_PATH);
 
   window.addEventListener("pagehide", () => {
     if (authSubscription) authSubscription.unsubscribe();
   });
 
+  // Boot
   initialize().catch(error => {
     console.error("Dashboard initialization failed:", error);
     alert("MEI One could not load your dashboard. Please sign in again.");
