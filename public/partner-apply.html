@@ -4,184 +4,389 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#071a2f">
-  <meta name="robots" content="noindex">
-  <title>Provider application | MEI One</title>
-  <link rel="icon" href="assets/favicon.png" type="image/png">
+  <meta name="description" content="Sign in to your MEI One provider account.">
+  <title>Provider Sign In | MEI One</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
   <style>
-    :root{--navy:#06111f;--green:#b7ff00;--green-hover:#c8ff3d;--white:#fff;--text:#e8f0f7;--muted:#91a4b8;--border:rgba(255,255,255,.10)}
-    *{box-sizing:border-box;margin:0;padding:0}
-    body{min-height:100vh;padding:24px;display:flex;align-items:center;justify-content:center;
-      font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--white);
-      background:radial-gradient(circle at 85% 10%,rgba(183,255,0,.11),transparent 28%),radial-gradient(circle at 10% 90%,rgba(0,120,255,.08),transparent 32%),var(--navy)}
-    button,input,select{font:inherit}button{cursor:pointer}
-    .page{width:100%;max-width:480px}
-    .brand{text-align:center;margin-bottom:24px}
-    .brand-mark{width:68px;height:68px;margin:0 auto 14px;display:flex;align-items:center;justify-content:center;border-radius:20px;background:var(--green);color:var(--navy);font-size:23px;font-weight:950;letter-spacing:-1px}
-    .brand h1{font-size:32px;line-height:1;font-weight:950;letter-spacing:-1.5px}
-    .card{padding:30px;border:1px solid var(--border);border-radius:24px;background:linear-gradient(180deg,rgba(16,38,61,.96),rgba(7,19,33,.98));box-shadow:0 25px 70px rgba(0,0,0,.4)}
-    .card-header{margin-bottom:24px}
-    .card-header h2{font-size:25px;font-weight:900;letter-spacing:-.8px}
-    .card-header p{margin-top:7px;color:var(--muted);font-size:14px;line-height:1.5}
-    .message{display:none;margin-bottom:18px;padding:13px 14px;border-radius:12px;font-size:13px;line-height:1.5}
-    .message.show{display:block}
-    .message.error{color:#ffdce0;background:rgba(255,100,116,.10);border:1px solid rgba(255,100,116,.28)}
-    .message.success{color:#d9ffeb;background:rgba(93,227,160,.10);border:1px solid rgba(93,227,160,.28)}
-    .field{margin-bottom:17px}
-    .field label{display:block;margin-bottom:8px;color:var(--text);font-size:13px;font-weight:800}
-    .field input,.field select{width:100%;height:52px;padding:0 15px;border:1px solid rgba(255,255,255,.12);border-radius:13px;outline:none;background:rgba(0,0,0,.2);color:var(--white);transition:border-color .2s,box-shadow .2s}
-    .field select option{background:#0a1a2b;color:#fff}
-    .field input::placeholder{color:#62778b}
-    .field input:focus,.field select:focus{border-color:var(--green);box-shadow:0 0 0 3px rgba(183,255,0,.10)}
-    .field small{display:block;margin-top:6px;color:var(--muted);font-size:12px}
-    .primary-button{width:100%;min-height:54px;border:0;border-radius:14px;background:var(--green);color:#07101b;font-size:15px;font-weight:950;transition:transform .2s,background .2s,opacity .2s}
-    .primary-button:hover:not(:disabled){background:var(--green-hover);transform:translateY(-1px)}
-    .primary-button:disabled{opacity:.55;cursor:not-allowed;transform:none}
-    .link-row{margin-top:18px;text-align:center;font-size:13px;color:var(--muted)}
-    .link-row button{border:0;background:transparent;color:var(--green);font-weight:800;font-size:13px}
-    .spinner{width:17px;height:17px;display:inline-block;vertical-align:middle;margin-right:8px;border:2px solid rgba(0,0,0,.22);border-top-color:#07101b;border-radius:50%;animation:spin .7s linear infinite}
-    @keyframes spin{to{transform:rotate(360deg)}}
-    [hidden]{display:none !important}
-    @media (max-width:520px){body{padding:15px}.card{padding:22px;border-radius:20px}.brand h1{font-size:29px}}
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      padding: 20px;
+      display: grid;
+      place-items: center;
+      background: #071a2f;
+      color: #fff;
+      font-family: Inter, Arial, sans-serif;
+    }
+
+    .card {
+      width: 100%;
+      max-width: 430px;
+      padding: 35px;
+      background: #102640;
+      border: 1px solid rgba(255,255,255,.08);
+      border-radius: 18px;
+      box-shadow: 0 20px 60px rgba(0,0,0,.2);
+    }
+
+    .logo {
+      font-size: 27px;
+      font-weight: 800;
+      color: #00ff88;
+      letter-spacing: -1px;
+    }
+
+    h1 {
+      font-size: 25px;
+      margin: 25px 0 8px;
+    }
+
+    p {
+      color: #aebdce;
+      line-height: 1.6;
+      font-size: 14px;
+    }
+
+    input {
+      display: block;
+      width: 100%;
+      padding: 14px;
+      margin: 12px 0;
+      border: 1px solid #38516c;
+      border-radius: 9px;
+      outline: none;
+      background: #071a2f;
+      color: white;
+      font-size: 15px;
+      font-family: inherit;
+    }
+
+    input:focus {
+      border-color: #00ff88;
+      box-shadow: 0 0 0 3px rgba(0,255,136,.1);
+    }
+
+    button {
+      width: 100%;
+      padding: 14px;
+      margin-top: 12px;
+      border: 0;
+      border-radius: 9px;
+      background: #00ff88;
+      color: #071a2f;
+      font-weight: 800;
+      font-size: 15px;
+      cursor: pointer;
+      font-family: inherit;
+    }
+
+    button:disabled {
+      opacity: .6;
+      cursor: not-allowed;
+    }
+
+    .switch {
+      text-align: center;
+      margin-top: 20px;
+      font-size: 14px;
+      color: #aebdce;
+    }
+
+    a {
+      color: #00ff88;
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    #message {
+      display: none;
+      padding: 12px;
+      margin-top: 16px;
+      border-radius: 8px;
+      overflow-wrap: anywhere;
+    }
+
+    #message.error {
+      display: block;
+      background: rgba(255,75,75,.12);
+      color: #ffaaaa;
+    }
+
+    #message.success {
+      display: block;
+      background: rgba(0,255,136,.1);
+      color: #00ff88;
+    }
+
+    #message.info {
+      display: block;
+      background: rgba(255,255,255,.07);
+      color: #d5e2ef;
+    }
+
+    .forgot {
+      text-align: right;
+      margin-top: 8px;
+      font-size: 13px;
+    }
+
+    @media (max-width: 480px) {
+      .card {
+        padding: 25px;
+      }
+    }
   </style>
 </head>
+
 <body>
 
-<main class="page">
-  <header class="brand">
-    <div class="brand-mark">MEI</div>
-    <h1>MEI One</h1>
-  </header>
+  <main class="card">
 
-  <section class="card">
-    <div class="card-header">
-      <h2>Provider application</h2>
-      <p>Tell us about your service. We review every application and email you when it's approved.</p>
-    </div>
+    <div class="logo">MEI ONE</div>
 
-    <div id="message" class="message" role="alert" aria-live="polite"></div>
+    <p>MEI One Provider Portal</p>
 
-    <form id="applyForm" novalidate>
-      <div class="field" id="typeField">
-        <label for="type">Service you offer</label>
-        <select id="type" name="type" required>
-          <option value="">Choose one</option>
-          <option value="driver">Driver (rides and deliveries)</option>
-          <option value="towing">Towing</option>
-          <option value="roadside">Roadside assistance</option>
-          <option value="garage">Garage / auto services</option>
-          <option value="marketplace">Marketplace seller</option>
-          <option value="home">Home services</option>
-        </select>
+    <h1>Provider Sign In</h1>
+
+    <p>
+      Access your driver and service provider dashboard.
+    </p>
+
+    <form id="loginForm">
+
+      <input
+        id="email"
+        type="email"
+        placeholder="Email address"
+        autocomplete="username"
+        required
+      >
+
+      <input
+        id="password"
+        type="password"
+        placeholder="Password"
+        autocomplete="current-password"
+        required
+      >
+
+      <div class="forgot">
+        <a href="#" id="forgotPassword">Forgot password?</a>
       </div>
 
-      <div class="field">
-        <label for="business">Business or trading name</label>
-        <input id="business" name="business" type="text" placeholder="e.g. Kamau Recovery Services" maxlength="120" required>
-        <small id="bizHint">Drivers can use their own name.</small>
-      </div>
+      <button type="submit" id="loginButton">
+        Sign In
+      </button>
 
-      <div class="field">
-        <label for="phone">Business phone</label>
-        <input id="phone" name="phone" type="tel" autocomplete="tel" placeholder="07XX XXX XXX" maxlength="20" required>
-      </div>
-
-      <button type="submit" class="primary-button" id="applySubmit">Submit application</button>
     </form>
 
-    <div class="link-row"><button type="button" id="signOut">Sign out</button></div>
-  </section>
-</main>
+    <p id="message" role="status" aria-live="polite"></p>
 
-<script src="js/config.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js" crossorigin="anonymous"></script>
-<script src="js/supabase.js"></script>
+    <div class="switch">
+      New provider?
+      <!-- CHANGED: Now redirects to /partner-apply.html -->
+      <a href="/partner-apply.html" id="applyProviderLink">Apply to become a provider</a>
+    </div>
 
-<script>
-(function () {
-  "use strict";
+    <div class="switch">
+      <a href="/customer-signin.html">Customer sign in</a>
+    </div>
 
-  var $ = function (id) { return document.getElementById(id); };
-  var form = $("applyForm"), message = $("message"), btn = $("applySubmit");
-  var sb = window.supabaseClient || window.MEISupabase || null;
-  var params = new URLSearchParams(window.location.search);
-  var VALID = ["driver", "towing", "roadside", "garage", "marketplace", "home"];
-  var lockedType = VALID.indexOf(params.get("type")) > -1 ? params.get("type") : "";
-  var user = null;
+    <div class="switch">
+      <a href="/index.html">← Back to MEI One</a>
+    </div>
 
-  function show(text, type) { message.textContent = text; message.className = text ? "message show " + (type || "error") : "message"; }
+  </main>
 
-  function normalisePhone(raw) {
-    var d = String(raw).replace(/[\s\-()]/g, "");
-    var m = d.match(/^(?:\+?254|0)([17]\d{8})$/);
-    return m ? "0" + m[1] : null;
-  }
+  <!-- Load Supabase before the MEI configuration -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="/js/config.js"></script>
 
-  $("signOut").addEventListener("click", async function () {
-    try { if (sb) await sb.auth.signOut(); } catch (e) {}
-    window.location.replace("login.html");
-  });
+  <script>
+    "use strict";
 
-  form.addEventListener("submit", async function (event) {
-    event.preventDefault();
-    show("");
+    // Use the shared MEI One Supabase client.
+    const sb = window.MEI_SUPABASE;
 
-    var type = lockedType || $("type").value;
-    var business = $("business").value.trim();
-    var phone = normalisePhone($("phone").value);
+    const form = document.getElementById("loginForm");
+    const button = document.getElementById("loginButton");
+    const message = document.getElementById("message");
 
-    if (VALID.indexOf(type) === -1) return show("Choose the service you offer.");
-    if (business.length < 2) return show("Enter your business or trading name.");
-    if (!phone) return show("Enter a valid Kenyan mobile number, e.g. 0712345678.");
+    function showMessage(text, type = "info") {
+      message.textContent = text;
+      message.className = type;
+    }
 
-    btn.disabled = true;
-    var label = btn.textContent;
-    btn.innerHTML = '<span class="spinner"></span>Submitting...';
+    function setLoading(loading) {
+      button.disabled = loading;
+      button.textContent = loading ? "Signing in..." : "Sign In";
+    }
 
-    // Status and is_online are forced by the database rules: new rows are always pending and offline.
-    var r = await sb.from("partners").insert({
-      user_id: user.id, type: type, business_name: business, phone: phone,
-      status: "pending", is_online: false
+    // Check Supabase initialization.
+    if (!sb) {
+      showMessage(
+        "MEI One could not connect to Supabase. Check your configuration and script loading order.",
+        "error"
+      );
+
+      button.disabled = true;
+    }
+
+    // PROVIDER SIGN IN
+    form.addEventListener("submit", async function (event) {
+      event.preventDefault();
+
+      if (!sb) return;
+
+      const email = document
+        .getElementById("email")
+        .value.trim();
+
+      const password = document
+        .getElementById("password")
+        .value;
+
+      if (!email || !password) {
+        showMessage("Enter your email and password.", "error");
+        return;
+      }
+
+      setLoading(true);
+      showMessage("Authenticating your account...", "info");
+
+      try {
+
+        // Step 1: Authenticate with Supabase.
+        const { data, error } = await sb.auth.signInWithPassword({
+          email,
+          password
+        });
+
+        if (error) throw error;
+
+        if (!data.user) {
+          throw new Error("Authentication failed. Please try again.");
+        }
+
+        // Step 2: Check the authenticated user's driver record.
+        // The current drivers table uses id = auth.users.id.
+        const {
+          data: driver,
+          error: driverError
+        } = await sb
+          .from("drivers")
+          .select("id, name, active")
+          .eq("id", data.user.id)
+          .maybeSingle();
+
+        if (driverError) {
+          throw new Error(
+            "Unable to verify your provider account: " +
+            driverError.message
+          );
+        }
+
+        // Step 3: Reject accounts without a provider record.
+        if (!driver) {
+          await sb.auth.signOut();
+
+          throw new Error(
+            "No provider account was found. Please apply to become a provider."
+          );
+        }
+
+        // Step 4: Check provider activation.
+        if (driver.active !== true) {
+          await sb.auth.signOut();
+
+          throw new Error(
+            "Your provider account is inactive. Please contact MEI One support."
+          );
+        }
+
+        // Step 5: Allow access to provider dashboard.
+        showMessage("Sign in successful. Opening your dashboard...", "success");
+
+        window.location.replace("/provider-dashboard.html");
+
+      } catch (error) {
+
+        console.error("MEI One provider sign-in error:", error);
+
+        showMessage(
+          error.message || "Unable to sign in. Please try again.",
+          "error"
+        );
+
+      } finally {
+        setLoading(false);
+      }
     });
 
-    if (r.error) {
-      console.error("MEI One: application failed.", r.error);
-      // 23505 = already applied
-      if (r.error.code === "23505") return window.location.replace("provider-dashboard.html");
-      show("We couldn't submit your application. Please try again.");
-      btn.disabled = false; btn.textContent = label;
-      return;
-    }
+    // PASSWORD RESET
+    document
+      .getElementById("forgotPassword")
+      .addEventListener("click", async function (event) {
 
-    show("Application submitted. Taking you to your status page...", "success");
-    setTimeout(function () { window.location.replace("provider-dashboard.html"); }, 800);
-  });
+        event.preventDefault();
 
-  async function boot() {
-    if (!sb) return show("MEI One could not connect right now. Please try again later.");
+        if (!sb) {
+          showMessage("Supabase is unavailable.", "error");
+          return;
+        }
 
-    var s = await sb.auth.getSession();
-    if (!s.data || !s.data.session) {
-      window.location.replace("login.html?next=partner-apply.html");
-      return;
-    }
-    user = s.data.session.user;
+        const email = document
+          .getElementById("email")
+          .value.trim();
 
-    // Already applied? Go straight to the dashboard (it shows pending / approved / rejected).
-    var r = await sb.from("partners").select("id").eq("user_id", user.id).maybeSingle();
-    if (r.data) return window.location.replace("provider-dashboard.html");
+        if (!email) {
+          showMessage(
+            "Enter your email address first to reset your password.",
+            "error"
+          );
+          return;
+        }
 
-    var meta = user.user_metadata || {};
-    if (meta.phone) $("phone").value = meta.phone;
-    if (lockedType) {
-      $("type").value = lockedType;
-      $("typeField").hidden = true;
-    }
-  }
+        try {
+          showMessage("Sending password reset instructions...", "info");
 
-  boot().catch(function (e) { console.error(e); show("Something went wrong. Please refresh."); });
-})();
-</script>
+          const { error } = await sb.auth.resetPasswordForEmail(email, {
+            redirectTo: window.location.origin + "/provider-signin.html"
+          });
+
+          if (error) throw error;
+
+          showMessage(
+            "If this email is registered, password reset instructions will be sent.",
+            "success"
+          );
+
+        } catch (error) {
+          console.error("Password reset error:", error);
+          showMessage(error.message, "error");
+        }
+      });
+
+    // APPLY TO BECOME A PROVIDER — explicit redirect to /partner-apply.html
+    document
+      .getElementById("applyProviderLink")
+      .addEventListener("click", function (event) {
+        event.preventDefault();
+        window.location.href = "/partner-apply.html";
+      });
+
+  </script>
 
 </body>
 </html>
