@@ -32,6 +32,8 @@
     }
 
     * { box-sizing: border-box; }
+    /* .field uses display:flex, which would otherwise override the hidden attribute */
+    [hidden] { display: none !important; }
     body {
       margin: 0;
       background: var(--bg);
@@ -447,7 +449,7 @@
             <select id="selectedSubservice">
               <option value="">Choose a category (optional)</option>
             </select>
-            <span class="hint" id="subserviceHint">Categories are loaded from the service sub-services table.</span>
+            <span class="hint" id="subserviceHint">Choose the type of work you need.</span>
           </div>
 
           <div class="field full">
