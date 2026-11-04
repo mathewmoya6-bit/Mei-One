@@ -247,8 +247,16 @@ async function boot(){
   if(!(window.supabase && window.supabase.createClient))
     return message("Can't load the Supabase library","Both download sources were blocked. Check your internet connection, turn off any ad blocker or firewall for this site, then refresh.");
 
-  try{ await loadScript("supabase-config.js"); }
-  catch(e){ return message("Can't find supabase-config.js","Put supabase-config.js in the same folder as provider-dashboard.html, or fix its path in the boot() function."); }
+  // Edit CONFIG_PATHS if your file lives somewhere else.
+  const CONFIG_PATHS=["/js/config.js","js/config.js","supabase-config.js","/supabase-config.js","js/supabase-config.js","/js/supabase-config.js",
+    "assets/js/supabase-config.js","/assets/js/supabase-config.js","../supabase-config.js","../js/supabase-config.js","config/supabase-config.js"];
+  let found=null;
+  for(const p of CONFIG_PATHS){
+    try{ await loadScript(p); found=p; break; }catch(e){}
+  }
+  if(!found) return message("Can't find supabase-config.js",
+    "Tried: "+CONFIG_PATHS.join(", ")+". Copy the src of the supabase-config.js tag from one of your working customer pages and add it to CONFIG_PATHS in boot().");
+  console.info("MEI One: config loaded from "+found);
 
   sb = window.MEI_SUPABASE;
   if(!sb) return message("Supabase isn't set up","supabase-config.js loaded but didn't create the client. Open the browser console for details.");
