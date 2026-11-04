@@ -8,7 +8,7 @@
   "use strict";
 
   const SUPABASE_URL = "https://tsvejnzxrxrrecgquxbq.supabase.co";
-  const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_P8ga4Gcyb3W3t6Dw_we4UODZ_";
+  const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_P8gaG4CyyHuiKJJbW3t6Dw_we4UODZ_";
 
   const config = Object.freeze({
     url: SUPABASE_URL,
