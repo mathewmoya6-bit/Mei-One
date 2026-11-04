@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -219,6 +218,7 @@
     .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 17px; }
     .field { display: flex; flex-direction: column; gap: 7px; }
     .field.full { grid-column: 1/-1; }
+    #extraFields { display: contents; }
     .field label { font-size: 12.5px; font-weight: 750; color: var(--navy); }
     .field input,.field textarea,.field select {
       width: 100%;
@@ -442,19 +442,21 @@
           </div>
 
           <div class="field full">
-            <label for="requestDetails">Description / instructions</label>
-            <textarea id="requestDetails" maxlength="5000" placeholder="Describe the work, issue, preferred date or other important details." required></textarea>
+            <label for="requestDetails" id="detailsLabel">Description / instructions</label>
+            <textarea id="requestDetails" maxlength="5000"></textarea>
           </div>
 
           <div class="field" id="pickupField">
-            <label for="pickup">Service location / pickup address</label>
-            <input id="pickup" maxlength="500" placeholder="Enter the service address" required>
+            <label for="pickup" id="pickupLabel">Service location</label>
+            <input id="pickup" maxlength="500" required>
           </div>
 
           <div class="field" id="dropoffField" hidden>
-            <label for="dropoff">Destination</label>
-            <input id="dropoff" maxlength="500" placeholder="Enter destination, if applicable">
+            <label for="dropoff" id="dropoffLabel">Destination</label>
+            <input id="dropoff" maxlength="500">
           </div>
+
+          <div id="extraFields"></div>
 
           <div class="field full">
             <label for="requestNotes">Additional notes (optional)</label>
@@ -523,6 +525,86 @@
     auto: "https://auto-d.meipressgroup.com",
     learn: "https://www.meidriveafrica.com"
   };
+
+  const FORM_CONFIG = {
+    rides: {
+      autoTitle: true, pickup: "Pickup location", pickupHint: "Where should the driver pick you up?",
+      dropoff: "Destination", details: "Message to driver (optional)", detailsRequired: false,
+      extras: [
+        { id: "passengers", label: "Passengers", type: "number", min: 1, max: 8, value: 1, required: true },
+        { id: "when", label: "Pickup time", type: "select", options: ["Now", "Schedule for later"] },
+        { id: "whenAt", label: "Date & time", type: "datetime-local", required: true, showIf: { id: "when", value: "Schedule for later" } }
+      ]
+    },
+    delivery: {
+      autoTitle: true, pickup: "Pickup address", pickupHint: "Where should the item be collected?",
+      dropoff: "Delivery address", details: "Item description", detailsHint: "What are we delivering?",
+      extras: [
+        { id: "size", label: "Package size", type: "select", options: ["Small (envelope/parcel)", "Medium (box)", "Large (bulky)"] },
+        { id: "recipient", label: "Recipient name", required: true },
+        { id: "recipientPhone", label: "Recipient phone", type: "tel", required: true }
+      ]
+    },
+    towing: {
+      autoTitle: true, pickup: "Vehicle location", pickupHint: "Where is the vehicle now?",
+      dropoff: "Tow destination", details: "What happened?", detailsHint: "Breakdown, accident, stuck, etc.",
+      extras: [
+        { id: "vehicle", label: "Vehicle make, model & plate", required: true },
+        { id: "drivable", label: "Can the vehicle roll/steer?", type: "select", options: ["Yes", "No", "Not sure"] }
+      ]
+    },
+    roadside: {
+      autoTitle: true, pickup: "Your location", pickupHint: "Road, landmark or area",
+      details: "Anything else we should know? (optional)", detailsRequired: false,
+      extras: [
+        { id: "issue", label: "Problem", type: "select", required: true,
+          options: ["Flat tyre", "Dead battery", "Out of fuel", "Locked out", "Engine won't start", "Other"] },
+        { id: "vehicle", label: "Vehicle make, model & plate", required: true }
+      ]
+    },
+    home: {
+      pickup: "Service address", pickupHint: "Where is the work needed?",
+      details: "Describe the work", detailsHint: "What needs fixing or doing?",
+      extras: [
+        { id: "date", label: "Preferred date & time", type: "datetime-local" },
+        { id: "access", label: "Access instructions (gate, floor, contact on site)", full: true }
+      ]
+    },
+    default: {
+      pickup: "Service location", pickupHint: "Enter the service address",
+      details: "Description / instructions", detailsHint: "Describe what you need.", extras: []
+    }
+  };
+
+  function formConfig(code) { return FORM_CONFIG[code] || FORM_CONFIG.default; }
+
+  function renderExtras(cfg) {
+    $("extraFields").innerHTML = (cfg.extras || []).map(f => {
+      const id = "x_" + f.id;
+      const req = f.required ? "required" : "";
+      let control;
+      if (f.type === "select") {
+        control = `<select id="${id}" ${req}>${f.options.map(o => `<option>${escapeHTML(o)}</option>`).join("")}</select>`;
+      } else {
+        control = `<input id="${id}" type="${f.type || "text"}" ${req}` +
+          (f.min != null ? ` min="${f.min}"` : "") + (f.max != null ? ` max="${f.max}"` : "") +
+          (f.value != null ? ` value="${f.value}"` : "") + ` maxlength="200">`;
+      }
+      return `<div class="field ${f.full ? "full" : ""}" data-extra="${f.id}" ${f.showIf ? "hidden" : ""}>
+        <label for="${id}">${escapeHTML(f.label)}</label>${control}</div>`;
+    }).join("");
+
+    (cfg.extras || []).filter(f => f.showIf).forEach(f => {
+      const wrap = document.querySelector(`[data-extra="${f.id}"]`);
+      const driver = $("x_" + f.showIf.id);
+      const sync = () => {
+        wrap.hidden = driver.value !== f.showIf.value;
+        $("x_" + f.id).required = !wrap.hidden && !!f.required;
+      };
+      driver.addEventListener("change", sync);
+      sync();
+    });
+  }
 
   const TRANSPORT_CODES = new Set(["rides", "delivery", "towing", "roadside"]);
   const DESTINATION_CODES = new Set(["rides", "delivery", "towing"]);
@@ -890,43 +972,33 @@
   function updateRequestFields() {
     const service = findService($("selectedService").value);
     const code = serviceCode(service);
+    const cfg = formConfig(code);
 
-    const isTransport = TRANSPORT_CODES.has(code);
-    const needsDestination = DESTINATION_CODES.has(code);
+    $("pickupLabel").textContent = cfg.pickup;
+    $("pickup").placeholder = cfg.pickupHint || "";
+    $("dropoffField").hidden = !cfg.dropoff;
+    $("dropoff").required = !!cfg.dropoff;
+    if (cfg.dropoff) $("dropoffLabel").textContent = cfg.dropoff;
 
-    $("pickupField").hidden = false;
-    $("dropoffField").hidden = !needsDestination;
+    $("detailsLabel").textContent = cfg.details;
+    $("requestDetails").placeholder = cfg.detailsHint || "";
+    $("requestDetails").required = cfg.detailsRequired !== false;
 
-    $("pickup").required = true;
-    $("dropoff").required = needsDestination;
+    $("requestTitle").closest(".field").hidden = !!cfg.autoTitle;
+    $("requestTitle").required = !cfg.autoTitle;
+    if (cfg.autoTitle) $("requestTitle").value = (service?.service_name || "Service") + " request";
 
-    $("pickup").placeholder = isTransport
-      ? "Enter pickup or vehicle location"
-      : "Enter the location where the service is required";
-
-    $("dropoff").placeholder = "Enter destination";
+    renderExtras(cfg);
 
     const children = serviceSubservices(service || {});
-    const isHome = code === "home";
-
-    $("subserviceField").hidden = !(isHome && children.length);
-
-    if (isHome && children.length) {
-      $("selectedSubservice").innerHTML =
-        '<option value="">Choose a category (optional)</option>' +
-        children.map(row => {
-          const id = row.id ?? subserviceCode(row);
-
-          return `
-            <option value="${escapeHTML(id)}">
-              ${escapeHTML(subserviceName(row))}
-            </option>
-          `;
-        }).join("");
-    } else {
-      $("selectedSubservice").innerHTML =
-        '<option value="">Choose a category (optional)</option>';
-    }
+    const hasCategories = code === "home" && children.length > 0;
+    $("subserviceField").hidden = !hasCategories;
+    $("selectedSubservice").required = hasCategories;
+    $("selectedSubservice").innerHTML =
+      '<option value="">Choose a category</option>' +
+      (hasCategories ? children.map(row =>
+        `<option value="${escapeHTML(row.id ?? subserviceCode(row))}">${escapeHTML(subserviceName(row))}</option>`
+      ).join("") : "");
   }
 
   // CUSTOMER REQUEST SUBMISSION
@@ -952,29 +1024,38 @@
       return;
     }
 
-    const title = $("requestTitle").value.trim();
-    const details = $("requestDetails").value.trim();
+    const cfg = formConfig(code);
+    const title = $("requestTitle").value.trim() || ((service.service_name || "Service") + " request");
+    const description = $("requestDetails").value.trim();
     const pickup = $("pickup").value.trim();
     const dropoff = $("dropoff").value.trim();
     const notes = $("requestNotes").value.trim();
 
-    if (!title || !details || !pickup) {
-      message(
-        "requestMessage",
-        "Please provide a title, description and service location.",
-        "error"
-      );
+    if (!pickup || (cfg.detailsRequired !== false && !description)) {
+      message("requestMessage", "Please complete the required fields.", "error");
+      return;
+    }
+    if (cfg.dropoff && !dropoff) {
+      message("requestMessage", "Please enter the " + cfg.dropoff.toLowerCase() + ".", "error");
       return;
     }
 
-    if (DESTINATION_CODES.has(code) && !dropoff) {
-      message(
-        "requestMessage",
-        "Please enter the destination.",
-        "error"
-      );
-      return;
+    const lines = [];
+    if (!$("subserviceField").hidden && $("selectedSubservice").value) {
+      lines.push("Category: " + $("selectedSubservice").selectedOptions[0].textContent.trim());
     }
+    for (const f of cfg.extras || []) {
+      const wrap = document.querySelector(`[data-extra="${f.id}"]`);
+      if (!wrap || wrap.hidden) continue;
+      const val = $("x_" + f.id).value.trim();
+      if (f.required && !val) {
+        message("requestMessage", f.label + " is required.", "error");
+        return;
+      }
+      if (val) lines.push(f.label + ": " + val);
+    }
+    if (currentProfile?.phone) lines.push("Contact phone: " + currentProfile.phone);
+    const details = lines.concat(description ? ["", description] : []).join("\n");
 
     const btn = $("submitRequest");
     btn.disabled = true;
