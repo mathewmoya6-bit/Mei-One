@@ -219,6 +219,19 @@
     .field { display: flex; flex-direction: column; gap: 7px; }
     .field.full { grid-column: 1/-1; }
     #extraFields { display: contents; }
+    .loc-block {
+      grid-column: 1/-1;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px 17px;
+      padding: 18px;
+      background: #f8fafc;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+    }
+    .loc-block[hidden] { display: none; }
+    .loc-block h4 { grid-column: 1/-1; margin: 0; font-size: 14px; color: var(--navy); }
+    .loc-gps { grid-column: 1/-1; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
     .field label { font-size: 12.5px; font-weight: 750; color: var(--navy); }
     .field input,.field textarea,.field select {
       width: 100%;
@@ -358,6 +371,7 @@
       .welcome-mark { display: none; }
       .section-heading { align-items: flex-start; flex-direction: column; }
       .form-grid { grid-template-columns: 1fr; }
+      .loc-block { grid-template-columns: 1fr; padding: 14px; }
       .field.full { grid-column: auto; }
       .panel { padding: 18px; }
       .profile-row { align-items: flex-start; flex-direction: column; gap: 5px; }
@@ -441,19 +455,12 @@
             <input id="requestTitle" maxlength="150" placeholder="Briefly describe what you need" required>
           </div>
 
+          <div class="loc-block" id="locFrom"></div>
+          <div class="loc-block" id="locTo" hidden></div>
+
           <div class="field full">
             <label for="requestDetails" id="detailsLabel">Description / instructions</label>
             <textarea id="requestDetails" maxlength="5000"></textarea>
-          </div>
-
-          <div class="field" id="pickupField">
-            <label for="pickup" id="pickupLabel">Service location</label>
-            <input id="pickup" maxlength="500" required>
-          </div>
-
-          <div class="field" id="dropoffField" hidden>
-            <label for="dropoff" id="dropoffLabel">Destination</label>
-            <input id="dropoff" maxlength="500">
           </div>
 
           <div id="extraFields"></div>
@@ -528,8 +535,7 @@
 
   const FORM_CONFIG = {
     rides: {
-      autoTitle: true, pickup: "Pickup location", pickupHint: "Where should the driver pick you up?",
-      dropoff: "Destination", details: "Message to driver (optional)", detailsRequired: false,
+      autoTitle: true, details: "Message to driver (optional)", detailsRequired: false,
       extras: [
         { id: "passengers", label: "Passengers", type: "number", min: 1, max: 8, value: 1, required: true },
         { id: "when", label: "Pickup time", type: "select", options: ["Now", "Schedule for later"] },
@@ -537,8 +543,7 @@
       ]
     },
     delivery: {
-      autoTitle: true, pickup: "Pickup address", pickupHint: "Where should the item be collected?",
-      dropoff: "Delivery address", details: "Item description", detailsHint: "What are we delivering?",
+      autoTitle: true, details: "Item description", detailsHint: "What are we delivering?",
       extras: [
         { id: "size", label: "Package size", type: "select", options: ["Small (envelope/parcel)", "Medium (box)", "Large (bulky)"] },
         { id: "recipient", label: "Recipient name", required: true },
@@ -546,15 +551,14 @@
       ]
     },
     towing: {
-      autoTitle: true, pickup: "Vehicle location", pickupHint: "Where is the vehicle now?",
-      dropoff: "Tow destination", details: "What happened?", detailsHint: "Breakdown, accident, stuck, etc.",
+      autoTitle: true, details: "What happened?", detailsHint: "Breakdown, accident, stuck, etc.",
       extras: [
         { id: "vehicle", label: "Vehicle make, model & plate", required: true },
         { id: "drivable", label: "Can the vehicle roll/steer?", type: "select", options: ["Yes", "No", "Not sure"] }
       ]
     },
     roadside: {
-      autoTitle: true, pickup: "Your location", pickupHint: "Road, landmark or area",
+      autoTitle: true,
       details: "Anything else we should know? (optional)", detailsRequired: false,
       extras: [
         { id: "issue", label: "Problem", type: "select", required: true,
@@ -563,7 +567,7 @@
       ]
     },
     accident_scene: {
-      autoTitle: true, pickup: "Accident location", pickupHint: "Road, junction or landmark where the accident happened",
+      autoTitle: true,
       details: "What happened?", detailsHint: "Briefly describe the accident. If anyone is injured, call 999 or 112 first.",
       extras: [
         { id: "help", label: "Help needed", type: "select", required: true,
@@ -577,7 +581,6 @@
       ]
     },
     home: {
-      pickup: "Service address", pickupHint: "Where is the work needed?",
       details: "Describe the work", detailsHint: "What needs fixing or doing?",
       extras: [
         { id: "date", label: "Preferred date & time", type: "datetime-local" },
@@ -585,13 +588,113 @@
       ]
     },
     default: {
-      pickup: "Service location", pickupHint: "Enter the service address",
       details: "Description / instructions", detailsHint: "Describe what you need.", extras: []
     }
   };
 
   FORM_CONFIG.accident = FORM_CONFIG.accident_scene;
   FORM_CONFIG.accident_management = FORM_CONFIG.accident_scene;
+
+  // Location layout per service.
+  //  place   : place/road (+ optional estate, house no.)
+  //  address : full address; estate and house/building no. required
+  //  point   : a spot on the road (+ landmark), with optional GPS
+  const LOC_CONFIG = {
+    rides:    { from: { title: "Pickup", mode: "place", main: "Pickup point", gps: true },
+                to:   { title: "Destination", mode: "place", main: "Where to?" } },
+    delivery: { from: { title: "Pickup (collect the item from)", mode: "place", main: "Pickup point", gps: true },
+                to:   { title: "Delivery address", mode: "address", main: "Street / road" } },
+    towing:   { from: { title: "Where is the vehicle?", mode: "point", main: "Road / place", gps: true },
+                to:   { title: "Tow destination (garage or address)", mode: "place", main: "Garage / street" } },
+    roadside: { from: { title: "Where are you?", mode: "point", main: "Road / place", gps: true } },
+    accident_scene: { from: { title: "Accident location", mode: "point", main: "Road / junction", gps: true } },
+    home:     { from: { title: "Service address", mode: "address", main: "Street / road", gps: true } },
+    default:  { from: { title: "Service location", mode: "address", main: "Street / road" } }
+  };
+  LOC_CONFIG.accident = LOC_CONFIG.accident_scene;
+  LOC_CONFIG.accident_management = LOC_CONFIG.accident_scene;
+
+  let geo = { from: null };
+
+  function locSpec(code) { return LOC_CONFIG[code] || LOC_CONFIG.default; }
+
+  function locHTML(p, spec) {
+    const addr = spec.mode === "address";
+    const showArea = spec.mode !== "point";
+    const mainPh = spec.mode === "point" ? "Road name, junction or landmark" : "Street, road or place name";
+    return `
+      <h4>${escapeHTML(spec.title)}</h4>
+      <div class="field full">
+        <label for="${p}_main">${escapeHTML(spec.main)}</label>
+        <input id="${p}_main" maxlength="300" placeholder="${mainPh}" required>
+      </div>
+      ${showArea ? `
+        <div class="field">
+          <label for="${p}_estate">Estate / area${addr ? "" : " (optional)"}</label>
+          <input id="${p}_estate" maxlength="150" placeholder="e.g. Kilimani, Green Estate" ${addr ? "required" : ""}>
+        </div>
+        <div class="field">
+          <label for="${p}_house">House / building / gate no.${addr ? "" : " (optional)"}</label>
+          <input id="${p}_house" maxlength="100" placeholder="e.g. House 12B, Block C" ${addr ? "required" : ""}>
+        </div>` : ""}
+      <div class="field full">
+        <label for="${p}_landmark">Nearest landmark (optional)</label>
+        <input id="${p}_landmark" maxlength="200" placeholder="e.g. opposite the petrol station">
+      </div>
+      ${spec.gps ? `
+        <div class="loc-gps">
+          <button class="secondary-btn" id="${p}_gps" type="button">📍 Use my current location</button>
+          <span class="hint" id="${p}_gpsNote"></span>
+        </div>` : ""}`;
+  }
+
+  function bindGps(p, key) {
+    const btn = $(p + "_gps");
+    if (!btn) return;
+    btn.addEventListener("click", () => {
+      const note = $(p + "_gpsNote");
+      if (!navigator.geolocation) {
+        note.textContent = "Location is not supported on this device.";
+        return;
+      }
+      btn.disabled = true;
+      note.textContent = "Getting your location…";
+      navigator.geolocation.getCurrentPosition(pos => {
+        geo[key] = {
+          lat: Number(pos.coords.latitude.toFixed(6)),
+          lng: Number(pos.coords.longitude.toFixed(6))
+        };
+        const main = $(p + "_main");
+        if (!main.value.trim()) main.value = "My current location (GPS)";
+        note.textContent = "Location captured (±" + Math.round(pos.coords.accuracy) + " m). Add details so the provider can find you.";
+        btn.disabled = false;
+      }, err => {
+        note.textContent = err.code === 1
+          ? "Location permission denied. Type the address instead."
+          : "Could not get your location. Type the address instead.";
+        btn.disabled = false;
+      }, { enableHighAccuracy: true, timeout: 12000 });
+    });
+  }
+
+  function renderLocations(code) {
+    const cfg = locSpec(code);
+    geo = { from: null };
+
+    $("locFrom").innerHTML = locHTML("lf", cfg.from);
+    bindGps("lf", "from");
+
+    $("locTo").hidden = !cfg.to;
+    $("locTo").innerHTML = cfg.to ? locHTML("lt", cfg.to) : "";
+  }
+
+  function composeLoc(p) {
+    const v = id => ($(p + "_" + id)?.value || "").trim();
+    const parts = [v("main"), v("estate"), v("house") ? "House/Bldg " + v("house") : ""].filter(Boolean);
+    let text = parts.join(", ");
+    if (v("landmark")) text += " (near " + v("landmark") + ")";
+    return text;
+  }
 
   function formConfig(code) { return FORM_CONFIG[code] || FORM_CONFIG.default; }
 
@@ -976,8 +1079,6 @@
     $("selectedService").value = service.id;
     $("requestTitle").value = (service.service_name || "Service") + " request";
     $("requestDetails").value = "";
-    $("pickup").value = "";
-    $("dropoff").value = "";
     $("requestNotes").value = "";
     $("selectedSubservice").value = "";
 
@@ -991,11 +1092,7 @@
     const code = serviceCode(service);
     const cfg = formConfig(code);
 
-    $("pickupLabel").textContent = cfg.pickup;
-    $("pickup").placeholder = cfg.pickupHint || "";
-    $("dropoffField").hidden = !cfg.dropoff;
-    $("dropoff").required = !!cfg.dropoff;
-    if (cfg.dropoff) $("dropoffLabel").textContent = cfg.dropoff;
+    renderLocations(code);
 
     $("detailsLabel").textContent = cfg.details;
     $("requestDetails").placeholder = cfg.detailsHint || "";
@@ -1044,16 +1141,17 @@
     const cfg = formConfig(code);
     const title = $("requestTitle").value.trim() || ((service.service_name || "Service") + " request");
     const description = $("requestDetails").value.trim();
-    const pickup = $("pickup").value.trim();
-    const dropoff = $("dropoff").value.trim();
+    const locCfg = locSpec(code);
+    const pickup = composeLoc("lf");
+    const dropoff = locCfg.to ? composeLoc("lt") : "";
     const notes = $("requestNotes").value.trim();
 
     if (!pickup || (cfg.detailsRequired !== false && !description)) {
       message("requestMessage", "Please complete the required fields.", "error");
       return;
     }
-    if (cfg.dropoff && !dropoff) {
-      message("requestMessage", "Please enter the " + cfg.dropoff.toLowerCase() + ".", "error");
+    if (locCfg.to && !dropoff) {
+      message("requestMessage", "Please enter the " + locCfg.to.title.toLowerCase() + ".", "error");
       return;
     }
 
@@ -1105,7 +1203,8 @@
         dropoff: dropoff || null,
         pickup_address: pickup,
         destination_address: dropoff || null,
-        customer_name: customerName
+        customer_name: customerName,
+        ...(geo.from ? { latitude: geo.from.lat, longitude: geo.from.lng } : {})
       };
 
       // Do not use .select() or .single() here.
