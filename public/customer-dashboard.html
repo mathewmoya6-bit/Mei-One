@@ -562,6 +562,20 @@
         { id: "vehicle", label: "Vehicle make, model & plate", required: true }
       ]
     },
+    accident_scene: {
+      autoTitle: true, pickup: "Accident location", pickupHint: "Road, junction or landmark where the accident happened",
+      details: "What happened?", detailsHint: "Briefly describe the accident. If anyone is injured, call 999 or 112 first.",
+      extras: [
+        { id: "help", label: "Help needed", type: "select", required: true,
+          options: ["Full scene management", "Traffic control", "Scene clearing", "Photo documentation", "Other"] },
+        { id: "injuries", label: "Injuries", type: "select", required: true,
+          options: ["No injuries", "Minor injuries", "Serious injuries (call 999 / 112 first)"] },
+        { id: "vehicles", label: "Vehicles involved", type: "number", min: 1, max: 20, value: 1, required: true },
+        { id: "blocked", label: "Is the road blocked?", type: "select", options: ["No", "Partly", "Fully"] },
+        { id: "police", label: "Police informed?", type: "select", options: ["Yes", "No", "Not sure"] },
+        { id: "vehicle", label: "Your vehicle make, model & plate (optional)" }
+      ]
+    },
     home: {
       pickup: "Service address", pickupHint: "Where is the work needed?",
       details: "Describe the work", detailsHint: "What needs fixing or doing?",
@@ -575,6 +589,9 @@
       details: "Description / instructions", detailsHint: "Describe what you need.", extras: []
     }
   };
+
+  FORM_CONFIG.accident = FORM_CONFIG.accident_scene;
+  FORM_CONFIG.accident_management = FORM_CONFIG.accident_scene;
 
   function formConfig(code) { return FORM_CONFIG[code] || FORM_CONFIG.default; }
 
