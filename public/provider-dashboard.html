@@ -23,7 +23,7 @@
     .side-bottom{margin-top:auto;color:#a9bac9;font-size:12px;line-height:1.6}
     main{min-width:0;padding:28px 34px 48px}.topbar{display:flex;justify-content:space-between;align-items:center;gap:16px;margin-bottom:28px}
     h1{font-size:25px;margin:0 0 6px;letter-spacing:-.7px}.sub{color:var(--mei-muted);font-size:13px}
-    .user-chip{display:flex;align-items:center;gap:10px;background:#fff;border:1px solid var(--mei-border);padding:8px 12px;border-radius:30px;font-size:13px;font-weight:600}
+    .user-chip{display:flex;align-items:center;gap:10px;background:#fff;border:1px solid var(--mei-border);padding:8px 12px;border-radius:30px;font-size:13px;font-weight:600;flex-wrap:wrap}
     .avatar{width:30px;height:30px;border-radius:50%;background:#dfffee;color:#087746;display:grid;place-items:center;font-weight:800}
     .page{display:none}.page.active{display:block}.grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:15px}
     .panel,.stat{background:#fff;border:1px solid var(--mei-border);border-radius:15px;padding:19px;box-shadow:0 4px 18px #0b294008}
@@ -32,6 +32,7 @@
     .section-head h2{font-size:17px;margin:0}.muted{color:var(--mei-muted)}
     .btn{border:0;border-radius:9px;padding:10px 14px;font-weight:700;cursor:pointer;background:var(--mei-navy);color:white}
     .btn.green{background:var(--mei-green);color:#062b1b}.btn.light{background:#edf3f7;color:#26394d}.btn:disabled{opacity:.55;cursor:not-allowed}
+    .btn.online{background:#ffe9e9;color:#9b2c2c}
     .list{display:grid;gap:12px}.job{display:flex;justify-content:space-between;align-items:center;gap:16px}
     .job h3{font-size:14px;margin:0 0 6px}.job p{font-size:12px;color:var(--mei-muted);margin:0;line-height:1.6}
     .job-actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap}.pill{display:inline-flex;padding:5px 9px;border-radius:20px;background:#edf3f7;color:#526579;font-size:11px;font-weight:700;text-transform:capitalize}
@@ -65,6 +66,7 @@
 
     let sb, sessionUser, driver, profile, jobs = [];
     let currentPage = "overview";
+    let watchId = null, beatTimer = null, lastPos = null;
 
     const esc = value => String(value ?? "").replace(/[&<>"']/g, c =>
       ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;" }[c]));
@@ -96,6 +98,45 @@
       };
     }
 
+    /* ---------- LIVE LOCATION / ONLINE STATUS ---------- */
+    const sendLocation = on => sb.rpc("update_my_location",
+      { p_lat: lastPos?.lat ?? null, p_lng: lastPos?.lng ?? null, p_online: on });
+
+    function setOnlineButton() {
+      const btn = document.getElementById("online-btn");
+      if (!btn) return;
+      const on = watchId !== null;
+      btn.textContent = on ? "Go offline" : "Go online";
+      btn.classList.toggle("online", on);
+      btn.classList.toggle("green", !on);
+    }
+
+    async function goOffline() {
+      if (watchId !== null) navigator.geolocation.clearWatch(watchId);
+      clearInterval(beatTimer);
+      watchId = null;
+      await sendLocation(false);
+      setOnlineButton();
+    }
+
+    function goOnline() {
+      if (!navigator.geolocation) { alert("This device does not support location sharing."); return; }
+      watchId = navigator.geolocation.watchPosition(
+        p => {
+          lastPos = { lat: p.coords.latitude, lng: p.coords.longitude };
+          sendLocation(true).then(({ error }) => { if (error) console.error("Location update failed:", error); });
+        },
+        err => {
+          alert("Location access is required to go online: " + err.message);
+          watchId = null; clearInterval(beatTimer); setOnlineButton();
+        },
+        { enableHighAccuracy: true, maximumAge: 10000 }
+      );
+      // Heartbeat so a stationary driver still shows as live
+      beatTimer = setInterval(() => lastPos && sendLocation(true), 60000);
+      setOnlineButton();
+    }
+
     function shell() {
       const name = driver?.name || profile?.full_name || sessionUser.email || "Driver";
       const initial = name.trim().charAt(0).toUpperCase() || "D";
@@ -116,6 +157,7 @@
           <header class="topbar">
             <div><h1 id="page-title">Driver overview</h1><div class="sub">Manage your work and trips in one place.</div></div>
             <div class="user-chip"><span class="avatar">${esc(initial)}</span><span>${esc(name)}</span>
+              <button class="btn green" id="online-btn">Go online</button>
               <button class="btn light" id="signout">Sign out</button></div>
           </header>
           <div id="notice" class="notice" hidden></div>
@@ -127,7 +169,9 @@
         </main>
       </div>`;
       root.querySelectorAll("[data-page]").forEach(btn => btn.addEventListener("click", () => showPage(btn.dataset.page)));
+      document.getElementById("online-btn").onclick = () => watchId !== null ? goOffline() : goOnline();
       document.getElementById("signout").onclick = async () => {
+        await goOffline();
         const {error} = await sb.auth.signOut();
         if(error) alert(error.message); else location.reload();
       };
@@ -163,18 +207,40 @@
       root.querySelectorAll("[data-action]").forEach(btn => btn.addEventListener("click", async () => {
         btn.disabled = true;
         const id = btn.dataset.id, action = btn.dataset.action;
-        const updates = action === "accept" ? {provider_id:sessionUser.id,status:"accepted"} :
-                        action === "start" ? {status:"in_progress"} :
-                        {status:"completed",completed_at:new Date().toISOString()};
-        const {error} = await sb.from("service_requests").update(updates).eq("id",id);
-        if(error) { console.error("Job update failed:",error); alert("Could not update this job: "+error.message); btn.disabled=false; return; }
+        let q;
+        if (action === "accept") {
+          // Only matches a job that is still pending and unassigned
+          q = sb.from("service_requests")
+            .update({ provider_id: sessionUser.id, status: "accepted" })
+            .eq("id", id).eq("status", "pending").is("provider_id", null);
+        } else if (action === "start") {
+          q = sb.from("service_requests")
+            .update({ status: "in_progress" })
+            .eq("id", id).eq("provider_id", sessionUser.id);
+        } else {
+          q = sb.from("service_requests")
+            .update({ status: "completed", completed_at: new Date().toISOString() })
+            .eq("id", id).eq("provider_id", sessionUser.id);
+        }
+        const { data, error } = await q.select("id");
+        if (error) {
+          console.error("Job update failed:", error);
+          setMessage("Could not update job: " + error.message, true);
+          btn.disabled = false; return;
+        }
+        if (!data || data.length === 0) {
+          // 0 rows changed with no error = job already taken, or RLS blocked the update
+          setMessage("Update blocked: the job was already taken, or the service_requests UPDATE policy is missing.", true);
+          btn.disabled = false; await loadJobs(); return;
+        }
+        hideMessage();
         await loadJobs();
       }));
     }
 
     function renderAll() {
-      const available = jobs.filter(j => j.status === "pending" && !j.provider_id &&
-        ["rides","delivery"].includes(String(j.service || "").toLowerCase()));
+      // All services, not only rides and delivery
+      const available = jobs.filter(j => j.status === "pending" && !j.provider_id);
       const mine = jobs.filter(j => j.provider_id === sessionUser.id);
       const completed = mine.filter(j => j.status === "completed");
       const earnings = completed.reduce((sum,j) => sum + (Number(j.price)||0),0);
@@ -216,7 +282,6 @@
     }
 
     async function loadJobs() {
-      // These columns match the service_requests structure expected by the original dashboard.
       const {data,error} = await sb.from("service_requests")
         .select("id,service,status,provider_id,title,details,pickup,dropoff,price,customer_name,created_at,completed_at")
         .order("created_at",{ascending:false}).limit(200);
@@ -265,6 +330,8 @@
       shell();
       await loadJobs();
     }
+
+    window.addEventListener("pagehide", () => { if (watchId !== null) sendLocation(false); });
 
     boot().catch(error => {
       console.error("Dashboard startup error:",error);
