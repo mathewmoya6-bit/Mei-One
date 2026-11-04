@@ -403,7 +403,19 @@
   const MEI_LEARN_URL = "https://www.meidriveafrica.com";
 
   const SERVICE_LINKS = { auto: AUTO_D_URL, learn: MEI_LEARN_URL };
-  const TRANSPORT_SERVICES = new Set(["rides", "delivery", "towing", "roadside"]);
+
+  /* ------- Accident Scene Management ------- */
+  /* Added "accident" to the transport-style services (needs location & provider) */
+  const TRANSPORT_SERVICES = new Set(["rides", "delivery", "towing", "roadside", "accident"]);
+  /* Services that require a destination (dropoff) */
+  const DROPOFF_SERVICES = new Set(["rides", "delivery", "towing", "accident"]);
+
+  /* Accident severity options for the form */
+  const ACCIDENT_SEVERITY = [
+    { value: "minor", label: "Minor – no injuries, vehicles drivable" },
+    { value: "moderate", label: "Moderate – injuries or vehicle not drivable" },
+    { value: "severe", label: "Severe – serious injuries or major blockage" }
+  ];
 
   const $ = (id) => document.getElementById(id);
 
@@ -566,6 +578,24 @@
     }
 
     services = data || [];
+
+    /* Ensure "Accident Scene Management" appears even if not seeded in DB.
+       If it already exists (service_code = "accident"), we skip duplication. */
+    const hasAccident = services.some(s => String(s.service_code || "").toLowerCase() === "accident");
+    if (!hasAccident) {
+      services.push({
+        id: "accident-scene-mgmt",
+        service_code: "accident",
+        service_name: "Accident Scene Management",
+        description: "Immediate help at the scene of a road accident — safety, towing, medical coordination and more.",
+        icon: "🚨",
+        route: null,
+        is_active: true,
+        display_order: 4
+      });
+      services.sort((a, b) => (a.display_order || 0) - (b.display_order || 0));
+    }
+
     if (!services.length) {
       $("servicesGrid").innerHTML = '<div class="empty">No services are currently available.</div>';
       return;
@@ -611,13 +641,23 @@
      REQUEST FORM
      ========================================================= */
   function openRequestForm(service) {
+    const code = String(service.service_code || "").toLowerCase();
+
     $("selectedService").innerHTML = services.map(item => `
       <option value="${escapeHTML(item.id)}">${escapeHTML(item.service_name)}</option>
     `).join("");
 
     $("selectedService").value = service.id;
-    $("requestTitle").value = service.service_name + " request";
-    $("requestDetails").value = "";
+
+    // Prefill title & details based on the service
+    if (code === "accident") {
+      $("requestTitle").value = "Accident scene management";
+      $("requestDetails").value = "Please describe the accident: number of vehicles, any injuries, and whether the road is blocked.";
+    } else {
+      $("requestTitle").value = service.service_name + " request";
+      $("requestDetails").value = "";
+    }
+
     $("pickup").value = "";
     $("dropoff").value = "";
     $("requestNotes").value = "";
@@ -627,12 +667,14 @@
     showTab("request");
   }
 
+  /* Update visible fields based on the selected service */
   function updateRequestFields() {
     const selected = getServiceById($("selectedService").value);
     const code = String(selected?.service_code || "").toLowerCase();
 
     const needsPickup = TRANSPORT_SERVICES.has(code);
-    const needsDropoff = ["rides", "delivery", "towing"].includes(code);
+    const needsDropoff = DROPOFF_SERVICES.has(code);
+    const isAccident = code === "accident";
 
     $("pickupField").style.display = needsPickup ? "flex" : "none";
     $("dropoffField").style.display = needsDropoff ? "flex" : "none";
@@ -641,9 +683,48 @@
     $("pickup").required = needsPickup;
     $("dropoff").required = needsDropoff;
 
-    $("pickup").placeholder = code === "roadside"
-      ? "Where is your vehicle located?"
-      : "Enter pickup or service address";
+    // Dynamic placeholders / labels
+    if (isAccident) {
+      $("pickup").placeholder = "Accident scene location (e.g. Thika Road, near exit 7)";
+      $("dropoff").placeholder = "Preferred destination (e.g. nearest hospital, garage)";
+      $("pickup").setAttribute("aria-label", "Accident scene location");
+      $("dropoff").setAttribute("aria-label", "Preferred destination");
+    } else if (code === "roadside") {
+      $("pickup").placeholder = "Where is your vehicle located?";
+      $("dropoff").placeholder = "Enter destination, if applicable";
+      $("pickup").setAttribute("aria-label", "Vehicle location");
+      $("dropoff").setAttribute("aria-label", "Destination");
+    } else {
+      $("pickup").placeholder = "Enter pickup or service address";
+      $("dropoff").placeholder = "Enter destination, if applicable";
+      $("pickup").setAttribute("aria-label", "Pickup or service location");
+      $("dropoff").setAttribute("aria-label", "Destination");
+    }
+
+    // Inject an accident severity selector when the accident service is chosen
+    let severityField = document.getElementById("accidentSeverityField");
+    if (isAccident) {
+      if (!severityField) {
+        const formGrid = document.querySelector("#requestForm .form-grid");
+        const detailsField = document.getElementById("requestDetails").closest(".field");
+        const wrapper = document.createElement("div");
+        wrapper.className = "field";
+        wrapper.id = "accidentSeverityField";
+        wrapper.innerHTML = `
+          <label for="accidentSeverity">Accident severity</label>
+          <select id="accidentSeverity" required>
+            ${ACCIDENT_SEVERITY.map(opt => `<option value="${opt.value}">${opt.label}</option>`).join("")}
+          </select>
+          <div class="hint">This helps us send the right kind of assistance.</div>
+        `;
+        detailsField.after(wrapper);
+
+        // Mark severity as required if accident is chosen
+        document.getElementById("accidentSeverity").addEventListener("change", () => {});
+      }
+    } else {
+      if (severityField) severityField.remove();
+    }
 
     // Reset provider choice whenever the service changes
     selectedProvider = null;
@@ -750,9 +831,20 @@
       showMessage("requestMessage", "Please enter the pickup or vehicle location.", "error");
       return;
     }
-    if (["rides", "delivery", "towing"].includes(code) && !dropoff) {
+    if (DROPOFF_SERVICES.has(code) && !dropoff) {
       showMessage("requestMessage", "Please enter the destination.", "error");
       return;
+    }
+
+    /* Validate accident severity if needed */
+    let accidentSeverity = null;
+    if (code === "accident") {
+      const sevEl = document.getElementById("accidentSeverity");
+      if (!sevEl || !sevEl.value) {
+        showMessage("requestMessage", "Please select the accident severity.", "error");
+        return;
+      }
+      accidentSeverity = sevEl.value;
     }
 
     const btn = $("submitRequest");
@@ -777,6 +869,11 @@
       customer_name: customerName,
       requested_provider_id: selectedProvider
     };
+
+    /* Attach accident severity if present (field named accident_severity in DB) */
+    if (accidentSeverity) {
+      payload.accident_severity = accidentSeverity;
+    }
 
     try {
       const { data, error } = await sb
@@ -817,7 +914,8 @@
       .select(`
         id, service_id, request_type, status, pickup_address, destination_address,
         notes, requested_at, accepted_at, started_at, completed_at, cancelled_at,
-        service, provider_id, title, details, pickup, dropoff, price, customer_name
+        service, provider_id, title, details, pickup, dropoff, price, customer_name,
+        accident_severity
       `)
       .eq("user_id", currentUser.id)
       .order("requested_at", { ascending: false })
@@ -857,10 +955,18 @@
       const service = getServiceById(req.service_id);
       const serviceName = service?.service_name || req.title || req.service || req.request_type || "Service request";
       const status = String(req.status || "pending").toLowerCase().replace(/\s+/g, "_");
+      const reqCode = String(req.request_type || req.service || "").toLowerCase();
 
       const pickup = req.pickup || req.pickup_address;
       const dropoff = req.dropoff || req.destination_address;
       const prov = providers[req.id];
+
+      /* Map severity value to readable label */
+      let severityLabel = "";
+      if (req.accident_severity) {
+        const sev = ACCIDENT_SEVERITY.find(s => s.value === req.accident_severity);
+        severityLabel = sev ? sev.label.split("–")[0].trim() : req.accident_severity;
+      }
 
       return `
         <article class="request-card">
@@ -873,6 +979,7 @@
           </div>
 
           ${req.details ? `<p><strong>Details:</strong> ${escapeHTML(req.details)}</p>` : ""}
+          ${reqCode === "accident" && severityLabel ? `<p><strong>Severity:</strong> ${escapeHTML(severityLabel)}</p>` : ""}
           ${pickup ? `<p><strong>Pickup:</strong> ${escapeHTML(pickup)}</p>` : ""}
           ${dropoff ? `<p><strong>Destination:</strong> ${escapeHTML(dropoff)}</p>` : ""}
           ${req.price != null ? `<p><strong>Cost:</strong> ${escapeHTML(kes(req.price))}</p>` : ""}
