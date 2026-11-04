@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -470,7 +469,9 @@
 
   const sb = window.MEI_SUPABASE;
 
-  const OPEN_STATUSES = ["pending", "requested", "proposed"];
+  // "proposed" is excluded: those are customer-confirmed first,
+  // and RLS does not let providers claim them.
+  const OPEN_STATUSES = ["pending", "requested"];
   const ACTIVE_STATUSES = ["accepted", "in_progress", "ongoing"];
 
   let session = null;
@@ -482,6 +483,12 @@
   let initialized = false;
 
   const $ = id => document.getElementById(id);
+
+  // service_requests.provider_id is the AUTH user id (RLS: provider_id = auth.uid()).
+  // partner.id is only used for requested_provider_id.
+  function myAuthId() {
+    return session && session.user ? session.user.id : null;
+  }
 
   function escapeHTML(value) {
     return String(value == null ? "" : value).replace(/[&<>"']/g, c => ({
@@ -698,13 +705,6 @@
 
   /* -------------------------------------------------------
      4. SERVICE REQUESTS
-     Actual fields include:
-     id, user_id, service_id, request_type, status,
-     pickup_address, destination_address, notes,
-     requested_at, accepted_at, started_at,
-     completed_at, cancelled_at, created_at,
-     service, provider_id, title, details, pickup,
-     dropoff, price, customer_name, requested_provider_id
   ------------------------------------------------------- */
 
   async function loadRequests() {
@@ -721,7 +721,7 @@
       .from("service_requests")
       .select("*")
       .in("service_id", serviceIds)
-      .or("provider_id.is.null,provider_id.eq." + partner.id)
+      .or("provider_id.is.null,provider_id.eq." + myAuthId())
       .order("created_at", { ascending: false })
       .limit(200);
 
@@ -756,7 +756,7 @@
 
     allRequests.forEach(request => {
       const status = normalizeStatus(request.status);
-      const mine = request.provider_id === partner.id;
+      const mine = request.provider_id === myAuthId();
 
       if (
         !request.provider_id &&
@@ -813,7 +813,7 @@
 
     $("jobsList").innerHTML = requests.map(request => {
       const status = normalizeStatus(request.status);
-      const assignedToMe = request.provider_id === partner.id;
+      const assignedToMe = request.provider_id === myAuthId();
 
       const available =
         !request.provider_id &&
@@ -961,6 +961,7 @@
       return;
     }
 
+    const authId = myAuthId();
     const currentStatus = normalizeStatus(request.status);
     const timestamp = new Date().toISOString();
 
@@ -986,14 +987,14 @@
       }
 
       update = {
-        provider_id: partner.id,
+        provider_id: authId,
         status: "accepted",
         accepted_at: timestamp
       };
 
     } else if (action === "start") {
       if (
-        request.provider_id !== partner.id ||
+        request.provider_id !== authId ||
         currentStatus !== "accepted"
       ) {
         showNotice("This job cannot be started in its current state.", "error");
@@ -1007,7 +1008,7 @@
 
     } else if (action === "complete") {
       if (
-        request.provider_id !== partner.id ||
+        request.provider_id !== authId ||
         !["in_progress", "ongoing"].includes(currentStatus)
       ) {
         showNotice("This job cannot be completed in its current state.", "error");
@@ -1044,7 +1045,7 @@
         }
 
       } else {
-        query = query.eq("provider_id", partner.id);
+        query = query.eq("provider_id", authId);
 
         if (action === "start") {
           query = query.eq("status", "accepted");
