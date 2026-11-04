@@ -533,6 +533,13 @@
     learn: "https://www.meidriveafrica.com"
   };
 
+  // Card text that should not depend on the database description.
+  const SERVICE_TEXT = {
+    accident_scene: "Help at the scene of a road vehicle accident: traffic control, scene clearing and photo documentation."
+  };
+  SERVICE_TEXT.accident = SERVICE_TEXT.accident_scene;
+  SERVICE_TEXT.accident_management = SERVICE_TEXT.accident_scene;
+
   const FORM_CONFIG = {
     rides: {
       autoTitle: true, details: "Message to driver (optional)", detailsRequired: false,
@@ -568,13 +575,14 @@
     },
     accident_scene: {
       autoTitle: true,
-      details: "What happened?", detailsHint: "Briefly describe the accident. If anyone is injured, call 999 or 112 first.",
+      details: "What happened?", detailsHint: "Briefly describe the road accident. If anyone is injured, call 999 or 112 first.",
       extras: [
         { id: "help", label: "Help needed", type: "select", required: true,
           options: ["Full scene management", "Traffic control", "Scene clearing", "Photo documentation", "Other"] },
         { id: "injuries", label: "Injuries", type: "select", required: true,
           options: ["No injuries", "Minor injuries", "Serious injuries (call 999 / 112 first)"] },
         { id: "vehicles", label: "Vehicles involved", type: "number", min: 1, max: 20, value: 1, required: true },
+        { id: "vehicleTypes", label: "Vehicle types (car, matatu, truck, motorbike…)" },
         { id: "blocked", label: "Is the road blocked?", type: "select", options: ["No", "Partly", "Fully"] },
         { id: "police", label: "Police informed?", type: "select", options: ["Yes", "No", "Not sure"] },
         { id: "vehicle", label: "Your vehicle make, model & plate (optional)" }
@@ -607,7 +615,7 @@
     towing:   { from: { title: "Where is the vehicle?", mode: "point", main: "Road / place", gps: true },
                 to:   { title: "Tow destination (garage or address)", mode: "place", main: "Garage / street" } },
     roadside: { from: { title: "Where are you?", mode: "point", main: "Road / place", gps: true } },
-    accident_scene: { from: { title: "Accident location", mode: "point", main: "Road / junction", gps: true } },
+    accident_scene: { from: { title: "Road accident location", mode: "point", main: "Road / junction", gps: true } },
     home:     { from: { title: "Service address", mode: "address", main: "Street / road", gps: true } },
     default:  { from: { title: "Service location", mode: "address", main: "Street / road" } }
   };
@@ -989,8 +997,12 @@
   }
 
   function serviceSubservices(service) {
-    return subservices.filter(
-      row => String(row.service_id) === String(service.id)
+    const isHome = serviceCode(service) === "home";
+
+    return subservices.filter(row =>
+      String(row.service_id) === String(service.id) &&
+      // Accident scene management is a road-vehicle service, not a home service.
+      !(isHome && /accident/i.test(subserviceName(row)))
     );
   }
 
@@ -1030,7 +1042,7 @@
         <article class="service-card">
           <div class="service-icon">${escapeHTML(service.icon || "✦")}</div>
           <h3>${escapeHTML(service.service_name || "MEI One service")}</h3>
-          <p>${escapeHTML(service.description || "Explore this MEI One service and submit a request.")}</p>
+          <p>${escapeHTML(SERVICE_TEXT[code] || service.description || "Explore this MEI One service and submit a request.")}</p>
 
           ${children.length ? `
             <div class="subservice-box">
