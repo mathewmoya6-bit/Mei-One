@@ -1,343 +1,233 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="MEI One driver dashboard">
-  <title>MEI One — Driver Dashboard</title>
-  <link rel="icon" href="assets/favicon.ico">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/styles.css">
-  <link rel="stylesheet" href="css/dashboard.css">
-  <style>
-    :root{--mei-navy:#071a2f;--mei-green:#00ff88;--mei-muted:#718096;--mei-border:#e7edf2;--mei-bg:#f5f8fb}
-    *{box-sizing:border-box}body{margin:0;font-family:Inter,Arial,sans-serif;background:var(--mei-bg);color:#152538}
-    button,input{font:inherit}.app{min-height:100vh;display:grid;grid-template-columns:250px 1fr}
-    .sidebar{background:var(--mei-navy);color:#fff;padding:26px 18px;display:flex;flex-direction:column;gap:26px}
-    .brand{font-size:21px;font-weight:800;letter-spacing:-.6px}.brand span{color:var(--mei-green)}
-    .side-label{font-size:10px;color:#91a4b8;text-transform:uppercase;letter-spacing:1.4px;margin:8px 10px}
-    .nav{display:grid;gap:7px}.nav button{border:0;background:transparent;color:#c6d2df;text-align:left;padding:12px 13px;border-radius:10px;cursor:pointer;font-weight:600}
-    .nav button.active,.nav button:hover{background:#15324c;color:#fff}.nav button.active{box-shadow:inset 3px 0 var(--mei-green)}
-    .side-bottom{margin-top:auto;color:#a9bac9;font-size:12px;line-height:1.6}
-    main{min-width:0;padding:28px 34px 48px}.topbar{display:flex;justify-content:space-between;align-items:center;gap:16px;margin-bottom:28px}
-    h1{font-size:25px;margin:0 0 6px;letter-spacing:-.7px}.sub{color:var(--mei-muted);font-size:13px}
-    .user-chip{display:flex;align-items:center;gap:10px;background:#fff;border:1px solid var(--mei-border);padding:8px 12px;border-radius:30px;font-size:13px;font-weight:600;flex-wrap:wrap}
-    .avatar{width:30px;height:30px;border-radius:50%;background:#dfffee;color:#087746;display:grid;place-items:center;font-weight:800}
-    .page{display:none}.page.active{display:block}.grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:15px}
-    .panel,.stat{background:#fff;border:1px solid var(--mei-border);border-radius:15px;padding:19px;box-shadow:0 4px 18px #0b294008}
-    .stat small{color:var(--mei-muted);font-weight:600}.stat strong{display:block;font-size:27px;margin-top:9px;letter-spacing:-1px}
-    .section-head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin:27px 0 13px}
-    .section-head h2{font-size:17px;margin:0}.muted{color:var(--mei-muted)}
-    .btn{border:0;border-radius:9px;padding:10px 14px;font-weight:700;cursor:pointer;background:var(--mei-navy);color:white}
-    .btn.green{background:var(--mei-green);color:#062b1b}.btn.light{background:#edf3f7;color:#26394d}.btn:disabled{opacity:.55;cursor:not-allowed}
-    .btn.online{background:#ffe9e9;color:#9b2c2c}
-    .list{display:grid;gap:12px}.job{display:flex;justify-content:space-between;align-items:center;gap:16px}
-    .job h3{font-size:14px;margin:0 0 6px}.job p{font-size:12px;color:var(--mei-muted);margin:0;line-height:1.6}
-    .job-actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap}.pill{display:inline-flex;padding:5px 9px;border-radius:20px;background:#edf3f7;color:#526579;font-size:11px;font-weight:700;text-transform:capitalize}
-    .pill.good{background:#e2fff1;color:#087746}.empty{padding:30px;text-align:center;color:var(--mei-muted);font-size:13px}
-    .profile-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px}.field{padding:14px;border:1px solid var(--mei-border);border-radius:11px}.field small{display:block;color:var(--mei-muted);margin-bottom:6px}.field strong{font-size:13px;overflow-wrap:anywhere}
-    .notice{padding:12px 14px;border-radius:10px;background:#eef7ff;color:#28577d;font-size:12px;line-height:1.6;margin-bottom:16px}
-    .error{background:#fff0f0;color:#9b2c2c}.loading{padding:45px;text-align:center;color:var(--mei-muted)}
-    .gate{max-width:460px;margin:12vh auto;background:#fff;border:1px solid var(--mei-border);border-radius:18px;padding:28px;text-align:center}
-    .gate h2{margin-top:0}.gate p{color:var(--mei-muted);line-height:1.6;font-size:13px}
-    @media(max-width:900px){.app{grid-template-columns:1fr}.sidebar{padding:15px;gap:12px}.side-label,.side-bottom{display:none}.nav{display:flex;overflow:auto}.nav button{white-space:nowrap}.grid{grid-template-columns:repeat(2,minmax(0,1fr))}main{padding:22px 17px}}
-    @media(max-width:560px){.topbar{align-items:flex-start;flex-direction:column}.grid{grid-template-columns:1fr 1fr}.profile-grid{grid-template-columns:1fr}.job{align-items:flex-start;flex-direction:column}.job-actions{width:100%}.job-actions .btn{flex:1}}
-  </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MEI One · Provider Dashboard</title>
+<style>
+  :root{--ink:#14213d;--muted:#5b6475;--line:#d9dee8;--bg:#f3f5f9;--card:#fff;--brand:#0b5cff;--ok:#12805c;--warn:#b45309;--danger:#b42318}
+  *{box-sizing:border-box}
+  body{margin:0;font:16px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif;color:var(--ink);background:var(--bg)}
+  header{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between;padding:14px 20px;background:var(--ink);color:#fff}
+  header h1{font-size:18px;margin:0}
+  header .tools{display:flex;gap:12px;align-items:center}
+  select,input,textarea,button{font:inherit}
+  select,input,textarea{width:100%;padding:9px 10px;border:1px solid var(--line);border-radius:8px;background:#fff;color:var(--ink)}
+  header select{width:auto}
+  button{padding:9px 14px;border:0;border-radius:8px;background:var(--brand);color:#fff;cursor:pointer}
+  button.ghost{background:#fff;color:var(--ink);border:1px solid var(--line)}
+  button:focus-visible,select:focus-visible,input:focus-visible,textarea:focus-visible{outline:3px solid #8fb3ff;outline-offset:2px}
+  main{max-width:900px;margin:0 auto;padding:20px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px;margin-bottom:12px}
+  h2{font-size:20px;margin:0 0 4px}h3{font-size:16px;margin:20px 0 8px}
+  .muted{color:var(--muted);font-size:14px}
+  .row{display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+  .pill{display:inline-block;padding:2px 10px;border-radius:99px;background:#e8efff;color:var(--brand);font-size:13px}
+  .steps{display:flex;gap:6px;flex-wrap:wrap;margin:8px 0}
+  .steps span{font-size:12px;padding:2px 8px;border-radius:6px;background:var(--bg);color:var(--muted)}
+  .steps span.done{background:#dff3ea;color:var(--ok)}.steps span.now{background:var(--ink);color:#fff}
+  .notice{border-left:4px solid var(--danger);background:#fdecea;padding:10px 12px;border-radius:6px;font-size:14px}
+  label{display:block;font-size:14px;margin:10px 0 4px}
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  @media(max-width:600px){.grid{grid-template-columns:1fr}}
+  #toast{position:fixed;bottom:16px;left:50%;transform:translateX(-50%);background:var(--ink);color:#fff;padding:10px 16px;border-radius:8px;display:none}
+</style>
 </head>
 <body>
-  <div id="root">
-    <div class="loading">Loading MEI One driver dashboard…</div>
+<header>
+  <h1 id="title">MEI One · Provider Dashboard</h1>
+  <div class="tools" id="tools" hidden>
+    <select id="switcher" aria-label="Switch workspace" hidden></select>
+    <label style="margin:0;display:flex;gap:6px;align-items:center;font-size:14px">
+      <input type="checkbox" id="avail" style="width:auto"> Available
+    </label>
+    <button class="ghost" id="signout">Sign out</button>
   </div>
+</header>
+<main id="app"><p class="muted">Loading your workspace…</p></main>
+<div id="toast" role="status"></div>
 
-  <!-- Keep your existing js/config.js and js/supabase.js files. -->
-  <script src="js/config.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script>
-  (() => {
-    "use strict";
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+<script src="supabase-config.js"></script>
+<script>
+"use strict";
+const sb = window.MEI_SUPABASE;
+const $ = id => document.getElementById(id);
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const pretty = s => s.replace(/_/g, " ");
 
-    const CONFIG = window.MEI_CONFIG || window.APP_CONFIG || window.SUPABASE_CONFIG || {};
-    const SUPABASE_URL = CONFIG.supabaseUrl || CONFIG.SUPABASE_URL || window.SUPABASE_URL;
-    const SUPABASE_KEY = CONFIG.supabaseAnonKey || CONFIG.SUPABASE_ANON_KEY ||
-                         CONFIG.anonKey || window.SUPABASE_ANON_KEY;
-    const root = document.getElementById("root");
+/* Workspace registry: one shell, each workspace supplies title + status flow + extras */
+const WS = {
+  rides:       {title:"Driver workspace",   statuses:["requested","accepted","arriving","on_trip","completed"]},
+  delivery:    {title:"Delivery workspace", statuses:["requested","accepted","picked_up","delivered"]},
+  dispatch:    {title:"Dispatch workspace", statuses:["requested","accepted","en_route","on_site","completed"]},
+  home:        {title:"Home services",      statuses:["requested","quoted","booked","completed"]},
+  marketplace: {title:"Marketplace",        statuses:["listed","ordered","shipped","completed"]},
+  incident:    {title:"Incident workspace", statuses:["reported","dispatched","on_scene","secured","documented","handed_over"], report:true},
+  generic:     {title:"Service workspace",  statuses:["requested","accepted","completed"]}
+};
 
-    let sb, sessionUser, driver, profile, jobs = [];
-    let currentPage = "overview";
-    let watchId = null, beatTimer = null, lastPos = null;
+const S = {partner:null, offerings:[], active:null};
 
-    const esc = value => String(value ?? "").replace(/[&<>"']/g, c =>
-      ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;" }[c]));
-    const money = value => {
-      const n = Number(value);
-      return Number.isFinite(n) ? new Intl.NumberFormat("en-KE", {
-        style:"currency", currency:"KES", maximumFractionDigits:0
-      }).format(n) : "—";
-    };
-    const dateText = value => value ? new Date(value).toLocaleString() : "—";
-    const setMessage = (message, isError=false) => {
-      const el = document.getElementById("notice");
-      if (el) { el.textContent = message; el.className = "notice" + (isError ? " error" : ""); el.hidden = false; }
-    };
-    const hideMessage = () => { const el=document.getElementById("notice"); if(el) el.hidden=true; };
+function toast(msg){const t=$("toast");t.textContent=msg;t.style.display="block";setTimeout(()=>t.style.display="none",2800);}
+function message(h, p){$("app").innerHTML=`<div class="card"><h2>${h}</h2><p class="muted">${p}</p></div>`;}
 
-    function gate(title, message, actionLabel="Sign in", action="signin") {
-      root.innerHTML = `<div class="gate"><div class="brand" style="color:#071a2f">MEI <span>ONE</span></div>
-        <h2>${esc(title)}</h2><p>${esc(message)}</p>
-        <button class="btn green" id="gate-action">${esc(actionLabel)}</button></div>`;
-      document.getElementById("gate-action").onclick = async () => {
-        if (action === "signin") {
-          const { error } = await sb.auth.signInWithOAuth({
-            provider:"google",
-            options:{ redirectTo:window.location.href }
-          });
-          if (error) alert(error.message);
-        } else if (action === "reload") location.reload();
-      };
+async function init(){
+  if(!sb) return message("Can't connect","The Supabase library did not load. Check that supabase-config.js is in the same folder.");
+  const {data:{session}} = await sb.auth.getSession();
+  if(!session){location.href="provider-login.html";return;}
+
+  const {data:partner,error:e1} = await sb.from("partners")
+    .select("id,business_name,is_available").eq("user_id",session.user.id).maybeSingle();
+  if(e1) return message("Something went wrong","We couldn't load your provider account. Refresh and try again.");
+  if(!partner) return message("No provider account","This login isn't linked to a provider account. Register as a provider to continue.");
+  S.partner = partner;
+
+  const {data:offers,error:e2} = await sb.from("partner_services")
+    .select("status, services(id,name,slug,workspace_type)").eq("partner_id",partner.id);
+  if(e2) return message("Something went wrong","We couldn't load your services. Refresh and try again.");
+
+  const approved = (offers||[]).filter(o=>o.status==="approved" && o.services);
+  if(!approved.length){
+    const pending = (offers||[]).some(o=>o.status==="pending");
+    return message(pending?"Application under review":"No approved services",
+      pending?"We're checking your details. You'll see your workspace here once you're approved."
+             :"Apply for a service to start receiving jobs.");
+  }
+  S.offerings = approved.map(o=>o.services);
+  setupHeader();
+  openWorkspace(S.offerings[0]);
+}
+
+function setupHeader(){
+  $("tools").hidden = false;
+  $("avail").checked = !!S.partner.is_available;
+  $("avail").onchange = async e => {
+    const {error} = await sb.from("partners").update({is_available:e.target.checked}).eq("id",S.partner.id);
+    if(error){e.target.checked=!e.target.checked;toast("Couldn't update availability");}
+    else toast(e.target.checked?"You're available":"You're offline");
+  };
+  $("signout").onclick = async()=>{await sb.auth.signOut();location.href="provider-login.html";};
+  const sw = $("switcher");
+  if(S.offerings.length>1){
+    sw.hidden=false;
+    sw.innerHTML=S.offerings.map((s,i)=>`<option value="${i}">${esc(s.name)}</option>`).join("");
+    sw.onchange=()=>openWorkspace(S.offerings[+sw.value]);
+  }
+}
+
+function wsOf(svc){return WS[svc.workspace_type] || WS.generic;}
+
+async function openWorkspace(svc){
+  S.active = svc;
+  const ws = wsOf(svc);
+  $("title").textContent = `${svc.name} · ${ws.title}`;
+  const first = ws.statuses[0], last = ws.statuses[ws.statuses.length-1];
+
+  const [open, mine] = await Promise.all([
+    sb.from("service_requests").select("*").eq("service_id",svc.id).is("partner_id",null).eq("status",first).order("created_at",{ascending:false}),
+    sb.from("service_requests").select("*").eq("service_id",svc.id).eq("partner_id",S.partner.id).neq("status",last).order("created_at",{ascending:false})
+  ]);
+  if(open.error||mine.error) return message("Couldn't load jobs","Refresh the page to try again.");
+
+  const emergency = ws.report ? `<div class="notice" role="note"><strong>Injuries, fire or danger?</strong> Call 999 or 112 before anything else. MEI One does not replace emergency services.</div>` : "";
+  $("app").innerHTML = `${emergency}
+    <h3>New requests (${open.data.length})</h3><div id="open"></div>
+    <h3>Your active jobs (${mine.data.length})</h3><div id="mine"></div>`;
+
+  $("open").innerHTML = open.data.length ? open.data.map(r=>jobCard(r,ws,false)).join("") : `<p class="muted">No new requests right now. Stay available and they'll appear here.</p>`;
+  $("mine").innerHTML = mine.data.length ? mine.data.map(r=>jobCard(r,ws,true)).join("") : `<p class="muted">You have no active jobs.</p>`;
+
+  $("app").onclick = e => {
+    const b = e.target.closest("button[data-act]"); if(!b) return;
+    const id = b.dataset.id;
+    if(b.dataset.act==="accept") accept(id,ws);
+    if(b.dataset.act==="next") advance(id,b.dataset.to);
+    if(b.dataset.act==="report") openReport(id);
+  };
+}
+
+function jobCard(r, ws, isMine){
+  const i = Math.max(0, ws.statuses.indexOf(r.status));
+  const steps = ws.statuses.map((s,k)=>`<span class="${k<i?"done":k===i?"now":""}">${pretty(s)}</span>`).join("");
+  const desc = r.description || r.details || r.notes || r.location_text || "No details provided";
+  const next = ws.statuses[i+1];
+  const btns = !isMine
+    ? `<button data-act="accept" data-id="${esc(r.id)}">Accept job</button>`
+    : `${ws.report?`<button class="ghost" data-act="report" data-id="${esc(r.id)}">Open scene report</button>`:""}
+       ${next?`<button data-act="next" data-id="${esc(r.id)}" data-to="${esc(next)}">Mark ${pretty(next)}</button>`:""}`;
+  return `<div class="card"><div class="row"><strong>Request ${esc(String(r.id).slice(0,8))}</strong><span class="pill">${pretty(r.status)}</span></div>
+    <p class="muted">${esc(desc)}</p><div class="steps">${steps}</div><div class="row" style="justify-content:flex-start">${btns}</div></div>`;
+}
+
+async function accept(id, ws){
+  // Claim only if still unassigned; RLS also enforces approval for this service.
+  const {data,error} = await sb.from("service_requests")
+    .update({partner_id:S.partner.id,status:ws.statuses[1]}).eq("id",id).is("partner_id",null).select("id");
+  if(error||!data||!data.length) toast("Someone else already took this job");
+  else toast("Job accepted");
+  openWorkspace(S.active);
+}
+
+async function advance(id, to){
+  const {error} = await sb.from("service_requests").update({status:to}).eq("id",id).eq("partner_id",S.partner.id);
+  toast(error?"Couldn't update status":`Marked ${pretty(to)}`);
+  openWorkspace(S.active);
+}
+
+/* ---- Incident workspace: scene report ---- */
+async function openReport(id){
+  const {data:req} = await sb.from("service_requests").select("id,customer_id").eq("id",id).maybeSingle();
+  const {data:rep} = await sb.from("incident_reports").select("*").eq("request_id",id).maybeSingle();
+  const r = rep || {};
+  const loc = r.location ? `${r.location.lat}, ${r.location.lng}` : "";
+  $("app").innerHTML = `<div class="card"><div class="row"><h2>Scene report</h2><button class="ghost" id="back">Back to jobs</button></div>
+    <label>GPS pin</label><div class="row"><input id="loc" value="${esc(loc)}" readonly placeholder="Not captured"><button class="ghost" id="gps">Capture location</button></div>
+    <div class="grid"><div><label>Police abstract number</label><input id="abs" value="${esc(r.police_abstract_no)}"></div>
+    <div><label>Insurers involved</label><input id="ins" value="${esc((r.parties&&r.parties.insurers)||"")}"></div></div>
+    <label>Vehicles and drivers</label><textarea id="veh" rows="3" placeholder="Plate numbers, driver names, contacts">${esc((r.parties&&r.parties.vehicles)||"")}</textarea>
+    <label>Witnesses</label><textarea id="wit" rows="2" placeholder="Name and phone for each witness">${esc(r.witnesses&&r.witnesses.text||"")}</textarea>
+    <label>Notes</label><textarea id="notes" rows="3">${esc(r.notes)}</textarea>
+    <label>Photos (${(r.photo_paths||[]).length} saved)</label><input id="photos" type="file" accept="image/*" multiple>
+    <div class="row" style="justify-content:flex-start;margin-top:14px"><button id="save">Save report</button><button class="ghost" id="tow">Propose tow to customer</button></div>
+    <p class="muted">A proposed tow only becomes a job after the customer confirms it.</p></div>`;
+
+  let pin = r.location || null;
+  $("back").onclick = ()=>openWorkspace(S.active);
+  $("gps").onclick = ()=>navigator.geolocation
+    ? navigator.geolocation.getCurrentPosition(p=>{pin={lat:+p.coords.latitude.toFixed(6),lng:+p.coords.longitude.toFixed(6)};$("loc").value=`${pin.lat}, ${pin.lng}`;},
+        ()=>toast("Couldn't get location. Check permissions."))
+    : toast("Location isn't available on this device");
+
+  $("save").onclick = async ()=>{
+    const btn=$("save");btn.disabled=true;
+    const paths=[...(r.photo_paths||[])];
+    for(const f of $("photos").files){
+      const p=`${id}/${Date.now()}-${f.name.replace(/[^\w.-]/g,"_")}`;
+      const {error}=await sb.storage.from("incident-photos").upload(p,f);
+      if(error){toast(`Couldn't upload ${f.name}`);btn.disabled=false;return;}
+      paths.push(p);
     }
-
-    /* ---------- LIVE LOCATION / ONLINE STATUS ---------- */
-    const sendLocation = on => sb.rpc("update_my_location",
-      { p_lat: lastPos?.lat ?? null, p_lng: lastPos?.lng ?? null, p_online: on });
-
-    function setOnlineButton() {
-      const btn = document.getElementById("online-btn");
-      if (!btn) return;
-      const on = watchId !== null;
-      btn.textContent = on ? "Go offline" : "Go online";
-      btn.classList.toggle("online", on);
-      btn.classList.toggle("green", !on);
-    }
-
-    async function goOffline() {
-      if (watchId !== null) navigator.geolocation.clearWatch(watchId);
-      clearInterval(beatTimer);
-      watchId = null;
-      await sendLocation(false);
-      setOnlineButton();
-    }
-
-    function goOnline() {
-      if (!navigator.geolocation) { alert("This device does not support location sharing."); return; }
-      watchId = navigator.geolocation.watchPosition(
-        p => {
-          lastPos = { lat: p.coords.latitude, lng: p.coords.longitude };
-          sendLocation(true).then(({ error }) => { if (error) console.error("Location update failed:", error); });
-        },
-        err => {
-          alert("Location access is required to go online: " + err.message);
-          watchId = null; clearInterval(beatTimer); setOnlineButton();
-        },
-        { enableHighAccuracy: true, maximumAge: 10000 }
-      );
-      // Heartbeat so a stationary driver still shows as live
-      beatTimer = setInterval(() => lastPos && sendLocation(true), 60000);
-      setOnlineButton();
-    }
-
-    function shell() {
-      const name = driver?.name || profile?.full_name || sessionUser.email || "Driver";
-      const initial = name.trim().charAt(0).toUpperCase() || "D";
-      root.innerHTML = `
-      <div class="app">
-        <aside class="sidebar">
-          <div class="brand">MEI <span>ONE</span></div>
-          <div><div class="side-label">Workspace</div><nav class="nav">
-            <button data-page="overview" class="active">Overview</button>
-            <button data-page="available">Available jobs</button>
-            <button data-page="trips">My trips</button>
-            <button data-page="earnings">Earnings</button>
-            <button data-page="profile">Driver profile</button>
-          </nav></div>
-          <div class="side-bottom">Drive safe, arrive alive.<br>MEI One Driver Portal</div>
-        </aside>
-        <main>
-          <header class="topbar">
-            <div><h1 id="page-title">Driver overview</h1><div class="sub">Manage your work and trips in one place.</div></div>
-            <div class="user-chip"><span class="avatar">${esc(initial)}</span><span>${esc(name)}</span>
-              <button class="btn green" id="online-btn">Go online</button>
-              <button class="btn light" id="signout">Sign out</button></div>
-          </header>
-          <div id="notice" class="notice" hidden></div>
-          <section id="page-overview" class="page active"></section>
-          <section id="page-available" class="page"></section>
-          <section id="page-trips" class="page"></section>
-          <section id="page-earnings" class="page"></section>
-          <section id="page-profile" class="page"></section>
-        </main>
-      </div>`;
-      root.querySelectorAll("[data-page]").forEach(btn => btn.addEventListener("click", () => showPage(btn.dataset.page)));
-      document.getElementById("online-btn").onclick = () => watchId !== null ? goOffline() : goOnline();
-      document.getElementById("signout").onclick = async () => {
-        await goOffline();
-        const {error} = await sb.auth.signOut();
-        if(error) alert(error.message); else location.reload();
-      };
-      renderAll();
-    }
-
-    function showPage(page) {
-      currentPage = page;
-      root.querySelectorAll(".page").forEach(el => el.classList.toggle("active", el.id === "page-"+page));
-      root.querySelectorAll("[data-page]").forEach(el => el.classList.toggle("active", el.dataset.page === page));
-      const titles = {overview:"Driver overview",available:"Available jobs",trips:"My trips",earnings:"Earnings",profile:"Driver profile"};
-      document.getElementById("page-title").textContent = titles[page] || "Driver dashboard";
-    }
-
-    function jobCard(job, mode) {
-      const status = String(job.status || "pending").replaceAll("_"," ");
-      const title = job.title || job.service || "Service request";
-      const route = [job.pickup, job.dropoff].filter(Boolean).join(" → ");
-      const description = job.details || route || "No additional trip details";
-      const price = job.price == null ? "Fare not set" : money(job.price);
-      let actions = "";
-      if (mode === "available") actions = `<button class="btn green" data-action="accept" data-id="${esc(job.id)}">Accept job</button>`;
-      if (mode === "trips") {
-        if (job.status === "accepted") actions = `<button class="btn green" data-action="start" data-id="${esc(job.id)}">Start trip</button>`;
-        else if (job.status === "in_progress") actions = `<button class="btn green" data-action="complete" data-id="${esc(job.id)}">Complete trip</button>`;
-      }
-      return `<article class="panel job"><div><h3>${esc(title)}</h3><p>${esc(description)}</p>
-        <p>${esc(job.customer_name || "Customer")} · ${esc(dateText(job.created_at))}</p></div>
-        <div class="job-actions"><span class="pill">${esc(status)}</span><strong>${esc(price)}</strong>${actions}</div></article>`;
-    }
-
-    function attachJobActions() {
-      root.querySelectorAll("[data-action]").forEach(btn => btn.addEventListener("click", async () => {
-        btn.disabled = true;
-        const id = btn.dataset.id, action = btn.dataset.action;
-        let q;
-        if (action === "accept") {
-          // Only matches a job that is still pending and unassigned
-          q = sb.from("service_requests")
-            .update({ provider_id: sessionUser.id, status: "accepted" })
-            .eq("id", id).eq("status", "pending").is("provider_id", null);
-        } else if (action === "start") {
-          q = sb.from("service_requests")
-            .update({ status: "in_progress" })
-            .eq("id", id).eq("provider_id", sessionUser.id);
-        } else {
-          q = sb.from("service_requests")
-            .update({ status: "completed", completed_at: new Date().toISOString() })
-            .eq("id", id).eq("provider_id", sessionUser.id);
-        }
-        const { data, error } = await q.select("id");
-        if (error) {
-          console.error("Job update failed:", error);
-          setMessage("Could not update job: " + error.message, true);
-          btn.disabled = false; return;
-        }
-        if (!data || data.length === 0) {
-          // 0 rows changed with no error = job already taken, or RLS blocked the update
-          setMessage("Update blocked: the job was already taken, or the service_requests UPDATE policy is missing.", true);
-          btn.disabled = false; await loadJobs(); return;
-        }
-        hideMessage();
-        await loadJobs();
-      }));
-    }
-
-    function renderAll() {
-      // All services, not only rides and delivery
-      const available = jobs.filter(j => j.status === "pending" && !j.provider_id);
-      const mine = jobs.filter(j => j.provider_id === sessionUser.id);
-      const completed = mine.filter(j => j.status === "completed");
-      const earnings = completed.reduce((sum,j) => sum + (Number(j.price)||0),0);
-
-      document.getElementById("page-overview").innerHTML = `
-        <div class="grid">
-          <div class="stat"><small>Available jobs</small><strong>${available.length}</strong></div>
-          <div class="stat"><small>My trips</small><strong>${mine.length}</strong></div>
-          <div class="stat"><small>Completed trips</small><strong>${completed.length}</strong></div>
-          <div class="stat"><small>Completed trip value</small><strong style="font-size:21px">${esc(money(earnings))}</strong></div>
-        </div>
-        <div class="section-head"><h2>Latest available jobs</h2><button class="btn light" data-goto="available">View all</button></div>
-        <div class="list">${available.slice(0,3).map(j=>jobCard(j,"available")).join("") || '<div class="panel empty">No available jobs at the moment.</div>'}</div>
-        <div class="section-head"><h2>Recent trips</h2><button class="btn light" data-goto="trips">View trips</button></div>
-        <div class="list">${mine.slice(0,3).map(j=>jobCard(j,"trips")).join("") || '<div class="panel empty">You have no assigned trips yet.</div>'}</div>`;
-      document.getElementById("page-available").innerHTML = `<div class="section-head"><h2>Jobs ready for acceptance</h2><span class="pill">${available.length} available</span></div>
-        <div class="list">${available.map(j=>jobCard(j,"available")).join("") || '<div class="panel empty">There are no available jobs right now. Check again shortly.</div>'}</div>`;
-      document.getElementById("page-trips").innerHTML = `<div class="section-head"><h2>Trips assigned to you</h2><span class="pill">${mine.length} total</span></div>
-        <div class="list">${mine.map(j=>jobCard(j,"trips")).join("") || '<div class="panel empty">No trips have been assigned to your account.</div>'}</div>`;
-      document.getElementById("page-earnings").innerHTML = `<div class="grid">
-        <div class="stat"><small>Completed trip value</small><strong>${esc(money(earnings))}</strong></div>
-        <div class="stat"><small>Completed trips</small><strong>${completed.length}</strong></div></div>
-        <div class="section-head"><h2>Completed work</h2></div>
-        <div class="list">${completed.map(j=>jobCard(j,"earnings")).join("") || '<div class="panel empty">Completed trips will appear here.</div>'}</div>
-        <p class="sub" style="margin-top:14px">This is the total value recorded in trip requests, not a confirmed payout or settlement statement.</p>`;
-      document.getElementById("page-profile").innerHTML = `<div class="panel">
-        <div class="section-head" style="margin-top:0"><h2>Driver details</h2><span class="pill ${driver.active ? "good":""}">${driver.active ? "Active":"Inactive"}</span></div>
-        <div class="profile-grid">
-          <div class="field"><small>Full name</small><strong>${esc(driver.name || profile?.full_name || "—")}</strong></div>
-          <div class="field"><small>Email</small><strong>${esc(sessionUser.email || "—")}</strong></div>
-          <div class="field"><small>Phone</small><strong>${esc(profile?.phone || "—")}</strong></div>
-          <div class="field"><small>Vehicle</small><strong>${esc(driver.vehicle_description || "Pending")}</strong></div>
-          <div class="field"><small>Number plate</small><strong>${esc(driver.plate || "Pending")}</strong></div>
-          <div class="field"><small>Account ID</small><strong>${esc(sessionUser.id)}</strong></div>
-        </div></div>`;
-      root.querySelectorAll("[data-goto]").forEach(b=>b.addEventListener("click",()=>showPage(b.dataset.goto)));
-      attachJobActions();
-      showPage(currentPage);
-    }
-
-    async function loadJobs() {
-      const {data,error} = await sb.from("service_requests")
-        .select("id,service,status,provider_id,title,details,pickup,dropoff,price,customer_name,created_at,completed_at")
-        .order("created_at",{ascending:false}).limit(200);
-      if(error) {
-        console.error("service_requests query failed:",error);
-        setMessage("Your driver account loaded, but jobs could not be loaded. Check the service_requests columns and SELECT policy. Details: "+error.message,true);
-        jobs=[];
-      } else { jobs=data || []; hideMessage(); }
-      renderAll();
-    }
-
-    async function boot() {
-      if(!SUPABASE_URL || !SUPABASE_KEY || !window.supabase) {
-        gate("Configuration missing","Check js/config.js. It must expose your Supabase project URL and publishable/anon key.");
-        return;
-      }
-      sb = window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
-      const {data,error} = await sb.auth.getSession();
-      if(error) { console.error(error); gate("Unable to verify session",error.message,"Try again","reload"); return; }
-      sessionUser = data.session?.user;
-      if(!sessionUser) { gate("Welcome to MEI One","Sign in with the account registered as a driver to open your dashboard."); return; }
-
-      // Actual schema: drivers.id references auth.users.id. Do not query partners.user_id.
-      const [driverResult,profileResult] = await Promise.all([
-        sb.from("drivers").select("id,name,vehicle_description,plate,active").eq("id",sessionUser.id).maybeSingle(),
-        sb.from("profiles").select("id,full_name,phone,email,avatar_url,account_status").eq("id",sessionUser.id).maybeSingle()
-      ]);
-      if(driverResult.error) {
-        console.error("Driver lookup failed:",driverResult.error);
-        gate("Driver account could not be loaded",
-          "The drivers lookup failed. Confirm the drivers SELECT policy allows auth.uid() = id. Database says: "+driverResult.error.message,
-          "Retry","reload");
-        return;
-      }
-      driver = driverResult.data;
-      profile = profileResult.error ? null : profileResult.data;
-      if(profileResult.error) console.warn("Optional profile lookup failed:",profileResult.error);
-      if(!driver) {
-        gate("Driver profile not found","You are signed in, but no row exists in public.drivers where id equals your Auth user ID. Ask an administrator to create or link your driver record.","Refresh","reload");
-        return;
-      }
-      if(driver.active === false) {
-        gate("Driver account inactive","Your driver profile exists but is not active. Contact MEI One support to have the account reviewed.");
-        return;
-      }
-      shell();
-      await loadJobs();
-    }
-
-    window.addEventListener("pagehide", () => { if (watchId !== null) sendLocation(false); });
-
-    boot().catch(error => {
-      console.error("Dashboard startup error:",error);
-      gate("Something went wrong",error.message || "Unexpected dashboard error.","Reload","reload");
+    const {error} = await sb.from("incident_reports").upsert({
+      request_id:id, location:pin, police_abstract_no:$("abs").value.trim()||null,
+      parties:{vehicles:$("veh").value,insurers:$("ins").value}, witnesses:{text:$("wit").value},
+      notes:$("notes").value, photo_paths:paths, updated_at:new Date().toISOString()
     });
-  })();
-  </script>
+    btn.disabled=false;
+    if(error) return toast("Couldn't save the report");
+    toast("Report saved"); openReport(id);
+  };
+
+  $("tow").onclick = async ()=>{
+    const {data:tow} = await sb.from("services").select("id").eq("slug","towing").maybeSingle();
+    if(!tow||!req) return toast("Towing isn't available yet");
+    const {error} = await sb.from("service_requests").insert({
+      service_id:tow.id, customer_id:req.customer_id, parent_request_id:id, status:"proposed"});
+    toast(error?"Couldn't send the tow proposal. You may need towing approval.":"Tow proposed. Waiting for the customer.");
+  };
+}
+
+document.addEventListener("DOMContentLoaded", init);
+</script>
 </body>
 </html>
