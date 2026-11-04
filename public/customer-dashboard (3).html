@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#071a2f">
+  <meta name="robots" content="noindex,nofollow">
+  <meta name="description" content="MEI One customer dashboard. Browse services and manage requests.">
+  <title>Customer Dashboard | MEI One</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="/js/config.js"></script>
+  <style>
+    :root{--navy:#071a2f;--navy2:#102b49;--green:#00d68f;--green-dark:#00ad73;--bg:#f4f7fa;--white:#fff;--text:#172b40;--muted:#64748b;--border:#e2e8f0;--red:#b91c1c;--shadow:0 8px 24px rgba(7,26,47,.08);--radius:15px;font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif}
+    *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased}button,input,textarea,select{font:inherit}button{cursor:pointer}
+    .topbar{background:var(--navy);color:#fff;padding:15px 5%;display:flex;align-items:center;justify-content:space-between;gap:15px;box-shadow:0 4px 12px #0002}.brand{font-size:22px;font-weight:800;letter-spacing:-.7px}.brand span{color:var(--green)}.top-right{display:flex;align-items:center;gap:15px}.user-label{font-size:13px;color:#d4e1ec}.logout{background:transparent;border:1px solid #ffffff45;color:#fff;padding:9px 15px;border-radius:9px;font-weight:600}
+    .container{width:min(1180px,92%);margin:30px auto 55px}.welcome{background:linear-gradient(135deg,var(--navy),var(--navy2));color:#fff;border-radius:var(--radius);padding:30px;display:flex;justify-content:space-between;align-items:center;margin-bottom:25px;box-shadow:var(--shadow)}.welcome h1{margin:0 0 8px;font-size:clamp(24px,4vw,32px);letter-spacing:-.5px}.welcome p{margin:0;color:#c5d4e2;font-size:14px}.welcome-mark{font-size:45px;color:var(--green)}
+    .tabs{display:flex;gap:8px;margin-bottom:22px;overflow:auto;padding-bottom:4px}.tab{background:#fff;border:1px solid var(--border);color:var(--muted);padding:11px 18px;border-radius:10px;font-size:14px;font-weight:650;white-space:nowrap}.tab.active{background:var(--navy);color:#fff;border-color:var(--navy)}
+    .section{display:none}.section.active{display:block;animation:fade .2s ease}@keyframes fade{from{opacity:.6;transform:translateY(4px)}to{opacity:1;transform:none}}
+    .section-heading{display:flex;align-items:flex-end;justify-content:space-between;gap:15px;margin-bottom:18px}.section-heading h2{font-size:22px;margin:0;font-weight:800;letter-spacing:-.4px}.section-heading p{font-size:13.5px;color:var(--muted);margin:5px 0 0}
+    .service-tools{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:17px}.search{flex:1;min-width:220px;border:1px solid var(--border);border-radius:10px;padding:12px 14px;background:#fff;outline:none}.search:focus,.field input:focus,.field textarea:focus,.field select:focus{border-color:var(--green-dark);box-shadow:0 0 0 3px #00d68f25}
+    .service-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(235px,1fr));gap:17px}.service-card{background:#fff;border:1px solid var(--border);border-radius:var(--radius);padding:21px;display:flex;flex-direction:column;box-shadow:0 2px 8px #071a2f08;transition:.2s}.service-card:hover{transform:translateY(-3px);box-shadow:var(--shadow);border-color:#cbd5e1}.service-icon{width:52px;height:52px;border-radius:15px;background:#eafaf4;display:grid;place-items:center;font-size:27px;margin-bottom:14px}.service-card h3{font-size:16px;margin:0 0 8px;color:var(--navy)}.service-card p{font-size:13px;line-height:1.6;color:var(--muted);margin:0 0 15px;flex:1}.service-meta{font-size:11px;color:var(--muted);margin-bottom:14px}
+    .primary-btn{background:var(--green);color:var(--navy);border:0;padding:12px 17px;border-radius:10px;font-size:13.5px;font-weight:750;box-shadow:0 2px 8px #00d68f25}.primary-btn:hover:not(:disabled){background:#00ed9d}.primary-btn:disabled{opacity:.55;cursor:not-allowed}.secondary-btn{background:#fff;border:1px solid var(--border);color:var(--text);padding:10px 15px;border-radius:10px;font-size:13px;font-weight:650}.full-btn{width:100%}
+    .panel{background:#fff;border:1px solid var(--border);border-radius:var(--radius);padding:25px;box-shadow:0 2px 8px #071a2f08;margin-bottom:18px}.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:17px}.field{display:flex;flex-direction:column;gap:7px}.field.full{grid-column:1/-1}.field label{font-size:12.5px;font-weight:750;color:var(--navy)}.field input,.field textarea,.field select{width:100%;border:1px solid var(--border);border-radius:10px;padding:12px 13px;background:#fff;color:var(--text);outline:none;font-size:13.5px}.field textarea{min-height:105px;resize:vertical}.hint{font-size:11.5px;color:var(--muted);line-height:1.55}
+    .message{display:none;padding:12px 14px;border-radius:10px;font-size:13px;line-height:1.5;margin:12px 0}.message.show{display:block}.message.error{background:#fef2f2;color:#b91c1c;border:1px solid #fecaca}.message.success{background:#ecfdf5;color:#047857;border:1px solid #a7f3d0}.message.info{background:#eff6ff;color:#1d4ed8;border:1px solid #bfdbfe}
+    .request-list{display:grid;gap:14px}.request-card{background:#fff;border:1px solid var(--border);border-radius:var(--radius);padding:18px;box-shadow:0 2px 8px #071a2f08}.request-top{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:10px}.request-card h3{margin:0 0 4px;font-size:15px;color:var(--navy)}.request-card p{font-size:13px;line-height:1.5;margin:6px 0;overflow-wrap:anywhere}.request-card p strong{color:var(--muted)}.status{display:inline-block;padding:5px 10px;border-radius:20px;font-size:10px;font-weight:800;text-transform:uppercase;white-space:nowrap;background:#f1f5f9;color:#475569}.status.pending{background:#fef9c3;color:#a16207}.status.accepted{background:#eff6ff;color:#1d4ed8}.status.in_progress{background:#f3e8ff;color:#6b21a8}.status.completed{background:#ecfdf5;color:#047857}.status.cancelled{background:#fef2f2;color:#b91c1c}
+    .profile-row{display:flex;justify-content:space-between;gap:15px;padding:14px 0;border-bottom:1px solid var(--border)}.profile-row:last-child{border:0}.profile-row span:first-child{font-size:13px;color:var(--muted)}.profile-row span:last-child{font-size:13px;font-weight:650;text-align:right;overflow-wrap:anywhere}
+    .loading{text-align:center;color:var(--muted);padding:35px 15px;font-size:13px}.loading:after{content:"";display:block;width:22px;height:22px;margin:14px auto 0;border:3px solid var(--border);border-top-color:var(--green-dark);border-radius:50%;animation:spin .8s linear infinite}@keyframes spin{to{transform:rotate(360deg)}}.empty{text-align:center;color:var(--muted);padding:30px 18px;background:#fff;border:1px dashed #cbd5e1;border-radius:var(--radius);font-size:13px;line-height:1.6}.subservice-box{background:#f8fafc;border:1px solid var(--border);border-radius:12px;padding:15px;margin-top:12px}.subservice-box h4{margin:0 0 9px;font-size:13px;color:var(--navy)}.subservice-list{display:flex;flex-wrap:wrap;gap:7px}.chip{background:#fff;border:1px solid var(--border);border-radius:20px;padding:6px 10px;font-size:11px;color:#475569}
+    .footer{text-align:center;color:var(--muted);font-size:12px;padding:28px 10px}
+    @media(max-width:700px){.topbar{padding:13px 4%}.user-label{display:none}.container{margin-top:22px}.welcome{padding:23px;text-align:center;justify-content:center}.welcome-mark{display:none}.section-heading{align-items:flex-start;flex-direction:column}.form-grid{grid-template-columns:1fr}.field.full{grid-column:auto}.panel{padding:18px}.profile-row{align-items:flex-start;flex-direction:column;gap:5px}.profile-row span:last-child{text-align:left}}
+    @media(max-width:480px){.service-grid{grid-template-columns:1fr}.request-top{flex-direction:column}}
+  </style>
+</head>
+<body>
+<header class="topbar">
+  <div class="brand">MEI <span>One</span></div>
+  <div class="top-right"><span class="user-label" id="headerUser">Loading account…</span><button class="logout" id="logoutBtn" type="button">Sign out</button></div>
+</header>
+
+<main class="container">
+  <section class="welcome">
+    <div><h1>Welcome, <span id="welcomeName">Customer</span></h1><p>Explore services, submit requests and follow their progress.</p></div>
+    <div class="welcome-mark" aria-hidden="true">✦</div>
+  </section>
+
+  <nav class="tabs" aria-label="Customer dashboard navigation">
+    <button class="tab active" data-tab="home" type="button">Explore Services</button>
+    <button class="tab" data-tab="requests" type="button">My Requests</button>
+    <button class="tab" data-tab="profile" type="button">My Profile</button>
+  </nav>
+
+  <section class="section active" id="section-home">
+    <div class="section-heading"><div><h2>Explore MEI One Services</h2><p>Services shown here are loaded from the MEI One services database.</p></div><button class="secondary-btn" id="refreshServices" type="button">Refresh services</button></div>
+    <div id="serviceMessage" class="message" role="status"></div>
+    <div class="service-tools"><input class="search" id="serviceSearch" type="search" placeholder="Search services…" aria-label="Search services"></div>
+    <div id="servicesGrid" class="service-grid"><div class="loading">Loading services…</div></div>
+  </section>
+
+  <section class="section" id="section-request">
+    <div class="section-heading"><div><h2>Request a Service</h2><p>Tell us what you need and where the service is required.</p></div><button class="secondary-btn" id="backToServices" type="button">← Services</button></div>
+    <div class="panel">
+      <form id="requestForm">
+        <div class="form-grid">
+          <div class="field full"><label for="selectedService">Service</label><select id="selectedService" required></select></div>
+          <div class="field full" id="subserviceField" hidden><label for="selectedSubservice">Home service category</label><select id="selectedSubservice"><option value="">Choose a category (optional)</option></select><span class="hint" id="subserviceHint">Categories are loaded from the service sub-services table.</span></div>
+          <div class="field full"><label for="requestTitle">Request title</label><input id="requestTitle" maxlength="150" placeholder="Briefly describe what you need" required></div>
+          <div class="field full"><label for="requestDetails">Description / instructions</label><textarea id="requestDetails" maxlength="5000" placeholder="Describe the work, issue, preferred date or other important details." required></textarea></div>
+          <div class="field" id="pickupField"><label for="pickup">Service location / pickup address</label><input id="pickup" maxlength="500" placeholder="Enter the service address"></div>
+          <div class="field" id="dropoffField" hidden><label for="dropoff">Destination</label><input id="dropoff" maxlength="500" placeholder="Enter destination, if applicable"></div>
+          <div class="field full"><label for="requestNotes">Additional notes (optional)</label><textarea id="requestNotes" maxlength="3000" placeholder="Access instructions, preferred contact time, landmarks, etc."></textarea></div>
+          <div class="field full"><p class="hint">By submitting, you authorize MEI One to share the request with eligible service providers. Submission does not guarantee immediate provider acceptance.</p></div>
+          <div class="field full"><div id="requestMessage" class="message" role="status"></div><button class="primary-btn full-btn" id="submitRequest" type="submit">Submit Service Request</button></div>
+        </div>
+      </form>
+    </div>
+  </section>
+
+  <section class="section" id="section-requests">
+    <div class="section-heading"><div><h2>My Service Requests</h2><p>Review and track requests submitted from your account.</p></div><button class="secondary-btn" id="refreshRequests" type="button">Refresh</button></div>
+    <div id="requestsMessage" class="message"></div><div id="requestsList" class="request-list"><div class="loading">Loading your requests…</div></div>
+  </section>
+
+  <section class="section" id="section-profile">
+    <div class="section-heading"><div><h2>My Profile</h2><p>Your registered MEI One account details.</p></div></div>
+    <div class="panel">
+      <div class="profile-row"><span>Full name</span><span id="profileName">—</span></div>
+      <div class="profile-row"><span>Email address</span><span id="profileEmail">—</span></div>
+      <div class="profile-row"><span>Phone number</span><span id="profilePhone">—</span></div>
+      <div class="profile-row"><span>Account status</span><span id="profileStatus">—</span></div>
+    </div>
+    <div class="panel"><h3 style="margin-top:0">Account security</h3><p class="hint">Keep your password private. Use the sign-in page to access password recovery.</p><button class="secondary-btn" id="securityBtn" type="button">Go to Sign In</button></div>
+  </section>
+  <footer class="footer">MEI One · A MEI Press Holdings platform</footer>
+</main>
+
+<script>
+(() => {
+  "use strict";
+
+  const SIGNIN_PATH = "/customer-signin.html";
+  const EXTERNAL_SERVICES = {
+    auto: "https://auto-d.meipressgroup.com",
+    learn: "https://www.meidriveafrica.com"
+  };
+  const TRANSPORT_CODES = new Set(["rides", "delivery", "towing", "roadside"]);
+  const DESTINATION_CODES = new Set(["rides", "delivery", "towing"]);
+  const $ = id => document.getElementById(id);
+
+  let sb = null;
+  let currentUser = null;
+  let currentProfile = null;
+  let services = [];
+  let subservices = [];
+  let authSubscription = null;
+  let redirecting = false;
+
+  function escapeHTML(value) {
+    return String(value ?? "").replace(/[&<>"']/g, c => ({
+      "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+    })[c]);
+  }
+  function message(id, text, type="info") {
+    const el=$(id); if(!el)return;
+    el.textContent=text; el.className="message show "+type;
+  }
+  function clearMessage(id) { const el=$(id); if(el){el.textContent="";el.className="message";} }
+  function dateText(value) {
+    if(!value)return "Date unavailable";
+    const d=new Date(value); return Number.isNaN(d.getTime())?"Date unavailable":d.toLocaleString();
+  }
+  function serviceCode(service) { return String(service?.service_code || "").trim().toLowerCase(); }
+  function findService(id) { return services.find(s=>String(s.id)===String(id)); }
+  function showTab(name) {
+    document.querySelectorAll(".tab").forEach(b=>b.classList.toggle("active",b.dataset.tab===name));
+    document.querySelectorAll(".section").forEach(s=>s.classList.toggle("active",s.id==="section-"+name));
+    window.scrollTo({top:0,behavior:"smooth"});
+    if(name==="requests") loadRequests();
+  }
+  function externalLink(code) {
+    const url=EXTERNAL_SERVICES[code];
+    if(url){const w=window.open(url,"_blank","noopener,noreferrer");if(!w)window.location.href=url;return true;}
+    return false;
+  }
+
+  async function initialize() {
+    if(!window.supabase || !window.MEI_SUPABASE || typeof window.MEI_SUPABASE.from!=="function") {
+      document.body.innerHTML='<main style="max-width:700px;margin:60px auto;padding:25px;font-family:Arial"><h2>MEI One configuration error</h2><p>Supabase did not initialize. Check that the Supabase CDN and /js/config.js load successfully.</p></main>';
+      return;
+    }
+    sb=window.MEI_SUPABASE;
+    const {data:sessionData,error:sessionError}=await sb.auth.getSession();
+    if(sessionError)throw sessionError;
+    if(!sessionData.session){window.location.replace(SIGNIN_PATH);return;}
+    currentUser=sessionData.session.user;
+
+    const {data:profile,error:profileError}=await sb.from("profiles")
+      .select("*").eq("id",currentUser.id).maybeSingle();
+    if(profileError) {
+      console.error("Profile load error:",profileError);
+      alert("We could not load your customer profile: "+profileError.message);
+      await sb.auth.signOut();window.location.replace(SIGNIN_PATH);return;
+    }
+    if(!profile) {
+      alert("No customer profile is linked to this account. Please contact MEI One support.");
+      await sb.auth.signOut();window.location.replace(SIGNIN_PATH);return;
+    }
+    currentProfile=profile;
+    const accountStatus=String(profile.account_status ?? "active").trim().toLowerCase();
+    if(accountStatus!=="active") {
+      alert("Your account is not active. Please contact MEI One support.");
+      await sb.auth.signOut();window.location.replace(SIGNIN_PATH);return;
+    }
+    renderProfile();
+    await loadServices();
+
+    const {data:authData}=sb.auth.onAuthStateChange(event=>{
+      if(event==="SIGNED_OUT"&&!redirecting){redirecting=true;window.location.replace(SIGNIN_PATH);}
+    });
+    authSubscription=authData?.subscription || null;
+  }
+
+  function renderProfile() {
+    const name=currentProfile.full_name || currentUser.user_metadata?.full_name || currentUser.user_metadata?.name || "Customer";
+    $("welcomeName").textContent=name;
+    $("headerUser").textContent="Hi, "+name.split(/\s+/)[0];
+    $("profileName").textContent=name;
+    $("profileEmail").textContent=currentUser.email || "—";
+    $("profilePhone").textContent=currentProfile.phone || currentUser.phone || "Not provided";
+    $("profileStatus").textContent=currentProfile.account_status || "Active";
+  }
+
+  async function loadServices() {
+    $("servicesGrid").innerHTML='<div class="loading">Loading services from database…</div>';
+    clearMessage("serviceMessage");
+    const {data,error}=await sb.from("services")
+      .select("id,service_code,service_name,description,icon,route,is_active,display_order")
+      .eq("is_active",true).order("display_order",{ascending:true});
+    if(error) {
+      console.error("Service query failed:",error);
+      $("servicesGrid").innerHTML='<div class="empty">Services could not be loaded. Check SELECT permission and RLS on public.services.<br><br>'+escapeHTML(error.message)+'</div>';
+      return;
+    }
+    services=Array.isArray(data)?data:[];
+    if(!services.length) {
+      $("servicesGrid").innerHTML='<div class="empty">There are currently no active services in the MEI One services catalogue.</div>';
+      return;
+    }
+    await loadSubservices();
+    renderServices();
+    populateServiceSelect();
+  }
+
+  async function loadSubservices() {
+    subservices=[];
+    // The parent services catalogue remains usable if the optional sub-services table
+    // has not yet been installed or is not readable by the customer role.
+    const {data,error}=await sb.from("service_subservices").select("*").eq("is_active",true);
+    if(error) {
+      console.warn("Sub-services are unavailable:",error.message);
+      message("serviceMessage","Main services loaded. Home service categories are not available yet: "+error.message,"info");
+      return;
+    }
+    subservices=Array.isArray(data)?data:[];
+  }
+
+  function subserviceName(row) {
+    return row.subservice_name || row.service_name || row.name || row.title || row.label || row.subservice_code || row.code || "Service category";
+  }
+  function subserviceCode(row) {
+    return row.subservice_code || row.code || row.slug || "";
+  }
+  function serviceSubservices(service) {
+    // Current catalogue design links each child row to its parent by service_id.
+    return subservices.filter(row=>String(row.service_id)===String(service.id));
+  }
+
+  function renderServices() {
+    const query=$("serviceSearch").value.trim().toLowerCase();
+    const visible=services.filter(s=>{
+      const hay=[s.service_name,s.service_code,s.description].join(" ").toLowerCase();
+      return hay.includes(query);
+    });
+    if(!visible.length) {
+      $("servicesGrid").innerHTML='<div class="empty">No services match your search.</div>';return;
+    }
+    $("servicesGrid").innerHTML=visible.map(s=>{
+      const code=serviceCode(s);
+      const children=serviceSubservices(s);
+      const chips=children.slice(0,7).map(x=>'<span class="chip">'+escapeHTML(subserviceName(x))+'</span>').join("");
+      const more=children.length>7?'<span class="chip">+'+(children.length-7)+' more</span>':"";
+      const isExternal=!!EXTERNAL_SERVICES[code];
+      return `<article class="service-card">
+        <div class="service-icon">${escapeHTML(s.icon||"✦")}</div>
+        <h3>${escapeHTML(s.service_name||"MEI One service")}</h3>
+        <p>${escapeHTML(s.description||"Explore this MEI One service and submit a request.")}</p>
+        ${children.length?`<div class="subservice-box"><h4>Available categories (${children.length})</h4><div class="subservice-list">${chips}${more}</div></div>`:""}
+        <div class="service-meta">${escapeHTML(code.toUpperCase())}${children.length?" · "+children.length+" categories":""}</div>
+        <button class="primary-btn full-btn service-action" type="button" data-id="${escapeHTML(s.id)}">${isExternal?"Open service":"Request service"}</button>
+      </article>`;
+    }).join("");
+    document.querySelectorAll(".service-action").forEach(btn=>btn.addEventListener("click",()=>{
+      const s=findService(btn.dataset.id);if(!s)return;
+      if(!externalLink(serviceCode(s)))openRequestForm(s);
+    }));
+  }
+
+  function populateServiceSelect() {
+    $("selectedService").innerHTML=services.map(s=>`<option value="${escapeHTML(s.id)}">${escapeHTML(s.service_name)}</option>`).join("");
+  }
+
+  function openRequestForm(service) {
+    populateServiceSelect();
+    $("selectedService").value=service.id;
+    $("requestTitle").value=(service.service_name||"Service")+" request";
+    $("requestDetails").value="";
+    $("pickup").value="";
+    $("dropoff").value="";
+    $("requestNotes").value="";
+    clearMessage("requestMessage");
+    updateRequestFields();
+    showTab("request");
+  }
+
+  function updateRequestFields() {
+    const s=findService($("selectedService").value);
+    const code=serviceCode(s);
+    const isTransport=TRANSPORT_CODES.has(code);
+    const needsDestination=DESTINATION_CODES.has(code);
+    $("pickupField").hidden=false;
+    $("dropoffField").hidden=!needsDestination;
+    $("pickup").required=true;
+    $("dropoff").required=needsDestination;
+    $("pickup").placeholder=isTransport?"Enter pickup or vehicle location":"Enter the location where the service is required";
+    $("dropoff").placeholder="Enter destination";
+    const children=serviceSubservices(s||{});
+    const isHome=code==="home";
+    $("subserviceField").hidden=!(isHome&&children.length);
+    if(isHome&&children.length) {
+      $("selectedSubservice").innerHTML='<option value="">Choose a category (optional)</option>'+children.map(row=>{
+        const id=row.id ?? subserviceCode(row);
+        return `<option value="${escapeHTML(id)}">${escapeHTML(subserviceName(row))}</option>`;
+      }).join("");
+    } else {
+      $("selectedSubservice").innerHTML='<option value="">Choose a category (optional)</option>';
+    }
+  }
+
+  async function submitRequest(event) {
+    event.preventDefault();clearMessage("requestMessage");
+    const service=findService($("selectedService").value);
+    if(!service){message("requestMessage","Please choose a valid service.","error");return;}
+    const code=serviceCode(service);
+    if(EXTERNAL_SERVICES[code]){message("requestMessage","This service opens in its dedicated MEI platform and does not create a request here.","info");return;}
+    const title=$("requestTitle").value.trim();
+    const details=$("requestDetails").value.trim();
+    const pickup=$("pickup").value.trim();
+    const dropoff=$("dropoff").value.trim();
+    const notes=$("requestNotes").value.trim();
+    if(!title||!details||!pickup){message("requestMessage","Please provide a title, description and service location.","error");return;}
+    if(DESTINATION_CODES.has(code)&&!dropoff){message("requestMessage","Please enter the destination.","error");return;}
+
+    const btn=$("submitRequest");btn.disabled=true;btn.textContent="Submitting…";
+    const customerName=currentProfile.full_name||currentUser.user_metadata?.full_name||"Customer";
+    // Only columns already present in the confirmed service_requests schema are sent.
+    const payload={
+      user_id:currentUser.id,
+      service_id:service.id,
+      request_type:code,
+      service:code,
+      status:"pending",
+      title,
+      details,
+      notes:notes||null,
+      pickup:pickup||null,
+      dropoff:dropoff||null,
+      pickup_address:pickup,
+      destination_address:dropoff||null,
+      customer_name:customerName
+    };
+    try {
+      const {data,error}=await sb.from("service_requests").insert(payload).select("id").single();
+      if(error)throw error;
+      message("requestMessage","Your request has been submitted. Reference: "+data.id,"success");
+      $("requestForm").reset();
+      await loadRequests();
+      setTimeout(()=>showTab("requests"),1200);
+    } catch(err) {
+      console.error("Request submission failed:",err);
+      message("requestMessage","Could not submit your request: "+err.message,"error");
+    } finally {
+      btn.disabled=false;btn.textContent="Submit Service Request";
+    }
+  }
+
+  async function loadRequests() {
+    if(!currentUser||!sb)return;
+    $("requestsList").innerHTML='<div class="loading">Loading your requests…</div>';
+    clearMessage("requestsMessage");
+    const {data,error}=await sb.from("service_requests")
+      .select("id,service_id,request_type,status,pickup_address,destination_address,notes,requested_at,accepted_at,started_at,completed_at,cancelled_at,service,title,details,pickup,dropoff,price,customer_name,created_at")
+      .eq("user_id",currentUser.id)
+      .order("requested_at",{ascending:false})
+      .limit(50);
+    if(error) {
+      console.error("Request history error:",error);
+      $("requestsList").innerHTML='<div class="empty">Unable to load your requests: '+escapeHTML(error.message)+'</div>';
+      return;
+    }
+    renderRequests(data||[]);
+  }
+
+  function renderRequests(rows) {
+    if(!rows.length) {
+      $("requestsList").innerHTML='<div class="empty"><strong>You have not submitted any requests yet.</strong><br>Explore the MEI One service catalogue to get started.</div>';return;
+    }
+    $("requestsList").innerHTML=rows.map(r=>{
+      const service=findService(r.service_id);
+      const name=service?.service_name||r.title||r.service||r.request_type||"Service request";
+      const status=String(r.status||"pending").toLowerCase().replace(/\s+/g,"_");
+      const pickup=r.pickup||r.pickup_address;
+      const dropoff=r.dropoff||r.destination_address;
+      const submitted=r.requested_at||r.created_at;
+      const price=r.price==null?"":`<p><strong>Price:</strong> KES ${Number(r.price).toLocaleString("en-KE")}</p>`;
+      return `<article class="request-card">
+        <div class="request-top"><div><h3>${escapeHTML(name)}</h3><p style="margin:0;color:var(--muted)">${escapeHTML(r.title||"Service request")}</p></div><span class="status ${escapeHTML(status)}">${escapeHTML(status.replace(/_/g," "))}</span></div>
+        ${r.details?`<p><strong>Details:</strong> ${escapeHTML(r.details)}</p>`:""}
+        ${pickup?`<p><strong>Service location / pickup:</strong> ${escapeHTML(pickup)}</p>`:""}
+        ${dropoff?`<p><strong>Destination:</strong> ${escapeHTML(dropoff)}</p>`:""}
+        ${r.notes?`<p><strong>Notes:</strong> ${escapeHTML(r.notes)}</p>`:""}
+        ${price}
+        <p style="font-size:11px;color:var(--muted);margin-top:13px">Submitted: ${escapeHTML(dateText(submitted))} · Reference: ${escapeHTML(String(r.id).split("-")[0])}</p>
+      </article>`;
+    }).join("");
+  }
+
+  async function signOut() {
+    const btn=$("logoutBtn");btn.disabled=true;btn.textContent="Signing out…";
+    const {error}=await sb.auth.signOut();
+    if(error){console.error(error);btn.disabled=false;btn.textContent="Sign out";alert("Unable to sign out: "+error.message);return;}
+    redirecting=true;window.location.replace(SIGNIN_PATH);
+  }
+
+  document.querySelectorAll(".tab").forEach(b=>b.addEventListener("click",()=>showTab(b.dataset.tab)));
+  $("requestForm").addEventListener("submit",submitRequest);
+  $("selectedService").addEventListener("change",updateRequestFields);
+  $("backToServices").addEventListener("click",()=>showTab("home"));
+  $("refreshRequests").addEventListener("click",loadRequests);
+  $("refreshServices").addEventListener("click",loadServices);
+  $("serviceSearch").addEventListener("input",renderServices);
+  $("logoutBtn").addEventListener("click",signOut);
+  $("securityBtn").addEventListener("click",()=>window.location.href=SIGNIN_PATH);
+  window.addEventListener("pagehide",()=>{if(authSubscription)authSubscription.unsubscribe();});
+
+  initialize().catch(error=>{
+    console.error("Dashboard initialization failed:",error);
+    alert("MEI One could not initialize your dashboard: "+error.message);
+  });
+})();
+</script>
+</body>
+</html>
