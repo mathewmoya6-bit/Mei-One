@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -13,7 +12,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="supabase-config.js"></script>
+  <script src="/supabase-config.js"></script>
 
   <style>
     :root {
@@ -26,7 +25,6 @@
       --border: #e5eaf0;
       --background: #f4f7fb;
       --red: #dc3545;
-      --orange: #f59e0b;
     }
 
     * { box-sizing: border-box; }
@@ -51,12 +49,7 @@
       flex-wrap: wrap;
     }
 
-    .brand {
-      font-size: 21px;
-      font-weight: 800;
-      letter-spacing: -.5px;
-    }
-
+    .brand { font-size: 21px; font-weight: 800; letter-spacing: -.5px; }
     .brand span { color: var(--green); }
 
     .account {
@@ -74,13 +67,9 @@
       border-radius: 8px;
       padding: 9px 14px;
     }
-
     .logout:hover { border-color: var(--green); }
 
-    .container {
-      width: min(1200px, 92%);
-      margin: 30px auto;
-    }
+    .container { width: min(1200px, 92%); margin: 30px auto; }
 
     .welcome {
       display: flex;
@@ -91,17 +80,8 @@
       margin-bottom: 24px;
     }
 
-    h1 {
-      font-size: 25px;
-      margin: 0 0 7px;
-      color: var(--navy);
-    }
-
-    .subtitle {
-      color: #64748b;
-      font-size: 13px;
-      margin: 0;
-    }
+    h1 { font-size: 25px; margin: 0 0 7px; color: var(--navy); }
+    .subtitle { color: #64748b; font-size: 13px; margin: 0; }
 
     .online-control {
       display: flex;
@@ -113,10 +93,7 @@
       border: 1px solid var(--border);
     }
 
-    .online-label {
-      font-size: 13px;
-      font-weight: 700;
-    }
+    .online-label { font-size: 13px; font-weight: 700; }
 
     .switch {
       width: 46px;
@@ -155,11 +132,7 @@
       padding: 20px;
     }
 
-    .stat-label {
-      color: #64748b;
-      font-size: 12px;
-      font-weight: 600;
-    }
+    .stat-label { color: #64748b; font-size: 12px; font-weight: 600; }
 
     .stat-number {
       display: block;
@@ -186,11 +159,7 @@
       gap: 12px;
     }
 
-    .panel-header h2 {
-      font-size: 17px;
-      color: var(--navy);
-      margin: 0;
-    }
+    .panel-header h2 { font-size: 17px; color: var(--navy); margin: 0; }
 
     .tabs {
       display: flex;
@@ -216,11 +185,7 @@
       border-bottom-color: var(--green-dark);
     }
 
-    .jobs {
-      padding: 20px;
-      display: grid;
-      gap: 15px;
-    }
+    .jobs { padding: 20px; display: grid; gap: 15px; }
 
     .job {
       border: 1px solid var(--border);
@@ -237,16 +202,8 @@
       flex-wrap: wrap;
     }
 
-    .job h3 {
-      font-size: 15px;
-      color: var(--navy);
-      margin: 0 0 6px;
-    }
-
-    .job-id {
-      color: #94a3b8;
-      font-size: 11px;
-    }
+    .job h3 { font-size: 15px; color: var(--navy); margin: 0 0 6px; }
+    .job-id { color: #94a3b8; font-size: 11px; }
 
     .job-details {
       display: grid;
@@ -261,11 +218,7 @@
       overflow-wrap: anywhere;
     }
 
-    .detail strong {
-      display: block;
-      color: #26364a;
-      font-size: 12px;
-    }
+    .detail strong { display: block; color: #26364a; font-size: 12px; }
 
     .status {
       display: inline-block;
@@ -279,31 +232,18 @@
       height: fit-content;
     }
 
-    .status.pending, .status.requested, .status.proposed {
-      background: #fff5d9;
-      color: #946200;
-    }
+    .status.pending,
+    .status.requested,
+    .status.proposed { background: #fff5d9; color: #946200; }
 
-    .status.accepted, .status.in_progress, .status.ongoing {
-      background: #e0f2fe;
-      color: #075985;
-    }
+    .status.accepted,
+    .status.in_progress,
+    .status.ongoing { background: #e0f2fe; color: #075985; }
 
-    .status.completed {
-      background: #dcfce7;
-      color: #166534;
-    }
+    .status.completed { background: #dcfce7; color: #166534; }
+    .status.cancelled { background: #fee2e2; color: #991b1b; }
 
-    .status.cancelled {
-      background: #fee2e2;
-      color: #991b1b;
-    }
-
-    .actions {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 9px;
-    }
+    .actions { display: flex; flex-wrap: wrap; gap: 9px; }
 
     .btn {
       border: 0;
@@ -313,49 +253,27 @@
       font-weight: 700;
     }
 
-    .btn-primary {
-      background: var(--navy);
-      color: white;
-    }
-
+    .btn-primary { background: var(--navy); color: white; }
     .btn-primary:hover { background: var(--navy-light); }
+    .btn-green { background: var(--green); color: var(--navy); }
+    .btn-light { background: #edf2f7; color: #334155; }
 
-    .btn-green {
-      background: var(--green);
-      color: var(--navy);
-    }
-
-    .btn-light {
-      background: #edf2f7;
-      color: #334155;
-    }
-
-    .btn:disabled {
-      opacity: .55;
-      cursor: not-allowed;
-    }
+    .btn:disabled { opacity: .55; cursor: not-allowed; }
 
     .message {
       padding: 15px 20px;
       font-size: 13px;
       color: #64748b;
     }
-
-    .message.error {
-      color: #b91c1c;
-      background: #fef2f2;
-    }
-
-    .message.success {
-      color: #166534;
-      background: #f0fdf4;
-    }
+    .message.error { color: #b91c1c; background: #fef2f2; }
+    .message.success { color: #166534; background: #f0fdf4; }
 
     .empty {
       padding: 45px 20px;
       text-align: center;
       color: #94a3b8;
       font-size: 13px;
+      line-height: 1.6;
     }
 
     .refresh {
@@ -389,7 +307,7 @@
   <div class="brand">MEI <span>ONE</span></div>
   <div class="account">
     <span id="providerEmail">Checking account...</span>
-    <button class="logout" id="logoutBtn">Sign out</button>
+    <button class="logout" id="logoutBtn" type="button">Sign out</button>
   </div>
 </header>
 
@@ -403,7 +321,7 @@
 
     <div class="online-control">
       <span class="online-label" id="onlineLabel">Offline</span>
-      <button class="switch" id="onlineSwitch" aria-label="Toggle availability"></button>
+      <button class="switch" id="onlineSwitch" type="button" aria-label="Toggle availability"></button>
     </div>
   </section>
 
@@ -429,11 +347,11 @@
   <section class="panel">
     <div class="panel-header">
       <h2>Service Requests</h2>
-      <button class="refresh" id="refreshBtn">↻ Refresh</button>
+      <button class="refresh" id="refreshBtn" type="button">↻ Refresh</button>
     </div>
 
     <div class="tabs" id="serviceTabs">
-      <button class="tab active" data-service="all">All Services</button>
+      <button class="tab active" data-service="all" type="button">All Services</button>
     </div>
 
     <div id="notice"></div>
@@ -448,10 +366,6 @@
 (() => {
   "use strict";
 
-  // Reuse the initialized client created by supabase-config.js.
-  // Do not create another Supabase client here.
-  const sb = window.MEI_SUPABASE;
-
   const REQUEST_OPEN_STATUSES = ["pending", "requested", "proposed"];
 
   let session = null;
@@ -463,614 +377,528 @@
 
   const $ = (id) => document.getElementById(id);
 
-  function escapeHTML(value) {
-    return String(value ?? "").replace(/[&<>"']/g, char => ({
-      "&": "&amp;",
-      "<": "&lt;",
-      ">": "&gt;",
-      '"': "&quot;",
-      "'": "&#039;"
-    })[char]);
-  }
+  /* -----------------------------------------------------------------
+     Boot guard: ensures the shared Supabase client is ready before
+     any dashboard logic runs. Prevents "Supabase client is missing".
+     ----------------------------------------------------------------- */
+  function boot() {
+    const sb = window.MEI_SUPABASE || window.supabaseClient || null;
 
-  function notify(message, type = "success") {
-    $("notice").innerHTML =
-      `<div class="message ${type}">${escapeHTML(message)}</div>`;
-
-    if (type === "success") {
-      setTimeout(() => {
-        $("notice").innerHTML = "";
-      }, 4000);
-    }
-  }
-
-  function formatDate(value) {
-    if (!value) return "Not available";
-
-    const date = new Date(value);
-
-    if (Number.isNaN(date.getTime())) return "Not available";
-
-    return date.toLocaleString();
-  }
-
-  function normalizeStatus(status) {
-    return String(status || "").toLowerCase().trim();
-  }
-
-  function getRequestTitle(request) {
-    return request.title ||
-      request.service ||
-      request.request_type ||
-      "Service request";
-  }
-
-  function getRequestTime(request) {
-    return request.requested_at ||
-      request.created_at ||
-      null;
-  }
-
-  async function checkSession() {
-    const { data, error } = await sb.auth.getSession();
-
-    if (error) throw error;
-
-    session = data.session;
-
-    if (!session) {
-      window.location.replace("provider-login.html");
-      return false;
-    }
-
-    $("providerEmail").textContent =
-      session.user.email || "Provider account";
-
-    return true;
-  }
-
-  async function loadProvider() {
-    const { data, error } = await sb
-      .from("partners")
-      .select("id,user_id,type,business_name,phone,status,is_online")
-      .eq("user_id", session.user.id)
-      .maybeSingle();
-
-    if (error) throw error;
-
-    if (!data) {
-      throw new Error(
-        "No provider profile was found for this account. Contact MEI One support."
+    if (!sb || typeof sb.from !== "function" || typeof sb.auth?.getSession !== "function") {
+      console.error(
+        "MEI One: Supabase client missing. " +
+        "Ensure /supabase-config.js loads before this script."
       );
-    }
-
-    partner = data;
-
-    if (String(partner.status || "").toLowerCase() !== "approved") {
-      throw new Error(
-        "Your provider account is not approved yet. Please contact MEI One support."
-      );
-    }
-
-    $("welcomeTitle").textContent =
-      partner.business_name || "Provider Dashboard";
-
-    $("providerSubtitle").textContent =
-      partner.phone
-        ? `Provider account • ${partner.phone}`
-        : "Manage your services and customer requests.";
-
-    updateOnlineDisplay();
-  }
-
-  async function loadServices() {
-    const { data, error } = await sb
-      .from("partner_services")
-      .select("service_id,status")
-      .eq("partner_id", partner.id)
-      .eq("status", "approved");
-
-    if (error) throw error;
-
-    const serviceIds = [...new Set(
-      (data || []).map(item => item.service_id).filter(Boolean)
-    )];
-
-    if (!serviceIds.length) {
-      approvedServices = [];
-      renderServiceTabs();
+      const list = $("jobsList");
+      if (list) {
+        list.innerHTML =
+          '<div class="empty">' +
+          '<strong>Connection not ready.</strong><br>' +
+          'The Supabase configuration file did not load.<br>' +
+          'Please refresh the page or contact MEI One support.' +
+          '</div>';
+      }
       return;
     }
 
-    const { data: services, error: serviceError } = await sb
-      .from("services")
-      .select("id,service_code,service_name,description,icon,route,is_active,display_order")
-      .in("id", serviceIds)
-      .eq("is_active", true)
-      .order("display_order", { ascending: true });
-
-    if (serviceError) throw serviceError;
-
-    approvedServices = services || [];
-    renderServiceTabs();
+    runDashboard(sb);
   }
 
-  function renderServiceTabs() {
-    const tabs = [
-      { id: "all", name: "All Services" },
-      ...approvedServices.map(service => ({
-        id: service.id,
-        name: service.service_name
-      }))
-    ];
+  function runDashboard(sb) {
 
-    $("serviceTabs").innerHTML = tabs.map(service => `
-      <button
-        class="tab ${activeService === service.id ? "active" : ""}"
-        data-service="${escapeHTML(service.id)}">
-        ${escapeHTML(service.name)}
-      </button>
-    `).join("");
+    /* ---------------- helpers ---------------- */
 
-    $("serviceTabs").querySelectorAll(".tab").forEach(button => {
-      button.addEventListener("click", () => {
-        activeService = button.dataset.service;
-        renderServiceTabs();
-        renderRequests();
-      });
-    });
-  }
-
-  async function loadRequests() {
-    const serviceIds = approvedServices.map(service => service.id);
-
-    if (!serviceIds.length) {
-      allRequests = [];
-      updateStats();
-      renderRequests();
-      return;
+    function escapeHTML(value) {
+      return String(value ?? "").replace(/[&<>"']/g, char => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#039;"
+      })[char]);
     }
 
-    let query = sb
-      .from("service_requests")
-      .select("*")
-      .in("service_id", serviceIds)
-      .order("created_at", { ascending: false })
-      .limit(200);
+    function notify(message, type = "success") {
+      $("notice").innerHTML =
+        `<div class="message ${type}">${escapeHTML(message)}</div>`;
+      if (type === "success") {
+        setTimeout(() => { $("notice").innerHTML = ""; }, 4000);
+      }
+    }
 
-    // The database RLS policies must enforce provider access.
-    // This client-side filter is only for dashboard presentation.
-    query = query.or(
-      `provider_id.is.null,provider_id.eq.${partner.id}`
-    );
+    function formatDate(value) {
+      if (!value) return "Not available";
+      const date = new Date(value);
+      if (Number.isNaN(date.getTime())) return "Not available";
+      return date.toLocaleString();
+    }
 
-    const { data, error } = await query;
+    function normalizeStatus(status) {
+      return String(status || "").toLowerCase().trim();
+    }
 
-    if (error) throw error;
+    function getRequestTitle(request) {
+      return request.title || request.service || request.request_type || "Service request";
+    }
 
-    allRequests = (data || []).filter(request => {
-      if (
-        request.requested_provider_id &&
-        request.requested_provider_id !== partner.id
-      ) {
+    function getRequestTime(request) {
+      return request.requested_at || request.created_at || null;
+    }
+
+    /* ---------------- session + provider ---------------- */
+
+    async function checkSession() {
+      const { data, error } = await sb.auth.getSession();
+      if (error) throw error;
+      session = data.session;
+      if (!session) {
+        window.location.replace("provider-login.html");
         return false;
       }
-
+      $("providerEmail").textContent = session.user.email || "Provider account";
       return true;
-    });
-
-    updateStats();
-    renderRequests();
-  }
-
-  function updateStats() {
-    const available = allRequests.filter(request =>
-      REQUEST_OPEN_STATUSES.includes(normalizeStatus(request.status)) &&
-      !request.provider_id
-    );
-
-    const assigned = allRequests.filter(request =>
-      request.provider_id === partner.id &&
-      ["accepted", "in_progress", "ongoing"].includes(
-        normalizeStatus(request.status)
-      )
-    );
-
-    const inProgress = allRequests.filter(request =>
-      request.provider_id === partner.id &&
-      ["in_progress", "ongoing"].includes(
-        normalizeStatus(request.status)
-      )
-    );
-
-    const completed = allRequests.filter(request =>
-      request.provider_id === partner.id &&
-      normalizeStatus(request.status) === "completed"
-    );
-
-    $("availableCount").textContent = available.length;
-    $("assignedCount").textContent = assigned.length;
-    $("progressCount").textContent = inProgress.length;
-    $("completedCount").textContent = completed.length;
-  }
-
-  function renderRequests() {
-    let requests = [...allRequests];
-
-    if (activeService !== "all") {
-      requests = requests.filter(request =>
-        request.service_id === activeService
-      );
     }
 
-    if (!requests.length) {
-      $("jobsList").innerHTML = `
-        <div class="empty">
-          No service requests found for this service.
-        </div>
-      `;
-      return;
-    }
-
-    $("jobsList").innerHTML = requests.map(request => {
-      const status = normalizeStatus(request.status);
-      const isAssigned = request.provider_id === partner.id;
-      const isAvailable =
-        !request.provider_id &&
-        REQUEST_OPEN_STATUSES.includes(status);
-
-      let buttons = "";
-
-      if (isAvailable) {
-        buttons = `
-          <button class="btn btn-green"
-            data-action="accept"
-            data-id="${escapeHTML(request.id)}">
-            Accept Request
-          </button>
-        `;
-      } else if (isAssigned && status === "accepted") {
-        buttons = `
-          <button class="btn btn-primary"
-            data-action="start"
-            data-id="${escapeHTML(request.id)}">
-            Start Job
-          </button>
-        `;
-      } else if (
-        isAssigned &&
-        ["in_progress", "ongoing"].includes(status)
-      ) {
-        buttons = `
-          <button class="btn btn-green"
-            data-action="complete"
-            data-id="${escapeHTML(request.id)}">
-            Mark Completed
-          </button>
-        `;
-      }
-
-      const service = approvedServices.find(item =>
-        item.id === request.service_id
-      );
-
-      const pickup = request.pickup_address || request.pickup || "Not specified";
-      const destination =
-        request.destination_address || request.dropoff || "Not specified";
-
-      const description =
-        request.details || request.notes || "No additional details";
-
-      const customer =
-        request.customer_name || "Customer";
-
-      return `
-        <article class="job">
-          <div class="job-top">
-            <div>
-              <h3>
-                ${escapeHTML(service?.icon || "📋")}
-                ${escapeHTML(getRequestTitle(request))}
-              </h3>
-              <div class="job-id">
-                Request: ${escapeHTML(request.id)}
-              </div>
-            </div>
-
-            <span class="status ${escapeHTML(status)}">
-              ${escapeHTML(status.replaceAll("_", " "))}
-            </span>
-          </div>
-
-          <div class="job-details">
-            <div class="detail">
-              <strong>Customer</strong>
-              ${escapeHTML(customer)}
-            </div>
-
-            <div class="detail">
-              <strong>Service</strong>
-              ${escapeHTML(service?.service_name || request.service || "Service")}
-            </div>
-
-            <div class="detail">
-              <strong>Pickup / Location</strong>
-              ${escapeHTML(pickup)}
-            </div>
-
-            <div class="detail">
-              <strong>Destination</strong>
-              ${escapeHTML(destination)}
-            </div>
-
-            <div class="detail">
-              <strong>Price</strong>
-              ${request.price == null ? "Not specified" : "KES " + Number(request.price).toLocaleString()}
-            </div>
-
-            <div class="detail">
-              <strong>Requested</strong>
-              ${escapeHTML(formatDate(getRequestTime(request)))}
-            </div>
-          </div>
-
-          <div class="detail">
-            <strong>Additional Information</strong>
-            ${escapeHTML(description)}
-          </div>
-
-          ${buttons ? `<div class="actions">${buttons}</div>` : ""}
-        </article>
-      `;
-    }).join("");
-
-    $("jobsList").querySelectorAll("[data-action]").forEach(button => {
-      button.addEventListener("click", () => {
-        updateRequest(
-          button.dataset.id,
-          button.dataset.action,
-          button
-        );
-      });
-    });
-  }
-
-  async function updateRequest(requestId, action, button) {
-    if (busy) return;
-
-    const request = allRequests.find(item => item.id === requestId);
-
-    if (!request) {
-      notify("Request could not be found. Refresh and try again.", "error");
-      return;
-    }
-
-    const currentStatus = normalizeStatus(request.status);
-    const update = {};
-
-    if (action === "accept") {
-      if (
-        request.provider_id ||
-        !REQUEST_OPEN_STATUSES.includes(currentStatus)
-      ) {
-        notify("This request is no longer available.", "error");
-        await refreshDashboard();
-        return;
-      }
-
-      if (
-        request.requested_provider_id &&
-        request.requested_provider_id !== partner.id
-      ) {
-        notify("This request is assigned to another provider.", "error");
-        return;
-      }
-
-      update.provider_id = partner.id;
-      update.status = "accepted";
-      update.accepted_at = new Date().toISOString();
-    } else if (action === "start") {
-      if (
-        request.provider_id !== partner.id ||
-        currentStatus !== "accepted"
-      ) {
-        notify("This job cannot be started in its current state.", "error");
-        return;
-      }
-
-      update.status = "in_progress";
-      update.started_at = new Date().toISOString();
-    } else if (action === "complete") {
-      if (
-        request.provider_id !== partner.id ||
-        !["in_progress", "ongoing"].includes(currentStatus)
-      ) {
-        notify("This job cannot be completed in its current state.", "error");
-        return;
-      }
-
-      update.status = "completed";
-      update.completed_at = new Date().toISOString();
-    } else {
-      return;
-    }
-
-    busy = true;
-    button.disabled = true;
-    button.textContent = "Please wait...";
-
-    try {
-      let query = sb
-        .from("service_requests")
-        .update(update)
-        .eq("id", requestId);
-
-      if (action === "accept") {
-        query = query
-          .is("provider_id", null)
-          .in("status", REQUEST_OPEN_STATUSES);
-
-        if (request.requested_provider_id) {
-          query = query.eq("requested_provider_id", partner.id);
-        }
-      } else {
-        query = query.eq("provider_id", partner.id);
-
-        if (action === "start") {
-          query = query.eq("status", "accepted");
-        } else {
-          query = query.in("status", ["in_progress", "ongoing"]);
-        }
-      }
-
-      const { data, error } = await query.select("id");
-
-      if (error) throw error;
-
-      if (!data || data.length === 0) {
-        throw new Error(
-          "The request was not updated. It may have changed or your account may not have permission."
-        );
-      }
-
-      notify(
-        action === "accept"
-          ? "Request accepted successfully."
-          : action === "start"
-            ? "Job started successfully."
-            : "Job marked as completed."
-      );
-
-      await refreshDashboard();
-
-    } catch (error) {
-      console.error("Request update error:", error);
-      notify(error.message || "Unable to update this request.", "error");
-    } finally {
-      busy = false;
-      button.disabled = false;
-    }
-  }
-
-  function updateOnlineDisplay() {
-    const online = Boolean(partner?.is_online);
-
-    $("onlineSwitch").classList.toggle("active", online);
-    $("onlineLabel").textContent = online ? "Online" : "Offline";
-  }
-
-  async function toggleOnline() {
-    if (!partner || busy) return;
-
-    busy = true;
-    $("onlineSwitch").disabled = true;
-
-    const newValue = !partner.is_online;
-
-    try {
+    async function loadProvider() {
       const { data, error } = await sb
         .from("partners")
-        .update({ is_online: newValue })
-        .eq("id", partner.id)
+        .select("id,user_id,type,business_name,phone,status,is_online")
         .eq("user_id", session.user.id)
-        .select("id,is_online")
         .maybeSingle();
 
       if (error) throw error;
 
       if (!data) {
         throw new Error(
-          "Availability was not updated. Check your provider permissions."
+          "No provider profile was found for this account. Contact MEI One support."
         );
       }
 
-      partner.is_online = data.is_online;
+      partner = data;
+
+      if (String(partner.status || "").toLowerCase() !== "approved") {
+        throw new Error(
+          "Your provider account is not approved yet. Please contact MEI One support."
+        );
+      }
+
+      $("welcomeTitle").textContent = partner.business_name || "Provider Dashboard";
+      $("providerSubtitle").textContent = partner.phone
+        ? `Provider account • ${partner.phone}`
+        : "Manage your services and customer requests.";
+
       updateOnlineDisplay();
-
-      notify(
-        partner.is_online
-          ? "You are now online."
-          : "You are now offline."
-      );
-
-    } catch (error) {
-      console.error("Availability update error:", error);
-      notify(error.message || "Unable to update availability.", "error");
-    } finally {
-      busy = false;
-      $("onlineSwitch").disabled = false;
     }
-  }
 
-  async function refreshDashboard() {
-    try {
-      $("jobsList").innerHTML =
-        '<div class="empty">Refreshing requests...</div>';
+    /* ---------------- services ---------------- */
 
-      await loadServices();
-      await loadRequests();
+    async function loadServices() {
+      const { data, error } = await sb
+        .from("partner_services")
+        .select("service_id,status")
+        .eq("partner_id", partner.id)
+        .eq("status", "approved");
 
-    } catch (error) {
-      console.error("Dashboard refresh error:", error);
-      notify(error.message || "Unable to refresh dashboard.", "error");
-    }
-  }
-
-  async function logout() {
-    $("logoutBtn").disabled = true;
-
-    try {
-      const { error } = await sb.auth.signOut({ scope: "local" });
       if (error) throw error;
 
-      window.location.replace("provider-login.html");
+      const serviceIds = [...new Set(
+        (data || []).map(item => item.service_id).filter(Boolean)
+      )];
 
-    } catch (error) {
-      console.error("Logout error:", error);
-      notify("Unable to sign out. Please try again.", "error");
-      $("logoutBtn").disabled = false;
-    }
-  }
-
-  async function initialize() {
-    try {
-      if (
-        !sb ||
-        typeof sb.from !== "function" ||
-        typeof sb.auth?.getSession !== "function"
-      ) {
-        throw new Error(
-          "Supabase client is missing. Check that supabase-config.js loads before this dashboard script and exposes window.MEI_SUPABASE."
-        );
+      if (!serviceIds.length) {
+        approvedServices = [];
+        renderServiceTabs();
+        return;
       }
 
-      const authenticated = await checkSession();
+      const { data: services, error: serviceError } = await sb
+        .from("services")
+        .select("id,service_code,service_name,description,icon,route,is_active,display_order")
+        .in("id", serviceIds)
+        .eq("is_active", true)
+        .order("display_order", { ascending: true });
 
-      if (!authenticated) return;
+      if (serviceError) throw serviceError;
 
-      await loadProvider();
-      await loadServices();
-      await loadRequests();
-
-    } catch (error) {
-      console.error("Dashboard initialization error:", error);
-
-      $("jobsList").innerHTML = `
-        <div class="empty">
-          ${escapeHTML(error.message || "Unable to load provider dashboard.")}
-        </div>
-      `;
-
-      notify(error.message || "Dashboard initialization failed.", "error");
+      approvedServices = services || [];
+      renderServiceTabs();
     }
+
+    function renderServiceTabs() {
+      const tabs = [
+        { id: "all", name: "All Services" },
+        ...approvedServices.map(service => ({ id: service.id, name: service.service_name }))
+      ];
+
+      $("serviceTabs").innerHTML = tabs.map(service => `
+        <button class="tab ${activeService === service.id ? "active" : ""}"
+          data-service="${escapeHTML(service.id)}" type="button">
+          ${escapeHTML(service.name)}
+        </button>
+      `).join("");
+
+      $("serviceTabs").querySelectorAll(".tab").forEach(button => {
+        button.addEventListener("click", () => {
+          activeService = button.dataset.service;
+          renderServiceTabs();
+          renderRequests();
+        });
+      });
+    }
+
+    /* ---------------- requests ---------------- */
+
+    async function loadRequests() {
+      const serviceIds = approvedServices.map(service => service.id);
+
+      if (!serviceIds.length) {
+        allRequests = [];
+        updateStats();
+        renderRequests();
+        return;
+      }
+
+      let query = sb
+        .from("service_requests")
+        .select("*")
+        .in("service_id", serviceIds)
+        .order("created_at", { ascending: false })
+        .limit(200);
+
+      query = query.or(`provider_id.is.null,provider_id.eq.${partner.id}`);
+
+      const { data, error } = await query;
+      if (error) throw error;
+
+      allRequests = (data || []).filter(request => {
+        if (
+          request.requested_provider_id &&
+          request.requested_provider_id !== partner.id
+        ) {
+          return false;
+        }
+        return true;
+      });
+
+      updateStats();
+      renderRequests();
+    }
+
+    function updateStats() {
+      const available = allRequests.filter(request =>
+        REQUEST_OPEN_STATUSES.includes(normalizeStatus(request.status)) &&
+        !request.provider_id
+      );
+
+      const assigned = allRequests.filter(request =>
+        request.provider_id === partner.id &&
+        ["accepted", "in_progress", "ongoing"].includes(normalizeStatus(request.status))
+      );
+
+      const inProgress = allRequests.filter(request =>
+        request.provider_id === partner.id &&
+        ["in_progress", "ongoing"].includes(normalizeStatus(request.status))
+      );
+
+      const completed = allRequests.filter(request =>
+        request.provider_id === partner.id &&
+        normalizeStatus(request.status) === "completed"
+      );
+
+      $("availableCount").textContent = available.length;
+      $("assignedCount").textContent = assigned.length;
+      $("progressCount").textContent = inProgress.length;
+      $("completedCount").textContent = completed.length;
+    }
+
+    function renderRequests() {
+      let requests = [...allRequests];
+
+      if (activeService !== "all") {
+        requests = requests.filter(request => request.service_id === activeService);
+      }
+
+      if (!requests.length) {
+        $("jobsList").innerHTML =
+          '<div class="empty">No service requests found for this service.</div>';
+        return;
+      }
+
+      $("jobsList").innerHTML = requests.map(request => {
+        const status = normalizeStatus(request.status);
+        const isAssigned = request.provider_id === partner.id;
+        const isAvailable = !request.provider_id && REQUEST_OPEN_STATUSES.includes(status);
+
+        let buttons = "";
+        if (isAvailable) {
+          buttons = `
+            <button class="btn btn-green" data-action="accept"
+              data-id="${escapeHTML(request.id)}" type="button">
+              Accept Request
+            </button>`;
+        } else if (isAssigned && status === "accepted") {
+          buttons = `
+            <button class="btn btn-primary" data-action="start"
+              data-id="${escapeHTML(request.id)}" type="button">
+              Start Job
+            </button>`;
+        } else if (isAssigned && ["in_progress", "ongoing"].includes(status)) {
+          buttons = `
+            <button class="btn btn-green" data-action="complete"
+              data-id="${escapeHTML(request.id)}" type="button">
+              Mark Completed
+            </button>`;
+        }
+
+        const service = approvedServices.find(item => item.id === request.service_id);
+        const pickup = request.pickup_address || request.pickup || "Not specified";
+        const destination = request.destination_address || request.dropoff || "Not specified";
+        const description = request.details || request.notes || "No additional details";
+        const customer = request.customer_name || "Customer";
+
+        return `
+          <article class="job">
+            <div class="job-top">
+              <div>
+                <h3>
+                  ${escapeHTML(service?.icon || "📋")}
+                  ${escapeHTML(getRequestTitle(request))}
+                </h3>
+                <div class="job-id">Request: ${escapeHTML(request.id)}</div>
+              </div>
+              <span class="status ${escapeHTML(status)}">
+                ${escapeHTML(status.replaceAll("_", " "))}
+              </span>
+            </div>
+
+            <div class="job-details">
+              <div class="detail"><strong>Customer</strong>${escapeHTML(customer)}</div>
+              <div class="detail"><strong>Service</strong>${escapeHTML(service?.service_name || request.service || "Service")}</div>
+              <div class="detail"><strong>Pickup / Location</strong>${escapeHTML(pickup)}</div>
+              <div class="detail"><strong>Destination</strong>${escapeHTML(destination)}</div>
+              <div class="detail"><strong>Price</strong>${request.price == null ? "Not specified" : "KES " + Number(request.price).toLocaleString()}</div>
+              <div class="detail"><strong>Requested</strong>${escapeHTML(formatDate(getRequestTime(request)))}</div>
+            </div>
+
+            <div class="detail">
+              <strong>Additional Information</strong>
+              ${escapeHTML(description)}
+            </div>
+
+            ${buttons ? `<div class="actions">${buttons}</div>` : ""}
+          </article>`;
+      }).join("");
+
+      $("jobsList").querySelectorAll("[data-action]").forEach(button => {
+        button.addEventListener("click", () => {
+          updateRequest(button.dataset.id, button.dataset.action, button);
+        });
+      });
+    }
+
+    /* ---------------- mutations ---------------- */
+
+    async function updateRequest(requestId, action, button) {
+      if (busy) return;
+
+      const request = allRequests.find(item => item.id === requestId);
+      if (!request) {
+        notify("Request could not be found. Refresh and try again.", "error");
+        return;
+      }
+
+      const currentStatus = normalizeStatus(request.status);
+      const update = {};
+
+      if (action === "accept") {
+        if (request.provider_id || !REQUEST_OPEN_STATUSES.includes(currentStatus)) {
+          notify("This request is no longer available.", "error");
+          await refreshDashboard();
+          return;
+        }
+        if (
+          request.requested_provider_id &&
+          request.requested_provider_id !== partner.id
+        ) {
+          notify("This request is assigned to another provider.", "error");
+          return;
+        }
+        update.provider_id = partner.id;
+        update.status = "accepted";
+        update.accepted_at = new Date().toISOString();
+      } else if (action === "start") {
+        if (request.provider_id !== partner.id || currentStatus !== "accepted") {
+          notify("This job cannot be started in its current state.", "error");
+          return;
+        }
+        update.status = "in_progress";
+        update.started_at = new Date().toISOString();
+      } else if (action === "complete") {
+        if (
+          request.provider_id !== partner.id ||
+          !["in_progress", "ongoing"].includes(currentStatus)
+        ) {
+          notify("This job cannot be completed in its current state.", "error");
+          return;
+        }
+        update.status = "completed";
+        update.completed_at = new Date().toISOString();
+      } else {
+        return;
+      }
+
+      busy = true;
+      button.disabled = true;
+      button.textContent = "Please wait...";
+
+      try {
+        let query = sb.from("service_requests").update(update).eq("id", requestId);
+
+        if (action === "accept") {
+          query = query.is("provider_id", null).in("status", REQUEST_OPEN_STATUSES);
+          if (request.requested_provider_id) {
+            query = query.eq("requested_provider_id", partner.id);
+          }
+        } else {
+          query = query.eq("provider_id", partner.id);
+          if (action === "start") {
+            query = query.eq("status", "accepted");
+          } else {
+            query = query.in("status", ["in_progress", "ongoing"]);
+          }
+        }
+
+        const { data, error } = await query.select("id");
+        if (error) throw error;
+
+        if (!data || data.length === 0) {
+          throw new Error(
+            "The request was not updated. It may have changed or your account may not have permission."
+          );
+        }
+
+        notify(
+          action === "accept"
+            ? "Request accepted successfully."
+            : action === "start"
+              ? "Job started successfully."
+              : "Job marked as completed."
+        );
+
+        await refreshDashboard();
+      } catch (error) {
+        console.error("Request update error:", error);
+        notify(error.message || "Unable to update this request.", "error");
+      } finally {
+        busy = false;
+        button.disabled = false;
+      }
+    }
+
+    /* ---------------- online toggle ---------------- */
+
+    function updateOnlineDisplay() {
+      const online = Boolean(partner?.is_online);
+      $("onlineSwitch").classList.toggle("active", online);
+      $("onlineLabel").textContent = online ? "Online" : "Offline";
+    }
+
+    async function toggleOnline() {
+      if (!partner || busy) return;
+
+      busy = true;
+      $("onlineSwitch").disabled = true;
+
+      const newValue = !partner.is_online;
+
+      try {
+        const { data, error } = await sb
+          .from("partners")
+          .update({ is_online: newValue })
+          .eq("id", partner.id)
+          .eq("user_id", session.user.id)
+          .select("id,is_online")
+          .maybeSingle();
+
+        if (error) throw error;
+
+        if (!data) {
+          throw new Error(
+            "Availability was not updated. Check your provider permissions."
+          );
+        }
+
+        partner.is_online = data.is_online;
+        updateOnlineDisplay();
+        notify(partner.is_online ? "You are now online." : "You are now offline.");
+      } catch (error) {
+        console.error("Availability update error:", error);
+        notify(error.message || "Unable to update availability.", "error");
+      } finally {
+        busy = false;
+        $("onlineSwitch").disabled = false;
+      }
+    }
+
+    /* ---------------- refresh + logout ---------------- */
+
+    async function refreshDashboard() {
+      try {
+        $("jobsList").innerHTML = '<div class="empty">Refreshing requests...</div>';
+        await loadServices();
+        await loadRequests();
+      } catch (error) {
+        console.error("Dashboard refresh error:", error);
+        notify(error.message || "Unable to refresh dashboard.", "error");
+      }
+    }
+
+    async function logout() {
+      $("logoutBtn").disabled = true;
+      try {
+        const { error } = await sb.auth.signOut({ scope: "local" });
+        if (error) throw error;
+        window.location.replace("provider-login.html");
+      } catch (error) {
+        console.error("Logout error:", error);
+        notify("Unable to sign out. Please try again.", "error");
+        $("logoutBtn").disabled = false;
+      }
+    }
+
+    /* ---------------- initialize ---------------- */
+
+    async function initialize() {
+      try {
+        const authenticated = await checkSession();
+        if (!authenticated) return;
+
+        await loadProvider();
+        await loadServices();
+        await loadRequests();
+      } catch (error) {
+        console.error("Dashboard initialization error:", error);
+        $("jobsList").innerHTML = `
+          <div class="empty">
+            ${escapeHTML(error.message || "Unable to load provider dashboard.")}
+          </div>`;
+        notify(error.message || "Dashboard initialization failed.", "error");
+      }
+    }
+
+    $("onlineSwitch").addEventListener("click", toggleOnline);
+    $("refreshBtn").addEventListener("click", refreshDashboard);
+    $("logoutBtn").addEventListener("click", logout);
+
+    initialize();
   }
 
-  $("onlineSwitch").addEventListener("click", toggleOnline);
-  $("refreshBtn").addEventListener("click", refreshDashboard);
-  $("logoutBtn").addEventListener("click", logout);
-
-  initialize();
-
+  /* Kick off once DOM is ready. */
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", boot);
+  } else {
+    boot();
+  }
 })();
 </script>
 
