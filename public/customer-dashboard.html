@@ -170,7 +170,9 @@
     .request-card h3 { margin: 0 0 4px; font-size: 16px; font-weight: 700; color: var(--navy); }
     .request-card p { margin: 6px 0; font-size: 13.5px; color: var(--text); line-height: 1.5; overflow-wrap: anywhere; }
     .request-card p strong { color: var(--muted); font-weight: 600; }
-    
+    .request-card a { color: var(--green-dark); font-weight: 600; }
+    .request-card .primary-btn { margin-top: 10px; }
+
     .status {
       display: inline-block; padding: 6px 12px; border-radius: 20px;
       font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; white-space: nowrap;
@@ -300,6 +302,14 @@
             <input id="dropoff" maxlength="500" placeholder="Enter destination, if applicable">
           </div>
 
+          <!-- AVAILABLE PROVIDERS -->
+          <div class="field full" id="providerPanel" style="display:none">
+            <button class="secondary-btn" id="findProviders" type="button">Find available providers near me</button>
+            <div id="providerMessage" class="message"></div>
+            <div id="providerList" class="request-list"></div>
+            <div class="hint">Optional. Choosing a provider shows their cost, estimated arrival time and vehicle details. Your location is used only to find nearby providers.</div>
+          </div>
+
           <div class="field full">
             <label for="requestNotes">Additional notes (optional)</label>
             <textarea id="requestNotes" maxlength="3000" placeholder="Any other instructions?"></textarea>
@@ -406,6 +416,7 @@
   let services = [];
   let authSubscription = null;
   let authRedirecting = false;
+  let selectedProvider = null;
 
   /* =========================================================
      HELPERS
@@ -439,6 +450,9 @@
       hour: "numeric", minute: "2-digit"
     });
   }
+
+  const kes = (n) => "KES " + Number(n).toLocaleString("en-KE");
+  const mapLink = (lat, lng) => `https://www.google.com/maps?q=${encodeURIComponent(lat)},${encodeURIComponent(lng)}`;
 
   function showTab(tabName) {
     document.querySelectorAll(".tab").forEach(btn => {
@@ -522,8 +536,7 @@
 
   function renderProfile() {
     const name = currentProfile.full_name || currentUser.user_metadata?.full_name || "Customer";
-    // FIX: Fallback to Auth session email since profiles table usually doesn't store email
-    const email = currentUser.email || "—"; 
+    const email = currentUser.email || "—";
     const phone = currentProfile.phone || "Not provided";
 
     $("welcomeName").textContent = name;
@@ -583,7 +596,7 @@
       btn.addEventListener("click", () => {
         const service = getServiceById(btn.dataset.serviceId);
         if (!service) return;
-        
+
         const code = String(service.service_code || "").toLowerCase();
         if (SERVICE_LINKS[code]) {
           openExternalService(SERVICE_LINKS[code]);
@@ -623,13 +636,88 @@
 
     $("pickupField").style.display = needsPickup ? "flex" : "none";
     $("dropoffField").style.display = needsDropoff ? "flex" : "none";
+    $("providerPanel").style.display = needsPickup ? "flex" : "none";
 
     $("pickup").required = needsPickup;
     $("dropoff").required = needsDropoff;
 
-    $("pickup").placeholder = code === "roadside" 
-      ? "Where is your vehicle located?" 
+    $("pickup").placeholder = code === "roadside"
+      ? "Where is your vehicle located?"
       : "Enter pickup or service address";
+
+    // Reset provider choice whenever the service changes
+    selectedProvider = null;
+    $("providerList").innerHTML = "";
+    hideMessage("providerMessage");
+  }
+
+  /* =========================================================
+     AVAILABLE PROVIDERS
+     ========================================================= */
+  function getMyLocation() {
+    return new Promise((resolve, reject) => {
+      if (!navigator.geolocation) return reject(new Error("Location is not supported on this device."));
+      navigator.geolocation.getCurrentPosition(
+        p => resolve({ lat: p.coords.latitude, lng: p.coords.longitude }),
+        reject,
+        { enableHighAccuracy: true, timeout: 10000 }
+      );
+    });
+  }
+
+  async function findProviders() {
+    const code = String(getServiceById($("selectedService").value)?.service_code || "").toLowerCase();
+    hideMessage("providerMessage");
+    selectedProvider = null;
+    $("providerList").innerHTML = '<div class="loading">Finding providers...</div>';
+
+    let pos;
+    try {
+      pos = await getMyLocation();
+    } catch (err) {
+      $("providerList").innerHTML = "";
+      showMessage("providerMessage", "Allow location access to see nearby providers.", "error");
+      return;
+    }
+
+    const { data, error } = await sb.rpc("list_available_providers", {
+      p_service: code, p_lat: pos.lat, p_lng: pos.lng
+    });
+
+    if (error) {
+      console.error("Provider lookup failed:", error);
+      $("providerList").innerHTML = "";
+      showMessage("providerMessage", "Could not load providers: " + error.message, "error");
+      return;
+    }
+
+    if (!data || !data.length) {
+      $("providerList").innerHTML = '<div class="empty">No providers are online right now. You can still submit your request and the first available provider will accept it.</div>';
+      return;
+    }
+
+    $("providerList").innerHTML = data.map(p => `
+      <article class="request-card">
+        <div class="request-top">
+          <div>
+            <h3>${escapeHTML(p.name || "Provider")}</h3>
+            <p style="color:var(--muted); margin:0;">${escapeHTML(p.vehicle_description || "Vehicle")} · <strong>${escapeHTML(p.plate || "—")}</strong></p>
+          </div>
+          <span class="status ${p.busy ? "in_progress" : "completed"}">${p.busy ? "Completing another job" : "Available"}</span>
+        </div>
+        <p>${escapeHTML(p.distance_km)} km away · about ${escapeHTML(p.eta_min)} min to arrive${p.busy ? " (includes their current job)" : ""}</p>
+        <p><strong>Cost:</strong> ${p.price == null ? "Quoted on request" : escapeHTML(kes(p.price))}
+          · <a href="${mapLink(p.lat, p.lng)}" target="_blank" rel="noopener noreferrer">View live location</a></p>
+        <button class="primary-btn pick" type="button" data-id="${escapeHTML(p.id)}">Choose ${escapeHTML(p.name || "provider")}</button>
+      </article>
+    `).join("");
+
+    $("providerList").querySelectorAll(".pick").forEach(btn => btn.addEventListener("click", () => {
+      selectedProvider = btn.dataset.id;
+      $("providerList").querySelectorAll(".pick").forEach(b => {
+        b.textContent = b === btn ? "Selected ✓" : "Choose";
+      });
+    }));
   }
 
   async function submitRequest(event) {
@@ -686,7 +774,8 @@
       dropoff: dropoff || null,
       pickup_address: pickup || null,
       destination_address: dropoff || null,
-      customer_name: customerName
+      customer_name: customerName,
+      requested_provider_id: selectedProvider
     };
 
     try {
@@ -700,7 +789,9 @@
 
       showMessage("requestMessage", "Request submitted successfully! Reference: " + data.id, "success");
       $("requestForm").reset();
-      
+      selectedProvider = null;
+      $("providerList").innerHTML = "";
+
       await loadRequests();
       setTimeout(() => showTab("requests"), 1500);
 
@@ -724,8 +815,8 @@
     const { data, error } = await sb
       .from("service_requests")
       .select(`
-        id, service_id, request_type, status, pickup_address, destination_address, 
-        notes, requested_at, accepted_at, started_at, completed_at, cancelled_at, 
+        id, service_id, request_type, status, pickup_address, destination_address,
+        notes, requested_at, accepted_at, started_at, completed_at, cancelled_at,
         service, provider_id, title, details, pickup, dropoff, price, customer_name
       `)
       .eq("user_id", currentUser.id)
@@ -738,10 +829,20 @@
       return;
     }
 
-    renderRequests(data || []);
+    const rows = data || [];
+
+    // Provider details (name, vehicle, plate, live location) for requests that have been accepted
+    const providers = {};
+    await Promise.all(rows.filter(r => r.provider_id).map(async r => {
+      const { data: p, error: pErr } = await sb.rpc("get_request_provider", { p_request_id: r.id });
+      if (pErr) console.warn("Provider details unavailable:", pErr);
+      else if (p && p[0]) providers[r.id] = p[0];
+    }));
+
+    renderRequests(rows, providers);
   }
 
-  function renderRequests(requests) {
+  function renderRequests(requests, providers = {}) {
     if (!requests.length) {
       $("requestsList").innerHTML = `
         <div class="empty">
@@ -756,9 +857,10 @@
       const service = getServiceById(req.service_id);
       const serviceName = service?.service_name || req.title || req.service || req.request_type || "Service request";
       const status = String(req.status || "pending").toLowerCase().replace(/\s+/g, "_");
-      
+
       const pickup = req.pickup || req.pickup_address;
       const dropoff = req.dropoff || req.destination_address;
+      const prov = providers[req.id];
 
       return `
         <article class="request-card">
@@ -773,9 +875,14 @@
           ${req.details ? `<p><strong>Details:</strong> ${escapeHTML(req.details)}</p>` : ""}
           ${pickup ? `<p><strong>Pickup:</strong> ${escapeHTML(pickup)}</p>` : ""}
           ${dropoff ? `<p><strong>Destination:</strong> ${escapeHTML(dropoff)}</p>` : ""}
-          
+          ${req.price != null ? `<p><strong>Cost:</strong> ${escapeHTML(kes(req.price))}</p>` : ""}
+          ${prov ? `<p><strong>Provider:</strong> ${escapeHTML(prov.name || "Assigned provider")}
+            · ${escapeHTML(prov.vehicle_description || "")}
+            · <strong>Plate:</strong> ${escapeHTML(prov.plate || "—")}
+            ${prov.lat != null && prov.lng != null ? ` · <a href="${mapLink(prov.lat, prov.lng)}" target="_blank" rel="noopener noreferrer">Track live location</a>` : ""}</p>` : ""}
+
           <p style="margin-top: 12px; font-size: 12px; color: var(--muted);">
-            Submitted: ${escapeHTML(formatDate(req.requested_at))} · Ref: ${escapeHTML(req.id.split('-')[0])}
+            Submitted: ${escapeHTML(formatDate(req.requested_at))} · Ref: ${escapeHTML(String(req.id).split('-')[0])}
           </p>
         </article>
       `;
@@ -809,6 +916,7 @@
   });
   $("requestForm").addEventListener("submit", submitRequest);
   $("selectedService").addEventListener("change", updateRequestFields);
+  $("findProviders").addEventListener("click", findProviders);
   $("backToServices").addEventListener("click", () => showTab("home"));
   $("refreshRequests").addEventListener("click", loadRequests);
   $("logoutBtn").addEventListener("click", signOut);
