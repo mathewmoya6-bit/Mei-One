@@ -448,12 +448,17 @@
 
       <div class="admin-nav-title">Management</div>
       <nav class="admin-nav">
+        <button type="button" data-admin-section="customers"><span class="admin-nav-icon" aria-hidden="true">🧑</span>Customers</button>
+        <button type="button" data-admin-section="requests"><span class="admin-nav-icon" aria-hidden="true">🧾</span>Service Requests</button>
         <button type="button" data-admin-section="providers"><span class="admin-nav-icon" aria-hidden="true">🤝</span>Providers</button>
         <button type="button" data-admin-section="services"><span class="admin-nav-icon" aria-hidden="true">💲</span>Services &amp; prices</button>
         <button type="button" data-admin-section="drivers"><span class="admin-nav-icon" aria-hidden="true">👤</span>Drivers</button>
         <button type="button" data-admin-section="apps"><span class="admin-nav-icon" aria-hidden="true">📋</span>Applications</button>
         <button type="button" data-admin-section="users"><span class="admin-nav-icon" aria-hidden="true">◉</span>Users</button>
         <button type="button" data-admin-section="payments"><span class="admin-nav-icon" aria-hidden="true">▣</span>Payments</button>
+        <button type="button" data-admin-section="complaints"><span class="admin-nav-icon" aria-hidden="true">⚠</span>Complaints</button>
+        <button type="button" data-admin-section="reviews"><span class="admin-nav-icon" aria-hidden="true">★</span>Reviews</button>
+        <button type="button" data-admin-section="reports"><span class="admin-nav-icon" aria-hidden="true">📈</span>Reports</button>
         <button type="button" data-admin-section="settings"><span class="admin-nav-icon" aria-hidden="true">⚙</span>Settings</button>
         <a href="dashboard.html"><span class="admin-nav-icon" aria-hidden="true">←</span>Customer dashboard</a>
       </nav>
@@ -518,26 +523,38 @@
 
           <div class="stat-grid">
             <article class="stat-card">
-              <div class="stat-label">Users</div>
+              <div class="stat-label">Total customers</div>
               <div class="stat-value" id="statUsers">—</div>
               <div class="stat-note">Registered accounts</div>
             </article>
             <article class="stat-card">
-              <div class="stat-label">Rides</div>
+              <div class="stat-label">Active requests</div>
               <div class="stat-value" id="statRides">—</div>
-              <div class="stat-note">Total ride requests</div>
+              <div class="stat-note">Ongoing services</div>
             </article>
             <article class="stat-card">
-              <div class="stat-label">Drivers</div>
+              <div class="stat-label">Service providers</div>
               <div class="stat-value" id="statDrivers">—</div>
-              <div class="stat-note">Active drivers</div>
+              <div class="stat-note">Approved providers</div>
             </article>
             <article class="stat-card">
-              <div class="stat-label">Applications</div>
+              <div class="stat-label">Pending applications</div>
               <div class="stat-value" id="statApps">—</div>
-              <div class="stat-note">Partner applications</div>
+              <div class="stat-note">Needs review</div>
             </article>
           </div>
+
+          <section class="panel" style="margin-bottom:20px">
+            <div class="panel-header"><h3>Attention required</h3><span>Live from Supabase</span></div>
+            <div class="panel-body">
+              <div class="quick-grid" style="grid-template-columns:repeat(4,minmax(0,1fr))">
+                <button type="button" class="quick-action" data-admin-section="apps"><strong id="attApps">—</strong><span>Pending provider applications</span></button>
+                <button type="button" class="quick-action" data-admin-section="requests"><strong id="attUnassigned">—</strong><span>Unassigned service requests</span></button>
+                <button type="button" class="quick-action" data-admin-section="complaints"><strong id="attComplaints">—</strong><span>Open customer complaints</span></button>
+                <button type="button" class="quick-action" data-admin-section="payments"><strong id="attPayments">—</strong><span>Payment issues</span></button>
+              </div>
+            </div>
+          </section>
 
           <div class="section-grid">
             <section class="panel">
@@ -746,7 +763,8 @@
       $("#viewSection").hidden = !(name === "users" || name === "payments" || name === "activity" || name === "settings" ||
         name === "delivery" || name === "towing" || name === "roadside" || name === "auto" ||
         name === "marketplace" || name === "home" || name === "learn" ||
-        name === "accident" || name === "providers" || name === "services");
+        name === "accident" || name === "providers" || name === "services" ||
+        name === "customers" || name === "requests" || name === "complaints" || name === "reviews" || name === "reports");
 
       // Update sidebar active state
       $$(".admin-nav button, .admin-nav a").forEach(function (btn) {
@@ -892,7 +910,33 @@
       }
     }
 
+    async function count(table, apply) {
+      try {
+        var q = supabase.from(table).select("*", { count: "exact", head: true });
+        if (apply) q = apply(q);
+        var r = await q;
+        return r.error ? null : r.count;
+      } catch (e) { return null; }
+    }
+    function put(id, v) { $(id).textContent = v === null || v === undefined ? "—" : v; }
+
+    async function loadOverview() {
+      var r = await Promise.all([
+        count("profiles"),
+        count("partners", function (q) { return q.eq("status", "approved"); }),
+        count("partner_applications", function (q) { return q.eq("status", "new"); }),
+        count("service_requests", function (q) { return q.in("status", ["proposed", "accepted", "in_progress"]); }),
+        count("service_requests", function (q) { return q.eq("status", "pending").is("provider_id", null); }),
+        count("complaints", function (q) { return q.eq("status", "open"); }),
+        count("payments", function (q) { return q.in("status", ["failed", "refunded"]); })
+      ]);
+      put("#statUsers", r[0]); put("#statDrivers", r[1]); put("#statApps", r[2]); put("#statRides", r[3]);
+      put("#attApps", r[2]); put("#attUnassigned", r[4]); put("#attComplaints", r[5]); put("#attPayments", r[6]);
+    }
+
     function updateStats() {
+      loadOverview();
+      return;
       $("#statUsers").textContent = "—";
       $("#statRides").textContent = state.rides.length;
       $("#statDrivers").textContent = state.drivers.filter(function (d) { return d.active; }).length;
@@ -936,6 +980,11 @@
         towing: "MEI Towing",
         roadside: "Roadside Assistance",
         accident: "Accident Scene Management",
+        customers: "Customers",
+        requests: "Service requests",
+        complaints: "Complaints and disputes",
+        reviews: "Reviews and ratings",
+        reports: "Reports and analytics",
         providers: "Service providers",
         services: "Services and prices",
         auto: "MEI Auto",
