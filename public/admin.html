@@ -439,6 +439,7 @@
         <button type="button" data-admin-section="delivery"><span class="admin-nav-icon" aria-hidden="true">📦</span>MEI Delivery</button>
         <button type="button" data-admin-section="towing"><span class="admin-nav-icon" aria-hidden="true">🚙</span>MEI Towing</button>
         <button type="button" data-admin-section="roadside"><span class="admin-nav-icon" aria-hidden="true">🛠️</span>Roadside Assistance</button>
+        <button type="button" data-admin-section="accident"><span class="admin-nav-icon" aria-hidden="true">🚧</span>Accident Scene</button>
         <button type="button" data-admin-section="auto"><span class="admin-nav-icon" aria-hidden="true">🔧</span>MEI Auto</button>
         <button type="button" data-admin-section="marketplace"><span class="admin-nav-icon" aria-hidden="true">🛍️</span>MEI Marketplace</button>
         <button type="button" data-admin-section="home"><span class="admin-nav-icon" aria-hidden="true">🏠</span>Home Services</button>
@@ -447,6 +448,8 @@
 
       <div class="admin-nav-title">Management</div>
       <nav class="admin-nav">
+        <button type="button" data-admin-section="providers"><span class="admin-nav-icon" aria-hidden="true">🤝</span>Providers</button>
+        <button type="button" data-admin-section="services"><span class="admin-nav-icon" aria-hidden="true">💲</span>Services &amp; prices</button>
         <button type="button" data-admin-section="drivers"><span class="admin-nav-icon" aria-hidden="true">👤</span>Drivers</button>
         <button type="button" data-admin-section="apps"><span class="admin-nav-icon" aria-hidden="true">📋</span>Applications</button>
         <button type="button" data-admin-section="users"><span class="admin-nav-icon" aria-hidden="true">◉</span>Users</button>
@@ -679,7 +682,8 @@
     var APP_STATUS = { "new": "Received", reviewing: "In review", approved: "Approved", rejected: "Not approved" };
     var PARTNER_TYPES = {
       driver: "Ride and delivery driver", towing: "Towing operator", roadside: "Roadside responder",
-      garage: "Garage or auto service", seller: "Marketplace seller", home: "Home service professional"
+      accident_scene: "Accident scene responder", garage: "Garage or auto service",
+      seller: "Marketplace seller", home: "Home service professional", learn: "MEI Learn instructor"
     };
 
     var FILTERS = {
@@ -741,7 +745,8 @@
       $("#viewData").hidden = !(name === "rides" || name === "drivers" || name === "apps");
       $("#viewSection").hidden = !(name === "users" || name === "payments" || name === "activity" || name === "settings" ||
         name === "delivery" || name === "towing" || name === "roadside" || name === "auto" ||
-        name === "marketplace" || name === "home" || name === "learn");
+        name === "marketplace" || name === "home" || name === "learn" ||
+        name === "accident" || name === "providers" || name === "services");
 
       // Update sidebar active state
       $$(".admin-nav button, .admin-nav a").forEach(function (btn) {
@@ -930,6 +935,9 @@
         delivery: "MEI Delivery",
         towing: "MEI Towing",
         roadside: "Roadside Assistance",
+        accident: "Accident Scene Management",
+        providers: "Service providers",
+        services: "Services and prices",
         auto: "MEI Auto",
         marketplace: "MEI Marketplace",
         home: "MEI Home Services",
@@ -939,6 +947,7 @@
       $("#viewTitle").textContent = title;
       var body = $("#viewBody");
       body.replaceChildren();
+      if (window.MEIAdmin && window.MEIAdmin.render(name, body, $("#viewTitle"))) return;
       if (name === "users") {
         body.appendChild(el("div", "empty-state", "User management coming soon."));
       } else if (name === "payments") {
@@ -1377,6 +1386,7 @@
     boot();
   })(window, document);
   </script>
+  <script src="js/admin-extra.js"></script>
 
 </body>
 </html>
