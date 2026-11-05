@@ -7,7 +7,7 @@
 
   // Sidebar section -> text matched against services.service_code / service_name
   var SERVICE_SECTIONS = {
-    delivery: "deliver", towing: "tow", roadside: "roadside",
+    delivery: "deliver", towing: "tow", roadside: "roadside", accident: "accident",
     auto: "auto", marketplace: "market", home: "home", learn: "learn"
   };
   var PAID = ["completed", "success", "successful", "paid", "succeeded"];
