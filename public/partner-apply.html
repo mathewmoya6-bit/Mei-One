@@ -1,937 +1,331 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#071a2f">
-  <meta name="description" content="Apply to become a MEI One service provider.">
-  <title>Become a Provider | MEI One</title>
-
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-
-  <style>
-    :root {
-      --navy: #071a2f;
-      --navy-800: #0b2138;
-      --navy-700: #102640;
-      --green: #00ff88;
-      --green-dark: #00d68f;
-      --green-dim: rgba(0, 255, 136, .1);
-      --white: #ffffff;
-      --muted: #aebdce;
-      --muted-dim: #7f95ab;
-      --border: #38516c;
-      --danger: #ff4b4b;
-      --danger-text: #ffaaaa;
-      --danger-bg: rgba(255, 75, 75, .12);
-      --success-text: #00ff88;
-      --success-bg: rgba(0, 255, 136, .1);
-      --info-text: #d5e2ef;
-      --info-bg: rgba(255, 255, 255, .07);
-      --transition: .2s cubic-bezier(.4, 0, .2, 1);
-      --radius: 12px;
-    }
-
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
-    html, body {
-      height: 100%;
-    }
-
-    body {
-      min-height: 100vh;
-      padding: 24px;
-      display: grid;
-      place-items: center;
-      background: var(--navy);
-      background-image:
-        radial-gradient(circle at 15% 10%, rgba(0, 255, 136, .12), transparent 40%),
-        radial-gradient(circle at 85% 90%, rgba(0, 214, 143, .08), transparent 40%);
-      background-attachment: fixed;
-      color: var(--white);
-      font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
-      line-height: 1.55;
-      -webkit-font-smoothing: antialiased;
-    }
-
-    /* ---------- CARD ---------- */
-    .card {
-      width: 100%;
-      max-width: 560px;
-      padding: 36px;
-      background: var(--navy-700);
-      border: 1px solid rgba(255, 255, 255, .08);
-      border-radius: 20px;
-      box-shadow:
-        0 24px 80px rgba(0, 0, 0, .4),
-        0 0 0 1px rgba(0, 255, 136, .03);
-      animation: slideUp .5s cubic-bezier(.16, 1, .3, 1);
-    }
-
-    @keyframes slideUp {
-      from { opacity: 0; transform: translateY(18px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    .logo {
-      display: inline-block;
-      font-size: 26px;
-      font-weight: 800;
-      color: var(--green);
-      letter-spacing: -1px;
-      text-decoration: none;
-      transition: opacity var(--transition);
-    }
-
-    .logo:hover { opacity: .85; }
-
-    .logo span {
-      color: var(--white);
-      font-weight: 500;
-    }
-
-    .eyebrow {
-      margin-top: 20px;
-      font-size: 12px;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 1.2px;
-      color: var(--muted-dim);
-    }
-
-    h1 {
-      font-size: 26px;
-      font-weight: 800;
-      letter-spacing: -.5px;
-      margin: 6px 0 8px;
-    }
-
-    .subtitle {
-      color: var(--muted);
-      font-size: 14.5px;
-      margin-bottom: 28px;
-    }
-
-    /* ---------- STEPS ---------- */
-    .steps {
-      display: flex;
-      gap: 8px;
-      margin-bottom: 28px;
-    }
-
-    .step {
-      flex: 1;
-      height: 4px;
-      border-radius: 99px;
-      background: rgba(255, 255, 255, .1);
-      transition: background var(--transition);
-    }
-
-    .step.active {
-      background: var(--green);
-    }
-
-    /* ---------- FORM ---------- */
-    .field {
-      margin-bottom: 18px;
-    }
-
-    .field-row {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 14px;
-    }
-
-    label {
-      display: block;
-      font-size: 13px;
-      font-weight: 600;
-      color: var(--muted);
-      margin-bottom: 8px;
-    }
-
-    label .optional {
-      color: var(--muted-dim);
-      font-weight: 400;
-    }
-
-    input,
-    select,
-    textarea {
-      display: block;
-      width: 100%;
-      padding: 14px 16px;
-      border: 1.5px solid var(--border);
-      border-radius: var(--radius);
-      outline: none;
-      background: rgba(7, 26, 47, .6);
-      color: var(--white);
-      font-size: 15px;
-      font-family: inherit;
-      transition: all var(--transition);
-    }
-
-    input::placeholder,
-    textarea::placeholder {
-      color: #5a738e;
-    }
-
-    input:hover:not(:disabled),
-    select:hover:not(:disabled),
-    textarea:hover:not(:disabled) {
-      border-color: #4a6a8a;
-    }
-
-    input:focus,
-    select:focus,
-    textarea:focus {
-      border-color: var(--green);
-      background: rgba(7, 26, 47, .9);
-      box-shadow: 0 0 0 4px var(--green-dim);
-    }
-
-    input.invalid,
-    select.invalid,
-    textarea.invalid {
-      border-color: var(--danger);
-      box-shadow: 0 0 0 4px rgba(255, 75, 75, .1);
-    }
-
-    select {
-      appearance: none;
-      background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2212%22%20height%3D%2212%22%20viewBox%3D%220%200%2012%2012%22%3E%3Cpath%20fill%3D%22%23aebdce%22%20d%3D%22M6%208L1%203h10z%22%2F%3E%3C%2Fsvg%3E");
-      background-repeat: no-repeat;
-      background-position: right 16px center;
-      padding-right: 40px;
-      cursor: pointer;
-      max-height: 320px;
-    }
-
-    select option,
-    select optgroup {
-      background: var(--navy-700);
-      color: var(--white);
-    }
-
-    select optgroup {
-      font-weight: 700;
-      font-style: normal;
-      color: var(--green);
-      padding: 6px 0;
-    }
-
-    select option {
-      font-weight: 400;
-      color: var(--white);
-      padding-left: 10px;
-    }
-
-    textarea {
-      resize: vertical;
-      min-height: 100px;
-      line-height: 1.5;
-    }
-
-    .field-hint {
-      font-size: 12px;
-      color: var(--muted-dim);
-      margin-top: 6px;
-    }
-
-    /* ---------- CHECKBOX ---------- */
-    .checkbox-field {
-      display: flex;
-      align-items: flex-start;
-      gap: 10px;
-      margin: 22px 0;
-    }
-
-    .checkbox-field input[type="checkbox"] {
-      width: 18px;
-      height: 18px;
-      flex-shrink: 0;
-      margin-top: 2px;
-      accent-color: var(--green);
-      cursor: pointer;
-      padding: 0;
-    }
-
-    .checkbox-field label {
-      margin: 0;
-      font-weight: 400;
-      font-size: 13.5px;
-      color: var(--muted);
-      cursor: pointer;
-    }
-
-    .checkbox-field a {
-      color: var(--green);
-      font-weight: 600;
-    }
-
-    /* ---------- BUTTONS ---------- */
-    .primary-btn {
-      width: 100%;
-      padding: 15px;
-      border: 0;
-      border-radius: var(--radius);
-      background: var(--green);
-      color: var(--navy);
-      font-weight: 800;
-      font-size: 15.5px;
-      font-family: inherit;
-      cursor: pointer;
-      transition: all var(--transition);
-      box-shadow: 0 4px 15px rgba(0, 255, 136, .25);
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
-      text-decoration: none;
-    }
-
-    .primary-btn:hover:not(:disabled) {
-      background: #5cffb0;
-      transform: translateY(-1px);
-      box-shadow: 0 6px 20px rgba(0, 255, 136, .35);
-    }
-
-    .primary-btn:active:not(:disabled) {
-      transform: translateY(0);
-    }
-
-    .primary-btn:disabled {
-      opacity: .6;
-      cursor: not-allowed;
-      box-shadow: none;
-    }
-
-    .spinner {
-      width: 16px;
-      height: 16px;
-      border: 2px solid rgba(7, 26, 47, .3);
-      border-top-color: var(--navy);
-      border-radius: 50%;
-      animation: spin .6s linear infinite;
-      display: none;
-    }
-
-    .primary-btn.loading .spinner {
-      display: inline-block;
-    }
-
-    @keyframes spin {
-      to { transform: rotate(360deg); }
-    }
-
-    /* ---------- MESSAGE ---------- */
-    #message {
-      display: none;
-      padding: 13px 15px;
-      border-radius: var(--radius);
-      font-size: 13.5px;
-      font-weight: 500;
-      overflow-wrap: anywhere;
-      line-height: 1.5;
-      margin-bottom: 18px;
-      animation: fadeIn .3s ease;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(-4px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    #message.error {
-      display: block;
-      background: var(--danger-bg);
-      color: var(--danger-text);
-      border: 1px solid rgba(255, 75, 75, .25);
-    }
-
-    #message.success {
-      display: block;
-      background: var(--success-bg);
-      color: var(--success-text);
-      border: 1px solid rgba(0, 255, 136, .25);
-    }
-
-    #message.info {
-      display: block;
-      background: var(--info-bg);
-      color: var(--info-text);
-      border: 1px solid rgba(255, 255, 255, .1);
-    }
-
-    /* ---------- SUCCESS STATE ---------- */
-    .success-panel {
-      display: none;
-      text-align: center;
-      padding: 20px 0;
-    }
-
-    .success-panel.visible {
-      display: block;
-      animation: fadeIn .4s ease;
-    }
-
-    .success-icon {
-      width: 64px;
-      height: 64px;
-      margin: 0 auto 20px;
-      border-radius: 50%;
-      background: var(--success-bg);
-      border: 2px solid var(--green);
-      display: grid;
-      place-items: center;
-      font-size: 30px;
-      color: var(--green);
-    }
-
-    .success-panel h2 {
-      font-size: 22px;
-      font-weight: 800;
-      margin-bottom: 10px;
-    }
-
-    .success-panel p {
-      color: var(--muted);
-      font-size: 14.5px;
-      margin-bottom: 24px;
-    }
-
-    /* ---------- LINKS ---------- */
-    .switch {
-      text-align: center;
-      font-size: 14px;
-      color: var(--muted);
-      margin-top: 18px;
-    }
-
-    a {
-      color: var(--green);
-      text-decoration: none;
-      font-weight: 600;
-      transition: color var(--transition);
-    }
-
-    a:hover {
-      color: #5cffb0;
-      text-decoration: underline;
-    }
-
-    .back-link {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      color: var(--muted-dim);
-      font-weight: 500;
-    }
-
-    .back-link:hover {
-      color: var(--white);
-      text-decoration: none;
-    }
-
-    /* ---------- ACCESSIBILITY ---------- */
-    :focus-visible {
-      outline: 2px solid var(--green);
-      outline-offset: 3px;
-    }
-
-    @media (max-width: 560px) {
-      body { padding: 16px; }
-      .card { padding: 28px 22px; }
-      h1 { font-size: 23px; }
-      .field-row { grid-template-columns: 1fr; }
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-      *,
-      *::before,
-      *::after {
-        animation-duration: .01ms !important;
-        animation-iteration-count: 1 !important;
-        transition-duration: .01ms !important;
-      }
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#071a2f">
+<meta name="description" content="Apply to become a MEI One service provider.">
+<title>Become a Provider | MEI One</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--navy:#071a2f;--navy-700:#102640;--green:#00ff88;--green-dim:rgba(0,255,136,.1);--white:#fff;--muted:#aebdce;--muted-dim:#7f95ab;--border:#38516c;--danger:#ff4b4b;--radius:12px;--t:.2s cubic-bezier(.4,0,.2,1)}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{min-height:100vh;padding:24px;display:grid;place-items:center;background:var(--navy);background-image:radial-gradient(circle at 15% 10%,rgba(0,255,136,.12),transparent 40%),radial-gradient(circle at 85% 90%,rgba(0,214,143,.08),transparent 40%);background-attachment:fixed;color:var(--white);font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;line-height:1.55;-webkit-font-smoothing:antialiased}
+.card{width:100%;max-width:560px;padding:36px;background:var(--navy-700);border:1px solid rgba(255,255,255,.08);border-radius:20px;box-shadow:0 24px 80px rgba(0,0,0,.4);animation:slideUp .5s cubic-bezier(.16,1,.3,1)}
+@keyframes slideUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+.logo{display:inline-block;font-size:26px;font-weight:800;color:var(--green);letter-spacing:-1px;text-decoration:none}
+.logo span{color:var(--white);font-weight:500}
+.eyebrow{margin-top:20px;font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:1.2px;color:var(--muted-dim)}
+h1{font-size:26px;font-weight:800;letter-spacing:-.5px;margin:6px 0 8px}
+.subtitle{color:var(--muted);font-size:14.5px;margin-bottom:28px}
+.steps{display:flex;gap:8px;margin-bottom:28px}
+.step{flex:1;height:4px;border-radius:99px;background:rgba(255,255,255,.1)}
+.step.active{background:var(--green)}
+.field{margin-bottom:18px}
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+label{display:block;font-size:13px;font-weight:600;color:var(--muted);margin-bottom:8px}
+label .optional{color:var(--muted-dim);font-weight:400}
+input,select,textarea{display:block;width:100%;padding:14px 16px;border:1.5px solid var(--border);border-radius:var(--radius);outline:none;background:rgba(7,26,47,.6);color:var(--white);font:inherit;font-size:15px;transition:all var(--t)}
+input::placeholder,textarea::placeholder{color:#5a738e}
+input:hover,select:hover,textarea:hover{border-color:#4a6a8a}
+input:focus,select:focus,textarea:focus{border-color:var(--green);background:rgba(7,26,47,.9);box-shadow:0 0 0 4px var(--green-dim)}
+.invalid{border-color:var(--danger)!important;box-shadow:0 0 0 4px rgba(255,75,75,.1)!important}
+select{appearance:none;background-image:url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2212%22%20height%3D%2212%22%20viewBox%3D%220%200%2012%2012%22%3E%3Cpath%20fill%3D%22%23aebdce%22%20d%3D%22M6%208L1%203h10z%22%2F%3E%3C%2Fsvg%3E");background-repeat:no-repeat;background-position:right 16px center;padding-right:40px;cursor:pointer}
+select option,select optgroup{background:var(--navy-700);color:var(--white)}
+select optgroup{font-weight:700;font-style:normal;color:var(--green)}
+select option{font-weight:400}
+textarea{resize:vertical;min-height:100px;line-height:1.5}
+.field-hint{font-size:12px;color:var(--muted-dim);margin-top:6px}
+.checkbox-field{display:flex;align-items:flex-start;gap:10px;margin:22px 0}
+.checkbox-field input{width:18px;height:18px;flex-shrink:0;margin-top:2px;accent-color:var(--green);cursor:pointer;padding:0}
+.checkbox-field label{margin:0;font-weight:400;font-size:13.5px;cursor:pointer}
+.primary-btn{width:100%;padding:15px;border:0;border-radius:var(--radius);background:var(--green);color:var(--navy);font:inherit;font-weight:800;font-size:15.5px;cursor:pointer;transition:all var(--t);box-shadow:0 4px 15px rgba(0,255,136,.25);display:inline-flex;align-items:center;justify-content:center;gap:10px;text-decoration:none}
+.primary-btn:hover:not(:disabled){background:#5cffb0;transform:translateY(-1px);text-decoration:none;color:var(--navy)}
+.primary-btn:disabled{opacity:.6;cursor:not-allowed;box-shadow:none}
+.spinner{width:16px;height:16px;border:2px solid rgba(7,26,47,.3);border-top-color:var(--navy);border-radius:50%;animation:spin .6s linear infinite;display:none}
+.primary-btn.loading .spinner{display:inline-block}
+@keyframes spin{to{transform:rotate(360deg)}}
+#message{display:none;padding:13px 15px;border-radius:var(--radius);font-size:13.5px;font-weight:500;overflow-wrap:anywhere;margin-bottom:18px}
+#message.error{display:block;background:rgba(255,75,75,.12);color:#ffaaaa;border:1px solid rgba(255,75,75,.25)}
+#message.success{display:block;background:var(--green-dim);color:var(--green);border:1px solid rgba(0,255,136,.25)}
+#message.info{display:block;background:rgba(255,255,255,.07);color:#d5e2ef;border:1px solid rgba(255,255,255,.1)}
+.success-panel{display:none;text-align:center;padding:20px 0}
+.success-panel.visible{display:block}
+.success-icon{width:64px;height:64px;margin:0 auto 20px;border-radius:50%;background:var(--green-dim);border:2px solid var(--green);display:grid;place-items:center;font-size:30px;color:var(--green)}
+.success-panel h2{font-size:22px;font-weight:800;margin-bottom:10px}
+.success-panel p{color:var(--muted);font-size:14.5px;margin-bottom:24px}
+.switch{text-align:center;font-size:14px;color:var(--muted);margin-top:18px}
+a{color:var(--green);text-decoration:none;font-weight:600}
+a:hover{color:#5cffb0;text-decoration:underline}
+.back-link{color:var(--muted-dim);font-weight:500}
+.back-link:hover{color:var(--white);text-decoration:none}
+:focus-visible{outline:2px solid var(--green);outline-offset:3px}
+@media(max-width:560px){body{padding:16px}.card{padding:28px 22px}h1{font-size:23px}.field-row{grid-template-columns:1fr}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}}
+</style>
 </head>
-
 <body>
+<main class="card">
+  <a class="logo" href="/index.html" aria-label="MEI One home">MEI <span>One</span></a>
+  <p class="eyebrow">Provider Application</p>
+  <h1>Become a Provider</h1>
+  <p class="subtitle">Join MEI One and start earning by offering your services to customers.</p>
+  <div class="steps" aria-hidden="true"><div class="step active"></div><div class="step active"></div><div class="step"></div></div>
+  <div id="message" role="status" aria-live="polite"></div>
 
-  <main class="card" role="main">
-
-    <a class="logo" href="/index.html" aria-label="MEI One home">
-      MEI <span>One</span>
-    </a>
-
-    <p class="eyebrow">Provider Application</p>
-
-    <h1>Become a Provider</h1>
-
-    <p class="subtitle">
-      Join MEI One and start earning by offering your services to customers.
-    </p>
-
-    <div class="steps" aria-hidden="true">
-      <div class="step active"></div>
-      <div class="step active"></div>
-      <div class="step"></div>
+  <form id="applyForm" novalidate>
+    <div class="field">
+      <label for="fullName">Full name</label>
+      <input id="fullName" type="text" placeholder="Jane Doe" autocomplete="name" spellcheck="false" required>
     </div>
 
-    <div id="message" role="status" aria-live="polite"></div>
-
-    <!-- FORM -->
-    <form id="applyForm" novalidate>
-
+    <div class="field-row">
       <div class="field">
-        <label for="fullName">Full name</label>
-        <input
-          id="fullName"
-          type="text"
-          placeholder="Jane Doe"
-          autocomplete="name"
-          spellcheck="false"
-          required
-        >
+        <label for="email">Email address</label>
+        <input id="email" type="email" placeholder="you@example.com" autocomplete="email" spellcheck="false" inputmode="email" required>
       </div>
-
-      <div class="field-row">
-        <div class="field">
-          <label for="email">Email address</label>
-          <input
-            id="email"
-            type="email"
-            placeholder="you@example.com"
-            autocomplete="email"
-            spellcheck="false"
-            inputmode="email"
-            required
-          >
-        </div>
-
-        <div class="field">
-          <label for="phone">Phone number</label>
-          <input
-            id="phone"
-            type="tel"
-            placeholder="+254 700 000 000"
-            autocomplete="tel"
-            inputmode="tel"
-            required
-          >
-        </div>
-      </div>
-
-      <div class="field-row">
-        <div class="field">
-          <label for="city">City</label>
-          <input
-            id="city"
-            type="text"
-            placeholder="Nairobi"
-            autocomplete="address-level2"
-            spellcheck="false"
-            required
-          >
-        </div>
-
-        <div class="field">
-          <label for="serviceType">Primary service</label>
-          <select id="serviceType" required>
-            <option value="" disabled selected>Select your main service</option>
-
-            <optgroup label="Transport &amp; Mobility">
-              <option value="ride-hailing">Ride Hailing / Taxi</option>
-              <option value="private-driver">Private Driver</option>
-              <option value="airport-transfer">Airport Transfer</option>
-              <option value="boda-boda">Boda Boda / Motorbike</option>
-              <option value="tuk-tuk">Tuk Tuk</option>
-              <option value="car-rental">Car Rental</option>
-              <option value="chauffeur">Chauffeur Service</option>
-              <option value="school-transport">School Transport</option>
-            </optgroup>
-
-            <optgroup label="Delivery &amp; Logistics">
-              <option value="food-delivery">Food Delivery</option>
-              <option value="package-delivery">Package / Parcel Delivery</option>
-              <option value="courier">Courier Service</option>
-              <option value="grocery-delivery">Grocery Delivery</option>
-              <option value="furniture-delivery">Furniture Delivery</option>
-              <option value="freight">Freight / Heavy Cargo</option>
-              <option value="moving">Moving Services</option>
-            </optgroup>
-
-            <optgroup label="Home Services">
-              <option value="cleaning">House Cleaning</option>
-              <option value="plumbing">Plumbing</option>
-              <option value="electrical">Electrical Work</option>
-              <option value="painting">Painting</option>
-              <option value="carpentry">Carpentry</option>
-              <option value="masonry">Masonry</option>
-              <option value="welding">Welding &amp; Metalwork</option>
-              <option value="ac-repair">AC &amp; Refrigeration</option>
-              <option value="appliance-repair">Appliance Repair</option>
-              <option value="pest-control">Pest Control</option>
-              <option value="landscaping">Landscaping &amp; Gardening</option>
-              <option value="pool-cleaning">Pool Cleaning</option>
-              <option value="security">Security Services</option>
-            </optgroup>
-
-            <optgroup label="Beauty &amp; Wellness">
-              <option value="hair-styling">Hair Styling / Barber</option>
-              <option value="makeup">Makeup Artist</option>
-              <option value="nails">Nail Technician</option>
-              <option value="massage">Massage Therapy</option>
-              <option value="spa">Spa Services</option>
-              <option value="fitness-trainer">Personal Trainer</option>
-              <option value="yoga">Yoga Instructor</option>
-            </optgroup>
-
-            <optgroup label="Professional Services">
-              <option value="tutoring">Tutoring / Education</option>
-              <option value="accounting">Accounting &amp; Bookkeeping</option>
-              <option value="legal">Legal Consulting</option>
-              <option value="it-support">IT Support</option>
-              <option value="web-design">Web / Graphic Design</option>
-              <option value="photography">Photography / Videography</option>
-              <option value="event-planning">Event Planning</option>
-              <option value="catering">Catering</option>
-              <option value="translation">Translation Services</option>
-            </optgroup>
-
-            <optgroup label="Health &amp; Care">
-              <option value="nursing">Home Nursing</option>
-              <option value="elderly-care">Elderly Care</option>
-              <option value="childcare">Childcare / Nanny</option>
-              <option value="physiotherapy">Physiotherapy</option>
-              <option value="pet-care">Pet Care / Grooming</option>
-            </optgroup>
-
-            <optgroup label="Other">
-              <option value="other">Other (please specify below)</option>
-            </optgroup>
-          </select>
-        </div>
-      </div>
-
       <div class="field">
-        <label for="experience">Years of experience</label>
-        <select id="experience" required>
-          <option value="" disabled selected>Select experience level</option>
-          <option value="0-1">Less than 1 year</option>
-          <option value="1-3">1 – 3 years</option>
-          <option value="3-5">3 – 5 years</option>
-          <option value="5-10">5 – 10 years</option>
-          <option value="10+">10+ years</option>
+        <label for="phone">Phone number</label>
+        <input id="phone" type="tel" placeholder="+254 700 000 000" autocomplete="tel" inputmode="tel" required>
+      </div>
+    </div>
+
+    <div class="field-row">
+      <div class="field">
+        <label for="city">City</label>
+        <input id="city" type="text" placeholder="Nairobi" autocomplete="address-level2" spellcheck="false" required>
+      </div>
+      <div class="field">
+        <label for="serviceType">Primary service</label>
+        <select id="serviceType" required>
+          <option value="" disabled selected>Select your main service</option>
+          <optgroup label="MEI Rides"><option value="rides">Rides (car, comfort, van, motorbike)</option></optgroup>
+          <optgroup label="MEI Delivery"><option value="delivery">Delivery (food, parcels, courier, moving)</option></optgroup>
+          <optgroup label="MEI Towing"><option value="towing">Vehicle recovery and towing</option></optgroup>
+          <optgroup label="Roadside Assistance"><option value="roadside">Roadside assistance</option></optgroup>
+          <optgroup label="Accident Scene Management"><option value="accident_scene">Traffic control, scene clearing, photo documentation</option></optgroup>
+          <optgroup label="MEI Auto"><option value="auto">Garage or auto service</option></optgroup>
+          <optgroup label="Marketplace"><option value="marketplace">Sell through MEI One</option></optgroup>
+          <optgroup label="Home Services">
+            <option value="home-plumbing">Plumbing &amp; Water Systems</option>
+            <option value="home-electrical">Electrical Services</option>
+            <option value="home-cleaning">House Cleaning</option>
+            <option value="home-laundry">Laundry &amp; Ironing</option>
+            <option value="home-carpentry">Carpentry &amp; Furniture</option>
+            <option value="home-painting">Painting &amp; Decoration</option>
+            <option value="home-masonry">Masonry, Tiling &amp; Construction</option>
+            <option value="home-other">Other home service</option>
+          </optgroup>
+          <optgroup label="MEI Learn"><option value="learn">Teach or train (MEI Learn)</option></optgroup>
         </select>
       </div>
-
-      <div class="field">
-        <label for="password">Create a password</label>
-        <input
-          id="password"
-          type="password"
-          placeholder="At least 8 characters"
-          autocomplete="new-password"
-          minlength="8"
-          required
-        >
-        <p class="field-hint">You'll use this password to sign in once approved.</p>
-      </div>
-
-      <div class="field">
-        <label for="bio">Tell us about yourself <span class="optional">(optional)</span></label>
-        <textarea
-          id="bio"
-          placeholder="Briefly describe your experience, skills, and why you want to join MEI One..."
-          maxlength="500"
-        ></textarea>
-        <p class="field-hint"><span id="bioCount">0</span> / 500 characters</p>
-      </div>
-
-      <div class="checkbox-field">
-        <input type="checkbox" id="terms" required>
-        <label for="terms">
-          I agree to the
-          <a href="/terms.html" target="_blank" rel="noopener">Terms of Service</a>
-          and
-          <a href="/privacy.html" target="_blank" rel="noopener">Privacy Policy</a>.
-        </label>
-      </div>
-
-      <button type="submit" class="primary-btn" id="submitBtn">
-        <span class="spinner" aria-hidden="true"></span>
-        <span id="submitBtnText">Submit Application</span>
-      </button>
-
-    </form>
-
-    <!-- SUCCESS PANEL -->
-    <div class="success-panel" id="successPanel" role="alert">
-      <div class="success-icon" aria-hidden="true">✓</div>
-      <h2>Application received!</h2>
-      <p>
-        Thank you for applying to become a MEI One provider. Our team will review
-        your application and get back to you within 2–3 business days. You'll be
-        able to sign in once your account is approved.
-      </p>
-      <a class="primary-btn" href="/provider-signin.html">Back to Sign In</a>
     </div>
 
-    <div class="switch">
-      Already have a provider account?
-      <a href="/provider-signin.html">Sign in</a>
+    <div class="field">
+      <label for="experience">Years of experience</label>
+      <select id="experience" required>
+        <option value="" disabled selected>Select experience level</option>
+        <option value="0-1">Less than 1 year</option>
+        <option value="1-3">1 – 3 years</option>
+        <option value="3-5">3 – 5 years</option>
+        <option value="5-10">5 – 10 years</option>
+        <option value="10+">10+ years</option>
+      </select>
     </div>
 
-    <div class="switch">
-      <a href="/index.html" class="back-link">
-        <span aria-hidden="true">←</span> Back to MEI One
-      </a>
+    <div class="field">
+      <label for="password">Create a password</label>
+      <input id="password" type="password" placeholder="At least 8 characters" autocomplete="new-password" minlength="8" required>
+      <p class="field-hint">You'll use this password to sign in once approved.</p>
     </div>
 
-  </main>
+    <div class="field">
+      <label for="bio">Tell us about yourself <span class="optional">(optional)</span></label>
+      <textarea id="bio" placeholder="Briefly describe your experience, skills, and why you want to join MEI One..." maxlength="500"></textarea>
+      <p class="field-hint"><span id="bioCount">0</span> / 500 characters</p>
+    </div>
 
-  <!-- Supabase JS -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <!-- MEI One shared config (creates window.MEI_SUPABASE) -->
-  <script src="/js/config.js"></script>
+    <div class="checkbox-field">
+      <input type="checkbox" id="terms" required>
+      <label for="terms">I agree to the <a href="/terms.html" target="_blank" rel="noopener">Terms of Service</a> and <a href="/privacy.html" target="_blank" rel="noopener">Privacy Policy</a>.</label>
+    </div>
 
-  <script>
-    "use strict";
+    <button type="submit" class="primary-btn" id="submitBtn">
+      <span class="spinner" aria-hidden="true"></span>
+      <span id="submitBtnText">Submit Application</span>
+    </button>
+  </form>
 
-    // Shared client created by /js/config.js
-    const sb = window.MEI_SUPABASE;
+  <div class="success-panel" id="successPanel" role="alert">
+    <div class="success-icon" aria-hidden="true">✓</div>
+    <h2>Application received!</h2>
+    <p>Thank you for applying to become a MEI One provider. Our team will review your application and get back to you within 2–3 business days. You'll be able to sign in once your account is approved.</p>
+    <a class="primary-btn" href="/provider-signin.html">Back to Sign In</a>
+  </div>
 
-    const form = document.getElementById("applyForm");
-    const submitBtn = document.getElementById("submitBtn");
-    const submitBtnText = document.getElementById("submitBtnText");
-    const message = document.getElementById("message");
-    const successPanel = document.getElementById("successPanel");
+  <div class="switch">Already have a provider account? <a href="/provider-signin.html">Sign in</a></div>
+  <div class="switch"><a href="/index.html" class="back-link"><span aria-hidden="true">←</span> Back to MEI One</a></div>
+</main>
 
-    const fullNameInput = document.getElementById("fullName");
-    const emailInput = document.getElementById("email");
-    const phoneInput = document.getElementById("phone");
-    const cityInput = document.getElementById("city");
-    const serviceTypeInput = document.getElementById("serviceType");
-    const experienceInput = document.getElementById("experience");
-    const passwordInput = document.getElementById("password");
-    const bioInput = document.getElementById("bio");
-    const termsInput = document.getElementById("terms");
-    const bioCount = document.getElementById("bioCount");
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="/js/config.js"></script>
+<script>
+"use strict";
 
-    // --- UI helpers ---
-    function showMessage(text, type = "info") {
-      message.textContent = text;
-      message.className = type;
-      message.scrollIntoView({ behavior: "smooth", block: "nearest" });
-    }
+const sb = window.MEI_SUPABASE;
+const $ = (id) => document.getElementById(id);
 
-    function clearMessage() {
-      message.textContent = "";
-      message.className = "";
-    }
+const form = $("applyForm"), submitBtn = $("submitBtn"), submitBtnText = $("submitBtnText");
+const message = $("message"), successPanel = $("successPanel");
+const f = {
+  name: $("fullName"), email: $("email"), phone: $("phone"), city: $("city"),
+  service: $("serviceType"), experience: $("experience"), password: $("password"),
+  bio: $("bio"), terms: $("terms")
+};
 
-    function setLoading(loading) {
-      submitBtn.disabled = loading;
-      submitBtn.classList.toggle("loading", loading);
-      submitBtnText.textContent = loading ? "Submitting..." : "Submit Application";
-    }
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-    function markInvalid(input, invalid) {
-      input.classList.toggle("invalid", invalid);
-    }
+// Admin dashboard partner types:
+// driver, towing, roadside, accident_scene, garage, seller, home, learn
+function toPartnerType(service) {
+  if (service.startsWith("home-")) return "home";
+  return ({
+    rides: "driver", delivery: "driver", towing: "towing", roadside: "roadside",
+    accident_scene: "accident_scene", auto: "garage", marketplace: "seller", learn: "learn"
+  })[service] || "home";
+}
 
-    // --- Bio counter ---
-    bioInput.addEventListener("input", () => {
-      bioCount.textContent = bioInput.value.length;
-    });
+// "3-5" -> 3, "10+" -> 10
+function toExperienceYears(range) {
+  const n = parseInt(String(range), 10);
+  return Number.isFinite(n) ? n : null;
+}
 
-    // --- Clear invalid on input ---
-    [
-      fullNameInput, emailInput, phoneInput, cityInput,
-      serviceTypeInput, experienceInput, passwordInput, termsInput
-    ].forEach((el) => {
-      el.addEventListener("input", () => markInvalid(el, false));
-      el.addEventListener("change", () => markInvalid(el, false));
-    });
+function showMessage(text, type = "info") {
+  message.textContent = text;
+  message.className = type;
+  message.scrollIntoView({ behavior: "smooth", block: "nearest" });
+}
+function clearMessage() { message.textContent = ""; message.className = ""; }
+function setLoading(on) {
+  submitBtn.disabled = on;
+  submitBtn.classList.toggle("loading", on);
+  submitBtnText.textContent = on ? "Submitting..." : "Submit Application";
+}
 
-    // --- Email regex ---
-    const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+f.bio.addEventListener("input", () => { $("bioCount").textContent = f.bio.value.length; });
+Object.values(f).forEach((el) => {
+  ["input", "change"].forEach((ev) => el.addEventListener(ev, () => el.classList.remove("invalid")));
+});
 
-    // --- Friendly error mapping ---
-    function translateError(error) {
-      const msg = String(error?.message || "").toLowerCase();
-      if (msg.includes("user already registered") || msg.includes("already been registered")) {
-        return "An account with this email already exists. Try signing in instead.";
-      }
-      if (msg.includes("password should be")) {
-        return "Your password is too weak. Please choose a stronger password.";
-      }
-      if (msg.includes("rate limit") || msg.includes("too many")) {
-        return "Too many attempts. Please wait a moment and try again.";
-      }
-      if (msg.includes("duplicate") || msg.includes("unique")) {
-        return "An application with this email has already been submitted.";
-      }
-      return error?.message || "Something went wrong. Please try again.";
-    }
+function translateError(error) {
+  const msg = String(error?.message || "").toLowerCase();
+  if (msg.includes("already registered") || msg.includes("already been registered"))
+    return "An account with this email already exists. Try signing in instead.";
+  if (msg.includes("password should be"))
+    return "Your password is too weak. Please choose a stronger password.";
+  if (msg.includes("rate limit") || msg.includes("too many"))
+    return "Too many attempts. Please wait a moment and try again.";
+  if (msg.includes("duplicate") || msg.includes("unique"))
+    return "An application with this email has already been submitted.";
+  return error?.message || "Something went wrong. Please try again.";
+}
 
-    // --- Validation ---
-    function validateForm() {
-      const errors = [];
-      let firstInvalid = null;
+function validate() {
+  const errors = [];
+  let first = null;
+  const fail = (el, msg) => { el.classList.add("invalid"); errors.push(msg); first = first || el; };
 
-      function fail(input, msg) {
-        markInvalid(input, true);
-        errors.push(msg);
-        if (!firstInvalid) firstInvalid = input;
-      }
+  const email = f.email.value.trim();
+  const phone = f.phone.value.trim();
 
-      const name = fullNameInput.value.trim();
-      const email = emailInput.value.trim().toLowerCase();
-      const phone = phoneInput.value.trim();
-      const city = cityInput.value.trim();
-      const service = serviceTypeInput.value;
-      const experience = experienceInput.value;
-      const password = passwordInput.value;
+  if (!f.name.value.trim()) fail(f.name, "Please enter your full name.");
+  if (!email) fail(f.email, "Please enter your email address.");
+  else if (!EMAIL_RE.test(email)) fail(f.email, "Please enter a valid email address.");
+  if (!phone) fail(f.phone, "Please enter your phone number.");
+  else if (phone.replace(/\D/g, "").length < 7) fail(f.phone, "Please enter a valid phone number.");
+  if (!f.city.value.trim()) fail(f.city, "Please enter your city.");
+  if (!f.service.value) fail(f.service, "Please select your primary service.");
+  if (!f.experience.value) fail(f.experience, "Please select your experience level.");
+  if (!f.password.value) fail(f.password, "Please create a password.");
+  else if (f.password.value.length < 8) fail(f.password, "Password must be at least 8 characters.");
+  if (!f.terms.checked) fail(f.terms, "Please accept the Terms of Service and Privacy Policy.");
 
-      if (!name) fail(fullNameInput, "Please enter your full name.");
-      if (!email) fail(emailInput, "Please enter your email address.");
-      else if (!EMAIL_RE.test(email)) fail(emailInput, "Please enter a valid email address.");
-      if (!phone) fail(phoneInput, "Please enter your phone number.");
-      else if (phone.replace(/\D/g, "").length < 7) fail(phoneInput, "Please enter a valid phone number.");
-      if (!city) fail(cityInput, "Please enter your city.");
-      if (!service) fail(serviceTypeInput, "Please select your primary service.");
-      if (!experience) fail(experienceInput, "Please select your experience level.");
-      if (!password) fail(passwordInput, "Please create a password.");
-      else if (password.length < 8) fail(passwordInput, "Password must be at least 8 characters.");
-      if (!termsInput.checked) fail(termsInput, "Please accept the Terms of Service and Privacy Policy.");
+  return { errors, first };
+}
 
-      return { errors, firstInvalid };
-    }
+if (!sb) {
+  showMessage("MEI One could not connect to Supabase. Check your configuration and script loading order.", "error");
+  submitBtn.disabled = true;
+}
 
-    // --- Supabase availability ---
-    if (!sb) {
-      showMessage(
-        "MEI One could not connect to Supabase. Check your configuration and script loading order.",
-        "error"
-      );
-      submitBtn.disabled = true;
-    }
+form.addEventListener("submit", async (event) => {
+  event.preventDefault();
+  if (!sb) return;
+  clearMessage();
 
-    // --- Submit ---
-    form.addEventListener("submit", async function (event) {
-      event.preventDefault();
-      if (!sb) return;
+  const { errors, first } = validate();
+  if (errors.length) {
+    showMessage(errors[0], "error");
+    first?.focus();
+    return;
+  }
 
-      clearMessage();
+  setLoading(true);
+  showMessage("Submitting your application...", "info");
 
-      const { errors, firstInvalid } = validateForm();
-      if (errors.length) {
-        showMessage(errors[0], "error");
-        if (firstInvalid) firstInvalid.focus();
-        return;
-      }
+  const fullName = f.name.value.trim();
+  const email = f.email.value.trim().toLowerCase();
+  const phone = f.phone.value.trim();
+  const city = f.city.value.trim();
+  const bio = f.bio.value.trim();
+  const serviceLabel = f.service.options[f.service.selectedIndex].textContent.trim();
+  const experienceLabel = f.experience.options[f.experience.selectedIndex].textContent.trim();
+  const details = "Service: " + serviceLabel + " | Experience: " + experienceLabel + (bio ? "\n\n" + bio : "");
 
-      setLoading(true);
-      showMessage("Creating your provider account...", "info");
-
-      const fullName = fullNameInput.value.trim();
-      const email = emailInput.value.trim().toLowerCase();
-      const phone = phoneInput.value.trim();
-      const city = cityInput.value.trim();
-      const serviceType = serviceTypeInput.value;
-      const experience = experienceInput.value;
-      const password = passwordInput.value;
-      const bio = bioInput.value.trim() || null;
-
-      try {
-        // 1. Create the auth user with provider metadata.
-        const { data: signUpData, error: signUpError } = await sb.auth.signUp({
-          email,
-          password,
-          options: {
-            data: {
-              full_name: fullName,
-              role: "provider",
-              phone,
-              city,
-              service_type: serviceType,
-              experience
-            },
-            emailRedirectTo:
-              window.location.origin + "/provider-signin.html"
-          }
-        });
-
-        if (signUpError) throw signUpError;
-        if (!signUpData?.user) {
-          throw new Error("Account creation failed. Please try again.");
-        }
-
-        const userId = signUpData.user.id;
-
-        // 2. Persist the application record.
-        const { error: appError } = await sb
-          .from("provider_applications")
-          .insert({
-            user_id: userId,
-            full_name: fullName,
-            email,
-            phone,
-            city,
-            service_type: serviceType,
-            experience,
-            bio,
-            status: "pending"
-          });
-
-        if (appError) throw appError;
-
-        // 3. Create the driver record (inactive until approved).
-        const { error: driverError } = await sb
-          .from("drivers")
-          .upsert(
-            {
-              id: userId,
-              name: fullName,
-              email,
-              phone,
-              city,
-              service_type: serviceType,
-              experience,
-              active: false
-            },
-            { onConflict: "id" }
-          );
-
-        if (driverError) {
-          console.warn("Driver row could not be created:", driverError.message);
-        }
-
-        // 4. Done — swap the form for the success panel.
-        form.style.display = "none";
-        const steps = document.querySelector(".steps");
-        if (steps) steps.style.display = "none";
-        clearMessage();
-        successPanel.classList.add("visible");
-        successPanel.scrollIntoView({ behavior: "smooth", block: "nearest" });
-
-      } catch (error) {
-        console.error("Provider application error:", error);
-        showMessage(translateError(error), "error");
-        setLoading(false);
+  try {
+    // 1. Create the login account.
+    const { data, error: signUpError } = await sb.auth.signUp({
+      email,
+      password: f.password.value,
+      options: {
+        data: { full_name: fullName, role: "provider", phone, city },
+        emailRedirectTo: window.location.origin + "/provider-signin.html"
       }
     });
-  </script>
+    if (signUpError) throw signUpError;
+    if (!data?.user) throw new Error("Account creation failed. Please try again.");
 
+    // 2. Send the application to the admin queue.
+    const { error: appError } = await sb.from("partner_applications").insert({
+      user_id: data.user.id,
+      full_name: fullName,
+      business_name: null,
+      partner_type: toPartnerType(f.service.value),
+      location: city,
+      phone,
+      email,
+      experience_years: toExperienceYears(f.experience.value),
+      details,
+      status: "new"
+    });
+    if (appError) throw appError;
+
+    // 3. Success. Admins create the driver/provider record on approval.
+    form.style.display = "none";
+    document.querySelector(".steps").style.display = "none";
+    clearMessage();
+    successPanel.classList.add("visible");
+    successPanel.scrollIntoView({ behavior: "smooth", block: "nearest" });
+  } catch (error) {
+    console.error("Provider application error:", error);
+    showMessage(translateError(error), "error");
+    setLoading(false);
+  }
+});
+</script>
 </body>
 </html>
