@@ -1,0 +1,1291 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#071a2f">
+  <meta name="robots" content="noindex,nofollow">
+
+  <title>Provider Dashboard | MEI One</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="/js/config.js"></script>
+
+  <style>
+    :root {
+      --navy: #071a2f;
+      --navy2: #102b49;
+      --green: #00d68f;
+      --green-dark: #00ad73;
+      --bg: #f4f7fa;
+      --text: #172b40;
+      --muted: #64748b;
+      --border: #e2e8f0;
+      --danger: #dc2626;
+      --shadow: 0 8px 24px rgba(7,26,47,.08);
+      --radius: 15px;
+      font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+
+    [hidden] { display: none !important; }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    button { font: inherit; cursor: pointer; }
+
+    button:disabled {
+      opacity: .55;
+      cursor: not-allowed;
+    }
+
+    .topbar {
+      background: var(--navy);
+      color: white;
+      padding: 15px 5%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 15px;
+      box-shadow: 0 4px 12px #0002;
+    }
+
+    .brand {
+      font-size: 22px;
+      font-weight: 800;
+      letter-spacing: -.7px;
+    }
+
+    .brand span { color: var(--green); }
+
+    .logout {
+      background: transparent;
+      border: 1px solid #ffffff45;
+      color: white;
+      padding: 9px 15px;
+      border-radius: 9px;
+      font-weight: 600;
+    }
+
+    .container {
+      width: min(1000px, 92%);
+      margin: 28px auto 55px;
+    }
+
+    .status-card {
+      background: linear-gradient(135deg, var(--navy), var(--navy2));
+      color: white;
+      border-radius: var(--radius);
+      padding: 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 15px;
+      flex-wrap: wrap;
+      box-shadow: var(--shadow);
+      margin-bottom: 20px;
+    }
+
+    .status-card h1 {
+      margin: 0 0 7px;
+      font-size: 22px;
+      overflow-wrap: anywhere;
+    }
+
+    .status-card p {
+      margin: 0;
+      font-size: 13px;
+      color: #c5d4e2;
+      line-height: 1.5;
+    }
+
+    .toggle {
+      background: #334155;
+      color: white;
+      border: 0;
+      padding: 13px 22px;
+      border-radius: 30px;
+      font-weight: 800;
+      font-size: 14px;
+      min-width: 125px;
+    }
+
+    .toggle.on {
+      background: var(--green);
+      color: var(--navy);
+    }
+
+    .summary {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 13px;
+      margin-bottom: 25px;
+    }
+
+    .stat {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 13px;
+      padding: 17px;
+    }
+
+    .stat span {
+      display: block;
+      font-size: 12px;
+      color: var(--muted);
+      margin-bottom: 7px;
+    }
+
+    .stat strong {
+      font-size: 25px;
+      color: var(--navy);
+    }
+
+    h2 {
+      font-size: 18px;
+      margin: 26px 0 12px;
+      font-weight: 800;
+      color: var(--navy);
+    }
+
+    .list {
+      display: grid;
+      gap: 14px;
+    }
+
+    .card {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 18px;
+      box-shadow: 0 2px 8px #071a2f08;
+      min-width: 0;
+    }
+
+    .card h3 {
+      margin: 0 0 4px;
+      font-size: 15px;
+      color: var(--navy);
+    }
+
+    .card p {
+      margin: 7px 0;
+      font-size: 13px;
+      line-height: 1.55;
+      overflow-wrap: anywhere;
+      white-space: pre-line;
+    }
+
+    .card p strong { color: var(--muted); }
+
+    .top {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: flex-start;
+    }
+
+    .badge {
+      background: #eafaf4;
+      color: #047857;
+      border-radius: 20px;
+      padding: 5px 10px;
+      font-size: 11px;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .badge.warn {
+      background: #fef9c3;
+      color: #a16207;
+    }
+
+    .badge.danger {
+      background: #fee2e2;
+      color: #b91c1c;
+    }
+
+    .actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 14px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      border: 0;
+      border-radius: 10px;
+      padding: 11px 16px;
+      font-size: 13px;
+      font-weight: 750;
+    }
+
+    .btn.go {
+      background: var(--green);
+      color: var(--navy);
+    }
+
+    .btn.no {
+      background: white;
+      border: 1px solid var(--border);
+      color: var(--text);
+    }
+
+    .btn.map {
+      background: #eff6ff;
+      color: #1d4ed8;
+      text-decoration: none;
+      display: inline-block;
+    }
+
+    .msg {
+      padding: 12px 14px;
+      border-radius: 10px;
+      font-size: 13px;
+      margin: 12px 0;
+      display: none;
+      line-height: 1.5;
+      overflow-wrap: anywhere;
+    }
+
+    .msg.show { display: block; }
+
+    .msg.error {
+      background: #fef2f2;
+      color: #b91c1c;
+      border: 1px solid #fecaca;
+    }
+
+    .msg.info {
+      background: #eff6ff;
+      color: #1d4ed8;
+      border: 1px solid #bfdbfe;
+    }
+
+    .msg.success {
+      background: #ecfdf5;
+      color: #047857;
+      border: 1px solid #a7f3d0;
+    }
+
+    .empty {
+      text-align: center;
+      color: var(--muted);
+      padding: 28px 18px;
+      background: white;
+      border: 1px dashed #cbd5e1;
+      border-radius: var(--radius);
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    .section-note {
+      font-size: 12px;
+      color: var(--muted);
+      margin: -5px 0 12px;
+    }
+
+    footer {
+      text-align: center;
+      color: var(--muted);
+      font-size: 11px;
+      padding: 20px;
+    }
+
+    @media (max-width: 650px) {
+      .summary { grid-template-columns: 1fr 1fr; }
+      .status-card { padding: 19px; }
+      .status-card h1 { font-size: 19px; }
+      .container { margin-top: 18px; }
+      .card { padding: 15px; }
+    }
+
+    @media (max-width: 380px) {
+      .summary { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+
+<body>
+
+<header class="topbar">
+  <div class="brand">MEI <span>One</span> · Provider</div>
+  <button class="logout" id="logoutBtn" type="button">Sign out</button>
+</header>
+
+<main class="container">
+
+  <section class="status-card">
+    <div>
+      <h1>Hi, <span id="pname">Provider</span></h1>
+      <p id="pstate">Loading your provider account...</p>
+    </div>
+
+    <button class="toggle" id="toggleBtn" type="button" disabled>
+      Go online
+    </button>
+  </section>
+
+  <div id="msg" class="msg" role="status" aria-live="polite"></div>
+
+  <section class="summary">
+    <div class="stat">
+      <span>New offers</span>
+      <strong id="offerCount">0</strong>
+    </div>
+
+    <div class="stat">
+      <span>Active jobs</span>
+      <strong id="jobCount">0</strong>
+    </div>
+
+    <div class="stat">
+      <span>Provider status</span>
+      <strong id="accountStatus" style="font-size:16px">Loading</strong>
+    </div>
+  </section>
+
+  <h2>New requests near you</h2>
+  <p class="section-note">
+    Offers are shown when your account is online and eligible for the requested service.
+  </p>
+  <div id="offers" class="list">
+    <div class="empty">Loading offers...</div>
+  </div>
+
+  <h2>My active jobs</h2>
+  <p class="section-note">
+    Manage requests you have accepted.
+  </p>
+  <div id="jobs" class="list">
+    <div class="empty">Loading active jobs...</div>
+  </div>
+
+</main>
+
+<footer>
+  MEI One Provider Portal · Drive Safe, Arrive Alive.
+</footer>
+
+<script>
+(() => {
+  "use strict";
+
+  const SIGNIN_PATH = "/provider-signin.html";
+  // Refresh provider GPS and heartbeat every 60 seconds while online.
+  const PING_MS = 60000;
+  const POLL_MS = 10000;
+
+  const $ = id => document.getElementById(id);
+
+  let sb = null;
+  let me = null;
+  let provider = null;
+
+  let online = false;
+  let pos = null;
+  let watchId = null;
+
+  let pingTimer = null;
+  let clockTimer = null;
+  let pollTimer = null;
+  let channel = null;
+
+  let offers = [];
+  let jobs = [];
+
+  let busy = false;
+
+  const esc = value =>
+    String(value ?? "").replace(/[&<>"']/g, char => ({
+      "&": "&amp;",
+      "<": "&lt;",
+      ">": "&gt;",
+      '"': "&quot;",
+      "'": "&#39;"
+    })[char]);
+
+  function say(message, type = "info") {
+    const el = $("msg");
+    el.textContent = message;
+    el.className = "msg show " + type;
+  }
+
+  function clearSay() {
+    $("msg").textContent = "";
+    $("msg").className = "msg";
+  }
+
+  function showEmpty(element, message) {
+    $(element).innerHTML =
+      '<div class="empty">' + esc(message) + '</div>';
+  }
+
+  function setButtonLoading(button, loading, originalText) {
+    if (!button) return;
+    button.disabled = loading;
+    button.textContent = loading ? "Please wait..." : originalText;
+  }
+
+  function renderState() {
+    $("toggleBtn").textContent = online ? "Go offline" : "Go online";
+    $("toggleBtn").classList.toggle("on", online);
+
+    $("pstate").textContent = online
+      ? "You are online. Keep this page open to receive nearby requests."
+      : "You are offline. Go online to receive nearby requests.";
+
+    $("accountStatus").textContent = "Approved";
+  }
+
+  function stopWatch() {
+    if (watchId !== null && navigator.geolocation) {
+      navigator.geolocation.clearWatch(watchId);
+    }
+
+    watchId = null;
+    pos = null;
+  }
+
+  // --------------------------------------------------
+  // PROVIDER LOCATION
+  // --------------------------------------------------
+
+  function startWatch() {
+    if (!navigator.geolocation) {
+      return Promise.reject(
+        new Error("This device does not support location services.")
+      );
+    }
+
+    return new Promise((resolve, reject) => {
+      let resolved = false;
+
+      watchId = navigator.geolocation.watchPosition(
+        position => {
+          const first = !resolved;
+
+          pos = {
+            lat: position.coords.latitude,
+            lng: position.coords.longitude
+          };
+
+          if (first) {
+            resolved = true;
+            resolve();
+          }
+        },
+        error => {
+          if (!resolved) {
+            resolved = true;
+
+            reject(new Error(
+              error.code === 1
+                ? "Location permission denied. Allow location access to receive nearby requests."
+                : "Could not obtain your location. Check your device settings and try again."
+            ));
+          } else {
+            console.error("Location update failed:", error);
+            say("Your location could not be refreshed.", "error");
+          }
+        },
+        {
+          enableHighAccuracy: true,
+          maximumAge: 10000,
+          timeout: 15000
+        }
+      );
+    });
+  }
+
+  async function ping(flag) {
+    if (!pos) {
+      throw new Error("Your location is not available.");
+    }
+
+    // Always resolve the active Supabase user directly. Do not depend on
+    // the dashboard's cached `me` variable for location updates.
+    const { data: authData, error: authError } = await sb.auth.getUser();
+
+    if (authError) {
+      console.error("Authentication lookup failed:", authError);
+      throw new Error(
+        "Could not verify your provider login: " + authError.message
+      );
+    }
+
+    const user = authData?.user;
+
+    if (!user?.id) {
+      throw new Error(
+        "Your session has expired or you are not signed in. Please sign in again."
+      );
+    }
+
+    // Keep the dashboard's user reference synchronized with Supabase Auth.
+    me = user;
+
+    const { data, error } = await sb
+      .from("provider_profiles")
+      .update({
+        lat: pos.lat,
+        lng: pos.lng,
+        last_seen_at: new Date().toISOString(),
+        is_online: Boolean(flag)
+      })
+      .eq("user_id", user.id)
+      .select("user_id")
+      .maybeSingle();
+
+    if (error) {
+      console.error("Provider location update error:", error);
+      throw new Error(
+        "Could not update your provider location: " + error.message
+      );
+    }
+
+    if (!data) {
+      throw new Error(
+        "No provider location profile is linked to your signed-in account. Contact MEI One support."
+      );
+    }
+  }
+
+  async function goOnline() {
+    if (busy) return;
+
+    busy = true;
+    $("toggleBtn").disabled = true;
+    clearSay();
+
+    try {
+      await startWatch();
+      await ping(true);
+
+      online = true;
+
+      clearInterval(pingTimer);
+
+      pingTimer = setInterval(async () => {
+        if (!online || !pos) return;
+
+        try {
+          await ping(true);
+        } catch (error) {
+          console.error("Location heartbeat failed:", error);
+          say("Location heartbeat failed: " + error.message, "error");
+        }
+      }, PING_MS);
+
+      await loadOffers();
+
+      say("You are online. Your GPS location and availability will refresh every 60 seconds.", "success");
+
+    } catch (error) {
+      online = false;
+      stopWatch();
+
+      console.error("Could not go online:", error);
+      say(error.message || "Could not activate online status.", "error");
+
+    } finally {
+      busy = false;
+      $("toggleBtn").disabled = false;
+      renderState();
+    }
+  }
+
+  async function goOffline() {
+    if (busy) return;
+
+    busy = true;
+    $("toggleBtn").disabled = true;
+
+    try {
+      if (pos) {
+        await ping(false);
+      }
+
+      online = false;
+
+      clearInterval(pingTimer);
+      pingTimer = null;
+
+      stopWatch();
+
+      offers = [];
+      renderOffers();
+
+      say("You are now offline.", "success");
+
+    } catch (error) {
+      console.error("Could not go offline:", error);
+      say(
+        "Could not confirm offline status: " + error.message +
+        ". Please try again.",
+        "error"
+      );
+
+    } finally {
+      busy = false;
+      $("toggleBtn").disabled = false;
+      renderState();
+    }
+  }
+
+  // --------------------------------------------------
+  // PROVIDER PROFILE
+  // Uses existing public.partners table
+  // --------------------------------------------------
+
+  async function loadProvider() {
+    const { data, error } = await sb
+      .from("partners")
+      .select("id,user_id,type,business_name,phone,status,is_online")
+      .eq("user_id", me.id)
+      .maybeSingle();
+
+    if (error) {
+      throw new Error(
+        "Unable to load your provider profile: " + error.message
+      );
+    }
+
+    if (!data) {
+      $("accountStatus").textContent = "Not found";
+
+      document.querySelector(".container").innerHTML =
+        '<div class="empty">' +
+        '<strong>No provider profile found.</strong><br>' +
+        'Your account has not been registered as an approved MEI One provider. ' +
+        'Contact MEI One support.' +
+        '</div>';
+
+      return false;
+    }
+
+    provider = data;
+
+    if (String(provider.status || "").toLowerCase() !== "approved") {
+      $("accountStatus").textContent = "Pending";
+
+      document.querySelector(".container").innerHTML =
+        '<div class="empty">' +
+        '<strong>Your provider account is awaiting approval.</strong><br>' +
+        'You cannot receive service requests until your account is approved.' +
+        '</div>';
+
+      return false;
+    }
+
+    $("pname").textContent =
+      provider.business_name ||
+      (me.email || "Provider").split("@")[0];
+
+    $("accountStatus").textContent = "Approved";
+
+    // Do not assume that a previously saved online flag means
+    // this browser still has an active location watch.
+    online = false;
+
+    renderState();
+
+    if (provider.is_online) {
+      say(
+        "Your account was previously marked online. Tap Go online to restart location sharing on this device.",
+        "info"
+      );
+    }
+
+    return true;
+  }
+
+  // --------------------------------------------------
+  // OFFERS
+  // --------------------------------------------------
+
+  async function loadOffers() {
+    if (!online) return;
+
+    const { data, error } = await sb
+      .from("request_offers")
+      .select(`
+        id,
+        request_id,
+        distance_km,
+        expires_at,
+        service_requests (
+          id,
+          title,
+          details,
+          pickup,
+          dropoff,
+          notes,
+          service,
+          customer_name,
+          latitude,
+          longitude
+        )
+      `)
+      .eq("provider_id", me.id)
+      .eq("status", "pending")
+      .gt("expires_at", new Date().toISOString())
+      .order("distance_km", { ascending: true });
+
+    if (error) {
+      console.error("Offer loading error:", error);
+      say("Could not load offers: " + error.message, "error");
+      return;
+    }
+
+    offers = data || [];
+    renderOffers();
+  }
+
+  function secondsLeft(offer) {
+    return Math.max(
+      0,
+      Math.round(
+        (new Date(offer.expires_at).getTime() - Date.now()) / 1000
+      )
+    );
+  }
+
+  function renderOffers() {
+    $("offerCount").textContent = offers.filter(
+      offer => secondsLeft(offer) > 0
+    ).length;
+
+    const live = offers.filter(offer => secondsLeft(offer) > 0);
+
+    if (!online) {
+      showEmpty("offers", "Go online to receive nearby requests.");
+      return;
+    }
+
+    if (!live.length) {
+      showEmpty(
+        "offers",
+        "No requests right now. New offers will appear here."
+      );
+      return;
+    }
+
+    $("offers").innerHTML = live.map(offer => {
+      const request = offer.service_requests || {};
+
+      return `
+        <article class="card" data-offer="${esc(offer.id)}">
+
+          <div class="top">
+            <div>
+              <h3>${esc(request.title || request.service || "Service request")}</h3>
+              <p style="margin:4px 0;color:var(--muted)">
+                ${esc(offer.distance_km ?? "—")} km away
+              </p>
+            </div>
+
+            <span class="badge warn" data-timer="${esc(offer.id)}">
+              ${secondsLeft(offer)}s
+            </span>
+          </div>
+
+          ${request.service
+            ? `<p><strong>Service:</strong> ${esc(request.service)}</p>`
+            : ""}
+
+          ${request.customer_name
+            ? `<p><strong>Customer:</strong> ${esc(request.customer_name)}</p>`
+            : ""}
+
+          ${request.pickup
+            ? `<p><strong>Location / pickup:</strong> ${esc(request.pickup)}</p>`
+            : ""}
+
+          ${request.dropoff
+            ? `<p><strong>Destination:</strong> ${esc(request.dropoff)}</p>`
+            : ""}
+
+          ${request.details
+            ? `<p><strong>Details:</strong> ${esc(request.details)}</p>`
+            : ""}
+
+          <div class="actions">
+            <button
+              class="btn go"
+              data-accept="${esc(offer.request_id)}"
+              type="button">
+              Accept request
+            </button>
+
+            <button
+              class="btn no"
+              data-decline="${esc(offer.id)}"
+              type="button">
+              Decline
+            </button>
+          </div>
+
+        </article>
+      `;
+    }).join("");
+  }
+
+  function tick() {
+    let expired = false;
+
+    offers.forEach(offer => {
+      const element = document.querySelector(
+        `[data-timer="${offer.id}"]`
+      );
+
+      const seconds = secondsLeft(offer);
+
+      if (element) {
+        element.textContent = seconds + "s";
+      }
+
+      if (seconds <= 0) expired = true;
+    });
+
+    if (expired) {
+      offers = offers.filter(offer => secondsLeft(offer) > 0);
+      renderOffers();
+    }
+  }
+
+  async function acceptRequest(requestId, button) {
+    if (!requestId || button.disabled) return;
+
+    button.disabled = true;
+    button.textContent = "Accepting...";
+
+    const { error } = await sb.rpc("accept_request", {
+      p_request_id: requestId
+    });
+
+    if (error) {
+      console.error("Accept request error:", error);
+      say("Could not accept request: " + error.message, "error");
+
+      button.disabled = false;
+      button.textContent = "Accept request";
+    } else {
+      say("Request accepted successfully.", "success");
+    }
+
+    await Promise.all([
+      loadOffers(),
+      loadJobs()
+    ]);
+  }
+
+  async function declineOffer(offerId, button) {
+    if (!offerId || button.disabled) return;
+
+    button.disabled = true;
+    button.textContent = "Declining...";
+
+    const { error } = await sb.rpc("decline_offer", {
+      p_offer_id: offerId
+    });
+
+    if (error) {
+      console.error("Decline offer error:", error);
+      say("Could not decline offer: " + error.message, "error");
+
+      button.disabled = false;
+      button.textContent = "Decline";
+    } else {
+      say("Offer declined.", "success");
+    }
+
+    await loadOffers();
+  }
+
+  // --------------------------------------------------
+  // ACTIVE JOBS
+  // --------------------------------------------------
+
+  async function loadJobs() {
+    const { data, error } = await sb
+      .from("service_requests")
+      .select(`
+        id,
+        title,
+        details,
+        pickup,
+        dropoff,
+        notes,
+        status,
+        customer_name,
+        latitude,
+        longitude
+      `)
+      .eq("provider_id", me.id)
+      .in("status", ["accepted", "in_progress"])
+      .order("accepted_at", { ascending: false });
+
+    if (error) {
+      console.error("Active jobs error:", error);
+      say("Could not load active jobs: " + error.message, "error");
+      return;
+    }
+
+    jobs = data || [];
+
+    $("jobCount").textContent = jobs.length;
+
+    renderJobs();
+  }
+
+  function renderJobs() {
+    if (!jobs.length) {
+      showEmpty("jobs", "You currently have no active jobs.");
+      return;
+    }
+
+    $("jobs").innerHTML = jobs.map(request => {
+      const hasCoordinates =
+        request.latitude != null &&
+        request.longitude != null;
+
+      const navigation = hasCoordinates
+        ? `<a
+             class="btn map"
+             target="_blank"
+             rel="noopener noreferrer"
+             href="https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(request.latitude + "," + request.longitude)}">
+             Navigate
+           </a>`
+        : "";
+
+      const nextAction = request.status === "accepted"
+        ? `<button
+             class="btn go"
+             data-status="in_progress"
+             data-id="${esc(request.id)}"
+             type="button">
+             Start job
+           </button>`
+        : `<button
+             class="btn go"
+             data-status="completed"
+             data-id="${esc(request.id)}"
+             type="button">
+             Mark completed
+           </button>`;
+
+      return `
+        <article class="card">
+
+          <div class="top">
+            <div>
+              <h3>${esc(request.title || "Service request")}</h3>
+              <p style="margin:4px 0;color:var(--muted)">
+                Customer: ${esc(request.customer_name || "—")}
+              </p>
+            </div>
+
+            <span class="badge">
+              ${esc(String(request.status || "").replace(/_/g, " "))}
+            </span>
+          </div>
+
+          ${request.pickup
+            ? `<p><strong>Location / pickup:</strong> ${esc(request.pickup)}</p>`
+            : ""}
+
+          ${request.dropoff
+            ? `<p><strong>Destination:</strong> ${esc(request.dropoff)}</p>`
+            : ""}
+
+          ${request.details
+            ? `<p><strong>Details:</strong> ${esc(request.details)}</p>`
+            : ""}
+
+          ${request.notes
+            ? `<p><strong>Notes:</strong> ${esc(request.notes)}</p>`
+            : ""}
+
+          <div class="actions">
+            ${navigation}
+            ${nextAction}
+          </div>
+
+        </article>
+      `;
+    }).join("");
+  }
+
+  async function updateJobStatus(id, status, button) {
+    if (!id || button.disabled) return;
+
+    const originalText = button.textContent;
+
+    button.disabled = true;
+    button.textContent = "Updating...";
+
+    const { error } = await sb.rpc("set_request_status", {
+      p_request_id: id,
+      p_status: status
+    });
+
+    if (error) {
+      console.error("Job status error:", error);
+      say("Could not update job: " + error.message, "error");
+
+      button.disabled = false;
+      button.textContent = originalText;
+
+      return;
+    }
+
+    say("Job status updated successfully.", "success");
+
+    await loadJobs();
+  }
+
+  // --------------------------------------------------
+  // REALTIME
+  // --------------------------------------------------
+
+  function startRealtime() {
+    if (channel) {
+      sb.removeChannel(channel);
+      channel = null;
+    }
+
+    channel = sb.channel("mei-provider-" + me.id)
+
+      .on(
+        "postgres_changes",
+        {
+          event: "*",
+          schema: "public",
+          table: "request_offers",
+          filter: "provider_id=eq." + me.id
+        },
+        () => {
+          if (online) loadOffers();
+        }
+      )
+
+      .on(
+        "postgres_changes",
+        {
+          event: "*",
+          schema: "public",
+          table: "service_requests",
+          filter: "provider_id=eq." + me.id
+        },
+        () => {
+          loadJobs();
+        }
+      )
+
+      .subscribe(status => {
+        if (status === "CHANNEL_ERROR") {
+          console.error("Provider realtime channel error.");
+        }
+      });
+  }
+
+  // --------------------------------------------------
+  // SIGN OUT
+  // --------------------------------------------------
+
+  async function signOut() {
+    $("logoutBtn").disabled = true;
+
+    try {
+      if (online && pos) {
+        try {
+          await ping(false);
+        } catch (error) {
+          console.error("Offline notification failed:", error);
+        }
+      }
+
+      online = false;
+
+      clearInterval(pingTimer);
+      clearInterval(clockTimer);
+      clearInterval(pollTimer);
+
+      stopWatch();
+
+      if (channel) {
+        await sb.removeChannel(channel);
+        channel = null;
+      }
+
+      await sb.auth.signOut();
+
+      window.location.replace(SIGNIN_PATH);
+
+    } catch (error) {
+      console.error("Sign out error:", error);
+      say("Could not sign out: " + error.message, "error");
+      $("logoutBtn").disabled = false;
+    }
+  }
+
+  // --------------------------------------------------
+  // INITIALIZATION
+  // --------------------------------------------------
+
+  async function init() {
+    if (
+      !window.supabase ||
+      !window.MEI_SUPABASE ||
+      typeof window.MEI_SUPABASE.from !== "function"
+    ) {
+      document.body.innerHTML = `
+        <main style="max-width:700px;margin:60px auto;padding:25px;font-family:Arial">
+          <h2>Configuration error</h2>
+          <p>Supabase did not initialize. Check /js/config.js and the Supabase JavaScript library.</p>
+        </main>
+      `;
+      return;
+    }
+
+    sb = window.MEI_SUPABASE;
+
+    const { data: sessionData, error: sessionError } =
+      await sb.auth.getSession();
+
+    if (sessionError) throw sessionError;
+
+    if (!sessionData?.session) {
+      window.location.replace(SIGNIN_PATH);
+      return;
+    }
+
+    const { data: userData, error: userError } =
+      await sb.auth.getUser();
+
+    if (userError || !userData?.user) {
+      window.location.replace(SIGNIN_PATH);
+      return;
+    }
+
+    me = userData.user;
+
+    const profileLoaded = await loadProvider();
+
+    if (!profileLoaded) return;
+
+    await loadJobs();
+
+    startRealtime();
+
+    clockTimer = setInterval(tick, 1000);
+
+    pollTimer = setInterval(() => {
+      if (online && !document.hidden) {
+        loadOffers();
+      }
+
+      if (!document.hidden) {
+        loadJobs();
+      }
+    }, POLL_MS);
+
+    $("toggleBtn").disabled = false;
+
+    renderState();
+  }
+
+  // --------------------------------------------------
+  // EVENT LISTENERS
+  // --------------------------------------------------
+
+  $("toggleBtn").addEventListener("click", () => {
+    if (online) {
+      goOffline();
+    } else {
+      goOnline();
+    }
+  });
+
+  $("offers").addEventListener("click", event => {
+    const acceptButton = event.target.closest("[data-accept]");
+
+    if (acceptButton) {
+      acceptRequest(
+        acceptButton.dataset.accept,
+        acceptButton
+      );
+      return;
+    }
+
+    const declineButton = event.target.closest("[data-decline]");
+
+    if (declineButton) {
+      declineOffer(
+        declineButton.dataset.decline,
+        declineButton
+      );
+    }
+  });
+
+  $("jobs").addEventListener("click", event => {
+    const button = event.target.closest("[data-status]");
+
+    if (!button) return;
+
+    updateJobStatus(
+      button.dataset.id,
+      button.dataset.status,
+      button
+    );
+  });
+
+  $("logoutBtn").addEventListener("click", signOut);
+
+  window.addEventListener("pagehide", () => {
+    clearInterval(pingTimer);
+    clearInterval(clockTimer);
+    clearInterval(pollTimer);
+
+    stopWatch();
+
+    if (channel && sb) {
+      sb.removeChannel(channel);
+    }
+  });
+
+  document.addEventListener("visibilitychange", () => {
+    if (!document.hidden) {
+      if (online) loadOffers();
+      loadJobs();
+    }
+  });
+
+  init().catch(error => {
+    console.error("Provider dashboard initialization error:", error);
+
+    say(
+      "Could not start provider dashboard: " +
+      (error?.message || String(error)),
+      "error"
+    );
+  });
+
+})();
+</script>
+
+</body>
+</html>
