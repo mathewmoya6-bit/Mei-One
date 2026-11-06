@@ -258,9 +258,19 @@
     }
 
     const user = authData?.user;
-    if (!user?.id) throw new Error("Your session has expired or you are not signed in. Please sign in again.");
+
+    if (!user?.id) {
+      throw new Error("Your session has expired or you are not signed in. Please sign in again.");
+    }
 
     me = user;
+
+    console.log("MEI ONE HEARTBEAT DEBUG:", {
+      authenticated_user_id: user.id,
+      authenticated_email: user.email,
+      provider_profile_user_id: provider?.user_id,
+      current_online_flag: flag
+    });
 
     const { data, error } = await sb
       .from("provider_profiles")
@@ -354,6 +364,13 @@
       .maybeSingle();
 
     if (error) throw new Error("Unable to load your provider profile: " + error.message);
+
+    console.log("MEI ONE PARTNER LOOKUP:", {
+      authenticated_user_id: me.id,
+      partner_found: Boolean(data),
+      partner_user_id: data?.user_id,
+      partner_status: data?.status
+    });
 
     if (!data) {
       $("accountStatus").textContent = "Not found";
@@ -722,7 +739,20 @@
 
     me = userData.user;
 
+    console.log("MEI ONE INITIAL AUTH DEBUG:", {
+      authenticated_user_id: me.id,
+      authenticated_email: me.email
+    });
+
     const profileLoaded = await loadProvider();
+
+    console.log("MEI ONE PROVIDER PROFILE DEBUG:", {
+      profile_loaded: profileLoaded,
+      authenticated_user_id: me.id,
+      provider_user_id: provider?.user_id,
+      provider_status: provider?.status
+    });
+
     if (!profileLoaded) return;
 
     await loadJobs();
