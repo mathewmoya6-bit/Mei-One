@@ -788,21 +788,51 @@ dialog::backdrop{background:#071a2f88}
   async function loadJobs() {
     if (jobsLoading || !me) return;
     jobsLoading = true;
+
     try {
-    const { data, error } = await sb
-      .from("service_requests")
-      .select(`
-        id, title, details, pickup, dropoff, notes, status, service, request_type,
-        customer_name, latitude, longitude, dropoff_latitude, dropoff_longitude,
-        accepted_at, created_at, total_fare`)
-      .eq("provider_id", me.id)
-      .in("status", ["accepted", "en_route", "arrived", "in_progress"])
-      .order("accepted_at", { ascending: false });
-    if (error) { banner("jobs", "error", "Could not load jobs: " + error.message); return; }
-    jobs = data || [];
-    $("jobCount").textContent = jobs.length;
-    $("jobSub").textContent = jobs.length ? "manage below" : "no active jobs";
-    renderJobs();
+      const { data, error } = await sb
+        .from("service_requests")
+        .select(`
+          id, title, details, pickup, dropoff, notes, status, service, request_type,
+          customer_name, latitude, longitude, dropoff_latitude, dropoff_longitude,
+          accepted_at, created_at,
+          service_request_financials (
+            customer_total,
+            financial_status,
+            currency
+          )
+        `)
+        .eq("provider_id", me.id)
+        .in("status", ["accepted", "en_route", "arrived", "in_progress"])
+        .order("accepted_at", { ascending: false });
+
+      if (error) {
+        console.error("loadJobs:", error);
+        banner("jobs", "error", "Could not load jobs: " + error.message);
+        return;
+      }
+
+      jobs = (data || []).map((r) => {
+        const financial = Array.isArray(r.service_request_financials)
+          ? r.service_request_financials[0] || null
+          : r.service_request_financials || null;
+
+        return {
+          ...r,
+          financial,
+          total_fare: financial?.customer_total ?? null,
+          fare_currency: financial?.currency || "KES",
+          fare_status: financial?.financial_status || null
+        };
+      });
+
+      $("jobCount").textContent = jobs.length;
+      $("jobSub").textContent = jobs.length
+        ? "manage below"
+        : "no active jobs";
+
+      renderJobs();
+
     } finally {
       jobsLoading = false;
     }
@@ -841,6 +871,14 @@ dialog::backdrop{background:#071a2f88}
       const cancel = `<button class="btn no" data-cancel="${esc(r.id)}" type="button">Cancel / issue</button>`;
 
       const ref = "#MEI-" + String(r.id).slice(0, 8).toUpperCase();
+
+      const fareDisplay = r.total_fare != null
+        ? `<p><strong>Customer bill:</strong> ${esc(r.fare_currency)} ${Number(r.total_fare).toLocaleString("en-KE", {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+          })}</p>`
+        : `<p><strong>Customer bill:</strong> Not yet calculated</p>`;
+
       return `
         <article class="card" data-job="${esc(r.id)}">
           <div class="top">
@@ -849,6 +887,7 @@ dialog::backdrop{background:#071a2f88}
               <h3>${esc(r.title || label || "Service request")}</h3>
               <div class="ref">${esc(ref)}</div>
               <p style="margin:4px 0;color:var(--muted)">Customer: ${esc(r.customer_name || "—")}</p>
+              ${fareDisplay}
             </div>
             <span class="badge ${r.status === "in_progress" ? "info" : ""}">${esc(String(r.status || "").replace(/_/g, " "))}</span>
           </div>
