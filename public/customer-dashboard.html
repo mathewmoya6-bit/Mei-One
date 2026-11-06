@@ -111,15 +111,20 @@
   function clearMessage(id){const el=$(id);if(el){el.textContent="";el.className="message";}}
   function dateText(value){if(!value)return"Date unavailable";const d=new Date(value);return Number.isNaN(d.getTime())?"Date unavailable":d.toLocaleString();}
   function serviceCode(service){return String(service?.service_code||"").trim().toLowerCase();}
+  // Effective service key. An "auto" row that is really the garage service is treated as "garage" for forms and display.
+  function svcKey(service){const raw=serviceCode(service);if(raw==="auto"){const text=(service?.service_name||"")+" "+(service?.description||"");if(/garage|repair|maintenance|servic/i.test(text)&&!/valuat|inspect|auto-d/i.test(text))return"garage";}return raw;}
+  const ORDER=["rides","delivery","towing","roadside","accident_scene","garage","valuation","home","marketplace","learn"];
+  // Guarantees all ten MEI One services show, even if a row is missing or inactive in the database.
+  function ensureAllServices(list){const rows=list.slice();const have=new Set(rows.map(r=>cfgKey(svcKey(r))));ORDER.forEach(key=>{if(have.has(key))return;const m=META[key];rows.push({id:"builtin:"+key,service_code:key,service_name:m.name,description:m.text,icon:m.icon,is_active:true,builtin:true});});const rank=r=>{const i=ORDER.indexOf(cfgKey(svcKey(r)));return i<0?99:i;};return rows.map((r,i)=>[r,i]).sort((a,b)=>rank(a[0])-rank(b[0])||a[1]-b[1]).map(x=>x[0]);}
   function findService(id){return services.find(s=>String(s.id)===String(id));}
   // Maps any service_code (e.g. "home_services", "mei_towing") to a form/location config key.
   function cfgKey(code){if(code==="auto")return"valuation";if(FORM_CONFIG[code]||META[code])return code;if(/valuat|auto-?d|inspect/.test(code))return"valuation";if(/learn|training|driving|drive.?africa/.test(code))return"learn";if(/garage|mechanic|auto.?repair/.test(code))return"garage";if(/accident/.test(code))return"accident_scene";if(/home/.test(code))return"home";if(/tow|recover/.test(code))return"towing";if(/road/.test(code))return"roadside";if(/market|shop/.test(code))return"marketplace";if(/ride|taxi/.test(code))return"rides";if(/deliver|courier|parcel/.test(code))return"delivery";return"default";}
   function externalUrl(code){if(EXTERNAL_SERVICES[code])return EXTERNAL_SERVICES[code];const key=cfgKey(code);return key==="valuation"?EXTERNAL_SERVICES.auto:key==="learn"?EXTERNAL_SERVICES.learn:null;}
-  function displayName(service){return META[cfgKey(serviceCode(service))]?.name||service?.service_name||service?.service_code||"Service";}
+  function displayName(service){return META[cfgKey(svcKey(service))]?.name||service?.service_name||service?.service_code||"Service";}
   function formConfig(code){return FORM_CONFIG[cfgKey(code)];}
   function locSpec(code){return LOC_CONFIG[cfgKey(code)]||LOC_CONFIG.default;}
   // Database sub-services first; otherwise the built-in list for that service.
-  function serviceSubservices(service){const rows=subservices.filter(row=>String(row.service_id)===String(service?.id));if(rows.length)return rows;const list=FALLBACK_SUBS[cfgKey(serviceCode(service))]||[];return list.map(name=>({id:"fb:"+name,service_id:service?.id,subservice_name:name}));}
+  function serviceSubservices(service){const rows=subservices.filter(row=>String(row.service_id)===String(service?.id));if(rows.length)return rows;const list=FALLBACK_SUBS[cfgKey(svcKey(service))]||[];return list.map(name=>({id:"fb:"+name,service_id:service?.id,subservice_name:name}));}
   function subserviceName(row){return row.subservice_name||row.subservice_code||"Service category";}
 
   // Location input and optional GPS capture.
@@ -177,14 +182,14 @@
     $("servicesGrid").innerHTML='<div class="loading">Loading services from database…</div>';clearMessage("serviceMessage");
     const {data,error}=await sb.from("services").select("id,service_code,service_name,description,icon,route,is_active,display_order,base_price,price_per_km,commission_pct").eq("is_active",true).order("display_order",{ascending:true});
     if(error){console.error("Services query failed:",error);$("servicesGrid").innerHTML='<div class="empty">Unable to load services: '+escapeHTML(error.message)+'</div>';return;}
-    services=Array.isArray(data)?data:[];await loadSubservices();populateServiceSelect();renderServices();
+    services=ensureAllServices(Array.isArray(data)?data:[]);await loadSubservices();populateServiceSelect();renderServices();
   }
   async function loadSubservices(){subservices=[];if(!services.length)return;const {data,error}=await sb.from("service_subservices").select("id,service_id,subservice_code,subservice_name,description,icon,is_active,display_order").eq("is_active",true).order("display_order",{ascending:true});if(error){console.warn("Subservice query failed:",error);message("serviceMessage","Main services loaded. Some service categories are temporarily unavailable.","info");return;}subservices=Array.isArray(data)?data:[];}
   function renderServices(){const query=$("serviceSearch").value.trim().toLowerCase();const visible=services.filter(service=>[displayName(service),service.service_name,service.service_code,service.description].join(" ").toLowerCase().includes(query));if(!visible.length){$("servicesGrid").innerHTML='<div class="empty">No services match your search.</div>';return;}
-    $("servicesGrid").innerHTML=visible.map(service=>{const code=serviceCode(service),meta=META[cfgKey(code)]||{},isExternal=!!externalUrl(code);return `<article class="service-card"><div class="service-icon">${escapeHTML(meta.icon||service.icon||"✦")}</div><h3>${escapeHTML(displayName(service))}</h3><p>${escapeHTML(meta.text||SERVICE_TEXT[code]||service.description||"Explore this MEI One service and submit a request.")}</p><div class="service-meta">${escapeHTML(code.toUpperCase())}</div><button class="primary-btn full-btn service-action" type="button" data-id="${escapeHTML(service.id)}">${isExternal?"Open service":"Request service"}</button></article>`;}).join("");
-    document.querySelectorAll(".service-action").forEach(button=>button.addEventListener("click",()=>{const service=findService(button.dataset.id);if(!service)return;if(!externalLink(serviceCode(service)))openRequestForm(service);}));
+    $("servicesGrid").innerHTML=visible.map(service=>{const code=svcKey(service),meta=META[cfgKey(code)]||{},isExternal=!!externalUrl(code);return `<article class="service-card"><div class="service-icon">${escapeHTML(meta.icon||service.icon||"✦")}</div><h3>${escapeHTML(displayName(service))}</h3><p>${escapeHTML(meta.text||SERVICE_TEXT[code]||service.description||"Explore this MEI One service and submit a request.")}</p><div class="service-meta">${escapeHTML(code.toUpperCase())}</div><button class="primary-btn full-btn service-action" type="button" data-id="${escapeHTML(service.id)}">${isExternal?"Open service":"Request service"}</button></article>`;}).join("");
+    document.querySelectorAll(".service-action").forEach(button=>button.addEventListener("click",()=>{const service=findService(button.dataset.id);if(!service)return;if(!externalLink(svcKey(service)))openRequestForm(service);}));
   }
-  function populateServiceSelect(){const select=$("selectedService");const previous=select.value;select.innerHTML=services.filter(service=>!externalUrl(serviceCode(service))).map(service=>`<option value="${escapeHTML(service.id)}">${escapeHTML(displayName(service))}</option>`).join("");if(services.some(service=>String(service.id)===previous))select.value=previous;select.disabled=!services.length;}
+  function populateServiceSelect(){const select=$("selectedService");const previous=select.value;select.innerHTML=services.filter(service=>!externalUrl(svcKey(service))).map(service=>`<option value="${escapeHTML(service.id)}">${escapeHTML(displayName(service))}</option>`).join("");if(services.some(service=>String(service.id)===previous))select.value=previous;select.disabled=!services.length;}
   // Reset first, then set the service selected on the service card.
   function openRequestForm(service){$("requestForm").reset();populateServiceSelect();$("selectedService").value=String(service.id);clearMessage("requestMessage");updateRequestFields();showTab("request");}
 
@@ -199,7 +204,7 @@
   function updateRequestFields(){
     const service=findService($("selectedService").value);
     if(!service){$("locFrom").innerHTML="";$("locTo").hidden=true;$("extraFields").innerHTML="";$("svcBanner").hidden=true;return;}
-    const code=serviceCode(service),cfg=formConfig(code);autoTitleValue="";
+    const code=svcKey(service),cfg=formConfig(code);autoTitleValue="";
     renderLocations(code);
     $("svcBanner").hidden=!cfg.banner;if(cfg.banner)$("svcBanner").innerHTML=`<div class="ic">${escapeHTML(cfg.banner.icon)}</div><div><strong>${escapeHTML(cfg.banner.title)}</strong><span>${escapeHTML(cfg.banner.text)}</span></div>`;
     $("detailsLabel").textContent=cfg.details||"Description / instructions";$("detailsHint").textContent=cfg.detailsHint||"";$("requestDetails").placeholder=cfg.detailsHint||"";$("requestDetails").required=cfg.detailsRequired!==false;
@@ -214,13 +219,13 @@
     $("subPills").querySelectorAll(".sub-pill").forEach(pill=>pill.addEventListener("click",()=>{$("selectedSubservice").value=pill.dataset.sub;onSubChange();}));
     syncTitle(service,cfg);
   }
-  function onSubChange(){const service=findService($("selectedService").value);if(!service)return;const chosen=$("selectedSubservice").value;document.querySelectorAll(".sub-pill").forEach(pill=>pill.classList.toggle("on",pill.dataset.sub===chosen));syncTitle(service,formConfig(serviceCode(service)));}
+  function onSubChange(){const service=findService($("selectedService").value);if(!service)return;const chosen=$("selectedSubservice").value;document.querySelectorAll(".sub-pill").forEach(pill=>pill.classList.toggle("on",pill.dataset.sub===chosen));syncTitle(service,formConfig(svcKey(service)));}
 
   // Submit one request using the authenticated user's UUID as user_id.
   async function submitRequest(event){
     event.preventDefault();if(submitting)return;clearMessage("requestMessage");
     const service=findService($("selectedService").value);if(!service){message("requestMessage","Please choose a valid service.","error");return;}
-    const code=serviceCode(service);if(externalUrl(code)){message("requestMessage","This service opens in its dedicated MEI platform.","info");return;}
+    const code=svcKey(service);if(externalUrl(code)){message("requestMessage","This service opens in its dedicated MEI platform.","info");return;}
     const cfg=formConfig(code),locCfg=locSpec(code),title=$("requestTitle").value.trim()||((service.service_name||"Service")+" request"),description=$("requestDetails").value.trim(),pickup=composeLoc("lf"),dropoff=locCfg.to?composeLoc("lt"):"",notes=$("requestNotes").value.trim();
     if(!$("subserviceField").hidden&&cfg.subRequired&&!$("selectedSubservice").value){message("requestMessage","Please choose "+(cfg.subLabel||"a service category").toLowerCase()+".","error");$("selectedSubservice").focus();return;}
     if(!pickup){message("requestMessage","Please enter the service location or pickup point.","error");$("lf_main").focus();return;}if(locCfg.to&&!dropoff){message("requestMessage","Please enter the destination.","error");$("lt_main").focus();return;}if(cfg.detailsRequired!==false&&!description){message("requestMessage","Please provide the required description.","error");$("requestDetails").focus();return;}
@@ -232,12 +237,12 @@
       let from=geo.from;if(!from){btn.textContent="Checking location…";from=await geocodeLoc("lf");}let to=null;if(locCfg.to){btn.textContent="Checking destination…";to=await geocodeLoc("lt");}
       btn.textContent="Verifying account…";const authenticatedUser=await getVerifiedUser();currentUser=authenticatedUser;
       const customerName=currentProfile?.full_name||authenticatedUser.user_metadata?.full_name||authenticatedUser.user_metadata?.name||"Customer";
-      const payload={user_id:authenticatedUser.id,service_id:service.id,request_type:code,service:code,status:"pending",provider_id:null,title,details:details||null,notes:notes||null,pickup,dropoff:dropoff||null,pickup_address:pickup,destination_address:dropoff||null,customer_name:customerName,latitude:from?.lat??null,longitude:from?.lng??null,dropoff_latitude:to?.lat??null,dropoff_longitude:to?.lng??null};
+      const payload={user_id:authenticatedUser.id,service_id:service.builtin?null:service.id,request_type:code,service:code,status:"pending",provider_id:null,title,details:details||null,notes:notes||null,pickup,dropoff:dropoff||null,pickup_address:pickup,destination_address:dropoff||null,customer_name:customerName,latitude:from?.lat??null,longitude:from?.lng??null,dropoff_latitude:to?.lat??null,dropoff_longitude:to?.lng??null};
       btn.textContent="Submitting request…";const {data,error}=await sb.from("service_requests").insert(payload).select("id").single();
       if(error){console.error("Customer request INSERT rejected:",{code:error.code,message:error.message,details:error.details,hint:error.hint,userId:authenticatedUser.id,payload});throw error;}
       message("requestMessage","Your request has been submitted successfully. MEI One will now look for an eligible provider.","success");
       $("requestForm").reset();updateRequestFields();await loadRequests(true);setTimeout(()=>showTab("requests"),900);
-    }catch(error){console.error("Customer request submission failed:",error);let explanation=error?.message||"Unknown error";if(error?.code==="42501"||/row-level security/i.test(explanation))explanation+=" Check the INSERT policies on public.service_requests and confirm that user_id equals auth.uid().";if(error?.code==="42703"||/column .* does not exist/i.test(explanation))explanation+=" The submitted column names do not match the current database schema.";message("requestMessage","Could not submit your request: "+explanation,"error");}
+    }catch(error){console.error("Customer request submission failed:",error);let explanation=error?.message||"Unknown error";if(error?.code==="42501"||/row-level security/i.test(explanation))explanation+=" Check the INSERT policies on public.service_requests and confirm that user_id equals auth.uid().";if(service.builtin&&(error?.code==="23502"||error?.code==="23503"))explanation+=" The \""+displayName(service)+"\" service is not in the services table yet. Add it there (see the SQL provided).";if(error?.code==="42703"||/column .* does not exist/i.test(explanation))explanation+=" The submitted column names do not match the current database schema.";message("requestMessage","Could not submit your request: "+explanation,"error");}
     finally{submitting=false;btn.disabled=false;btn.textContent="Submit Service Request";}
   }
 
