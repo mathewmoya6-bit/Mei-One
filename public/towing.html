@@ -1,24 +1,249 @@
 <!DOCTYPE html>
-<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="description" content="Broken down, stuck or damaged? Share your location and vehicle details to request recovery and towing assistance."><meta name="theme-color" content="#102b25">
-<title>Towing — MEI One</title><link rel="stylesheet" href="mei-service.css"></head>
-<body>
-<header class="site-header"><div class="container navbar">
-<a class="brand" href="index.html" aria-label="MEI One home"><span class="brand-mark">M</span><span>MEI ONE<small>EVERYTHING, CONNECTED</small></span></a>
-<div class="nav-actions"><a class="btn btn-ghost" href="index.html#services">← All services</a><a class="btn btn-outline" href="customer-signin.html">Sign In</a><a class="btn btn-primary" href="customer-signin.html?service=towing">Get Started ↗</a></div>
-</div></header>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#071A2F">
+  <meta name="description" content="Request recovery and towing when your vehicle breaks down, gets stuck or is damaged. Share your location and destination and a provider can respond.">
+  <title>Towing | MEI One</title>
+  <link rel="icon" href="assets/favicon.png" type="image/png">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+
+<body class="site">
+
+<header class="site-header">
+  <div class="nav-container">
+    <a href="index.html" class="brand">
+      <span class="brand-mark">M</span>
+      <span class="brand-name">MEI <strong>One</strong></span>
+    </a>
+    <button id="mobileMenuButton" class="mobile-menu-button" type="button" aria-label="Open navigation" aria-expanded="false" aria-controls="mainNavigation">
+      <span></span><span></span><span></span>
+    </button>
+    <nav id="mainNavigation" class="main-navigation">
+      <a href="index.html">Home</a>
+      <a href="index.html#services">Services</a>
+      <a href="index.html#how-it-works">How It Works</a>
+      <a href="index.html#business">Business</a>
+      <div class="nav-actions">
+        <button class="btn btn-outline" type="button" data-modal="login">Log In</button>
+        <button class="btn btn-primary" type="button" data-modal="signup">Get Started</button>
+      </div>
+    </nav>
+  </div>
+</header>
+
 <main>
-<section class="hero"><div class="container hero-grid"><div>
-<p class="crumbs"><a href="index.html">Home</a> / <a href="index.html#services">Services</a> / Towing</p>
-<div class="kicker">Vehicle recovery</div><h1>Request towing when your vehicle can’t move.</h1><p class="lead">Broken down, stuck or damaged? Share your location and vehicle details to request recovery and towing assistance.</p>
-<div class="actions"><a class="btn btn-primary" href="customer-signin.html?service=towing">Request Towing ↗</a><a class="btn btn-outline" href="index.html#services">All services</a></div></div>
-<div class="hero-icon" aria-hidden="true">🛻</div></div></section>
-<section class="section"><div class="container"><div class="kicker">What you can do</div><h2>Towing on MEI One</h2><div class="grid3"><div class="card"><h3>Breakdown recovery</h3><p>Get a vehicle moved to a garage or a safe place.</p></div><div class="card"><h3>Stuck or off the road</h3><p>Request help when a vehicle cannot be driven out.</p></div><div class="card"><h3>Garage transfers</h3><p>Move a vehicle between your home, a garage or a dealership.</p></div></div></div></section>
-<section class="band"><div class="container"><div class="kicker">How it works</div><h2>Three steps to get going.</h2><div class="grid3 steps"><div class="step"><span>1</span><h3>Sign in</h3><p>Use your customer account.</p></div><div class="step"><span>2</span><h3>Share your location</h3><p>Say where the vehicle is and where it should go.</p></div><div class="step"><span>3</span><h3>Add vehicle details</h3><p>Make and model help the right provider respond.</p></div></div>
-<a class="btn btn-primary" href="customer-signin.html?service=towing">Request Towing ↗</a></div></section>
-<section class="section"><div class="container"><div class="kicker">More from MEI One</div><h2>Other services</h2><div class="chips"><a href="rides.html"><span>🚘</span>MEI Rides</a><a href="delivery.html"><span>📦</span>Delivery</a><a href="roadside.html"><span>🧰</span>Roadside Assistance</a><a href="accident.html"><span>🚨</span>Accident Scene Management</a><a href="auto.html"><span>🔧</span>Garage Services</a><a href="home-services.html"><span>🏠</span>Home Services</a><a href="marketplace.html"><span>🛒</span>Marketplace</a><a href="learn.html"><span>🎓</span>Learning &amp; Driver Training</a><a href="https://auto-d.meipressgroup.com/" target="_blank" rel="noopener"><span>📊</span>Vehicle Valuation ↗</a></div></div></section>
-<section class="section partner"><div class="container"><div class="partner-box"><div><h2>Are you a service provider?</h2><p>Join the MEI One partner network and make your services easier to find.</p></div><a class="btn btn-dark" href="partner-apply.html">Become a provider ↗</a></div></div></section>
+
+<section class="hero-section">
+  <div class="hero-grid">
+    <div class="hero-content">
+      <span class="eyebrow">TOWING</span>
+      <h1>
+        Vehicle can&#x27;t move?
+        <span>Request a tow.</span>
+      </h1>
+      <p class="hero-description">Request recovery and towing when your vehicle breaks down, gets stuck or is damaged. Share your location and destination and a provider can respond.</p>
+      <div class="hero-actions">
+        <a href="dashboard.html?service=towing" class="btn btn-primary btn-large">Request Towing</a>
+        <a href="index.html#services" class="btn btn-outline btn-large">All Services</a>
+      </div>
+    </div>
+    <div class="hero-preview">
+      <div class="app-preview">
+        <div class="preview-header">
+          <div>
+            <span class="preview-label">TOWING</span>
+            <strong>Towing</strong>
+          </div>
+          <span class="online-badge">Tow providers</span>
+        </div>
+        <div class="preview-services">
+          <div class="preview-service">
+            <span class="preview-service-icon">🛻</span>
+            <span>
+              <strong>Vehicle Recovery</strong>
+              <small>Move a vehicle that cannot be driven</small>
+            </span>
+          </div>
+          <div class="preview-service">
+            <span class="preview-service-icon">🔧</span>
+            <span>
+              <strong>Tow to Garage</strong>
+              <small>Take it straight to a garage of your choice</small>
+            </span>
+          </div>
+          <div class="preview-service">
+            <span class="preview-service-icon">📍</span>
+            <span>
+              <strong>Location Sharing</strong>
+              <small>Tell the provider exactly where you are</small>
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="services-section">
+  <div class="section-heading">
+    <span class="eyebrow">WHAT'S INCLUDED</span>
+    <h2>Everything you can<span> request.</span></h2>
+    <p>Choose what you need when you submit your Towing request.</p>
+  </div>
+  <div class="steps-grid">
+    <article class="step-card">
+      <div class="step-icon">🛻</div>
+      <h3>Breakdown Recovery</h3>
+      <p>Get a stranded vehicle moved to safety.</p>
+    </article>
+    <article class="step-card">
+      <div class="step-icon">🔧</div>
+      <h3>Tow to a Garage</h3>
+      <p>Send your vehicle to a repair shop or dealership.</p>
+    </article>
+    <article class="step-card">
+      <div class="step-icon">🏠</div>
+      <h3>Tow Home</h3>
+      <p>Move a vehicle to your home or compound.</p>
+    </article>
+    <article class="step-card">
+      <div class="step-icon">🚧</div>
+      <h3>Stuck Vehicles</h3>
+      <p>Request help when a vehicle is stuck or off the road.</p>
+    </article>
+    <article class="step-card">
+      <div class="step-icon">🚨</div>
+      <h3>After an Accident</h3>
+      <p>Coordinate towing together with scene support.</p>
+    </article>
+    <article class="step-card">
+      <div class="step-icon">📝</div>
+      <h3>Vehicle Details</h3>
+      <p>Add make, model and condition so the right truck responds.</p>
+    </article>
+  </div>
+</section>
+
+<section class="services-section">
+  <div class="section-heading">
+    <span class="eyebrow">HOW IT WORKS</span>
+    <h2>Three simple<span> steps.</span></h2>
+    <p>You can read through the service first. You only need an account when you are ready to make a request.</p>
+  </div>
+  <div class="steps-grid">
+    <article class="step-card">
+      <div class="step-number">01</div><div class="step-icon">📍</div>
+      <h3>Share Location</h3>
+      <p>Tell us where the vehicle is and where it should go.</p>
+    </article>
+    <article class="step-card">
+      <div class="step-number">02</div><div class="step-icon">🚗</div>
+      <h3>Add Vehicle Details</h3>
+      <p>Enter make, model and what has happened.</p>
+    </article>
+    <article class="step-card">
+      <div class="step-number">03</div><div class="step-icon">🛻</div>
+      <h3>Provider Responds</h3>
+      <p>A tow provider accepts and heads to you.</p>
+    </article>
+  </div>
+  <div class="hero-actions">
+    <a href="dashboard.html?service=towing" class="btn btn-primary btn-large">Request Towing</a>
+  </div>
+</section>
+
+<section class="services-section">
+  <div class="section-heading">
+    <span class="eyebrow">GOOD TO KNOW</span>
+    <h2>Before you<span> start.</span></h2>
+  </div>
+  <div class="steps-grid">
+    <article class="step-card">
+      <h3>Stay safe</h3>
+      <p>Move away from traffic and switch on hazard lights if you can.</p>
+    </article>
+    <article class="step-card">
+      <h3>Keep keys and documents</h3>
+      <p>Have your keys and vehicle papers ready for the provider.</p>
+    </article>
+    <article class="step-card">
+      <h3>Just need a quick fix?</h3>
+      <p>Roadside Assistance can help with tyres and batteries.</p>
+    </article>
+  </div>
+</section>
+
+<section class="emergency-section">
+  <div class="emergency-content">
+    <div>
+      <span class="eyebrow">SMALL PROBLEM?</span>
+      <h2>
+        Maybe you don&#x27;t
+        <span>need a tow.</span>
+      </h2>
+      <p>A flat tyre or flat battery can often be fixed on the spot.</p>
+    </div>
+    <a href="roadside.html" class="btn btn-primary btn-large">Roadside Assistance</a>
+  </div>
+</section>
+
 </main>
-<footer class="site-footer"><div class="container footer-bottom"><span>© <span id="y"></span> MEI One. All rights reserved.</span><span>Part of MEI Press Holdings Ltd.</span></div></footer>
-<script>document.getElementById("y").textContent=new Date().getFullYear()</script>
-</body></html>
+
+<footer class="site-footer">
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <a href="index.html" class="brand">
+        <span class="brand-mark">M</span>
+        <span class="brand-name">MEI <strong>One</strong></span>
+      </a>
+      <p>One connected platform for everyday services.</p>
+    </div>
+    <div class="footer-column">
+      <h3>Services</h3>
+      <a href="rides.html">Rides</a>
+      <a href="delivery.html">Delivery</a>
+      <a href="towing.html">Towing</a>
+      <a href="roadside.html">Roadside Assistance</a>
+      <a href="auto.html">MEI Auto</a>
+      <a href="accident.html">Accident Scene</a>
+      <a href="home-services.html">Home Services</a>
+      <a href="marketplace.html">Marketplace</a>
+      <a href="learn.html">MEI Learn</a>
+    </div>
+    <div class="footer-column">
+      <h3>Platform</h3>
+      <a href="index.html#how-it-works">How It Works</a>
+      <a href="index.html#business">Business</a>
+      <a href="index.html#about">About</a>
+    </div>
+    <div class="footer-column">
+      <h3>Account</h3>
+      <button type="button" data-modal="login">Log In</button>
+      <button type="button" data-modal="signup">Create Account</button>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>© <span data-current-year id="currentYear"></span> MEI One. All rights reserved.</p>
+  </div>
+</footer>
+
+<div id="globalModal" class="modal" aria-hidden="true" role="dialog" aria-modal="true">
+  <div class="modal-backdrop" data-modal-close></div>
+  <div class="modal-dialog">
+    <button type="button" class="modal-close" data-modal-close aria-label="Close dialog">&times;</button>
+    <div id="modalContent" class="modal-content"></div>
+  </div>
+</div>
+
+<div id="toastContainer" class="toast-container" aria-live="polite" aria-atomic="true"></div>
+
+<script src="js/config.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+<script src="js/supabase.js"></script>
+<script src="js/site.js"></script>
+
+</body>
+</html>
