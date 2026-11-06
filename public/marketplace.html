@@ -1,24 +1,249 @@
 <!DOCTYPE html>
-<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="description" content="Browse what MEI One providers have to offer, from vehicle needs to everyday items."><meta name="theme-color" content="#102b25">
-<title>Marketplace — MEI One</title><link rel="stylesheet" href="mei-service.css"></head>
-<body>
-<header class="site-header"><div class="container navbar">
-<a class="brand" href="index.html" aria-label="MEI One home"><span class="brand-mark">M</span><span>MEI ONE<small>EVERYTHING, CONNECTED</small></span></a>
-<div class="nav-actions"><a class="btn btn-ghost" href="index.html#services">← All services</a><a class="btn btn-outline" href="customer-signin.html">Sign In</a><a class="btn btn-primary" href="customer-signin.html?service=marketplace">Get Started ↗</a></div>
-</div></header>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#071A2F">
+  <meta name="description" content="Discover products, offers and services from providers across the MEI One network, all in one place.">
+  <title>Marketplace | MEI One</title>
+  <link rel="icon" href="assets/favicon.png" type="image/png">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+
+<body class="site">
+
+<header class="site-header">
+  <div class="nav-container">
+    <a href="index.html" class="brand">
+      <span class="brand-mark">M</span>
+      <span class="brand-name">MEI <strong>One</strong></span>
+    </a>
+    <button id="mobileMenuButton" class="mobile-menu-button" type="button" aria-label="Open navigation" aria-expanded="false" aria-controls="mainNavigation">
+      <span></span><span></span><span></span>
+    </button>
+    <nav id="mainNavigation" class="main-navigation">
+      <a href="index.html">Home</a>
+      <a href="index.html#services">Services</a>
+      <a href="index.html#how-it-works">How It Works</a>
+      <a href="index.html#business">Business</a>
+      <div class="nav-actions">
+        <button class="btn btn-outline" type="button" data-modal="login">Log In</button>
+        <button class="btn btn-primary" type="button" data-modal="signup">Get Started</button>
+      </div>
+    </nav>
+  </div>
+</header>
+
 <main>
-<section class="hero"><div class="container hero-grid"><div>
-<p class="crumbs"><a href="index.html">Home</a> / <a href="index.html#services">Services</a> / Marketplace</p>
-<div class="kicker">Products &amp; offers</div><h1>Discover products, offers and services in one place.</h1><p class="lead">Browse what MEI One providers have to offer, from vehicle needs to everyday items.</p>
-<div class="actions"><a class="btn btn-primary" href="customer-signin.html?service=marketplace">Request Marketplace ↗</a><a class="btn btn-outline" href="index.html#services">All services</a></div></div>
-<div class="hero-icon" aria-hidden="true">🛒</div></div></section>
-<section class="section"><div class="container"><div class="kicker">What you can do</div><h2>Marketplace on MEI One</h2><div class="grid3"><div class="card"><h3>Products</h3><p>Items from providers across the MEI network.</p></div><div class="card"><h3>Offers</h3><p>Deals and promotions from service providers.</p></div><div class="card"><h3>Services</h3><p>Find a provider and request what you need.</p></div></div></div></section>
-<section class="band"><div class="container"><div class="kicker">How it works</div><h2>Three steps to get going.</h2><div class="grid3 steps"><div class="step"><span>1</span><h3>Sign in</h3><p>Use your customer account.</p></div><div class="step"><span>2</span><h3>Browse</h3><p>Look through products, offers and services.</p></div><div class="step"><span>3</span><h3>Take the next step</h3><p>Follow the instructions for the item you choose.</p></div></div>
-<a class="btn btn-primary" href="customer-signin.html?service=marketplace">Request Marketplace ↗</a></div></section>
-<section class="section"><div class="container"><div class="kicker">More from MEI One</div><h2>Other services</h2><div class="chips"><a href="rides.html"><span>🚘</span>MEI Rides</a><a href="delivery.html"><span>📦</span>Delivery</a><a href="towing.html"><span>🛻</span>Towing</a><a href="roadside.html"><span>🧰</span>Roadside Assistance</a><a href="accident.html"><span>🚨</span>Accident Scene Management</a><a href="auto.html"><span>🔧</span>Garage Services</a><a href="home-services.html"><span>🏠</span>Home Services</a><a href="learn.html"><span>🎓</span>Learning &amp; Driver Training</a><a href="https://auto-d.meipressgroup.com/" target="_blank" rel="noopener"><span>📊</span>Vehicle Valuation ↗</a></div></div></section>
-<section class="section partner"><div class="container"><div class="partner-box"><div><h2>Are you a service provider?</h2><p>Join the MEI One partner network and make your services easier to find.</p></div><a class="btn btn-dark" href="partner-apply.html">Become a provider ↗</a></div></div></section>
+
+<section class="hero-section">
+  <div class="hero-grid">
+    <div class="hero-content">
+      <span class="eyebrow">MARKETPLACE</span>
+      <h1>
+        Looking for something?
+        <span>Browse the marketplace.</span>
+      </h1>
+      <p class="hero-description">Discover products, offers and services from providers across the MEI One network, all in one place.</p>
+      <div class="hero-actions">
+        <a href="dashboard.html?service=marketplace" class="btn btn-primary btn-large">Request Marketplace</a>
+        <a href="index.html#services" class="btn btn-outline btn-large">All Services</a>
+      </div>
+    </div>
+    <div class="hero-preview">
+      <div class="app-preview">
+        <div class="preview-header">
+          <div>
+            <span class="preview-label">MARKETPLACE</span>
+            <strong>Marketplace</strong>
+          </div>
+          <span class="online-badge">Sellers</span>
+        </div>
+        <div class="preview-services">
+          <div class="preview-service">
+            <span class="preview-service-icon">🛒</span>
+            <span>
+              <strong>Products</strong>
+              <small>Items from MEI One providers</small>
+            </span>
+          </div>
+          <div class="preview-service">
+            <span class="preview-service-icon">🏷️</span>
+            <span>
+              <strong>Offers</strong>
+              <small>Deals and promotions</small>
+            </span>
+          </div>
+          <div class="preview-service">
+            <span class="preview-service-icon">🔧</span>
+            <span>
+              <strong>Services</strong>
+              <small>Find a provider and request work</small>
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="services-section">
+  <div class="section-heading">
+    <span class="eyebrow">WHAT'S INCLUDED</span>
+    <h2>Everything you can<span> request.</span></h2>
+    <p>Choose what you need when you submit your Marketplace request.</p>
+  </div>
+  <div class="steps-grid">
+    <article class="step-card">
+      <div class="step-icon">🛒</div>
+      <h3>Products</h3>
+      <p>Browse vehicle and everyday items.</p>
+    </article>
+    <article class="step-card">
+      <div class="step-icon">🏷️</div>
+      <h3>Offers</h3>
+      <p>See promotions from providers.</p>
+    </article>
+    <article class="step-card">
+      <div class="step-icon">🔧</div>
+      <h3>Services</h3>
+      <p>Find providers and request what you need.</p>
+    </article>
+    <article class="step-card">
+      <div class="step-icon">🔍</div>
+      <h3>Search</h3>
+      <p>Look for exactly what you need.</p>
+    </article>
+    <article class="step-card">
+      <div class="step-icon">⭐</div>
+      <h3>Trusted Providers</h3>
+      <p>Shop from providers in the MEI One network.</p>
+    </article>
+    <article class="step-card">
+      <div class="step-icon">📋</div>
+      <h3>Your Orders</h3>
+      <p>Keep track of requests in your account.</p>
+    </article>
+  </div>
+</section>
+
+<section class="services-section">
+  <div class="section-heading">
+    <span class="eyebrow">HOW IT WORKS</span>
+    <h2>Three simple<span> steps.</span></h2>
+    <p>You can read through the service first. You only need an account when you are ready to make a request.</p>
+  </div>
+  <div class="steps-grid">
+    <article class="step-card">
+      <div class="step-number">01</div><div class="step-icon">🔍</div>
+      <h3>Browse</h3>
+      <p>Look through products, offers and services.</p>
+    </article>
+    <article class="step-card">
+      <div class="step-number">02</div><div class="step-icon">🛒</div>
+      <h3>Choose</h3>
+      <p>Pick what you want and add the details.</p>
+    </article>
+    <article class="step-card">
+      <div class="step-number">03</div><div class="step-icon">✅</div>
+      <h3>Confirm</h3>
+      <p>Submit your request and follow the next step.</p>
+    </article>
+  </div>
+  <div class="hero-actions">
+    <a href="dashboard.html?service=marketplace" class="btn btn-primary btn-large">Request Marketplace</a>
+  </div>
+</section>
+
+<section class="services-section">
+  <div class="section-heading">
+    <span class="eyebrow">GOOD TO KNOW</span>
+    <h2>Before you<span> start.</span></h2>
+  </div>
+  <div class="steps-grid">
+    <article class="step-card">
+      <h3>Check details</h3>
+      <p>Read descriptions carefully before you request.</p>
+    </article>
+    <article class="step-card">
+      <h3>Contact the seller</h3>
+      <p>Confirm availability and delivery with the provider.</p>
+    </article>
+    <article class="step-card">
+      <h3>Selling something?</h3>
+      <p>Providers can join the MEI One partner network.</p>
+    </article>
+  </div>
+</section>
+
+<section class="emergency-section">
+  <div class="emergency-content">
+    <div>
+      <span class="eyebrow">ARE YOU A PROVIDER?</span>
+      <h2>
+        List your products
+        <span>and services.</span>
+      </h2>
+      <p>Join the MEI One network and reach more customers.</p>
+    </div>
+    <a href="index.html#business" class="btn btn-primary btn-large">Become a Partner</a>
+  </div>
+</section>
+
 </main>
-<footer class="site-footer"><div class="container footer-bottom"><span>© <span id="y"></span> MEI One. All rights reserved.</span><span>Part of MEI Press Holdings Ltd.</span></div></footer>
-<script>document.getElementById("y").textContent=new Date().getFullYear()</script>
-</body></html>
+
+<footer class="site-footer">
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <a href="index.html" class="brand">
+        <span class="brand-mark">M</span>
+        <span class="brand-name">MEI <strong>One</strong></span>
+      </a>
+      <p>One connected platform for everyday services.</p>
+    </div>
+    <div class="footer-column">
+      <h3>Services</h3>
+      <a href="rides.html">Rides</a>
+      <a href="delivery.html">Delivery</a>
+      <a href="towing.html">Towing</a>
+      <a href="roadside.html">Roadside Assistance</a>
+      <a href="auto.html">MEI Auto</a>
+      <a href="accident.html">Accident Scene</a>
+      <a href="home-services.html">Home Services</a>
+      <a href="marketplace.html">Marketplace</a>
+      <a href="learn.html">MEI Learn</a>
+    </div>
+    <div class="footer-column">
+      <h3>Platform</h3>
+      <a href="index.html#how-it-works">How It Works</a>
+      <a href="index.html#business">Business</a>
+      <a href="index.html#about">About</a>
+    </div>
+    <div class="footer-column">
+      <h3>Account</h3>
+      <button type="button" data-modal="login">Log In</button>
+      <button type="button" data-modal="signup">Create Account</button>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>© <span data-current-year id="currentYear"></span> MEI One. All rights reserved.</p>
+  </div>
+</footer>
+
+<div id="globalModal" class="modal" aria-hidden="true" role="dialog" aria-modal="true">
+  <div class="modal-backdrop" data-modal-close></div>
+  <div class="modal-dialog">
+    <button type="button" class="modal-close" data-modal-close aria-label="Close dialog">&times;</button>
+    <div id="modalContent" class="modal-content"></div>
+  </div>
+</div>
+
+<div id="toastContainer" class="toast-container" aria-live="polite" aria-atomic="true"></div>
+
+<script src="js/config.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+<script src="js/supabase.js"></script>
+<script src="js/site.js"></script>
+
+</body>
+</html>
