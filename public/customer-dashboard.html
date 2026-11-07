@@ -57,7 +57,8 @@
   "use strict";
   const SIGNIN_PATH="/customer-signin.html";
   const GPS_TEXT="My current location (GPS)";
-  const EXTERNAL_SERVICES={auto:"https://auto-d.meipressgroup.com",learn:"https://www.meidriveafrica.com"};
+  const EXTERNAL_SERVICES={learn:"https://www.meidriveafrica.com"};
+  const INSTANT_ESTIMATE_URL="https://auto-d.meipressgroup.com";
   const SERVICE_TEXT={accident_scene:"Help at the scene of a road vehicle accident: traffic control, scene clearing and photo documentation."};
   SERVICE_TEXT.accident=SERVICE_TEXT.accident_scene;SERVICE_TEXT.accident_management=SERVICE_TEXT.accident_scene;
 
@@ -66,6 +67,7 @@
     home:["Plumbing","Electrical","Cleaning","Carpentry & furniture repair","Painting & decorating","Appliance repair","Gardening & landscaping","Pest control","Moving & relocation","CCTV & security installation","Other home service"],
     towing:["Flatbed towing","Wheel-lift towing","Accident recovery","Off-road / ditch recovery","Motorbike towing","Heavy-duty (truck / bus) towing","Long-distance vehicle transport"],
     garage:["Routine servicing","Engine & mechanical repair","Brakes & suspension","Tyres, wheels & alignment","Battery & electrical","Air conditioning","Body work & painting","Diagnostics & inspection","Other garage service"],
+    valuation:["Pre-purchase inspection","Valuation for sale","Insurance valuation","Bank / finance valuation","Accident / damage assessment","Other"],
     marketplace:["Vehicles","Spare parts & accessories","Electronics","Home & furniture","Fashion & beauty","Property (rent / sale)","Services & skills","Other"]
   };
   const META={
@@ -75,7 +77,7 @@
     roadside:{icon:"🧰",name:"Roadside Assistance",text:"Get help with unexpected vehicle trouble on the road."},
     accident_scene:{icon:"🚨",name:"Accident Scene Management",text:"Immediate help at the scene of a road accident — safety, towing and coordination."},
     garage:{icon:"🔧",name:"Garage Services",text:"Find garage services for vehicle repairs, maintenance and servicing."},
-    valuation:{icon:"🚘",name:"Vehicle Valuation",text:"Explore professional vehicle valuation and inspection services through Auto-D."},
+    valuation:{icon:"🚘",name:"Vehicle Valuation & Inspection",text:"Book a MEI One officer to inspect and value your vehicle on site, or get a free instant estimate online."},
     home:{icon:"🏠",name:"Home Services",text:"Find practical support for tasks around your home."},
     marketplace:{icon:"🛒",name:"Marketplace",text:"Discover products, offers and services in one place."},
     learn:{icon:"🎓",name:"Learning & Driver Training",text:"Build safer driving skills with MEI Drive Africa."}
@@ -89,6 +91,7 @@
     accident_scene:{autoTitle:true,details:"What happened?",detailsHint:"Briefly describe the road accident. If anyone is injured, call 999 or 112 first.",extras:[{id:"help",label:"Help needed",type:"select",required:true,options:["Full scene management","Traffic control","Scene clearing","Photo documentation","Other"]},{id:"injuries",label:"Injuries",type:"select",required:true,options:["No injuries","Minor injuries","Serious injuries (call 999 / 112 first)"]},{id:"vehicles",label:"Vehicles involved",type:"number",min:1,max:20,value:1,required:true},{id:"vehicleTypes",label:"Vehicle types (car, matatu, truck, motorbike…)"},{id:"blocked",label:"Is the road blocked?",type:"select",options:["No","Partly","Fully"]},{id:"police",label:"Police informed?",type:"select",options:["Yes","No","Not sure"]},{id:"vehicle",label:"Your vehicle make, model & plate (optional)"}]},
     home:{subLabel:"What service do you need?",subRequired:true,banner:{icon:"🏠",title:"Home Services",text:"Connect with trusted service providers. Choose a service type below."},titleLabel:"What needs to be done?",titlePlaceholder:"e.g. Fix leaking kitchen tap",details:"Describe the work",detailsHint:"What needs fixing or doing? Mention sizes, quantities or any materials you already have.",extras:[{id:"urgency",label:"How urgent?",type:"select",required:true,options:["Emergency (today)","Within 2–3 days","This week","Flexible"]},{id:"property",label:"Property type",type:"select",options:["House","Apartment","Office","Shop / commercial","Other"]},{id:"date",label:"Preferred date & time",type:"datetime-local"},{id:"access",label:"Access instructions (gate, floor, contact on site)",full:true}]},
     marketplace:{subLabel:"Category",subRequired:true,banner:{icon:"🛍️",title:"MEI Marketplace",text:"Buy and sell through MEI One. Tell us what you want to buy, sell or find."},titleLabel:"Item / listing name",titlePlaceholder:"e.g. Toyota Axio 2014 or brake pads for Probox",details:"Describe the item or what you are looking for",detailsHint:"Brand, model, size, year, condition, any important details.",extras:[{id:"intent",label:"I want to",type:"select",required:true,options:["Buy","Sell","Rent","Find / enquire"]},{id:"price",label:"Budget / asking price (KES)",type:"number",min:0},{id:"condition",label:"Condition",type:"select",options:["New","Used - like new","Used - fair","Not applicable"]},{id:"qty",label:"Quantity",type:"number",min:1,max:1000,value:1}]},
+    valuation:{autoTitle:true,subLabel:"Purpose of the valuation",subRequired:true,banner:{icon:"🚘",title:"On-site valuation & inspection",text:"A MEI One officer will come to the vehicle, inspect it and issue a signed report. Just need a rough figure? Try the free instant estimate.",link:{href:INSTANT_ESTIMATE_URL,label:"Get a free instant estimate ↗"}},details:"Anything the officer should know (optional)",detailsHint:"Known damage, modifications, service history, who will be present, etc.",detailsRequired:false,extras:[{id:"vehicle",label:"Vehicle make, model & plate",required:true},{id:"year",label:"Year of manufacture",type:"number",min:1980,max:2100,required:true},{id:"mileage",label:"Mileage (km, optional)",type:"number",min:0},{id:"date",label:"Preferred date & time",type:"datetime-local",required:true}]},
     default:{details:"Description / instructions",detailsHint:"Describe what you need.",extras:[]}
   };
   FORM_CONFIG.accident=FORM_CONFIG.accident_scene;FORM_CONFIG.accident_management=FORM_CONFIG.accident_scene;
@@ -101,6 +104,7 @@
     home:{from:{title:"Service address",mode:"address",main:"Street / road",gps:true}},
     garage:{from:{title:"Where is the vehicle?",mode:"place",main:"Road / place",gps:true}},
     marketplace:{from:{title:"Item location / meeting point",mode:"place",main:"Area / street",gps:true}},
+    valuation:{from:{title:"Where is the vehicle?",mode:"place",main:"Road / place",gps:true}},
     default:{from:{title:"Service location",mode:"address",main:"Street / road",gps:true}}
   };
   LOC_CONFIG.accident=LOC_CONFIG.accident_scene;LOC_CONFIG.accident_management=LOC_CONFIG.accident_scene;
@@ -119,7 +123,7 @@
   function findService(id){return services.find(s=>String(s.id)===String(id));}
   // Maps any service_code (e.g. "home_services", "mei_towing") to a form/location config key.
   function cfgKey(code){if(code==="auto")return"valuation";if(FORM_CONFIG[code]||META[code])return code;if(/valuat|auto-?d|inspect/.test(code))return"valuation";if(/learn|training|driving|drive.?africa/.test(code))return"learn";if(/garage|mechanic|auto.?repair/.test(code))return"garage";if(/accident/.test(code))return"accident_scene";if(/home/.test(code))return"home";if(/tow|recover/.test(code))return"towing";if(/road/.test(code))return"roadside";if(/market|shop/.test(code))return"marketplace";if(/ride|taxi/.test(code))return"rides";if(/deliver|courier|parcel/.test(code))return"delivery";return"default";}
-  function externalUrl(code){if(EXTERNAL_SERVICES[code])return EXTERNAL_SERVICES[code];const key=cfgKey(code);return key==="valuation"?EXTERNAL_SERVICES.auto:key==="learn"?EXTERNAL_SERVICES.learn:null;}
+  function externalUrl(code){if(EXTERNAL_SERVICES[code])return EXTERNAL_SERVICES[code];const key=cfgKey(code);return key==="learn"?EXTERNAL_SERVICES.learn:null;}
   function displayName(service){return META[cfgKey(svcKey(service))]?.name||service?.service_name||service?.service_code||"Service";}
   function formConfig(code){return FORM_CONFIG[cfgKey(code)];}
   function locSpec(code){return LOC_CONFIG[cfgKey(code)]||LOC_CONFIG.default;}
@@ -206,7 +210,7 @@
     if(!service){$("locFrom").innerHTML="";$("locTo").hidden=true;$("extraFields").innerHTML="";$("svcBanner").hidden=true;return;}
     const code=svcKey(service),cfg=formConfig(code);autoTitleValue="";
     renderLocations(code);
-    $("svcBanner").hidden=!cfg.banner;if(cfg.banner)$("svcBanner").innerHTML=`<div class="ic">${escapeHTML(cfg.banner.icon)}</div><div><strong>${escapeHTML(cfg.banner.title)}</strong><span>${escapeHTML(cfg.banner.text)}</span></div>`;
+    $("svcBanner").hidden=!cfg.banner;if(cfg.banner)$("svcBanner").innerHTML=`<div class="ic">${escapeHTML(cfg.banner.icon)}</div><div><strong>${escapeHTML(cfg.banner.title)}</strong><span>${escapeHTML(cfg.banner.text)}</span>${cfg.banner.link?`<a href="${escapeHTML(cfg.banner.link.href)}" target="_blank" rel="noopener noreferrer" style="display:inline-block;margin-top:6px;font-weight:700">${escapeHTML(cfg.banner.link.label)}</a>`:""}</div>`;
     $("detailsLabel").textContent=cfg.details||"Description / instructions";$("detailsHint").textContent=cfg.detailsHint||"";$("requestDetails").placeholder=cfg.detailsHint||"";$("requestDetails").required=cfg.detailsRequired!==false;
     $("titleField").hidden=!!cfg.autoTitle;$("requestTitle").required=!cfg.autoTitle;$("titleLabel").textContent=cfg.titleLabel||"Request title";$("requestTitle").placeholder=cfg.titlePlaceholder||"Briefly describe what you need";
     renderExtras(cfg);
