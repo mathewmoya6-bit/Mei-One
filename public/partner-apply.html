@@ -12,6 +12,7 @@
 <style>
 :root{--navy:#071a2f;--navy-700:#102640;--green:#00ff88;--green-dim:rgba(0,255,136,.1);--white:#fff;--muted:#aebdce;--muted-dim:#7f95ab;--border:#38516c;--danger:#ff4b4b;--radius:12px;--t:.2s cubic-bezier(.4,0,.2,1)}
 *{box-sizing:border-box;margin:0;padding:0}
+[hidden]{display:none!important}
 html,body{height:100%}
 body{min-height:100vh;padding:24px;display:grid;place-items:center;background:var(--navy);background-image:radial-gradient(circle at 15% 10%,rgba(0,255,136,.12),transparent 40%),radial-gradient(circle at 85% 90%,rgba(0,214,143,.08),transparent 40%);background-attachment:fixed;color:var(--white);font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;line-height:1.55;-webkit-font-smoothing:antialiased}
 .card{width:100%;max-width:560px;padding:36px;background:var(--navy-700);border:1px solid rgba(255,255,255,.08);border-radius:20px;box-shadow:0 24px 80px rgba(0,0,0,.4);animation:slideUp .5s cubic-bezier(.16,1,.3,1)}
@@ -108,6 +109,11 @@ a:hover{color:#5cffb0;text-decoration:underline}
           <optgroup label="Roadside Assistance"><option value="roadside">Roadside assistance</option></optgroup>
           <optgroup label="Accident Scene Management"><option value="accident_scene">Traffic control, scene clearing, photo documentation</option></optgroup>
           <optgroup label="MEI Auto"><option value="auto">Garage or auto service</option></optgroup>
+          <optgroup label="Vehicle Valuation &amp; Inspection">
+            <option value="valuation-valuer">Vehicle valuer / valuation officer</option>
+            <option value="valuation-inspector">Vehicle inspector (pre-purchase, roadworthiness)</option>
+            <option value="valuation-assessor">Motor assessor (accident / insurance damage)</option>
+          </optgroup>
           <optgroup label="Marketplace"><option value="marketplace">Sell through MEI One</option></optgroup>
           <optgroup label="Home Services">
             <option value="home-plumbing">Plumbing &amp; Water Systems</option>
@@ -122,6 +128,12 @@ a:hover{color:#5cffb0;text-decoration:underline}
           <optgroup label="MEI Learn"><option value="learn">Teach or train (MEI Learn)</option></optgroup>
         </select>
       </div>
+    </div>
+
+    <div class="field" id="licenceField" hidden>
+      <label for="licence">Professional registration / licence number</label>
+      <input id="licence" type="text" placeholder="e.g. registration or assessor licence no." autocomplete="off" spellcheck="false" maxlength="60">
+      <p class="field-hint">Our team verifies this before approval. Include the body that issued it in your bio below.</p>
     </div>
 
     <div class="field">
@@ -182,21 +194,24 @@ const form = $("applyForm"), submitBtn = $("submitBtn"), submitBtnText = $("subm
 const message = $("message"), successPanel = $("successPanel");
 const f = {
   name: $("fullName"), email: $("email"), phone: $("phone"), city: $("city"),
-  service: $("serviceType"), experience: $("experience"), password: $("password"),
-  bio: $("bio"), terms: $("terms")
+  service: $("serviceType"), licence: $("licence"), experience: $("experience"),
+  password: $("password"), bio: $("bio"), terms: $("terms")
 };
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 // Admin dashboard partner types:
-// driver, towing, roadside, accident_scene, garage, seller, home, learn
+// driver, towing, roadside, accident_scene, garage, seller, home, learn, valuation
 function toPartnerType(service) {
+  if (service.startsWith("valuation-")) return "valuation";
   if (service.startsWith("home-")) return "home";
   return ({
     rides: "driver", delivery: "driver", towing: "towing", roadside: "roadside",
     accident_scene: "accident_scene", auto: "garage", marketplace: "seller", learn: "learn"
   })[service] || "home";
 }
+
+const isValuationService = (service) => String(service).startsWith("valuation-");
 
 // "3-5" -> 3, "10+" -> 10
 function toExperienceYears(range) {
@@ -219,6 +234,13 @@ function setLoading(on) {
 f.bio.addEventListener("input", () => { $("bioCount").textContent = f.bio.value.length; });
 Object.values(f).forEach((el) => {
   ["input", "change"].forEach((ev) => el.addEventListener(ev, () => el.classList.remove("invalid")));
+});
+
+// Show the licence field only for valuation / inspection / assessor roles
+f.service.addEventListener("change", () => {
+  const show = isValuationService(f.service.value);
+  $("licenceField").hidden = !show;
+  if (!show) f.licence.value = "";
 });
 
 function translateError(error) {
@@ -249,6 +271,8 @@ function validate() {
   else if (phone.replace(/\D/g, "").length < 7) fail(f.phone, "Please enter a valid phone number.");
   if (!f.city.value.trim()) fail(f.city, "Please enter your city.");
   if (!f.service.value) fail(f.service, "Please select your primary service.");
+  if (isValuationService(f.service.value) && !f.licence.value.trim())
+    fail(f.licence, "Please enter your professional registration or licence number.");
   if (!f.experience.value) fail(f.experience, "Please select your experience level.");
   if (!f.password.value) fail(f.password, "Please create a password.");
   else if (f.password.value.length < 8) fail(f.password, "Password must be at least 8 characters.");
@@ -282,9 +306,14 @@ form.addEventListener("submit", async (event) => {
   const phone = f.phone.value.trim();
   const city = f.city.value.trim();
   const bio = f.bio.value.trim();
+  const licence = f.licence.value.trim();
   const serviceLabel = f.service.options[f.service.selectedIndex].textContent.trim();
   const experienceLabel = f.experience.options[f.experience.selectedIndex].textContent.trim();
-  const details = "Service: " + serviceLabel + " | Experience: " + experienceLabel + (bio ? "\n\n" + bio : "");
+  const details =
+    "Service: " + serviceLabel +
+    " | Experience: " + experienceLabel +
+    (licence ? " | Licence/Registration: " + licence : "") +
+    (bio ? "\n\n" + bio : "");
 
   try {
     // 1. Create the login account.
