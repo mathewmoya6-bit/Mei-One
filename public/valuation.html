@@ -231,14 +231,34 @@ textarea{min-height:84px;resize:vertical}
         "Preferred time: " + new Date($("when").value).toLocaleString() +
         ($("notes").value.trim() ? "\nNotes: " + $("notes").value.trim() : "");
 
-      // ASSUMPTION: confirm this RPC name and its parameters against your Supabase project.
-      const { error } = await sb.rpc("create_service_request", {
-        p_request_type: "valuation",
-        p_title: "On-site valuation: " + makeModel,
-        p_pickup: $("address").value.trim(),
-        p_latitude: coords ? coords.lat : null,
-        p_longitude: coords ? coords.lng : null,
-        p_details: details,
+      // Same insert the customer dashboard uses for every service.
+      const user = s.session.user;
+      let serviceId = null;
+      try {
+        const { data: svc } = await sb.from("services").select("id,service_code,service_name").eq("is_active", true);
+        const hit = (svc || []).find((r) => /valuat|auto|inspect/i.test((r.service_code || "") + " " + (r.service_name || "")) && !/garage|repair/i.test(r.service_name || ""));
+        serviceId = hit ? hit.id : null;
+      } catch { serviceId = null; }
+      const address = $("address").value.trim();
+      const { error } = await sb.from("service_requests").insert({
+        user_id: user.id,
+        service_id: serviceId,
+        request_type: "valuation",
+        service: "valuation",
+        status: "pending",
+        provider_id: null,
+        title: "Vehicle Valuation & Inspection – " + $("purpose").value,
+        details,
+        notes: null,
+        pickup: address,
+        dropoff: null,
+        pickup_address: address,
+        destination_address: null,
+        customer_name: user.user_metadata?.full_name || user.user_metadata?.name || "Customer",
+        latitude: coords ? coords.lat : null,
+        longitude: coords ? coords.lng : null,
+        dropoff_latitude: null,
+        dropoff_longitude: null,
       });
       if (error) throw error;
 
