@@ -26,6 +26,8 @@
     .message{display:none;padding:12px 14px;border-radius:10px;font-size:13px;line-height:1.5;margin:12px 0}.message.show{display:block}.message.error{background:#fef2f2;color:#b91c1c;border:1px solid #fecaca}.message.success{background:#ecfdf5;color:#047857;border:1px solid #a7f3d0}.message.info{background:#eff6ff;color:#1d4ed8;border:1px solid #bfdbfe}
     .request-list{display:grid;gap:14px}.request-card{background:#fff;border:1px solid var(--border);border-radius:var(--radius);padding:18px;box-shadow:0 2px 8px #071a2f08}.request-top{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:10px}.request-card h3{margin:0 0 4px;font-size:15px;color:var(--navy)}.request-card p{font-size:13px;line-height:1.5;margin:6px 0;overflow-wrap:anywhere;white-space:pre-line}.request-card p strong{color:var(--muted)}.status{display:inline-block;padding:5px 10px;border-radius:20px;font-size:10px;font-weight:800;text-transform:uppercase;white-space:nowrap;background:#f1f5f9;color:#475569}.status.pending,.status.requested{background:#fef9c3;color:#a16207}.status.accepted{background:#eff6ff;color:#1d4ed8}.status.in_progress{background:#f3e8ff;color:#6b21a8}.status.completed{background:#ecfdf5;color:#047857}.status.cancelled{background:#fef2f2;color:#b91c1c}.status.proposed{background:#f5f3ff;color:#6b21a8}
     .track{padding:10px 12px;border-radius:10px;font-size:12.5px;font-weight:600;margin:8px 0;background:#fffbeb;color:#92400e;border:1px solid #fde68a}.track.ok{background:#eff6ff;color:#1d4ed8;border-color:#bfdbfe}.track.go{background:#f5f3ff;color:#6b21a8;border-color:#ddd6fe}.track.done{background:#ecfdf5;color:#047857;border-color:#a7f3d0}.profile-row{display:flex;justify-content:space-between;gap:15px;padding:14px 0;border-bottom:1px solid var(--border)}.profile-row:last-child{border:0}.profile-row span:first-child{font-size:13px;color:var(--muted)}.profile-row span:last-child{font-size:13px;font-weight:650;text-align:right;overflow-wrap:anywhere}.loading{text-align:center;color:var(--muted);padding:35px 15px;font-size:13px}.loading:after{content:"";display:block;width:22px;height:22px;margin:14px auto 0;border:3px solid var(--border);border-top-color:var(--green-dark);border-radius:50%;animation:spin .8s linear infinite}@keyframes spin{to{transform:rotate(360deg)}}.empty{text-align:center;color:var(--muted);padding:30px 18px;background:#fff;border:1px dashed #cbd5e1;border-radius:var(--radius);font-size:13px;line-height:1.6}.subservice-box{background:#f8fafc;border:1px solid var(--border);border-radius:12px;padding:15px;margin-top:12px}.subservice-box h4{margin:0 0 9px;font-size:13px;color:var(--navy)}.subservice-list{display:flex;flex-wrap:wrap;gap:7px}.chip{background:#fff;border:1px solid var(--border);border-radius:20px;padding:6px 10px;font-size:11px;color:#475569}.footer{text-align:center;color:var(--muted);font-size:12px;padding:28px 10px}
+    .matter{border-color:#bdf0dc;background:#f4fbf8}.matter-hint{grid-column:1/-1;margin:-6px 0 0}.mgrid{grid-column:1/-1;display:grid;grid-template-columns:1fr 1fr;gap:14px 17px}.matter .sub-pills{display:flex}.file-list{margin:6px 0 0;padding:0;list-style:none;font-size:12px;color:var(--muted)}.file-list li{padding:2px 0}.file-list .bad{color:#b91c1c}
+    @media(max-width:700px){.mgrid{grid-template-columns:1fr}}
     @media(max-width:700px){.topbar{padding:13px 4%}.user-label{display:none}.container{margin-top:22px}.welcome{padding:23px;text-align:center;justify-content:center}.welcome-mark{display:none}.section-heading{align-items:flex-start;flex-direction:column}.form-grid,.loc-block{grid-template-columns:1fr}.panel{padding:18px}.profile-row{align-items:flex-start;flex-direction:column;gap:5px}.profile-row span:last-child{text-align:left}}
     @media(max-width:480px){.service-grid{grid-template-columns:1fr}.request-top{flex-direction:column}}
   </style>
@@ -44,6 +46,7 @@
     <div class="loc-block" id="locFrom"></div><div class="loc-block" id="locTo" hidden></div>
     <div class="field full"><label for="requestDetails" id="detailsLabel">Description / instructions</label><textarea id="requestDetails" maxlength="5000"></textarea><span class="hint" id="detailsHint"></span></div>
     <div id="extraFields"></div>
+    <div class="loc-block matter" id="matterBlock" hidden></div>
     <div class="field full"><label for="requestNotes">Additional notes (optional)</label><textarea id="requestNotes" maxlength="3000" placeholder="Access instructions, landmarks, preferred contact time, etc."></textarea></div>
     <div class="field full"><p class="hint">By submitting, you authorize MEI One to share your request and contact details with eligible service providers. Submission does not guarantee immediate provider acceptance.</p></div>
     <div class="field full"><div id="requestMessage" class="message" role="status" aria-live="polite"></div><button class="primary-btn full-btn" id="submitRequest" type="submit">Submit Service Request</button></div>
@@ -156,6 +159,108 @@
   async function nominatim(query){try{const response=await fetch("https://nominatim.openstreetmap.org/search?format=jsonv2&limit=1&countrycodes=ke&q="+encodeURIComponent(query),{headers:{Accept:"application/json"}});if(!response.ok)return null;const rows=await response.json();if(!rows?.[0])return null;const lat=Number(rows[0].lat),lng=Number(rows[0].lon);return Number.isFinite(lat)&&Number.isFinite(lng)?{lat:Number(lat.toFixed(6)),lng:Number(lng.toFixed(6))}:null;}catch(error){console.warn("Address geocoding unavailable:",error);return null;}}
   async function geocodeLoc(prefix){const main=locValue(prefix,"main");if(!main||main===GPS_TEXT)return null;const estate=locValue(prefix,"estate"),landmark=locValue(prefix,"landmark");const attempts=[[main,estate,landmark,"Kenya"],[main,estate,"Kenya"],[main,"Kenya"],[landmark,estate,"Kenya"],[estate,"Kenya"]];for(const parts of attempts){const query=parts.filter(Boolean).join(", ");if(!query||query==="Kenya")continue;const result=await nominatim(query);if(result)return result;}return null;}
 
+  // ---- Matter details for vehicle services: customer type, who referred, who pays, supporting letter ----
+  const MATTER_SERVICES=["valuation","garage","towing","roadside","accident_scene"];
+  const LETTER_REQUIRED=["valuation","garage"]; // optional for emergency services (towing, roadside, accident scene)
+  const DOC_BUCKET="request-documents",MAX_DOC_MB=5,MAX_DOCS=3,DOC_TYPES=["application/pdf","image/jpeg","image/png","image/webp"];
+  const REFERRERS=[["self","Myself (no referral)"],["insurer","Insurance company"],["bank","Bank / financier"],["law","Law firm / advocate"],["employer","Employer / fleet manager"],["dealer","Dealer / garage"],["other","Other"]];
+  const PAYERS={individual:[["self","Myself"],["insurer","Insurance company"],["bank","Bank / financier"],["employer","My employer"],["other","Other third party"]],corporate:[["company","My company"],["insurer","Insurance company"],["bank","Bank / financier"],["other","Other third party"]]};
+  let matterType="individual",matterCode="";
+  const matterApplies=code=>MATTER_SERVICES.includes(cfgKey(code));
+  const labelOf=(list,value)=>(list.find(row=>row[0]===value)||[])[1]||"";
+  const isFin=value=>value==="insurer"||value==="bank";
+  function readPrefs(){try{return JSON.parse(localStorage.getItem("mei_matter_prefs")||"{}")||{};}catch{return {};}}
+  function saveMatterPrefs(){try{if($("matterBlock").hidden)return;const prefs={type:matterType};if(matterType==="corporate")prefs.company=$("m_company").value.trim();localStorage.setItem("mei_matter_prefs",JSON.stringify(prefs));}catch{}}
+  function renderMatter(code){
+    const box=$("matterBlock");matterCode=cfgKey(code);
+    if(!matterApplies(code)){box.hidden=true;box.innerHTML="";return;}
+    const prefs=readPrefs();matterType=prefs.type==="corporate"?"corporate":"individual";
+    const letterRequired=LETTER_REQUIRED.includes(matterCode);
+    box.hidden=false;
+    box.innerHTML=`<h4>Matter details</h4>
+      <p class="hint matter-hint">Tell us who this job is for, who referred you and who is paying, so the right provider is matched and the right party is billed.</p>
+      <div class="field full"><label>Requesting as</label><div class="sub-pills"><button type="button" class="sub-pill" data-mtype="individual" aria-pressed="false">👤 Individual</button><button type="button" class="sub-pill" data-mtype="corporate" aria-pressed="false">🏢 Corporate / company</button></div></div>
+      <div class="mgrid" id="m_corp" hidden>
+        <div class="field"><label for="m_company">Company / organisation name</label><input id="m_company" maxlength="150" placeholder="e.g. Acme Logistics Ltd"></div>
+        <div class="field"><label for="m_contact">Contact person at the company</label><input id="m_contact" maxlength="120" placeholder="Name of person handling this job"></div>
+        <div class="field"><label for="m_contactPhone">Contact person phone (optional)</label><input id="m_contactPhone" type="tel" maxlength="30" placeholder="+254 700 000 000"></div>
+        <div class="field"><label for="m_kra">Company KRA PIN (optional)</label><input id="m_kra" maxlength="20" placeholder="e.g. P051234567A" autocomplete="off"></div>
+        <div class="field full"><label for="m_lpo">LPO / job order number (optional)</label><input id="m_lpo" maxlength="60" placeholder="Your internal purchase or job order reference"></div>
+      </div>
+      <div class="mgrid">
+        <div class="field"><label for="m_referrer">Who referred you?</label><select id="m_referrer" required>${REFERRERS.map(row=>`<option value="${row[0]}">${row[1]}</option>`).join("")}</select></div>
+        <div class="field" id="w_m_referrerName" hidden><label for="m_referrerName">Name of referrer</label><input id="m_referrerName" maxlength="150" placeholder="e.g. insurer, bank or firm name"></div>
+        <div class="field"><label for="m_payer">Who is paying?</label><select id="m_payer" required></select></div>
+        <div class="field" id="w_m_payerName" hidden><label for="m_payerName">Name of payer</label><input id="m_payerName" maxlength="150" placeholder="e.g. insurer, bank or company name"></div>
+      </div>
+      <div class="mgrid" id="w_m_fin" hidden>
+        <div class="field full"><label for="m_ref">Claim, policy or loan reference number</label><input id="m_ref" maxlength="80" placeholder="As shown on the insurer or bank letter" autocomplete="off"></div>
+        <div class="field full"><label for="m_letter" id="m_letterLabel">Letter from the insurer or bank</label><input id="m_letter" type="file" multiple accept=".pdf,.jpg,.jpeg,.png,.webp,application/pdf,image/*"><span class="hint">${letterRequired?"Required when an insurer or bank is involved. ":"Optional for this service, but have it ready for the provider. "}PDF or image, up to ${MAX_DOCS} files, ${MAX_DOC_MB} MB each.</span><ul class="file-list" id="m_files"></ul></div>
+      </div>`;
+    const sync=()=>{
+      const corp=matterType==="corporate";
+      box.querySelectorAll("[data-mtype]").forEach(button=>{const on=button.dataset.mtype===matterType;button.classList.toggle("on",on);button.setAttribute("aria-pressed",String(on));});
+      $("m_corp").hidden=!corp;$("m_company").required=corp;$("m_contact").required=corp;
+      const payer=$("m_payer");
+      if(payer.dataset.type!==matterType){const previous=payer.value;payer.innerHTML=PAYERS[matterType].map(row=>`<option value="${row[0]}">${row[1]}</option>`).join("");payer.value=PAYERS[matterType].some(row=>row[0]===previous)?previous:PAYERS[matterType][0][0];payer.dataset.type=matterType;}
+      const referrer=$("m_referrer").value,pay=payer.value,refNamed=referrer!=="self",payNamed=pay!=="self"&&pay!=="company",fin=isFin(referrer)||isFin(pay);
+      $("w_m_referrerName").hidden=!refNamed;$("m_referrerName").required=refNamed;
+      $("w_m_payerName").hidden=!payNamed;$("m_payerName").required=payNamed;
+      $("w_m_fin").hidden=!fin;$("m_letter").required=fin&&letterRequired;
+      $("m_letterLabel").textContent="Letter from the insurer or bank"+(letterRequired?"":" (optional)");
+    };
+    box.querySelectorAll("[data-mtype]").forEach(button=>button.addEventListener("click",()=>{matterType=button.dataset.mtype;sync();}));
+    $("m_referrer").addEventListener("change",sync);$("m_payer").addEventListener("change",sync);
+    $("m_letter").addEventListener("change",()=>{const list=$("m_files");list.innerHTML="";[...$("m_letter").files].forEach(file=>{const li=document.createElement("li"),tooBig=file.size>MAX_DOC_MB*1048576,badType=!DOC_TYPES.includes(file.type);li.textContent=file.name+" ("+(file.size/1048576).toFixed(1)+" MB)"+(tooBig?" – too large":badType?" – unsupported type":"");if(tooBig||badType)li.className="bad";list.appendChild(li);});});
+    if(prefs.type==="corporate"&&prefs.company)$("m_company").value=prefs.company;
+    sync();
+  }
+  // Validates the matter block and returns the detail lines and files to upload.
+  function collectMatter(code){
+    const out={lines:[],files:[],error:null};
+    if(!matterApplies(code)||$("matterBlock").hidden)return out;
+    const v=id=>($(id)?.value||"").trim(),fail=(id,text)=>{out.error={el:$(id),text};return out;};
+    const corp=matterType==="corporate";
+    out.lines.push("Customer type: "+(corp?"Corporate":"Individual"));
+    if(corp){
+      if(!v("m_company"))return fail("m_company","Please enter the company or organisation name.");
+      if(!v("m_contact"))return fail("m_contact","Please enter the contact person at the company.");
+      out.lines.push("Company: "+v("m_company"),"Company contact person: "+v("m_contact"));
+      if(v("m_contactPhone"))out.lines.push("Company contact person phone: "+v("m_contactPhone"));
+      if(v("m_kra"))out.lines.push("Company KRA PIN: "+v("m_kra"));
+      if(v("m_lpo"))out.lines.push("LPO / job order no.: "+v("m_lpo"));
+    }
+    const referrer=v("m_referrer"),pay=v("m_payer");
+    if(referrer!=="self"&&!v("m_referrerName"))return fail("m_referrerName","Please enter the name of who referred you.");
+    if(pay!=="self"&&pay!=="company"&&!v("m_payerName"))return fail("m_payerName","Please enter the name of who is paying.");
+    out.lines.push("Referred by: "+labelOf(REFERRERS,referrer)+(referrer!=="self"?" – "+v("m_referrerName"):""));
+    out.lines.push("Payer: "+labelOf(PAYERS[matterType],pay)+(pay!=="self"&&pay!=="company"?" – "+v("m_payerName"):""));
+    if(isFin(referrer)||isFin(pay)){
+      if(v("m_ref"))out.lines.push("Claim / policy / loan ref: "+v("m_ref"));
+      const files=[...($("m_letter").files||[])];
+      if(!files.length&&LETTER_REQUIRED.includes(matterCode))return fail("m_letter","Please attach the letter from the insurer or bank.");
+      if(files.length>MAX_DOCS)return fail("m_letter","You can attach up to "+MAX_DOCS+" files.");
+      for(const file of files){
+        if(file.size>MAX_DOC_MB*1048576)return fail("m_letter",file.name+" is larger than "+MAX_DOC_MB+" MB.");
+        if(!DOC_TYPES.includes(file.type))return fail("m_letter",file.name+" must be a PDF or an image (JPG, PNG, WEBP).");
+      }
+      out.files=files;
+      out.lines.push("Authorisation letter: "+(files.length?files.length+" file(s) attached ("+files.map(file=>file.name).join(", ")+")":"not attached"));
+    }
+    return out;
+  }
+  // Uploads to private storage under <user id>/<request id>/ and returns the stored paths.
+  async function uploadMatterFiles(userId,requestId,files){
+    const folder=userId+"/"+(requestId||("pending-"+Date.now())),done=[];
+    for(let i=0;i<files.length;i++){
+      const file=files[i],safe=file.name.replace(/[^\w.\-]+/g,"_").slice(-80),path=folder+"/"+(i+1)+"-"+safe;
+      const {error}=await sb.storage.from(DOC_BUCKET).upload(path,file,{contentType:file.type||undefined,upsert:false});
+      if(error){if(done.length){try{await sb.storage.from(DOC_BUCKET).remove(done);}catch{}}throw new Error("Could not upload \""+file.name+"\": "+error.message+". Check that the \""+DOC_BUCKET+"\" storage bucket exists and allows uploads from signed-in customers.");}
+      done.push(path);
+    }
+    return done;
+  }
+
   // Dynamic fields are generated from the selected service's configuration.
   function renderExtras(cfg){
     $("extraFields").innerHTML=(cfg.extras||[]).map(field=>{const id="x_"+field.id,required=field.required?"required":"";let control="";if(field.type==="select"){control=`<select id="${id}" ${required}><option value="">Choose an option</option>${(field.options||[]).map(option=>`<option value="${escapeHTML(option)}">${escapeHTML(option)}</option>`).join("")}</select>`;}else{control=`<input id="${id}" type="${escapeHTML(field.type||"text")}" ${required} ${field.min!=null?`min="${field.min}"`:""} ${field.max!=null?`max="${field.max}"`:""} ${field.value!=null?`value="${field.value}"`:""} maxlength="200">`;}return `<div class="field ${field.full?"full":""}" data-extra="${escapeHTML(field.id)}" ${field.showIf?"hidden":""}><label for="${id}">${escapeHTML(field.label)}</label>${control}</div>`;}).join("");
@@ -207,9 +312,9 @@
   }
   function updateRequestFields(){
     const service=findService($("selectedService").value);
-    if(!service){$("locFrom").innerHTML="";$("locTo").hidden=true;$("extraFields").innerHTML="";$("svcBanner").hidden=true;return;}
+    if(!service){$("locFrom").innerHTML="";$("locTo").hidden=true;$("matterBlock").hidden=true;$("matterBlock").innerHTML="";$("extraFields").innerHTML="";$("svcBanner").hidden=true;return;}
     const code=svcKey(service),cfg=formConfig(code);autoTitleValue="";
-    renderLocations(code);
+    renderLocations(code);renderMatter(code);
     $("svcBanner").hidden=!cfg.banner;if(cfg.banner)$("svcBanner").innerHTML=`<div class="ic">${escapeHTML(cfg.banner.icon)}</div><div><strong>${escapeHTML(cfg.banner.title)}</strong><span>${escapeHTML(cfg.banner.text)}</span>${cfg.banner.link?`<a href="${escapeHTML(cfg.banner.link.href)}" target="_blank" rel="noopener noreferrer" style="display:inline-block;margin-top:6px;font-weight:700">${escapeHTML(cfg.banner.link.label)}</a>`:""}</div>`;
     $("detailsLabel").textContent=cfg.details||"Description / instructions";$("detailsHint").textContent=cfg.detailsHint||"";$("requestDetails").placeholder=cfg.detailsHint||"";$("requestDetails").required=cfg.detailsRequired!==false;
     $("titleField").hidden=!!cfg.autoTitle;$("requestTitle").required=!cfg.autoTitle;$("titleLabel").textContent=cfg.titleLabel||"Request title";$("requestTitle").placeholder=cfg.titlePlaceholder||"Briefly describe what you need";
@@ -235,17 +340,21 @@
     if(!pickup){message("requestMessage","Please enter the service location or pickup point.","error");$("lf_main").focus();return;}if(locCfg.to&&!dropoff){message("requestMessage","Please enter the destination.","error");$("lt_main").focus();return;}if(cfg.detailsRequired!==false&&!description){message("requestMessage","Please provide the required description.","error");$("requestDetails").focus();return;}
     const detailLines=[];if(!$("subserviceField").hidden&&$("selectedSubservice").value)detailLines.push((cfg.subLabel||"Category").replace(/\?$/,"")+": "+$("selectedSubservice").selectedOptions[0].textContent.trim());
     for(const field of cfg.extras||[]){const wrapper=document.querySelector(`[data-extra="${field.id}"]`);if(!wrapper||wrapper.hidden)continue;const control=$("x_"+field.id),value=String(control?.value||"").trim();if(field.required&&!value){message("requestMessage",field.label+" is required.","error");control?.focus();return;}if(value)detailLines.push(field.label+": "+value);}
+    const matter=collectMatter(code);if(matter.error){message("requestMessage",matter.error.text,"error");matter.error.el?.focus();return;}detailLines.push(...matter.lines);
     const contactPhone=currentProfile?.phone||currentUser?.phone||"";if(contactPhone)detailLines.push("Customer contact phone: "+contactPhone);if(description){if(detailLines.length)detailLines.push("");detailLines.push(description);}const details=detailLines.join("\n");
     const btn=$("submitRequest");submitting=true;btn.disabled=true;
     try{
       let from=geo.from;if(!from){btn.textContent="Checking location…";from=await geocodeLoc("lf");}let to=null;if(locCfg.to){btn.textContent="Checking destination…";to=await geocodeLoc("lt");}
       btn.textContent="Verifying account…";const authenticatedUser=await getVerifiedUser();currentUser=authenticatedUser;
+      const requestId=(window.crypto&&crypto.randomUUID)?crypto.randomUUID():null;let uploaded=[];
+      if(matter.files.length){btn.textContent="Uploading documents…";uploaded=await uploadMatterFiles(authenticatedUser.id,requestId,matter.files);}
       const customerName=currentProfile?.full_name||authenticatedUser.user_metadata?.full_name||authenticatedUser.user_metadata?.name||"Customer";
-      const payload={user_id:authenticatedUser.id,service_id:service.builtin?null:service.id,request_type:code,service:code,status:"pending",provider_id:null,title,details:details||null,notes:notes||null,pickup,dropoff:dropoff||null,pickup_address:pickup,destination_address:dropoff||null,customer_name:customerName,latitude:from?.lat??null,longitude:from?.lng??null,dropoff_latitude:to?.lat??null,dropoff_longitude:to?.lng??null};
+      const payload={...(requestId?{id:requestId}:{}),user_id:authenticatedUser.id,service_id:service.builtin?null:service.id,request_type:code,service:code,status:"pending",provider_id:null,title,details:details||null,notes:notes||null,pickup,dropoff:dropoff||null,pickup_address:pickup,destination_address:dropoff||null,customer_name:customerName,latitude:from?.lat??null,longitude:from?.lng??null,dropoff_latitude:to?.lat??null,dropoff_longitude:to?.lng??null};
       btn.textContent="Submitting request…";const {data,error}=await sb.from("service_requests").insert(payload).select("id").single();
+      if(error&&uploaded.length){try{await sb.storage.from(DOC_BUCKET).remove(uploaded);}catch{}}
       if(error){console.error("Customer request INSERT rejected:",{code:error.code,message:error.message,details:error.details,hint:error.hint,userId:authenticatedUser.id,payload});throw error;}
       message("requestMessage","Your request has been submitted successfully. MEI One will now look for an eligible provider.","success");
-      $("requestForm").reset();updateRequestFields();await loadRequests(true);setTimeout(()=>showTab("requests"),900);
+      saveMatterPrefs();$("requestForm").reset();updateRequestFields();await loadRequests(true);setTimeout(()=>showTab("requests"),900);
     }catch(error){console.error("Customer request submission failed:",error);let explanation=error?.message||"Unknown error";if(error?.code==="42501"||/row-level security/i.test(explanation))explanation+=" Check the INSERT policies on public.service_requests and confirm that user_id equals auth.uid().";if(service.builtin&&(error?.code==="23502"||error?.code==="23503"))explanation+=" The \""+displayName(service)+"\" service is not in the services table yet. Add it there (see the SQL provided).";if(error?.code==="42703"||/column .* does not exist/i.test(explanation))explanation+=" The submitted column names do not match the current database schema.";message("requestMessage","Could not submit your request: "+explanation,"error");}
     finally{submitting=false;btn.disabled=false;btn.textContent="Submit Service Request";}
   }
