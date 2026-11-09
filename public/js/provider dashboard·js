@@ -1,0 +1,300 @@
+(() => {
+"use strict";
+const SIGNIN = "/provider-signin.html", PING = 60000, POLL = 10000, MAXACC = 500;
+const $ = (id) => document.getElementById(id), now = () => Date.now();
+const esc = (v) => String(v ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const ago = (iso) => { if (!iso) return "—"; const s = Math.max(0, Math.round((now() - new Date(iso).getTime()) / 1e3)); return s < 60 ? s + "s ago" : s < 3600 ? Math.round(s / 60) + "m ago" : Math.round(s / 3600) + "h ago"; };
+const KEYS = [["accident_scene", /accident/], ["valuation", /valuat|auto-?d|inspect|^auto$/], ["learn", /learn|train|drive.?africa/], ["garage", /garage|mechanic|auto.?repair/], ["home", /home/], ["towing", /tow|recover/], ["roadside", /road/], ["marketplace", /market|shop/], ["rides", /ride|taxi/], ["delivery", /deliver|courier|parcel/]];
+const sKey = (c) => { c = String(c || "").toLowerCase(); for (const [k, r] of KEYS) if (r.test(c)) return k; return ""; };
+
+let sb, me, provider, online = false, pos = null, watchId = null, wake = null, net = "checking";
+let offers = [], jobs = [], phones = {}, busy = false, pinging = false, loadO = false, loadJ = false, modalJob = null, channel = null;
+const T = {}, guard = new Set(), banners = new Map();
+
+// banners
+function clearBanner(k) { banners.get(k)?.remove(); banners.delete(k); }
+function banner(k, kind, text, ttl = 0) {
+  clearBanner(k);
+  const el = document.createElement("div"); el.className = "banner " + kind;
+  el.innerHTML = `<span>${esc(text)}</span><button class="x" aria-label="Dismiss">✕</button>`;
+  el.querySelector(".x").onclick = () => clearBanner(k);
+  $("banners").appendChild(el); banners.set(k, el);
+  if (ttl) setTimeout(() => clearBanner(k), ttl);
+}
+
+// network
+function setNet(s) {
+  net = s; const p = $("netPill"); p.className = "pill " + ({ online: "on", offline: "err", reconnecting: "warn" }[s] || "off");
+  $("netText").textContent = { online: "Connected", offline: "Offline", reconnecting: "Reconnecting…" }[s] || "Checking…";
+  if (s === "offline") banner("net", "warn", "Internet connection lost. Offers will not refresh until you reconnect."); else clearBanner("net");
+}
+addEventListener("online", () => { setNet("online"); if (online) loadOffers(); loadJobs(); });
+addEventListener("offline", () => setNet("offline"));
+
+// GPS
+function gpsPill(cls, t) { $("gpsPill").className = "pill " + cls; $("gpsText").textContent = t; }
+function gpsUi() {
+  const f = !!pos;
+  $("gpsAcc").textContent = $("locAcc").textContent = f ? Math.round(pos.accuracy) + " m" : "—";
+  $("gpsFix").textContent = f ? ago(new Date(pos.at).toISOString()) : "—";
+  $("locCoords").textContent = f ? pos.lat.toFixed(5) + ", " + pos.lng.toFixed(5) : "—";
+  $("locFix").textContent = f ? new Date(pos.at).toLocaleTimeString() : "—";
+  $("locStatus").textContent = online ? "Online, sharing" : "Offline";
+}
+function startWatch() {
+  if (!navigator.geolocation) return Promise.reject(new Error("This device does not support location."));
+  navigator.permissions?.query({ name: "geolocation" }).then((r) => { $("locPerm").textContent = r.state; r.onchange = () => ($("locPerm").textContent = r.state); }).catch(() => {});
+  return new Promise((res, rej) => {
+    let done = false;
+    watchId = navigator.geolocation.watchPosition((p) => {
+      const acc = p.coords.accuracy ?? Infinity;
+      if (acc > MAXACC) { if (!done) { done = true; rej(new Error("GPS accuracy too poor (" + Math.round(acc) + " m). Move to open sky and retry.")); } return; }
+      pos = { lat: p.coords.latitude, lng: p.coords.longitude, accuracy: acc, at: now() };
+      gpsPill("on", "GPS active"); gpsUi(); if (!done) { done = true; res(); }
+    }, (e) => {
+      gpsPill("err", e.code === 1 ? "GPS denied" : "GPS error");
+      if (!done) { done = true; rej(new Error(e.code === 1 ? "Location permission denied. Allow location access to receive requests." : "Could not obtain your location. Check device settings.")); }
+      else banner("gps", "warn", "GPS fix lost. Keep the screen on and move to an open area.");
+    }, { enableHighAccuracy: true, maximumAge: 10000, timeout: 15000 });
+  });
+}
+function stopWatch() { if (watchId !== null) navigator.geolocation.clearWatch(watchId); watchId = null; pos = null; gpsPill("off", "GPS off"); gpsUi(); }
+const hold = async () => { try { if (online && navigator.wakeLock) wake = await navigator.wakeLock.request("screen"); } catch {} };
+const free = () => { try { wake?.release(); } catch {} wake = null; };
+
+// heartbeat
+async function ping(flag) {
+  if (pinging) throw new Error("A location update is already in progress.");
+  pinging = true;
+  try {
+    if (!pos || !Number.isFinite(pos.lat) || !Number.isFinite(pos.lng) || Math.abs(pos.lat) > 90 || Math.abs(pos.lng) > 180 || (!pos.lat && !pos.lng)) throw new Error("Your location is not available.");
+    const { data: a, error: ae } = await sb.auth.getUser();
+    if (ae || !a?.user) throw new Error("Your session has expired. Please sign in again.");
+    me = a.user;
+    const { data, error } = await sb.from("provider_profiles").update({ lat: pos.lat, lng: pos.lng, last_seen_at: new Date().toISOString(), is_online: !!flag }).eq("user_id", me.id).select("user_id,last_seen_at").maybeSingle();
+    if (error) throw new Error("Could not update location: " + error.message);
+    if (!data) throw new Error("No provider location profile is linked to your account. Contact MEI One.");
+    $("hb").textContent = $("locHb").textContent = ago(data.last_seen_at);
+  } finally { pinging = false; }
+}
+function setToggle(on) { const b = $("toggleBtn"); b.textContent = on ? "Go offline" : "Go online"; b.classList.toggle("on", on); gpsUi(); }
+async function goOnline() {
+  if (busy) return; busy = true; $("toggleBtn").disabled = true; clearBanner("gps");
+  try {
+    await startWatch(); await ping(true); online = true; setToggle(true); hold();
+    clearInterval(T.ping);
+    T.ping = setInterval(async () => { if (!online || !pos || net === "offline") return; try { await ping(true); clearBanner("hb"); } catch (e) { banner("hb", "error", "Heartbeat failed: " + e.message); } }, PING);
+    await loadOffers(); banner("ok", "success", "You are online. Location refreshes every 60 seconds.", 5000);
+  } catch (e) { online = false; stopWatch(); free(); setToggle(false); banner("go", "error", e.message || "Could not go online."); }
+  finally { busy = false; $("toggleBtn").disabled = false; }
+}
+async function goOffline() {
+  if (busy) return; busy = true; $("toggleBtn").disabled = true;
+  try {
+    if (pos && net !== "offline") { try { await ping(false); } catch (e) { console.warn(e); } }
+    online = false; clearInterval(T.ping); free(); stopWatch(); offers = []; renderOffers(); setToggle(false); banner("ok", "success", "You are offline.", 4000);
+  } finally { busy = false; $("toggleBtn").disabled = false; }
+}
+
+// provider
+async function loadProvider() {
+  const { data, error } = await sb.from("partners").select("id,user_id,type,business_name,phone,status,is_online,rating").eq("user_id", me.id).maybeSingle();
+  if (error) throw new Error("Unable to load provider profile: " + error.message);
+  const block = (t, m) => { $("main").innerHTML = `<div class="empty"><strong>${t}</strong><br>${m}</div>`; return false; };
+  if (!data) { $("accountStatus").textContent = "Not found"; return block("No provider profile found.", "Your account is not registered as an MEI One provider. Contact support."); }
+  provider = data;
+  if (String(data.status || "").toLowerCase() !== "approved") return block("Your provider account is awaiting approval.", "You cannot receive service requests until approved.");
+  const mod = MEI_MODULES.get(sKey(data.type));
+  $("greeting").textContent = "Hi, " + (data.business_name || (me.email || "Provider").split("@")[0]);
+  $("providerType").textContent = mod.icon + " " + (data.type ? data.type.replace(/_/g, " ") : "Provider");
+  $("accountStatus").textContent = "Approved";
+  $("pfName").textContent = data.business_name || "—"; $("pfType").textContent = data.type || "—";
+  $("pfPhone").textContent = data.phone || "—"; $("pfStatus").textContent = data.status;
+  const r = data.rating != null ? Number(data.rating).toFixed(1) : "—";
+  $("rating").textContent = $("pfRating").textContent = r; $("ratingSub").textContent = data.rating != null ? "from customers" : "No ratings yet";
+  if (data.is_online) banner("prev", "info", "Your account was previously online. Tap Go online to restart location sharing on this device.");
+  return true;
+}
+
+// maps
+function mapsUrl(la, lo, text) {
+  la = la == null ? NaN : Number(la); lo = lo == null ? NaN : Number(lo);
+  let q = Number.isFinite(la) && Number.isFinite(lo) ? la + "," + lo : "";
+  if (!q) { const c = String(text || "").replace(/\(near ([^)]*)\)/i, "$1").replace(/\s+/g, " ").trim(); if (c) q = c + ", Kenya"; }
+  return q ? "https://www.google.com/maps/dir/?api=1&destination=" + encodeURIComponent(q) : "";
+}
+const svcLabel = (r) => { const k = sKey(r?.request_type || r?.service); return k ? MEI_MODULES.get(k).name : String(r?.request_type || r?.service || "").replace(/_/g, " "); };
+
+// offers
+const left = (o) => Math.max(0, Math.round((new Date(o.expires_at).getTime() - now()) / 1000));
+async function loadOffers() {
+  if (!online || net === "offline" || loadO) return; loadO = true;
+  try {
+    const { data, error } = await sb.from("request_offers").select("id,request_id,distance_km,expires_at,service_requests(id,title,details,pickup,dropoff,notes,service,request_type,customer_name)")
+      .eq("provider_id", me.id).eq("status", "pending").gt("expires_at", new Date().toISOString()).order("distance_km", { ascending: true });
+    if (error) return banner("offers", "error", "Could not load offers: " + error.message);
+    clearBanner("offers"); offers = data || []; renderOffers();
+  } finally { loadO = false; }
+}
+function renderOffers() {
+  const live = offers.filter((o) => left(o) > 0);
+  $("offerCount").textContent = live.length;
+  $("offerSub").textContent = live.length ? "expires automatically" : online ? "none right now" : "go online to receive";
+  if (!online) return void ($("offers").innerHTML = '<div class="empty">Go online to receive nearby requests.</div>');
+  if (!live.length) return void ($("offers").innerHTML = '<div class="empty">No requests right now. New offers will appear here.</div>');
+  $("offers").innerHTML = live.map((o) => {
+    const r = o.service_requests || {}, k = sKey(r.request_type || r.service), label = svcLabel(r);
+    const hl = MEI_MODULES.highlights(k, r.details).map(([a, b]) => `<p><strong>${esc(a)}:</strong> ${esc(b)}</p>`).join("");
+    return `<article class="card"><div class="top"><div>${label ? `<span class="svc-tag">${esc(label)}</span>` : ""}<h3>${esc(r.title || label || "Service request")}</h3>
+      <p style="color:var(--muted)">${esc(o.distance_km ?? "—")} km away</p></div><span class="badge warn" data-timer="${esc(o.id)}">${left(o)}s</span></div>
+      ${r.customer_name ? `<p><strong>Customer:</strong> ${esc(r.customer_name)}</p>` : ""}${r.pickup ? `<p><strong>Location / pickup:</strong> ${esc(r.pickup)}</p>` : ""}
+      ${r.dropoff ? `<p><strong>Destination:</strong> ${esc(r.dropoff)}</p>` : ""}${hl || (r.details ? `<p><strong>Details:</strong> ${esc(r.details)}</p>` : "")}
+      <div class="actions"><button class="btn go" data-accept="${esc(o.request_id)}" type="button">Accept request</button><button class="btn no" data-decline="${esc(o.id)}" type="button">Decline</button></div></article>`;
+  }).join("");
+}
+function tick() {
+  let exp = false;
+  offers.forEach((o) => { const el = document.querySelector(`[data-timer="${CSS.escape(o.id)}"]`), s = left(o); if (el) el.textContent = s + "s"; if (s <= 0) exp = true; });
+  if (exp) { offers = offers.filter((o) => left(o) > 0); renderOffers(); }
+  gpsUi();
+}
+async function act(key, btn, busyText, fn) {
+  if (!btn || btn.disabled || guard.has(key)) return; guard.add(key);
+  const t = btn.textContent; btn.disabled = true; btn.textContent = busyText;
+  try { await fn(); } catch (e) { banner("act", "error", e.message || "Action failed."); } finally { guard.delete(key); btn.disabled = false; btn.textContent = t; }
+}
+const accept = (id, btn) => act("a:" + id, btn, "Accepting…", async () => {
+  const { error } = await sb.rpc("accept_request", { p_request_id: id });
+  if (error) return banner("accept", /already|taken|conflict|claimed/i.test(error.message) ? "warn" : "error", /already|taken|conflict|claimed/i.test(error.message) ? "This request was just taken by another provider." : "Could not accept request: " + error.message);
+  banner("accept", "success", "Request accepted.", 4000); await Promise.all([loadOffers(), loadJobs()]); setTab("jobs");
+});
+const decline = (id, btn) => act("d:" + id, btn, "Declining…", async () => {
+  const { error } = await sb.rpc("decline_offer", { p_offer_id: id });
+  if (error) return banner("decline", "error", "Could not decline: " + error.message);
+  await loadOffers();
+});
+
+// jobs
+async function loadJobs() {
+  if (loadJ || !me) return; loadJ = true;
+  try {
+    const { data, error } = await sb.from("service_requests").select(`id,title,details,pickup,dropoff,notes,status,service,request_type,customer_name,latitude,longitude,dropoff_latitude,dropoff_longitude,accepted_at,created_at,service_request_financials(customer_total,financial_status,currency)`)
+      .eq("provider_id", me.id).in("status", ["accepted", "en_route", "arrived", "in_progress"]).order("accepted_at", { ascending: false });
+    if (error) return banner("jobs", "error", "Could not load jobs: " + error.message);
+    clearBanner("jobs");
+    jobs = (data || []).map((r) => { const f = Array.isArray(r.service_request_financials) ? r.service_request_financials[0] : r.service_request_financials; return { ...r, total: f?.customer_total ?? null, cur: f?.currency || "KES" }; });
+    phones = {};
+    if (jobs.length) { const { data: pv } = await sb.from("service_request_private").select("request_id,customer_phone,recipient_phone").in("request_id", jobs.map((j) => j.id)); (pv || []).forEach((p) => (phones[p.request_id] = p)); }
+    $("jobCount").textContent = jobs.length; $("jobSub").textContent = jobs.length ? "manage below" : "no active jobs"; renderJobs();
+  } finally { loadJ = false; }
+}
+const tel = (n) => String(n || "").replace(/[^\d+]/g, "");
+function renderJobs() {
+  if (!jobs.length) return void ($("jobs").innerHTML = '<div class="empty">You currently have no active jobs.</div>');
+  $("jobs").innerHTML = jobs.map((r) => {
+    const sk = sKey(r.request_type || r.service), mod = MEI_MODULES.get(sk), label = svcLabel(r);
+    const pu = mapsUrl(r.latitude, r.longitude, r.pickup), du = mapsUrl(r.dropoff_latitude, r.dropoff_longitude, r.dropoff);
+    const lk = (u, t) => (u ? `<a class="btn map" target="_blank" rel="noopener noreferrer" href="${esc(u)}">${t}</a>` : "");
+    const toDest = ["en_route", "arrived", "in_progress"].includes(r.status);
+    const nav = du ? (toDest ? lk(du, "Navigate to destination") + lk(pu, "Navigate to pickup") : lk(pu, "Navigate to pickup") + lk(du, "Navigate to destination")) : lk(pu, "Navigate");
+    const c = tel(phones[r.id]?.customer_phone), rc = tel(phones[r.id]?.recipient_phone);
+    const calls = (c ? `<a class="btn call" href="tel:${esc(c)}">📞 Customer</a>` : "") + (rc && rc !== c ? `<a class="btn call" href="tel:${esc(rc)}">📞 Recipient</a>` : "");
+    const step = MEI_MODULES.step(sk, r.status);
+    const action = step ? `<button class="btn go" data-status="${esc(step.to)}" data-id="${esc(r.id)}" data-sk="${esc(sk)}" type="button">${esc(step.label)}</button>` : "";
+    const hl = MEI_MODULES.highlights(sk, r.details).map(([a, b]) => `<p><strong>${esc(a)}:</strong> ${esc(b)}</p>`).join("");
+    const bill = r.total != null ? `${esc(r.cur)} ${Number(r.total).toLocaleString("en-KE", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` : "Not yet calculated";
+    return `<article class="card"><div class="top"><div>${label ? `<span class="svc-tag">${esc(label)}</span>` : ""}<h3>${esc(r.title || label || "Service request")}</h3>
+      <div class="ref">#MEI-${esc(String(r.id).slice(0, 8).toUpperCase())}</div><p style="color:var(--muted)">Customer: ${esc(r.customer_name || "—")}</p><p><strong>Customer bill:</strong> ${bill}</p></div>
+      <span class="badge ${r.status === "in_progress" ? "info" : ""}">${esc(String(r.status || "").replace(/_/g, " "))}</span></div>
+      ${r.pickup ? `<p><strong>Location / pickup:</strong> ${esc(r.pickup)}</p>` : ""}${r.dropoff ? `<p><strong>Destination:</strong> ${esc(r.dropoff)}</p>` : ""}
+      ${hl || (r.details ? `<p><strong>Details:</strong> ${esc(r.details)}</p>` : "")}${r.notes ? `<p><strong>Notes:</strong> ${esc(r.notes)}</p>` : ""}
+      ${mod.tip ? `<p style="color:var(--muted);font-size:12px">${mod.icon} ${esc(mod.tip)}</p>` : ""}
+      <div class="actions">${calls}${nav}${action}<button class="btn no" data-cancel="${esc(r.id)}" type="button">Cancel / issue</button></div></article>`;
+  }).join("");
+}
+const setStatus = (id, to, btn, sk) => {
+  if (to === "completed") { const list = MEI_MODULES.get(sk).checklist.map((c) => "• " + c).join("\n"); if (list && !confirm("Confirm before completing:\n" + list)) return; }
+  return act("s:" + id + to, btn, "Updating…", async () => {
+    const { error } = await sb.rpc("set_request_status", { p_request_id: id, p_status: to });
+    if (error) return banner("status", "error", "Could not update job: " + error.message);
+    banner("status", "success", "Job updated.", 3000); await loadJobs();
+  });
+};
+
+// cancel modal
+const dlg = $("cancelDlg");
+$("dlgReason").onchange = () => ($("dlgConfirm").disabled = !$("dlgReason").value);
+dlg.addEventListener("close", async () => {
+  if (dlg.returnValue !== "confirm" || !modalJob) return;
+  const id = modalJob, reason = $("dlgReason").value, notes = $("dlgNotes").value.trim(); modalJob = null;
+  if (guard.has("c:" + id)) return; guard.add("c:" + id);
+  try {
+    const { error } = await sb.rpc("set_request_status", { p_request_id: id, p_status: "cancelled", p_reason: reason, p_notes: notes || null });
+    if (error) banner("cancel", "error", "Could not cancel: " + error.message); else { banner("cancel", "success", "Job cancelled.", 4000); await loadJobs(); }
+  } finally { guard.delete("c:" + id); }
+});
+
+// tabs + events
+function setTab(n) {
+  document.querySelectorAll(".tabs [role=tab]").forEach((b) => b.setAttribute("aria-selected", b.dataset.tab === n));
+  document.querySelectorAll("[data-panel]").forEach((p) => (p.hidden = p.dataset.panel !== n));
+}
+document.querySelector(".tabs").onclick = (e) => { const b = e.target.closest("[data-tab]"); if (b) setTab(b.dataset.tab); };
+$("offers").onclick = (e) => { const a = e.target.closest("[data-accept]"), d = e.target.closest("[data-decline]"); if (a) accept(a.dataset.accept, a); else if (d) decline(d.dataset.decline, d); };
+$("jobs").onclick = (e) => {
+  const s = e.target.closest("[data-status]"), c = e.target.closest("[data-cancel]");
+  if (s) setStatus(s.dataset.id, s.dataset.status, s, s.dataset.sk);
+  else if (c) { modalJob = c.dataset.cancel; $("dlgReason").value = ""; $("dlgNotes").value = ""; $("dlgConfirm").disabled = true; dlg.showModal(); }
+};
+$("toggleBtn").onclick = () => (online ? goOffline() : goOnline());
+$("logoutBtn").onclick = signOut;
+$("refreshBtn").onclick = () => { if (online) loadOffers(); loadJobs(); banner("ok", "success", "Refreshed.", 2000); };
+$("restartGps").onclick = async () => {
+  if (!online) return banner("gps", "info", "Go online first.", 3000);
+  try { stopWatch(); await startWatch(); await ping(true); banner("gps", "success", "GPS restarted.", 3000); } catch (e) { banner("gps", "error", e.message); }
+};
+$("permissionHelp").onclick = () => banner("help", "info", `To go online you need location permission, accuracy under ${MAXACC} m, and a working internet connection. If location is blocked, allow it in your browser's site settings.`);
+
+// realtime
+function startRealtime() {
+  if (channel) sb.removeChannel(channel);
+  channel = sb.channel("mei-provider-" + me.id)
+    .on("postgres_changes", { event: "*", schema: "public", table: "request_offers", filter: "provider_id=eq." + me.id }, () => online && loadOffers())
+    .on("postgres_changes", { event: "*", schema: "public", table: "service_requests", filter: "provider_id=eq." + me.id }, () => loadJobs())
+    .subscribe((s) => { if (s === "SUBSCRIBED") clearBanner("rt"); else if (s === "CHANNEL_ERROR" || s === "TIMED_OUT") banner("rt", "warn", "Live updates degraded. Falling back to polling…"); });
+}
+
+// sign out
+async function signOut() {
+  $("logoutBtn").disabled = true;
+  try {
+    if (online && pos && net !== "offline") await Promise.race([ping(false), new Promise((_, j) => setTimeout(() => j(new Error("timeout")), 4000))]).catch(() => {});
+    online = false; Object.values(T).forEach(clearInterval); free(); stopWatch();
+    if (channel) await sb.removeChannel(channel).catch(() => {});
+    await sb.auth.signOut(); location.replace(SIGNIN);
+  } catch (e) { banner("signout", "error", "Could not sign out: " + e.message); $("logoutBtn").disabled = false; }
+}
+
+// init
+async function init() {
+  if (!window.supabase || !window.MEI_SUPABASE || typeof window.MEI_SUPABASE.from !== "function") {
+    document.body.innerHTML = '<main style="max-width:700px;margin:60px auto;padding:25px;font-family:Arial"><h2>Configuration error</h2><p>Supabase did not initialize. Check /js/config.js, /js/supabase.js and the SDK.</p></main>'; return;
+  }
+  sb = window.MEI_SUPABASE;
+  const { data: s } = await sb.auth.getSession(); if (!s?.session) return location.replace(SIGNIN);
+  const { data: u, error } = await sb.auth.getUser(); if (error || !u?.user) return location.replace(SIGNIN);
+  me = u.user;
+  sb.auth.onAuthStateChange((ev) => { if (ev === "SIGNED_OUT") location.replace(SIGNIN); });
+  T.session = setInterval(async () => { try { const { data: x } = await sb.auth.getSession(); if (!x?.session) location.replace(SIGNIN); } catch {} }, 45000);
+  if (!(await loadProvider())) return;
+  setNet(navigator.onLine ? "online" : "offline");
+  await Promise.all([loadJobs(), loadOffers()]); startRealtime();
+  T.clock = setInterval(tick, 1000);
+  T.poll = setInterval(() => { if (document.hidden) return; if (online) loadOffers(); loadJobs(); }, POLL);
+  $("toggleBtn").disabled = false; setToggle(false);
+}
+addEventListener("pagehide", () => { Object.values(T).forEach(clearInterval); stopWatch(); free(); if (channel && sb) sb.removeChannel(channel); });
+document.addEventListener("visibilitychange", () => { if (!document.hidden) { hold(); if (online) loadOffers(); loadJobs(); } });
+addEventListener("unhandledrejection", (e) => { console.error(e.reason); banner("unexpected", "error", "An unexpected operation failed. Refresh the page; if it continues, contact MEI One support."); });
+init().catch((e) => { console.error(e); banner("init", "error", "Could not start dashboard: " + (e?.message || e)); });
+})();
