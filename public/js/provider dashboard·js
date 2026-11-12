@@ -1210,7 +1210,7 @@ async function init() {
 
     if ($("offers")) {
       $("offers").innerHTML =
-        '<div class="empty">Dashboard initialization failed. Check your connection and use Refresh to retry.</div>';
+        '<div class="empty"><strong>Dashboard initialization failed</strong><br>' + esc(e?.message || String(e)) + '<br><small>Use Refresh to retry.</small></div>';
     }
   }
 }
