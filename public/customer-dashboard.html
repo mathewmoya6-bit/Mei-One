@@ -27,9 +27,38 @@
     .request-list{display:grid;gap:14px}.request-card{background:#fff;border:1px solid var(--border);border-radius:var(--radius);padding:18px;box-shadow:0 2px 8px #071a2f08}.request-top{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:10px}.request-card h3{margin:0 0 4px;font-size:15px;color:var(--navy)}.request-card p{font-size:13px;line-height:1.5;margin:6px 0;overflow-wrap:anywhere;white-space:pre-line}.request-card p strong{color:var(--muted)}.status{display:inline-block;padding:5px 10px;border-radius:20px;font-size:10px;font-weight:800;text-transform:uppercase;white-space:nowrap;background:#f1f5f9;color:#475569}.status.pending,.status.requested{background:#fef9c3;color:#a16207}.status.accepted{background:#eff6ff;color:#1d4ed8}.status.in_progress{background:#f3e8ff;color:#6b21a8}.status.completed{background:#ecfdf5;color:#047857}.status.cancelled{background:#fef2f2;color:#b91c1c}.status.proposed{background:#f5f3ff;color:#6b21a8}
     .track{padding:10px 12px;border-radius:10px;font-size:12.5px;font-weight:600;margin:8px 0;background:#fffbeb;color:#92400e;border:1px solid #fde68a}.track.ok{background:#eff6ff;color:#1d4ed8;border-color:#bfdbfe}.track.go{background:#f5f3ff;color:#6b21a8;border-color:#ddd6fe}.track.done{background:#ecfdf5;color:#047857;border-color:#a7f3d0}.profile-row{display:flex;justify-content:space-between;gap:15px;padding:14px 0;border-bottom:1px solid var(--border)}.profile-row:last-child{border:0}.profile-row span:first-child{font-size:13px;color:var(--muted)}.profile-row span:last-child{font-size:13px;font-weight:650;text-align:right;overflow-wrap:anywhere}.loading{text-align:center;color:var(--muted);padding:35px 15px;font-size:13px}.loading:after{content:"";display:block;width:22px;height:22px;margin:14px auto 0;border:3px solid var(--border);border-top-color:var(--green-dark);border-radius:50%;animation:spin .8s linear infinite}@keyframes spin{to{transform:rotate(360deg)}}.empty{text-align:center;color:var(--muted);padding:30px 18px;background:#fff;border:1px dashed #cbd5e1;border-radius:var(--radius);font-size:13px;line-height:1.6}.subservice-box{background:#f8fafc;border:1px solid var(--border);border-radius:12px;padding:15px;margin-top:12px}.subservice-box h4{margin:0 0 9px;font-size:13px;color:var(--navy)}.subservice-list{display:flex;flex-wrap:wrap;gap:7px}.chip{background:#fff;border:1px solid var(--border);border-radius:20px;padding:6px 10px;font-size:11px;color:#475569}.footer{text-align:center;color:var(--muted);font-size:12px;padding:28px 10px}
     .matter{border-color:#bdf0dc;background:#f4fbf8}.matter-hint{grid-column:1/-1;margin:-6px 0 0}.mgrid{grid-column:1/-1;display:grid;grid-template-columns:1fr 1fr;gap:14px 17px}.matter .sub-pills{display:flex}.file-list{margin:6px 0 0;padding:0;list-style:none;font-size:12px;color:var(--muted)}.file-list li{padding:2px 0}.file-list .bad{color:#b91c1c}
+
+    /* --- Request action row (cancel / resubmit / rate) --- */
+    .request-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px;padding-top:14px;border-top:1px dashed var(--border)}
+    .action-btn{background:#fff;border:1px solid var(--border);color:var(--text);padding:9px 14px;border-radius:9px;font-size:12.5px;font-weight:700;display:inline-flex;align-items:center;gap:6px}
+    .action-btn:hover:not(:disabled){background:#f8fafc}
+    .action-btn.danger{color:#b91c1c;border-color:#fecaca;background:#fff5f5}
+    .action-btn.danger:hover:not(:disabled){background:#fee2e2}
+    .action-btn.primary{background:var(--green);color:var(--navy);border-color:var(--green)}
+    .action-btn.primary:hover:not(:disabled){background:#00ed9d}
+    .action-btn.rate{color:#a16207;border-color:#fde68a;background:#fffbeb}
+    .action-btn.rate:hover:not(:disabled){background:#fef9c3}
+    .action-note{font-size:11.5px;color:var(--muted);margin-top:10px;line-height:1.5}
+
+    /* --- Rating modal --- */
+    .modal-overlay{position:fixed;inset:0;background:#071a2faa;display:none;align-items:center;justify-content:center;padding:18px;z-index:1000}
+    .modal-overlay.show{display:flex}
+    .modal{background:#fff;border-radius:var(--radius);width:min(440px,100%);padding:24px;box-shadow:0 20px 50px #0004}
+    .modal h3{margin:0 0 6px;font-size:18px;color:var(--navy)}
+    .modal p.sub{margin:0 0 18px;font-size:13px;color:var(--muted)}
+    .star-row{display:flex;gap:6px;font-size:34px;line-height:1;margin:6px 0 4px}
+    .star{background:none;border:0;padding:0 2px;color:#cbd5e1;transition:transform .1s,color .1s}
+    .star:hover{transform:scale(1.1)}
+    .star.on{color:#f59e0b}
+    .rating-caption{font-size:12.5px;color:var(--muted);margin:0 0 14px;min-height:18px}
+    .modal textarea{width:100%;min-height:80px;border:1px solid var(--border);border-radius:10px;padding:11px 13px;font-size:13.5px;resize:vertical;outline:none}
+    .modal textarea:focus{border-color:var(--green-dark);box-shadow:0 0 0 3px #00d68f25}
+    .modal-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:18px}
+    .modal-message{margin-top:12px}
+
     @media(max-width:700px){.mgrid{grid-template-columns:1fr}}
     @media(max-width:700px){.topbar{padding:13px 4%}.user-label{display:none}.container{margin-top:22px}.welcome{padding:23px;text-align:center;justify-content:center}.welcome-mark{display:none}.section-heading{align-items:flex-start;flex-direction:column}.form-grid,.loc-block{grid-template-columns:1fr}.panel{padding:18px}.profile-row{align-items:flex-start;flex-direction:column;gap:5px}.profile-row span:last-child{text-align:left}}
-    @media(max-width:480px){.service-grid{grid-template-columns:1fr}.request-top{flex-direction:column}}
+    @media(max-width:480px){.service-grid{grid-template-columns:1fr}.request-top{flex-direction:column}.request-actions{flex-direction:column}.action-btn{width:100%;justify-content:center}}
   </style>
 </head>
 <body>
@@ -51,10 +80,34 @@
     <div class="field full"><p class="hint">By submitting, you authorize MEI One to share your request and contact details with eligible service providers. Submission does not guarantee immediate provider acceptance.</p></div>
     <div class="field full"><div id="requestMessage" class="message" role="status" aria-live="polite"></div><button class="primary-btn full-btn" id="submitRequest" type="submit">Submit Service Request</button></div>
   </div></form></div></section>
-  <section class="section" id="section-requests"><div class="section-heading"><div><h2>My Service Requests</h2><p>Review and track requests submitted from your account.</p></div><button class="secondary-btn" id="refreshRequests" type="button">Refresh</button></div><div id="requestsMessage" class="message"></div><div id="requestsList" class="request-list"><div class="loading">Loading your requests…</div></div></section>
+  <section class="section" id="section-requests"><div class="section-heading"><div><h2>My Service Requests</h2><p>Review, track and manage requests submitted from your account.</p></div><button class="secondary-btn" id="refreshRequests" type="button">Refresh</button></div><div id="requestsMessage" class="message"></div><div id="requestsList" class="request-list"><div class="loading">Loading your requests…</div></div></section>
   <section class="section" id="section-profile"><div class="section-heading"><div><h2>My Profile</h2><p>Your registered MEI One account details.</p></div></div><div class="panel"><div class="profile-row"><span>Full name</span><span id="profileName">—</span></div><div class="profile-row"><span>Email address</span><span id="profileEmail">—</span></div><div class="profile-row"><span>Phone number</span><span id="profilePhone">—</span></div><div class="profile-row"><span>Account status</span><span id="profileStatus">—</span></div></div><div class="panel"><h3 style="margin-top:0">Account security</h3><p class="hint">Keep your password private. Use the sign-in page to access password recovery.</p><button class="secondary-btn" id="securityBtn" type="button">Go to Sign In</button></div></section>
   <footer class="footer">MEI One · A MEI Press Holdings platform</footer>
 </main>
+
+<!-- Rating modal -->
+<div class="modal-overlay" id="ratingModal" role="dialog" aria-modal="true" aria-labelledby="ratingTitle">
+  <div class="modal">
+    <h3 id="ratingTitle">Rate the service provider</h3>
+    <p class="sub" id="ratingSub">How was your experience?</p>
+    <div class="star-row" id="starRow" aria-label="Star rating">
+      <button type="button" class="star" data-value="1" aria-label="1 star">★</button>
+      <button type="button" class="star" data-value="2" aria-label="2 stars">★</button>
+      <button type="button" class="star" data-value="3" aria-label="3 stars">★</button>
+      <button type="button" class="star" data-value="4" aria-label="4 stars">★</button>
+      <button type="button" class="star" data-value="5" aria-label="5 stars">★</button>
+    </div>
+    <p class="rating-caption" id="ratingCaption">Tap a star to rate</p>
+    <label for="ratingComment" style="font-size:12.5px;font-weight:750;color:var(--navy);display:block;margin-bottom:6px">Comment (optional)</label>
+    <textarea id="ratingComment" maxlength="600" placeholder="Tell us about the service you received…"></textarea>
+    <div class="message modal-message" id="ratingMessage" role="status"></div>
+    <div class="modal-actions">
+      <button type="button" class="secondary-btn" id="ratingCancel">Cancel</button>
+      <button type="button" class="primary-btn" id="ratingSubmit" disabled>Submit rating</button>
+    </div>
+  </div>
+</div>
+
 <script>
 (() => {
   "use strict";
@@ -113,6 +166,11 @@
   LOC_CONFIG.accident=LOC_CONFIG.accident_scene;LOC_CONFIG.accident_management=LOC_CONFIG.accident_scene;
   const $=id=>document.getElementById(id);
   let sb=null,currentUser=null,currentProfile=null,services=[],subservices=[],realtimeChannel=null,authSubscription=null,pollTimer=null,reloadTimer=null,redirecting=false,submitting=false,geo={from:null},autoTitleValue="";
+  // Track requests currently rendered (id -> row) so action handlers can access original data.
+  const requestRows=new Map();
+  // Resubmit state: when set, the next submit creates a new request seeded from this data.
+  let resubmitSeed=null;
+
   function escapeHTML(value){return String(value??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"})[c]);}
   function message(id,text,type="info"){const el=$(id);if(el){el.textContent=text;el.className="message show "+type;}}
   function clearMessage(id){const el=$(id);if(el){el.textContent="";el.className="message";}}
@@ -300,7 +358,10 @@
   }
   function populateServiceSelect(){const select=$("selectedService");const previous=select.value;select.innerHTML=services.filter(service=>!externalUrl(svcKey(service))).map(service=>`<option value="${escapeHTML(service.id)}">${escapeHTML(displayName(service))}</option>`).join("");if(services.some(service=>String(service.id)===previous))select.value=previous;select.disabled=!services.length;}
   // Reset first, then set the service selected on the service card.
-  function openRequestForm(service){$("requestForm").reset();populateServiceSelect();$("selectedService").value=String(service.id);clearMessage("requestMessage");updateRequestFields();showTab("request");}
+  function openRequestForm(service){
+    resubmitSeed=null;
+    $("requestForm").reset();populateServiceSelect();$("selectedService").value=String(service.id);clearMessage("requestMessage");updateRequestFields();showTab("request");
+  }
 
   // Keeps the title in sync with the chosen service type until the customer types their own.
   function syncTitle(service,cfg){
@@ -327,8 +388,105 @@
     $("subPills").innerHTML=cfg.pills?children.map(row=>`<button type="button" class="sub-pill" data-sub="${escapeHTML(row.id)}">${escapeHTML(subserviceName(row))}</button>`).join(""):"";
     $("subPills").querySelectorAll(".sub-pill").forEach(pill=>pill.addEventListener("click",()=>{$("selectedSubservice").value=pill.dataset.sub;onSubChange();}));
     syncTitle(service,cfg);
+    // If a resubmit seed is active, restore the text fields after the form skeleton was rebuilt.
+    if(resubmitSeed)applyResubmitSeed();
   }
   function onSubChange(){const service=findService($("selectedService").value);if(!service)return;const chosen=$("selectedSubservice").value;document.querySelectorAll(".sub-pill").forEach(pill=>pill.classList.toggle("on",pill.dataset.sub===chosen));syncTitle(service,formConfig(svcKey(service)));}
+
+  // ---- Resubmit / Cancel / Rate: request actions ----
+  // Seed the open request form from a cancelled request and switch to the request tab.
+  function startResubmit(requestId){
+    const row=requestRows.get(String(requestId));
+    if(!row){message("requestsMessage","That request is no longer available. Refresh and try again.","error");return;}
+    const service=findService(row.service_id)||services.find(s=>svcKey(s)===cfgKey(row.request_type||row.service||""));
+    if(!service){message("requestsMessage","The service for this request is no longer listed. Please pick a service manually.","error");return;}
+    resubmitSeed={requestId:row.id,serviceId:service.id,title:row.title||"",details:row.details||"",notes:row.notes||"",pickup:row.pickup||row.pickup_address||"",dropoff:row.dropoff||row.destination_address||""};
+    $("requestForm").reset();
+    populateServiceSelect();
+    $("selectedService").value=String(service.id);
+    clearMessage("requestMessage");
+    updateRequestFields();
+    applyResubmitSeed();
+    showTab("request");
+    message("requestMessage","Editing a copy of your cancelled request. Review and submit when ready.","info");
+  }
+  function applyResubmitSeed(){
+    if(!resubmitSeed)return;
+    // Only fill textual fields; numeric/select extras from the old request stay blank for a clean resubmit.
+    if(resubmitSeed.title&&!$("titleField").hidden)$("requestTitle").value=resubmitSeed.title;
+    if(resubmitSeed.details)$("requestDetails").value=resubmitSeed.details;
+    if(resubmitSeed.notes)$("requestNotes").value=resubmitSeed.notes;
+    const lfMain=$("lf_main");
+    if(lfMain&&resubmitSeed.pickup)lfMain.value=resubmitSeed.pickup;
+    const ltMain=$("lt_main");
+    if(ltMain&&resubmitSeed.dropoff)ltMain.value=resubmitSeed.dropoff;
+  }
+
+  async function cancelRequest(requestId,button){
+    const row=requestRows.get(String(requestId));
+    if(!row)return;
+    if(!confirm("Cancel this request? Providers will no longer be matched to it."))return;
+    button.disabled=true;button.textContent="Cancelling…";
+    try{
+      const {data,error}=await sb.from("service_requests").update({status:"cancelled",cancelled_at:new Date().toISOString()}).eq("id",requestId).eq("user_id",currentUser.id).select("id,status,cancelled_at").maybeSingle();
+      if(error)throw error;
+      if(!data)throw new Error("This request could not be updated. It may have already progressed — please refresh.");
+      message("requestsMessage","Your request has been cancelled.","success");
+      await loadRequests(true);
+    }catch(error){
+      console.error("Cancel request failed:",error);
+      let explanation=error?.message||"Unknown error";
+      if(error?.code==="42501"||/row-level security/i.test(explanation))explanation+=" Add an UPDATE policy on service_requests that allows auth.uid() = user_id.";
+      message("requestsMessage","Could not cancel this request: "+explanation,"error");
+      button.disabled=false;button.textContent="Cancel request";
+    }
+  }
+
+  // Rating modal state
+  let ratingRequestId=null,ratingValue=0;
+  const RATING_CAPTIONS={1:"Very poor",2:"Poor",3:"Okay",4:"Good",5:"Excellent"};
+  function openRatingModal(requestId){
+    const row=requestRows.get(String(requestId));
+    if(!row)return;
+    ratingRequestId=requestId;ratingValue=0;
+    $("ratingSub").textContent="How was your experience with this service"+(row.title?" (“"+row.title+"”)":"")+"?";
+    $("ratingComment").value="";
+    clearMessage("ratingMessage");
+    document.querySelectorAll("#starRow .star").forEach(star=>star.classList.remove("on"));
+    $("ratingCaption").textContent="Tap a star to rate";
+    $("ratingSubmit").disabled=true;
+    $("ratingModal").classList.add("show");
+    setTimeout(()=>document.querySelector('#starRow .star[data-value="5"]')?.focus(),50);
+  }
+  function closeRatingModal(){$("ratingModal").classList.remove("show");ratingRequestId=null;ratingValue=0;}
+  async function submitRating(){
+    if(!ratingRequestId||ratingValue<1){message("ratingMessage","Please choose a star rating first.","error");return;}
+    const row=requestRows.get(String(ratingRequestId));
+    if(!row)return;
+    const btn=$("ratingSubmit");btn.disabled=true;btn.textContent="Submitting…";
+    const payload={request_id:String(ratingRequestId),customer_id:currentUser.id,provider_id:row.provider_id||null,rating:ratingValue,comment:$("ratingComment").value.trim()||null};
+    try{
+      let {error}=await sb.from("provider_ratings").insert(payload);
+      if(error){
+        // Fallback: store the rating inside request notes/details if the ratings table is absent.
+        if(error.code==="42P01"||/relation .* does not exist/i.test(error.message||"")){
+          message("ratingMessage","Rating table not yet configured. Ask MEI One to run the provider_ratings SQL.","error");
+          btn.disabled=false;btn.textContent="Submit rating";
+          return;
+        }
+        throw error;
+      }
+      message("requestsMessage","Thank you for rating your service provider.","success");
+      closeRatingModal();
+      await loadRequests(true);
+    }catch(error){
+      console.error("Rating submission failed:",error);
+      let explanation=error?.message||"Unknown error";
+      if(error?.code==="42501")explanation+=" Add an INSERT policy on provider_ratings that allows auth.uid() = customer_id.";
+      message("ratingMessage","Could not submit your rating: "+explanation,"error");
+      btn.disabled=false;btn.textContent="Submit rating";
+    }
+  }
 
   // Submit one request using the authenticated user's UUID as user_id.
   async function submitRequest(event){
@@ -341,6 +499,7 @@
     const detailLines=[];if(!$("subserviceField").hidden&&$("selectedSubservice").value)detailLines.push((cfg.subLabel||"Category").replace(/\?$/,"")+": "+$("selectedSubservice").selectedOptions[0].textContent.trim());
     for(const field of cfg.extras||[]){const wrapper=document.querySelector(`[data-extra="${field.id}"]`);if(!wrapper||wrapper.hidden)continue;const control=$("x_"+field.id),value=String(control?.value||"").trim();if(field.required&&!value){message("requestMessage",field.label+" is required.","error");control?.focus();return;}if(value)detailLines.push(field.label+": "+value);}
     const matter=collectMatter(code);if(matter.error){message("requestMessage",matter.error.text,"error");matter.error.el?.focus();return;}detailLines.push(...matter.lines);
+    if(resubmitSeed){detailLines.push("Resubmission of request: "+resubmitSeed.requestId);}
     const contactPhone=currentProfile?.phone||currentUser?.phone||"";if(contactPhone)detailLines.push("Customer contact phone: "+contactPhone);if(description){if(detailLines.length)detailLines.push("");detailLines.push(description);}const details=detailLines.join("\n");
     const btn=$("submitRequest");submitting=true;btn.disabled=true;
     try{
@@ -353,17 +512,51 @@
       btn.textContent="Submitting request…";const {data,error}=await sb.from("service_requests").insert(payload).select("id").single();
       if(error&&uploaded.length){try{await sb.storage.from(DOC_BUCKET).remove(uploaded);}catch{}}
       if(error){console.error("Customer request INSERT rejected:",{code:error.code,message:error.message,details:error.details,hint:error.hint,userId:authenticatedUser.id,payload});throw error;}
-      message("requestMessage","Your request has been submitted successfully. MEI One will now look for an eligible provider.","success");
+      const wasResubmit=!!resubmitSeed;resubmitSeed=null;
+      message("requestMessage",wasResubmit?"Your revised request has been submitted successfully.":"Your request has been submitted successfully. MEI One will now look for an eligible provider.","success");
       saveMatterPrefs();$("requestForm").reset();updateRequestFields();await loadRequests(true);setTimeout(()=>showTab("requests"),900);
     }catch(error){console.error("Customer request submission failed:",error);let explanation=error?.message||"Unknown error";if(error?.code==="42501"||/row-level security/i.test(explanation))explanation+=" Check the INSERT policies on public.service_requests and confirm that user_id equals auth.uid().";if(service.builtin&&(error?.code==="23502"||error?.code==="23503"))explanation+=" The \""+displayName(service)+"\" service is not in the services table yet. Add it there (see the SQL provided).";if(error?.code==="42703"||/column .* does not exist/i.test(explanation))explanation+=" The submitted column names do not match the current database schema.";message("requestMessage","Could not submit your request: "+explanation,"error");}
     finally{submitting=false;btn.disabled=false;btn.textContent="Submit Service Request";}
   }
 
   // Customer request history. created_at is the stable sort field for all rows.
-  async function loadRequests(silent=false){if(!currentUser||!sb)return;if(!silent)$("requestsList").innerHTML='<div class="loading">Loading your requests…</div>';clearMessage("requestsMessage");const {data,error}=await sb.from("service_requests").select("id,service_id,request_type,status,pickup_address,destination_address,notes,requested_at,accepted_at,started_at,completed_at,cancelled_at,service,title,details,pickup,dropoff,price,customer_name,created_at").eq("user_id",currentUser.id).order("created_at",{ascending:false}).limit(50);if(error){console.error("Customer request history query failed:",error);$("requestsList").innerHTML='<div class="empty">Unable to load your requests: '+escapeHTML(error.message)+'</div>';return;}renderRequests(data||[]);}
+  async function loadRequests(silent=false){
+    if(!currentUser||!sb)return;
+    if(!silent)$("requestsList").innerHTML='<div class="loading">Loading your requests…</div>';
+    clearMessage("requestsMessage");
+    const {data,error}=await sb.from("service_requests").select("id,service_id,request_type,status,pickup_address,destination_address,notes,requested_at,accepted_at,started_at,completed_at,cancelled_at,service,title,details,pickup,dropoff,price,customer_name,provider_id,created_at").eq("user_id",currentUser.id).order("created_at",{ascending:false}).limit(50);
+    if(error){console.error("Customer request history query failed:",error);$("requestsList").innerHTML='<div class="empty">Unable to load your requests: '+escapeHTML(error.message)+'</div>';return;}
+    renderRequests(data||[]);
+  }
   function normalizedStatus(value){return String(value||"pending").trim().toLowerCase().replace(/\s+/g,"_");}
   function trackBanner(status){switch(status){case"pending":case"requested":return'<div class="track">⏳ Your request has been received and is awaiting provider assignment.</div>';case"accepted":return'<div class="track ok">✓ A provider has accepted your request.</div>';case"in_progress":return'<div class="track go">● Your service is in progress.</div>';case"completed":return'<div class="track done">✓ Your service has been completed.</div>';case"cancelled":return'<div class="track">This request has been cancelled.</div>';case"proposed":return'<div class="track">A provider has proposed a service arrangement. Check for updates.</div>';default:return"";}}
-  function renderRequests(rows){if(!rows.length){$("requestsList").innerHTML='<div class="empty"><strong>You have not submitted any requests yet.</strong><br>Explore the MEI One service catalogue to get started.</div>';return;}$("requestsList").innerHTML=rows.map(request=>{const service=findService(request.service_id),name=(service?displayName(service):"")||request.title||request.service||request.request_type||"Service request",status=normalizedStatus(request.status),pickup=request.pickup||request.pickup_address,dropoff=request.dropoff||request.destination_address,submitted=request.requested_at||request.created_at,price=request.price==null?"":`<p><strong>Price:</strong> KES ${Number(request.price).toLocaleString("en-KE")}</p>`;return `<article class="request-card"><div class="request-top"><div><h3>${escapeHTML(name)}</h3><p style="margin:0;color:var(--muted)">${escapeHTML(request.title||"Service request")}</p></div><span class="status ${escapeHTML(status)}">${escapeHTML(status.replace(/_/g," "))}</span></div>${trackBanner(status)}${request.details?`<p><strong>Details:</strong> ${escapeHTML(request.details)}</p>`:""}${pickup?`<p><strong>Service location / pickup:</strong> ${escapeHTML(pickup)}</p>`:""}${dropoff?`<p><strong>Destination:</strong> ${escapeHTML(dropoff)}</p>`:""}${request.notes?`<p><strong>Additional notes:</strong> ${escapeHTML(request.notes)}</p>`:""}${price}<p style="font-size:11px;color:var(--muted);margin-top:13px">Submitted: ${escapeHTML(dateText(submitted))} · Reference: ${escapeHTML(String(request.id).split("-")[0])}</p></article>`;}).join("");}
+  const CANCELLABLE=new Set(["pending","requested","accepted","proposed"]);
+  function renderRequests(rows){
+    requestRows.clear();
+    rows.forEach(row=>requestRows.set(String(row.id),row));
+    if(!rows.length){
+      $("requestsList").innerHTML='<div class="empty"><strong>You have not submitted any requests yet.</strong><br>Explore the MEI One service catalogue to get started.</div>';
+      return;
+    }
+    $("requestsList").innerHTML=rows.map(request=>{
+      const service=findService(request.service_id),name=(service?displayName(service):"")||request.title||request.service||request.request_type||"Service request",status=normalizedStatus(request.status),pickup=request.pickup||request.pickup_address,dropoff=request.dropoff||request.destination_address,submitted=request.requested_at||request.created_at,price=request.price==null?"":`<p><strong>Price:</strong> KES ${Number(request.price).toLocaleString("en-KE")}</p>`;
+      const canCancel=CANCELLABLE.has(status);
+      const canResubmit=status==="cancelled";
+      const canRate=status==="completed"&&!!request.provider_id;
+      const actions=[];
+      if(canCancel)actions.push(`<button type="button" class="action-btn danger" data-action="cancel" data-id="${escapeHTML(request.id)}">✕ Cancel request</button>`);
+      if(canResubmit)actions.push(`<button type="button" class="action-btn primary" data-action="resubmit" data-id="${escapeHTML(request.id)}">↻ Resubmit</button>`);
+      if(canRate)actions.push(`<button type="button" class="action-btn rate" data-action="rate" data-id="${escapeHTML(request.id)}">★ Rate provider</button>`);
+      const actionRow=actions.length?`<div class="request-actions">${actions.join("")}</div>`:(status==="completed"&&!request.provider_id?`<p class="action-note">Rating becomes available once a service provider is assigned to this request.</p>`:"");
+      return `<article class="request-card"><div class="request-top"><div><h3>${escapeHTML(name)}</h3><p style="margin:0;color:var(--muted)">${escapeHTML(request.title||"Service request")}</p></div><span class="status ${escapeHTML(status)}">${escapeHTML(status.replace(/_/g," "))}</span></div>${trackBanner(status)}${request.details?`<p><strong>Details:</strong> ${escapeHTML(request.details)}</p>`:""}${pickup?`<p><strong>Service location / pickup:</strong> ${escapeHTML(pickup)}</p>`:""}${dropoff?`<p><strong>Destination:</strong> ${escapeHTML(dropoff)}</p>`:""}${request.notes?`<p><strong>Additional notes:</strong> ${escapeHTML(request.notes)}</p>`:""}${price}<p style="font-size:11px;color:var(--muted);margin-top:13px">Submitted: ${escapeHTML(dateText(submitted))} · Reference: ${escapeHTML(String(request.id).split("-")[0])}</p>${actionRow}</article>`;
+    }).join("");
+    $("requestsList").querySelectorAll("[data-action]").forEach(btn=>btn.addEventListener("click",()=>{
+      const action=btn.dataset.action,id=btn.dataset.id;
+      if(action==="cancel")cancelRequest(id,btn);
+      else if(action==="resubmit")startResubmit(id);
+      else if(action==="rate")openRatingModal(id);
+    }));
+  }
   function scheduleReload(){clearTimeout(reloadTimer);reloadTimer=setTimeout(()=>{if(requestsTabActive())loadRequests(true);},500);}
   function startRealtime(){try{realtimeChannel=sb.channel("customer-requests-"+currentUser.id).on("postgres_changes",{event:"*",schema:"public",table:"service_requests",filter:"user_id=eq."+currentUser.id},scheduleReload).subscribe(status=>{if(status==="CHANNEL_ERROR"||status==="TIMED_OUT")console.warn("Customer request realtime unavailable; polling remains enabled.");});}catch(error){console.warn("Realtime unavailable; polling will be used:",error);}pollTimer=setInterval(()=>{if(!document.hidden&&requestsTabActive())loadRequests(true);},20000);}
   async function signOut(){const btn=$("logoutBtn");btn.disabled=true;btn.textContent="Signing out…";const {error}=await sb.auth.signOut();if(error){console.error("Sign-out failed:",error);btn.disabled=false;btn.textContent="Sign out";alert("Unable to sign out: "+error.message);return;}redirecting=true;window.location.replace(SIGNIN_PATH);}
@@ -373,12 +566,34 @@
   $("requestForm").addEventListener("submit",submitRequest);
   $("selectedService").addEventListener("change",()=>{clearMessage("requestMessage");updateRequestFields();});
   $("selectedSubservice").addEventListener("change",onSubChange);
-  $("backToServices").addEventListener("click",()=>showTab("home"));
+  $("backToServices").addEventListener("click",()=>{resubmitSeed=null;showTab("home");});
   $("refreshRequests").addEventListener("click",()=>loadRequests());
   $("refreshServices").addEventListener("click",()=>loadServices().catch(error=>{console.error(error);message("serviceMessage","Could not refresh services: "+(error.message||"Unknown error"),"error");}));
   $("serviceSearch").addEventListener("input",renderServices);
   $("logoutBtn").addEventListener("click",signOut);
   $("securityBtn").addEventListener("click",()=>window.location.href=SIGNIN_PATH);
+
+  // Rating modal events.
+  document.querySelectorAll("#starRow .star").forEach(star=>{
+    star.addEventListener("click",()=>{
+      ratingValue=Number(star.dataset.value);
+      document.querySelectorAll("#starRow .star").forEach(s=>s.classList.toggle("on",Number(s.dataset.value)<=ratingValue));
+      $("ratingCaption").textContent=RATING_CAPTIONS[ratingValue]+" · "+ratingValue+" of 5";
+      $("ratingSubmit").disabled=false;
+    });
+    star.addEventListener("mouseenter",()=>{
+      const hover=Number(star.dataset.value);
+      document.querySelectorAll("#starRow .star").forEach(s=>s.classList.toggle("on",Number(s.dataset.value)<=hover));
+    });
+  });
+  $("starRow").addEventListener("mouseleave",()=>{
+    document.querySelectorAll("#starRow .star").forEach(s=>s.classList.toggle("on",Number(s.dataset.value)<=ratingValue));
+  });
+  $("ratingCancel").addEventListener("click",closeRatingModal);
+  $("ratingSubmit").addEventListener("click",submitRating);
+  $("ratingModal").addEventListener("click",event=>{if(event.target===$("ratingModal"))closeRatingModal();});
+  document.addEventListener("keydown",event=>{if(event.key==="Escape"&&$("ratingModal").classList.contains("show"))closeRatingModal();});
+
   window.addEventListener("pagehide",()=>{if(authSubscription)authSubscription.unsubscribe();if(realtimeChannel&&sb)sb.removeChannel(realtimeChannel);clearInterval(pollTimer);clearTimeout(reloadTimer);});
   initialize().catch(error=>{console.error("Customer dashboard initialization failed:",error);alert("MEI One could not initialize your dashboard: "+(error?.message||"Unknown error"));});
 })();
