@@ -18,7 +18,7 @@ button{font:inherit;cursor:pointer}button:disabled{opacity:.55;cursor:not-allowe
 .brand{font-size:20px;font-weight:800;letter-spacing:-.7px}.brand span{color:var(--green)}
 .bar-actions{display:flex;gap:8px}
 .logout{background:transparent;border:1px solid #ffffff45;color:#fff;padding:9px 14px;border-radius:9px;font-weight:600;font-size:13px}
-.banners{width:min(1080px,94%);margin:14px auto 0;display:grid;gap:8px}
+.banners{width:min(1080px,94%);margin:14px auto 0;display:grid;gap:8px;position:sticky;top:calc(64px + env(safe-area-inset-top));z-index:9}
 .banner{display:flex;gap:10px;padding:11px 14px;border-radius:11px;font-size:13px;line-height:1.5;border:1px solid}
 .banner.error{background:#fef2f2;color:#991b1b;border-color:#fecaca}.banner.info{background:#eff6ff;color:#1e40af;border-color:#bfdbfe}
 .banner.success{background:#ecfdf5;color:#065f46;border-color:#a7f3d0}.banner.warn{background:#fffbeb;color:#92400e;border-color:#fde68a}
@@ -530,6 +530,7 @@ async function goOnline() {
 
   busy = true;
   $("toggleBtn").disabled = true;
+  $("toggleBtn").textContent = "Getting location…";
   clearBanner("gps");
   clearBanner("go");
 
@@ -574,6 +575,7 @@ async function goOnline() {
   } finally {
     busy = false;
     $("toggleBtn").disabled = false;
+    setToggle(online);
   }
 }
 
