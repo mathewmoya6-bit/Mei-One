@@ -1,13 +1,18 @@
 (() => {
 "use strict";
 
-const SIGNIN = "/provider-signin.html", PING = 60000, POLL = 10000, MAXACC = 500;
+const SIGNIN = "/provider-signin.html", PING = 60000, POLL = 10000, MAXACC = 500, FIX_WAIT = 20000;
+// Table that stores the provider's live location + online flag (must have user_id, lat, lng, last_seen_at, is_online).
+const LOC_TABLE = "provider_profiles";
 const $ = (id) => document.getElementById(id), now = () => Date.now();
 
-const withTimeout = (promise, label, ms = 15000) => Promise.race([
-  promise,
-  new Promise((_, reject) => setTimeout(() => reject(new Error(label + " timed out. Check your connection and Supabase.")), ms))
-]);
+const withTimeout = (promise, label, ms = 15000) => {
+  let t;
+  const timeout = new Promise((_, reject) => {
+    t = setTimeout(() => reject(new Error(label + " timed out. Check your connection and Supabase.")), ms);
+  });
+  return Promise.race([promise, timeout]).finally(() => clearTimeout(t));
+};
 
 const setText = (id, v) => {
   const e = $(id);
@@ -15,11 +20,7 @@ const setText = (id, v) => {
 };
 
 const esc = (v) => String(v ?? "").replace(/[&<>"']/g, (c) => ({
-  "&": "&amp;",
-  "<": "&lt;",
-  ">": "&gt;",
-  '"': "&quot;",
-  "'": "&#39;"
+  "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
 }[c]));
 
 const ago = (iso) => {
@@ -49,6 +50,22 @@ const sKey = (c) => {
   return "";
 };
 
+// Safe wrappers around MEI_MODULES so one missing module never crashes a render.
+const FALLBACK_MOD = { name: "Service", icon: "•", color: "#64748b", tip: "", checklist: [], steps: {} };
+const getMod = (k) => {
+  try { return (k && window.MEI_MODULES?.get(k)) || null; } catch { return null; }
+};
+const modOrFallback = (k) => getMod(k) || FALLBACK_MOD;
+const highlightsFor = (k, details) => {
+  try {
+    const h = window.MEI_MODULES?.highlights?.(k, details);
+    return Array.isArray(h) ? h : [];
+  } catch { return []; }
+};
+const stepFor = (k, status) => {
+  try { return window.MEI_MODULES?.step?.(k, status) || null; } catch { return null; }
+};
+
 let sb, me, provider, mod;
 let online = false, pos = null, watchId = null, wake = null, net = "checking";
 let offers = [], jobs = [], phones = {};
@@ -65,31 +82,25 @@ function clearBanner(k) {
 function banner(k, kind, text, ttl = 0) {
   clearBanner(k);
 
+  const host = $("banners");
+  if (!host) return;
+
   const el = document.createElement("div");
   el.className = "banner " + kind;
   el.innerHTML = `<span>${esc(text)}</span><button class="x" aria-label="Dismiss">✕</button>`;
 
   el.querySelector(".x").onclick = () => clearBanner(k);
-  $("banners").appendChild(el);
+  host.appendChild(el);
   banners.set(k, el);
 
-  if (ttl) setTimeout(() => clearBanner(k), ttl);
+  if (ttl) setTimeout(() => { if (banners.get(k) === el) clearBanner(k); }, ttl);
 }
 
 function setNet(s) {
   net = s;
 
-  $("netPill").className = "pill " + ({
-    online: "on",
-    offline: "err",
-    reconnecting: "warn"
-  }[s] || "off");
-
-  $("netText").textContent = {
-    online: "Connected",
-    offline: "Offline",
-    reconnecting: "Reconnecting…"
-  }[s] || "Checking…";
+  $("netPill").className = "pill " + ({ online: "on", offline: "err", reconnecting: "warn" }[s] || "off");
+  $("netText").textContent = { online: "Connected", offline: "Offline", reconnecting: "Reconnecting…" }[s] || "Checking…";
 
   if (s === "offline") {
     banner("net", "warn", "Internet connection lost. Offers will not refresh until you reconnect.");
@@ -114,19 +125,12 @@ function gpsPill(cls, t) {
 function gpsUi() {
   const f = !!pos;
 
-  $("gpsAcc").textContent = $("locAcc").textContent =
-    f ? Math.round(pos.accuracy) + " m" : "—";
-
-  $("gpsFix").textContent =
-    f ? ago(new Date(pos.at).toISOString()) : "—";
-
-  $("locCoords").textContent =
-    f ? pos.lat.toFixed(5) + ", " + pos.lng.toFixed(5) : "—";
-
-  $("locFix").textContent =
-    f ? new Date(pos.at).toLocaleTimeString() : "—";
-
-  $("locStatus").textContent = online ? "Online, sharing" : "Offline";
+  setText("gpsAcc", f ? Math.round(pos.accuracy) + " m" : "—");
+  setText("locAcc", f ? Math.round(pos.accuracy) + " m" : "—");
+  setText("gpsFix", f ? ago(new Date(pos.at).toISOString()) : "—");
+  setText("locCoords", f ? pos.lat.toFixed(5) + ", " + pos.lng.toFixed(5) : "—");
+  setText("locFix", f ? new Date(pos.at).toLocaleTimeString() : "—");
+  setText("locStatus", online ? "Online, sharing" : "Offline");
 }
 
 function startWatch() {
@@ -141,57 +145,61 @@ function startWatch() {
 
   navigator.permissions?.query({ name: "geolocation" })
     .then((r) => {
-      $("locPerm").textContent = r.state;
-      r.onchange = () => ($("locPerm").textContent = r.state);
+      setText("locPerm", r.state);
+      r.onchange = () => setText("locPerm", r.state);
     })
     .catch(() => {});
 
   return new Promise((res, rej) => {
     let done = false;
+    let worst = null;
+
+    // Wait for a good fix instead of failing on the first (often coarse) one.
+    const timer = setTimeout(() => {
+      if (done) return;
+      done = true;
+      rej(new Error(
+        worst != null
+          ? "GPS accuracy too poor (" + Math.round(worst) + " m). Move to open sky and retry."
+          : "Could not obtain your location. Check device settings."
+      ));
+    }, FIX_WAIT);
 
     watchId = navigator.geolocation.watchPosition((p) => {
       const acc = p.coords.accuracy ?? Infinity;
 
       if (acc > MAXACC) {
-        if (!done) {
-          done = true;
-          rej(new Error(
-            "GPS accuracy too poor (" + Math.round(acc) +
-            " m). Move to open sky and retry."
-          ));
-        }
+        worst = acc;
         return;
       }
 
-      pos = {
-        lat: p.coords.latitude,
-        lng: p.coords.longitude,
-        accuracy: acc,
-        at: now()
-      };
+      pos = { lat: p.coords.latitude, lng: p.coords.longitude, accuracy: acc, at: now() };
 
+      clearBanner("gps");
       gpsPill("on", "GPS active");
       gpsUi();
 
       if (!done) {
         done = true;
+        clearTimeout(timer);
         res();
       }
-
     }, (e) => {
       gpsPill("err", e.code === 1 ? "GPS denied" : "GPS error");
 
       if (!done) {
         done = true;
+        clearTimeout(timer);
         rej(new Error(
           e.code === 1
             ? "Location permission denied. Allow location access to receive requests."
             : "Could not obtain your location. Check device settings."
         ));
-      } else {
+      } else if (e.code !== 1) {
         banner("gps", "warn", "GPS fix lost. Keep the screen on and move to an open area.");
+      } else {
+        banner("gps", "error", "Location permission was revoked. Allow location access to stay online.");
       }
-
     }, {
       enableHighAccuracy: true,
       maximumAge: 10000,
@@ -201,7 +209,7 @@ function startWatch() {
 }
 
 function stopWatch() {
-  if (watchId !== null) navigator.geolocation.clearWatch(watchId);
+  if (watchId !== null && navigator.geolocation) navigator.geolocation.clearWatch(watchId);
 
   watchId = null;
   pos = null;
@@ -219,9 +227,7 @@ const hold = async () => {
 };
 
 const free = () => {
-  try {
-    wake?.release();
-  } catch {}
+  try { wake?.release(); } catch {}
   wake = null;
 };
 
@@ -244,7 +250,7 @@ async function ping(flag) {
       throw new Error("Your location is not available.");
     }
 
-    const { data: a, error: ae } = await sb.auth.getUser();
+    const { data: a, error: ae } = await withTimeout(sb.auth.getUser(), "Session check");
 
     if (ae || !a?.user) {
       throw new Error("Your session has expired. Please sign in again.");
@@ -252,27 +258,31 @@ async function ping(flag) {
 
     me = a.user;
 
-    const { data, error } = await sb
-      .from("provider_profiles")
-      .update({
-        lat: pos.lat,
-        lng: pos.lng,
-        last_seen_at: new Date().toISOString(),
-        is_online: !!flag
-      })
-      .eq("user_id", me.id)
-      .select("user_id,last_seen_at")
-      .maybeSingle();
+    const { data, error } = await withTimeout(
+      sb.from(LOC_TABLE)
+        .update({
+          lat: pos.lat,
+          lng: pos.lng,
+          last_seen_at: new Date().toISOString(),
+          is_online: !!flag
+        })
+        .eq("user_id", me.id)
+        .select("user_id,last_seen_at")
+        .maybeSingle(),
+      "Location update"
+    );
 
     if (error) {
       throw new Error("Could not update location: " + error.message);
     }
 
     if (!data) {
-      throw new Error("No provider location profile is linked to your account. Contact MEI One.");
+      throw new Error("No provider location profile is linked to your account (" + LOC_TABLE + "). Contact MEI One.");
     }
 
-    $("hb").textContent = $("locHb").textContent = ago(data.last_seen_at);
+    const h = ago(data.last_seen_at);
+    setText("hb", h);
+    setText("locHb", h);
 
   } finally {
     pinging = false;
@@ -281,6 +291,7 @@ async function ping(flag) {
 
 function setToggle(on) {
   const b = $("toggleBtn");
+  if (!b) return;
 
   b.textContent = on ? "Go offline" : "Go online";
   b.classList.toggle("on", on);
@@ -294,6 +305,7 @@ async function goOnline() {
   busy = true;
   $("toggleBtn").disabled = true;
   clearBanner("gps");
+  clearBanner("go");
 
   try {
     await startWatch();
@@ -307,6 +319,10 @@ async function goOnline() {
 
     T.ping = setInterval(async () => {
       if (!online || !pos || net === "offline") return;
+
+      if (now() - pos.at > PING * 3) {
+        banner("gps", "warn", "GPS fix is stale. Keep the screen on and move to an open area.");
+      }
 
       try {
         await ping(true);
@@ -322,6 +338,7 @@ async function goOnline() {
 
   } catch (e) {
     online = false;
+    clearInterval(T.ping);
     stopWatch();
     free();
     setToggle(false);
@@ -346,6 +363,7 @@ async function goOffline() {
         await ping(false);
       } catch (e) {
         console.warn(e);
+        banner("go", "warn", "You are offline here, but the server may still show you online for a short while.", 6000);
       }
     }
 
@@ -367,6 +385,21 @@ async function goOffline() {
   }
 }
 
+// Replace the dashboard with a message (used for blocked / unapproved accounts).
+function block(title, message) {
+  setText("greeting", title);
+
+  setText("accountStatus", title.includes("awaiting") ? "Pending approval" : "Needs attention");
+
+  const main = $("main");
+
+  if (main) {
+    main.innerHTML = `<div class="empty"><strong>${esc(title)}</strong><br>${esc(message)}</div>`;
+  }
+
+  return false;
+}
+
 // Load provider account and its service-specific module.
 async function loadProvider() {
   const { data, error } = await withTimeout(
@@ -376,24 +409,6 @@ async function loadProvider() {
       .maybeSingle(),
     "Provider profile"
   );
-
-  const block = (title, message) => {
-    setText("greeting", title);
-
-    setText(
-      "accountStatus",
-      title.includes("awaiting") ? "Pending approval" : "Needs attention"
-    );
-
-    const main = $("main");
-
-    if (main) {
-      main.innerHTML =
-        `<div class="empty"><strong>${esc(title)}</strong><br>${esc(message)}</div>`;
-    }
-
-    return false;
-  };
 
   if (error) {
     throw new Error("Unable to load provider profile: " + error.message);
@@ -409,26 +424,18 @@ async function loadProvider() {
   provider = data;
 
   if (String(data.status || "").toLowerCase() !== "approved") {
-    setText("pfName", data.business_name || "—");
-    setText("pfStatus", data.status || "Pending");
-
     return block(
       "Your provider account is awaiting approval",
       "You cannot receive service requests until your account is approved."
     );
   }
 
-  if (
-    !window.MEI_MODULES ||
-    typeof window.MEI_MODULES.get !== "function"
-  ) {
-    throw new Error(
-      "Provider service modules did not load. Check /js/provider-modules.js."
-    );
+  if (!window.MEI_MODULES || typeof window.MEI_MODULES.get !== "function") {
+    throw new Error("Provider service modules did not load. Check /js/provider-modules.js.");
   }
 
   const key = sKey(data.type);
-  mod = key ? MEI_MODULES.get(key) : null;
+  mod = key ? getMod(key) : null;
 
   if (!mod) {
     return block(
@@ -437,23 +444,16 @@ async function loadProvider() {
     );
   }
 
-  document.documentElement.style.setProperty(
-    "--accent",
-    mod.color || "#00d68f"
-  );
+  document.documentElement.style.setProperty("--accent", mod.color || "#00d68f");
 
   const typeText =
     (mod.icon || "•") + " " +
     (mod.name || data.type) +
     (data.subtype
-      ? " · " + data.subtype.replace(/^home-/, "").replace(/[-_]/g, " ")
+      ? " · " + String(data.subtype).replace(/^home-/, "").replace(/[-_]/g, " ")
       : "");
 
-  setText(
-    "greeting",
-    "Hi, " + (data.business_name || (me.email || "Provider").split("@")[0])
-  );
-
+  setText("greeting", "Hi, " + (data.business_name || (me.email || "Provider").split("@")[0]));
   setText("providerType", typeText);
   setText("accountStatus", "Approved");
 
@@ -462,37 +462,28 @@ async function loadProvider() {
   setText("pfPhone", data.phone || "—");
   setText("pfStatus", data.status || "Approved");
 
-  const rating = data.rating != null
-    ? Number(data.rating).toFixed(1)
-    : "—";
+  const rating = data.rating != null ? Number(data.rating).toFixed(1) : "—";
 
   setText("rating", rating);
   setText("pfRating", rating);
-
-  setText(
-    "ratingSub",
-    data.rating != null ? "from customers" : "No ratings yet"
-  );
+  setText("ratingSub", data.rating != null ? "from customers" : "No ratings yet");
 
   const tk = $("toolkit");
 
   if (tk) {
     const checklist = Array.isArray(mod.checklist) ? mod.checklist : [];
-
-    const steps = mod.steps && typeof mod.steps === "object"
-      ? Object.values(mod.steps)
-      : [];
+    const steps = mod.steps && typeof mod.steps === "object" ? Object.values(mod.steps) : [];
 
     tk.innerHTML =
       `<h3>${esc((mod.icon || "") + " " + (mod.name || "Provider"))} toolkit</h3>` +
       (mod.tip ? `<p>${esc(mod.tip)}</p>` : "") +
       (checklist.length
         ? `<p><strong>Before completing a job:</strong></p>` +
-          checklist.map(c => `<p>✔ ${esc(c)}</p>`).join("")
+          checklist.map((c) => `<p>✔ ${esc(c)}</p>`).join("")
         : "") +
       (steps.length
         ? `<p><strong>Job flow:</strong> ` +
-          steps.map(x => esc(x.label || "")).filter(Boolean).join(" → ") +
+          steps.map((x) => esc(x?.label || "")).filter(Boolean).join(" → ") +
           `</p>`
         : "");
   }
@@ -509,7 +500,7 @@ async function loadProvider() {
 }
 
 async function loadEarnings() {
-  if (!me) return;
+  if (!me || !provider) return;
 
   const d = new Date();
   d.setHours(0, 0, 0, 0);
@@ -526,9 +517,7 @@ async function loadEarnings() {
 
     if (error) throw error;
 
-    let sum = 0;
-    let cur = "KES";
-    let count = 0;
+    let sum = 0, cur = "KES", count = 0;
 
     (data || []).forEach((r) => {
       const f = Array.isArray(r.service_request_financials)
@@ -542,11 +531,7 @@ async function loadEarnings() {
       }
     });
 
-    setText(
-      "earn",
-      cur + " " + sum.toLocaleString("en-KE", { maximumFractionDigits: 0 })
-    );
-
+    setText("earn", cur + " " + sum.toLocaleString("en-KE", { maximumFractionDigits: 0 }));
     setText("earnSub", count + " completed today");
 
   } catch (e) {
@@ -559,9 +544,7 @@ function mapsUrl(la, lo, text) {
   la = la == null ? NaN : Number(la);
   lo = lo == null ? NaN : Number(lo);
 
-  let q = Number.isFinite(la) && Number.isFinite(lo)
-    ? la + "," + lo
-    : "";
+  let q = Number.isFinite(la) && Number.isFinite(lo) ? la + "," + lo : "";
 
   if (!q) {
     const c = String(text || "")
@@ -572,34 +555,31 @@ function mapsUrl(la, lo, text) {
     if (c) q = c + ", Kenya";
   }
 
-  return q
-    ? "https://www.google.com/maps/dir/?api=1&destination=" + encodeURIComponent(q)
-    : "";
+  return q ? "https://www.google.com/maps/dir/?api=1&destination=" + encodeURIComponent(q) : "";
 }
 
 const svcLabel = (r) => {
   const k = sKey(r?.request_type || r?.service);
-  const x = k && window.MEI_MODULES?.get(k);
+  const x = k && getMod(k);
 
-  return x?.name ||
-    String(r?.request_type || r?.service || "Service").replace(/_/g, " ");
+  return x?.name || String(r?.request_type || r?.service || "Service").replace(/_/g, " ");
 };
 
 const tagStyle = (k) => {
-  const x = window.MEI_MODULES?.get(k);
-  const c = x?.color || "#64748b";
-
-  return `style="background:${c}22;color:${c}"`;
+  const c = getMod(k)?.color || "#64748b";
+  return `style="background:${esc(c)}22;color:${esc(c)}"`;
 };
 
-const left = (o) =>
-  Math.max(0, Math.round((new Date(o.expires_at).getTime() - now()) / 1000));
+const left = (o) => {
+  const t = new Date(o.expires_at).getTime();
+  return Number.isFinite(t) ? Math.max(0, Math.round((t - now()) / 1000)) : 0;
+};
 
 async function loadOffers() {
   if (loadO) return;
 
   // Do not leave the dashboard showing an endless loading message when offline.
-  if (!online || net === "offline") {
+  if (!online || net === "offline" || !me) {
     offers = [];
     renderOffers();
     return;
@@ -632,11 +612,7 @@ async function loadOffers() {
     offers = [];
     renderOffers();
 
-    banner(
-      "offers",
-      "error",
-      "Could not load offers: " + (e.message || "Unknown error")
-    );
+    banner("offers", "error", "Could not load offers: " + (e.message || "Unknown error"));
 
   } finally {
     loadO = false;
@@ -644,36 +620,39 @@ async function loadOffers() {
 }
 
 function renderOffers() {
+  const box = $("offers");
+  if (!box) return;
+
   const live = offers.filter((o) => left(o) > 0);
 
-  $("offerCount").textContent = live.length;
+  setText("offerCount", live.length);
 
-  $("offerSub").textContent = live.length
-    ? "expires automatically"
-    : online
-      ? "none right now"
-      : "go online to receive";
+  setText(
+    "offerSub",
+    live.length ? "expires automatically" : online ? "none right now" : "go online to receive"
+  );
 
   if (!online) {
-    $("offers").innerHTML =
-      '<div class="empty">Go online to receive nearby requests.</div>';
+    box.innerHTML = '<div class="empty">Go online to receive nearby requests.</div>';
     return;
   }
 
   if (!live.length) {
-    $("offers").innerHTML =
-      '<div class="empty">No requests right now. New offers will appear here.</div>';
+    box.innerHTML = '<div class="empty">No requests right now. New offers will appear here.</div>';
     return;
   }
 
-  $("offers").innerHTML = live.map((o) => {
-    const r = o.service_requests || {};
+  box.innerHTML = live.map((o) => {
+    // PostgREST can return an embedded relation as an object or a one-item array.
+    const r = (Array.isArray(o.service_requests) ? o.service_requests[0] : o.service_requests) || {};
     const k = sKey(r.request_type || r.service);
     const label = svcLabel(r);
 
-    const hl = MEI_MODULES.highlights(k, r.details)
+    const hl = highlightsFor(k, r.details)
       .map(([a, b]) => `<p><strong>${esc(a)}:</strong> ${esc(b)}</p>`)
       .join("");
+
+    const dist = o.distance_km != null ? Number(o.distance_km).toFixed(1) + " km away" : "Distance unknown";
 
     return `
       <article class="card">
@@ -681,7 +660,7 @@ function renderOffers() {
           <div>
             ${label ? `<span class="svc-tag" ${tagStyle(k)}>${esc(label)}</span>` : ""}
             <h3>${esc(r.title || label || "Service request")}</h3>
-            <p style="color:var(--muted)">${esc(o.distance_km ?? "—")} km away</p>
+            <p style="color:var(--muted)">${esc(dist)}</p>
           </div>
           <span class="badge warn" data-timer="${esc(o.id)}">${left(o)}s</span>
         </div>
@@ -704,7 +683,7 @@ function tick() {
   let exp = false;
 
   offers.forEach((o) => {
-    const el = document.querySelector(`[data-timer="${CSS.escape(o.id)}"]`);
+    const el = document.querySelector(`[data-timer="${CSS.escape(String(o.id))}"]`);
     const s = left(o);
 
     if (el) el.textContent = s + "s";
@@ -739,58 +718,41 @@ async function act(key, btn, busyText, fn) {
   }
 }
 
-const taken = (m) =>
-  /already|taken|conflict|claimed|expired|not available/i.test(m);
+const taken = (m) => /already|taken|conflict|claimed|expired|not available/i.test(m);
 
-const accept = (id, btn) => act(
-  "a:" + id,
-  btn,
-  "Accepting…",
-  async () => {
-    const { error } = await sb.rpc(
-      "accept_request",
-      { p_request_id: id }
-    );
+const accept = (id, btn) => act("a:" + id, btn, "Accepting…", async () => {
+  const { error } = await sb.rpc("accept_request", { p_request_id: id });
 
-    if (error) {
-      await loadOffers();
-
-      return banner(
-        "accept",
-        taken(error.message) ? "warn" : "error",
-        taken(error.message)
-          ? "This request is no longer available."
-          : "Could not accept request: " + error.message
-      );
-    }
-
-    banner("accept", "success", "Request accepted.", 4000);
-
-    await Promise.all([loadOffers(), loadJobs()]);
-    setTab("jobs");
-  }
-);
-
-const decline = (id, btn) => act(
-  "d:" + id,
-  btn,
-  "Declining…",
-  async () => {
-    const { error } = await sb.rpc(
-      "decline_offer",
-      { p_offer_id: id }
-    );
-
-    if (error) {
-      return banner("decline", "error", "Could not decline: " + error.message);
-    }
-
+  if (error) {
     await loadOffers();
+
+    return banner(
+      "accept",
+      taken(error.message) ? "warn" : "error",
+      taken(error.message)
+        ? "This request is no longer available."
+        : "Could not accept request: " + error.message
+    );
   }
-);
+
+  banner("accept", "success", "Request accepted.", 4000);
+
+  await Promise.all([loadOffers(), loadJobs()]);
+  setTab("jobs");
+});
+
+const decline = (id, btn) => act("d:" + id, btn, "Declining…", async () => {
+  const { error } = await sb.rpc("decline_offer", { p_offer_id: id });
+
+  if (error) {
+    return banner("decline", "error", "Could not decline: " + error.message);
+  }
+
+  await loadOffers();
+});
 
 async function loadJobs() {
-  if (loadJ || !me) return;
+  if (loadJ || !me || !provider) return;
 
   loadJ = true;
 
@@ -816,11 +778,7 @@ async function loadJobs() {
         ? r.service_request_financials[0]
         : r.service_request_financials;
 
-      return {
-        ...r,
-        total: f?.customer_total ?? null,
-        cur: f?.currency || "KES"
-      };
+      return { ...r, total: f?.customer_total ?? null, cur: f?.currency || "KES" };
     });
 
     phones = {};
@@ -829,7 +787,7 @@ async function loadJobs() {
       const { data: pv, error: pe } = await withTimeout(
         sb.from("service_request_private")
           .select("request_id,customer_phone,recipient_phone")
-          .in("request_id", jobs.map(j => j.id)),
+          .in("request_id", jobs.map((j) => j.id)),
         "Customer contact details"
       );
 
@@ -854,15 +812,10 @@ async function loadJobs() {
 
     setText("jobSub", "Could not refresh");
 
-    banner(
-      "jobs",
-      "error",
-      "Could not load jobs: " + (e.message || "Unknown error")
-    );
+    banner("jobs", "error", "Could not load jobs: " + (e.message || "Unknown error"));
 
     if (!jobs.length && $("jobs")) {
-      $("jobs").innerHTML =
-        '<div class="empty">Jobs could not be loaded. Use Refresh to try again.</div>';
+      $("jobs").innerHTML = '<div class="empty">Jobs could not be loaded. Use Refresh to try again.</div>';
     }
 
   } finally {
@@ -873,15 +826,17 @@ async function loadJobs() {
 const tel = (n) => String(n || "").replace(/[^\d+]/g, "");
 
 function renderJobs() {
+  const box = $("jobs");
+  if (!box) return;
+
   if (!jobs.length) {
-    $("jobs").innerHTML =
-      '<div class="empty">You currently have no active jobs.</div>';
+    box.innerHTML = '<div class="empty">You currently have no active jobs.</div>';
     return;
   }
 
-  $("jobs").innerHTML = jobs.map((r) => {
+  box.innerHTML = jobs.map((r) => {
     const sk = sKey(r.request_type || r.service) || sKey(provider?.type);
-    const m = MEI_MODULES.get(sk);
+    const m = modOrFallback(sk);
     const label = svcLabel(r) || m.name;
 
     const pu = mapsUrl(r.latitude, r.longitude, r.pickup);
@@ -908,32 +863,27 @@ function renderJobs() {
 
     const calls =
       (c ? `<a class="btn call" href="tel:${esc(c)}">📞 Customer</a>` : "") +
-      (rc && rc !== c
-        ? `<a class="btn call" href="tel:${esc(rc)}">📞 Recipient</a>`
-        : "");
+      (rc && rc !== c ? `<a class="btn call" href="tel:${esc(rc)}">📞 Recipient</a>` : "");
 
-    const step = MEI_MODULES.step(sk, r.status);
+    const step = stepFor(sk, r.status);
 
     const action = step
       ? `<button class="btn go" data-status="${esc(step.to)}" data-id="${esc(r.id)}" data-sk="${esc(sk)}" type="button">${esc(step.label)}</button>`
       : "";
 
-    const hl = MEI_MODULES.highlights(sk, r.details)
+    const hl = highlightsFor(sk, r.details)
       .map(([a, b]) => `<p><strong>${esc(a)}:</strong> ${esc(b)}</p>`)
       .join("");
 
     const bill = r.total != null
-      ? `${esc(r.cur)} ${Number(r.total).toLocaleString("en-KE", {
-          minimumFractionDigits: 2,
-          maximumFractionDigits: 2
-        })}`
+      ? `${esc(r.cur)} ${Number(r.total).toLocaleString("en-KE", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
       : "Not yet calculated";
 
     return `
       <article class="card">
         <div class="top">
           <div>
-            <span class="svc-tag" ${tagStyle(sk)}>${esc(m.icon + " " + label)}</span>
+            <span class="svc-tag" ${tagStyle(sk)}>${esc((m.icon || "") + " " + label)}</span>
             <h3>${esc(r.title || label)}</h3>
             <div class="ref">#MEI-${esc(String(r.id).slice(0, 8).toUpperCase())}</div>
             <p style="color:var(--muted)">Customer: ${esc(r.customer_name || "—")}</p>
@@ -950,7 +900,7 @@ function renderJobs() {
         ${hl || (r.details ? `<p><strong>Details:</strong> ${esc(r.details)}</p>` : "")}
         ${r.notes ? `<p><strong>Notes:</strong> ${esc(r.notes)}</p>` : ""}
 
-        ${m.tip ? `<p style="color:var(--muted);font-size:12px">${m.icon} ${esc(m.tip)}</p>` : ""}
+        ${m.tip ? `<p style="color:var(--muted);font-size:12px">${esc(m.icon || "")} ${esc(m.tip)}</p>` : ""}
 
         <div class="actions">
           ${calls}
@@ -965,38 +915,23 @@ function renderJobs() {
 
 const setStatus = (id, to, btn, sk) => {
   if (to === "completed") {
-    const list = MEI_MODULES.get(sk).checklist
-      .map((c) => "• " + c)
-      .join("\n");
+    const items = Array.isArray(modOrFallback(sk).checklist) ? modOrFallback(sk).checklist : [];
+    const list = items.map((c) => "• " + c).join("\n");
 
     if (list && !confirm("Confirm before completing:\n" + list)) return;
   }
 
-  return act(
-    "s:" + id + to,
-    btn,
-    "Updating…",
-    async () => {
-      const { error } = await sb.rpc(
-        "set_request_status",
-        {
-          p_request_id: id,
-          p_status: to
-        }
-      );
+  return act("s:" + id + to, btn, "Updating…", async () => {
+    const { error } = await sb.rpc("set_request_status", { p_request_id: id, p_status: to });
 
-      if (error) {
-        return banner("status", "error", "Could not update job: " + error.message);
-      }
-
-      banner("status", "success", "Job updated.", 3000);
-
-      await Promise.all([
-        loadJobs(),
-        to === "completed" ? loadEarnings() : null
-      ]);
+    if (error) {
+      return banner("status", "error", "Could not update job: " + error.message);
     }
-  );
+
+    banner("status", "success", "Job updated.", 3000);
+
+    await Promise.all([loadJobs(), to === "completed" ? loadEarnings() : null]);
+  });
 };
 
 const dlg = $("cancelDlg");
@@ -1006,7 +941,15 @@ $("dlgReason").onchange = () => {
 };
 
 dlg.addEventListener("close", async () => {
-  if (dlg.returnValue !== "confirm" || !modalJob) return;
+  // returnValue is NOT reset by Esc/backdrop close, so read it once and clear it
+  // to avoid a later Esc re-triggering an earlier "confirm".
+  const rv = dlg.returnValue;
+  dlg.returnValue = "";
+
+  if (rv !== "confirm" || !modalJob) {
+    modalJob = null;
+    return;
+  }
 
   const id = modalJob;
   const reason = $("dlgReason").value;
@@ -1014,20 +957,17 @@ dlg.addEventListener("close", async () => {
 
   modalJob = null;
 
-  if (guard.has("c:" + id)) return;
+  if (!reason || guard.has("c:" + id)) return;
 
   guard.add("c:" + id);
 
   try {
-    const { error } = await sb.rpc(
-      "set_request_status",
-      {
-        p_request_id: id,
-        p_status: "cancelled",
-        p_reason: reason,
-        p_notes: notes || null
-      }
-    );
+    const { error } = await sb.rpc("set_request_status", {
+      p_request_id: id,
+      p_status: "cancelled",
+      p_reason: reason,
+      p_notes: notes || null
+    });
 
     if (error) {
       banner("cancel", "error", "Could not cancel: " + error.message);
@@ -1036,6 +976,8 @@ dlg.addEventListener("close", async () => {
       await loadJobs();
     }
 
+  } catch (e) {
+    banner("cancel", "error", "Could not cancel: " + (e.message || e));
   } finally {
     guard.delete("c:" + id);
   }
@@ -1043,7 +985,7 @@ dlg.addEventListener("close", async () => {
 
 function setTab(n) {
   document.querySelectorAll(".tabs [role=tab]").forEach((b) => {
-    b.setAttribute("aria-selected", b.dataset.tab === n);
+    b.setAttribute("aria-selected", String(b.dataset.tab === n));
   });
 
   document.querySelectorAll("[data-panel]").forEach((p) => {
@@ -1051,43 +993,50 @@ function setTab(n) {
   });
 }
 
-document.querySelector(".tabs").onclick = (e) => {
-  const b = e.target.closest("[data-tab]");
-  if (b) setTab(b.dataset.tab);
-};
+// Delegated handlers are attached to document so they survive main being re-rendered.
+document.addEventListener("click", (e) => {
+  const tab = e.target.closest(".tabs [data-tab]");
+  if (tab) return setTab(tab.dataset.tab);
 
-$("offers").onclick = (e) => {
-  const a = e.target.closest("[data-accept]");
-  const d = e.target.closest("[data-decline]");
+  const a = e.target.closest("#offers [data-accept]");
+  if (a) return accept(a.dataset.accept, a);
 
-  if (a) accept(a.dataset.accept, a);
-  else if (d) decline(d.dataset.decline, d);
-};
+  const d = e.target.closest("#offers [data-decline]");
+  if (d) return decline(d.dataset.decline, d);
 
-$("jobs").onclick = (e) => {
-  const s = e.target.closest("[data-status]");
-  const c = e.target.closest("[data-cancel]");
+  const s = e.target.closest("#jobs [data-status]");
+  if (s) return setStatus(s.dataset.id, s.dataset.status, s, s.dataset.sk);
 
-  if (s) {
-    setStatus(s.dataset.id, s.dataset.status, s, s.dataset.sk);
-  } else if (c) {
+  const c = e.target.closest("#jobs [data-cancel]");
+  if (c) {
     modalJob = c.dataset.cancel;
 
     $("dlgReason").value = "";
     $("dlgNotes").value = "";
     $("dlgConfirm").disabled = true;
+    dlg.returnValue = "";
 
     dlg.showModal();
   }
-};
 
-$("toggleBtn").onclick = () => (
-  online ? goOffline() : goOnline()
-);
+  const t = e.target.closest("#toggleBtn");
+  if (t) return online ? goOffline() : goOnline();
+
+  if (e.target.closest("#restartGps")) return restartGps();
+  if (e.target.closest("#permissionHelp")) {
+    banner(
+      "help",
+      "info",
+      `To go online you need location permission, accuracy under ${MAXACC} m, and a working internet connection. If location is blocked, allow it in your browser's site settings.`
+    );
+  }
+});
 
 $("logoutBtn").onclick = signOut;
 
 $("refreshBtn").onclick = () => {
+  if (!provider) return location.reload();
+
   if (online) loadOffers();
 
   loadJobs();
@@ -1096,13 +1045,12 @@ $("refreshBtn").onclick = () => {
   banner("ok", "success", "Refreshed.", 2000);
 };
 
-$("restartGps").onclick = async () => {
+async function restartGps() {
   if (!online) {
     return banner("gps", "info", "Go online first.", 3000);
   }
 
   try {
-    stopWatch();
     await startWatch();
     await ping(true);
 
@@ -1111,15 +1059,7 @@ $("restartGps").onclick = async () => {
   } catch (e) {
     banner("gps", "error", e.message);
   }
-};
-
-$("permissionHelp").onclick = () => {
-  banner(
-    "help",
-    "info",
-    `To go online you need location permission, accuracy under ${MAXACC} m, and a working internet connection. If location is blocked, allow it in your browser's site settings.`
-  );
-};
+}
 
 function startRealtime() {
   if (channel) sb.removeChannel(channel);
@@ -1127,22 +1067,12 @@ function startRealtime() {
   channel = sb.channel("mei-provider-" + me.id)
     .on(
       "postgres_changes",
-      {
-        event: "*",
-        schema: "public",
-        table: "request_offers",
-        filter: "provider_id=eq." + me.id
-      },
-      () => online && loadOffers()
+      { event: "*", schema: "public", table: "request_offers", filter: "provider_id=eq." + me.id },
+      () => { if (online) loadOffers(); }
     )
     .on(
       "postgres_changes",
-      {
-        event: "*",
-        schema: "public",
-        table: "service_requests",
-        filter: "provider_id=eq." + me.id
-      },
+      { event: "*", schema: "public", table: "service_requests", filter: "provider_id=eq." + me.id },
       () => loadJobs()
     )
     .subscribe((s) => {
@@ -1206,13 +1136,7 @@ async function init() {
   setNet(navigator.onLine ? "online" : "offline");
 
   try {
-    const {
-      data: sessionData,
-      error: sessionError
-    } = await withTimeout(
-      sb.auth.getSession(),
-      "Session check"
-    );
+    const { data: sessionData, error: sessionError } = await withTimeout(sb.auth.getSession(), "Session check");
 
     if (sessionError) throw sessionError;
 
@@ -1221,13 +1145,7 @@ async function init() {
       return;
     }
 
-    const {
-      data: userData,
-      error: userError
-    } = await withTimeout(
-      sb.auth.getUser(),
-      "User check"
-    );
+    const { data: userData, error: userError } = await withTimeout(sb.auth.getUser(), "User check");
 
     if (userError || !userData?.user) {
       location.replace(SIGNIN);
@@ -1267,10 +1185,7 @@ async function init() {
     jobs = [];
     renderJobs();
 
-    await Promise.allSettled([
-      loadJobs(),
-      loadEarnings()
-    ]);
+    await Promise.allSettled([loadJobs(), loadEarnings()]);
 
     startRealtime();
 
@@ -1283,7 +1198,6 @@ async function init() {
 
       loadJobs();
       loadEarnings();
-
     }, POLL);
 
   } catch (e) {
@@ -1292,11 +1206,7 @@ async function init() {
     setText("greeting", "Dashboard could not finish loading");
     setText("accountStatus", "Connection error");
 
-    banner(
-      "init",
-      "error",
-      "Could not start dashboard: " + (e.message || e)
-    );
+    banner("init", "error", "Could not start dashboard: " + (e.message || e));
 
     if ($("offers")) {
       $("offers").innerHTML =
@@ -1339,11 +1249,7 @@ addEventListener("unhandledrejection", (e) => {
 init().catch((e) => {
   console.error(e);
 
-  banner(
-    "init",
-    "error",
-    "Could not start dashboard: " + (e?.message || e)
-  );
+  banner("init", "error", "Could not start dashboard: " + (e?.message || e));
 });
 
 })();
