@@ -571,7 +571,7 @@ function block(title, message) {
 async function loadProvider() {
   const { data, error } = await withTimeout(
     sb.from("partners")
-      .select("id,user_id,type,subtype,business_name,phone,status,is_online,rating")
+      .select("*")
       .eq("user_id", me.id)
       .maybeSingle(),
     "Provider profile"
@@ -588,6 +588,10 @@ async function loadProvider() {
     );
   }
 
+  // Tolerate different column names in the partners table.
+  data.type = data.type || data.partner_type || data.service_type || data.category || data.role || "";
+  data.business_name = data.business_name || data.company_name || data.name || data.full_name || "";
+  data.phone = data.phone || data.phone_number || data.mobile || "";
   provider = data;
 
   if (String(data.status || "").toLowerCase() !== "approved") {
