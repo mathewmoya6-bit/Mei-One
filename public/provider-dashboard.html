@@ -73,7 +73,66 @@ dialog{border:0;border-radius:15px;padding:0;max-width:440px;width:92%;box-shado
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
 <script src="/js/config.js"></script>
 <script src="/js/supabase.js"></script>
-<script src="/js/provider-modules.js"></script>
+<script>
+// Per-service behaviour: each provider type gets its own labels, job flow, fields, checklist and colour.
+(() => {
+"use strict";
+const flow = (a, b, c, d) => ({ accepted: { to: "en_route", label: a }, en_route: { to: "arrived", label: b }, arrived: { to: "in_progress", label: c }, in_progress: { to: "completed", label: d } });
+const M = {
+  driver: { name: "Driver (Rides & Delivery)", icon: "🚗", color: "#00d68f", tip: "You receive both ride and delivery requests.", checklist: [], steps: flow("Head to pickup", "I've arrived", "Start job", "Complete job"), fields: [] },
+  rides: { name: "MEI Rides", icon: "🚗", color: "#00d68f", tip: "Confirm the passenger's name before starting the trip.",
+    checklist: ["Passenger dropped at destination", "Fare confirmed with customer"], steps: flow("Head to pickup", "I've arrived", "Start trip", "Complete trip"),
+    fields: [["Ride type", ["vehicle_class", "ride_type", "class", "vehicle"]], ["Passengers", ["passengers", "seats"]], ["Pickup time", ["pickup_time", "scheduled_at"]]] },
+  delivery: { name: "MEI Delivery", icon: "📦", color: "#f59e0b", tip: "Verify the package and recipient before handover.",
+    checklist: ["Package handed to the right recipient", "Proof of delivery taken"], steps: flow("Head to pickup", "At pickup", "Picked up, on the way", "Delivered"),
+    fields: [["Package", ["package", "item", "package_type"]], ["Size / weight", ["size", "weight"]], ["Recipient", ["recipient", "recipient_name"]]] },
+  towing: { name: "MEI Towing", icon: "🚛", color: "#ef4444", tip: "Photograph the vehicle's condition before hooking up.",
+    checklist: ["Pre-tow photos taken", "Vehicle delivered and signed for"], steps: flow("Head to vehicle", "At the vehicle", "Towing in progress", "Vehicle delivered"),
+    fields: [["Vehicle", ["vehicle", "make_model"]], ["Plate", ["plate", "registration"]], ["Fault", ["fault", "issue", "problem"]]] },
+  roadside: { name: "Roadside Assistance", icon: "🛟", color: "#0ea5e9", tip: "Park safely and put on hazard lights before you work.",
+    checklist: ["Problem resolved or escalated", "Customer's vehicle starts and is safe to drive"], steps: flow("Head to customer", "I've arrived", "Start repair", "Issue resolved"),
+    fields: [["Problem", ["problem", "issue", "fault", "service_needed"]], ["Vehicle", ["vehicle", "make_model"]]] },
+  accident_scene: { name: "Accident Scene Management", icon: "🚧", color: "#f97316", tip: "Secure the scene first; photograph before moving anything.",
+    checklist: ["Scene photos uploaded", "Road cleared and traffic flowing"], steps: flow("Head to scene", "On scene", "Managing scene", "Scene cleared"),
+    fields: [["Scene type", ["scene_type", "incident", "issue"]], ["Vehicles involved", ["vehicles", "vehicles_involved"]], ["Injuries", ["injuries"]]] },
+  garage: { name: "MEI Auto (Garage)", icon: "🔧", color: "#8b5cf6", tip: "Give the customer a written quote before starting work.",
+    checklist: ["Quote approved by customer", "Work completed and vehicle tested"], steps: flow("Accept & prepare", "Vehicle received", "Work in progress", "Work completed"),
+    fields: [["Service", ["service", "service_needed", "issue"]], ["Vehicle", ["vehicle", "make_model"]], ["Preferred time", ["preferred_time", "pickup_time"]]] },
+  valuation: { name: "Valuation & Inspection", icon: "📋", color: "#14b8a6", tip: "Record chassis and mileage; photograph every panel.",
+    checklist: ["Report uploaded", "Chassis / plate verified"], steps: flow("Head to inspection", "On site", "Inspection started", "Report submitted"),
+    fields: [["Inspection type", ["inspection_type", "type", "valuation_type"]], ["Vehicle", ["vehicle", "make_model"]], ["Purpose", ["purpose"]]] },
+  marketplace: { name: "Marketplace Seller", icon: "🛍️", color: "#ec4899", tip: "Pack items securely and confirm the order before handover.",
+    checklist: ["Item matches the listing", "Buyer received the order"], steps: flow("Prepare order", "Ready for pickup", "Handed over", "Order completed"),
+    fields: [["Item", ["item", "product"]], ["Quantity", ["quantity", "qty"]]] },
+  home: { name: "Home Services", icon: "🏠", color: "#22c55e", tip: "Confirm scope and price with the customer before you begin.",
+    checklist: ["Work area left clean", "Customer satisfied with the work"], steps: flow("Head to the home", "I've arrived", "Start work", "Work completed"),
+    fields: [["Job type", ["service", "trade", "job_type"]], ["Issue", ["issue", "problem", "description"]], ["Urgency", ["urgency"]]] },
+  learn: { name: "MEI Learn", icon: "🎓", color: "#6366f1", tip: "Start on time and record attendance.",
+    checklist: ["Session attendance recorded", "Progress notes shared with the learner"], steps: flow("Head to session", "Session location reached", "Start session", "Session completed"),
+    fields: [["Subject", ["subject", "course"]], ["Level", ["level"]], ["Schedule", ["schedule", "preferred_time"]]] }
+};
+const FALLBACK = { name: "Provider", icon: "🧰", color: "#00d68f", tip: "", checklist: [], steps: flow("Head to customer", "I've arrived", "Start job", "Complete job"), fields: [] };
+const norm = (s) => String(s).toLowerCase().replace(/[^a-z0-9]+/g, "_").replace(/^_|_$/g, "");
+function parse(d) {
+  const out = {}; if (!d) return out;
+  if (typeof d === "object") { Object.entries(d).forEach(([k, v]) => (out[norm(k)] = v)); return out; }
+  try { const j = JSON.parse(d); if (j && typeof j === "object") return parse(j); } catch {}
+  String(d).split(/\n|\|/).forEach((p) => { const i = p.indexOf(":"); if (i > 0) out[norm(p.slice(0, i))] = p.slice(i + 1).trim(); });
+  return out;
+}
+window.MEI_MODULES = {
+  get: (k) => M[k] || FALLBACK,
+  list: () => Object.keys(M),
+  highlights(k, details) {
+    const m = parse(details), shown = [];
+    ((M[k] || FALLBACK).fields).forEach(([label, keys]) => { const key = keys.find((x) => m[x] != null && m[x] !== ""); if (key) shown.push([label, String(m[key])]); });
+    return shown;
+  },
+  step: (k, status) => (M[k] || FALLBACK).steps[status] || null
+};
+})();
+
+</script>
 </head>
 <body>
 <header class="topbar">
