@@ -1,46 +1,57 @@
-/* MEI One provider service modules. One entry per service: flow labels, highlighted fields, checklist, tip. */
-window.MEI_MODULES = (() => {
-  const ORDER = ["accepted", "en_route", "arrived", "in_progress"];
-  const NEXT_TO = { accepted: "en_route", en_route: "arrived", arrived: "in_progress", in_progress: "completed" };
-  const mk = (o) => Object.assign({ icon: "🛠️", name: "Service", labels: [], fields: [], checklist: [], tip: "" }, o);
-  const M = {
-    towing: mk({ icon: "🛻", name: "Towing", labels: ["Heading to vehicle", "On scene", "Vehicle loaded", "Delivered, complete"],
-      fields: ["Vehicle", "Plate", "Registration", "Make", "Issue", "Condition"],
-      checklist: ["Vehicle secured and photographed", "Customer signed off at destination"], tip: "Photograph the vehicle before loading." }),
-    roadside: mk({ icon: "🧰", name: "Roadside Assistance", labels: ["On my way", "On site", "Start repair", "Issue resolved"],
-      fields: ["Issue", "Vehicle", "Plate", "Fault", "Fuel type"],
-      checklist: ["Vehicle starts / is safe to drive", "Customer confirmed resolution"], tip: "Park safely and use hazard lights." }),
-    accident_scene: mk({ icon: "🚨", name: "Accident Scene", labels: ["Dispatching", "On scene", "Scene secured", "Handed over"],
-      fields: ["Vehicles involved", "Injuries", "Police", "Vehicle", "Plate"],
-      checklist: ["Scene made safe", "Injuries referred to emergency services", "Incident details recorded"], tip: "Safety first. Call emergency services for any injury." }),
-    rides: mk({ icon: "🚘", name: "MEI Rides", labels: ["On my way", "Arrived at pickup", "Start trip", "End trip"],
-      fields: ["Passengers", "Pickup time", "Luggage"], checklist: ["Passenger dropped at destination"], tip: "Confirm the passenger name before starting." }),
-    delivery: mk({ icon: "📦", name: "Delivery", labels: ["Heading to pickup", "At pickup", "Parcel picked up", "Delivered"],
-      fields: ["Item", "Parcel", "Size", "Weight", "Fragile", "Recipient"],
-      checklist: ["Recipient received the items", "Items match the description"], tip: "Check the items before leaving pickup." }),
-    garage: mk({ icon: "🔧", name: "Garage Services", labels: ["On my way", "Vehicle received", "Start service", "Service complete"],
-      fields: ["Vehicle", "Plate", "Service", "Issue", "Preferred time"],
-      checklist: ["Work done as agreed", "Vehicle returned to customer"], tip: "Agree the price before starting work." }),
-    valuation: mk({ icon: "📊", name: "Valuation & Inspection", labels: ["On my way", "At vehicle", "Start inspection", "Report submitted"],
-      fields: ["Vehicle", "Plate", "Make", "Model", "Year", "Mileage"],
-      checklist: ["All inspection points completed", "Report submitted to the customer"], tip: "Record chassis and plate details accurately." }),
-    home: mk({ icon: "🏠", name: "Home Services", labels: ["On my way", "Arrived at address", "Start work", "Work complete"],
-      fields: ["Job", "Category", "Preferred time", "Access"],
-      checklist: ["Work completed to the customer's satisfaction", "Site left clean and tidy"], tip: "Confirm the scope and price with the customer before starting." }),
-    marketplace: mk({ icon: "🛒", name: "Marketplace", labels: ["Accepted", "Ready", "Handed over", "Complete"], checklist: ["Order delivered or collected"] }),
-    learn: mk({ icon: "🎓", name: "Learning & Driver Training", labels: ["Confirmed", "Arrived", "Start session", "Session complete"], checklist: ["Session completed"] }),
-  };
-  const fallback = mk({ labels: ["On my way", "I've arrived", "Start service", "Complete job"], checklist: ["Job completed"] });
-  return {
-    get(key) { return M[key] || fallback; },
-    step(key, status) {
-      const i = ORDER.indexOf(status); if (i < 0) return null;
-      return { to: NEXT_TO[status], label: this.get(key).labels[i] || fallback.labels[i] };
-    },
-    highlights(key, details) {
-      const want = this.get(key).fields.map((f) => f.toLowerCase());
-      return String(details || "").split(/\r?\n/).map((l) => { const i = l.indexOf(":"); return i > 0 ? [l.slice(0, i).trim(), l.slice(i + 1).trim()] : null; })
-        .filter((p) => p && p[1] && want.includes(p[0].toLowerCase()));
-    },
-  };
+// Per-service behaviour: each provider type gets its own labels, job flow, fields, checklist and colour.
+(() => {
+"use strict";
+const flow = (a, b, c, d) => ({ accepted: { to: "en_route", label: a }, en_route: { to: "arrived", label: b }, arrived: { to: "in_progress", label: c }, in_progress: { to: "completed", label: d } });
+const M = {
+  driver: { name: "Driver (Rides & Delivery)", icon: "🚗", color: "#00d68f", tip: "You receive both ride and delivery requests.", checklist: [], steps: flow("Head to pickup", "I've arrived", "Start job", "Complete job"), fields: [] },
+  rides: { name: "MEI Rides", icon: "🚗", color: "#00d68f", tip: "Confirm the passenger's name before starting the trip.",
+    checklist: ["Passenger dropped at destination", "Fare confirmed with customer"], steps: flow("Head to pickup", "I've arrived", "Start trip", "Complete trip"),
+    fields: [["Ride type", ["vehicle_class", "ride_type", "class", "vehicle"]], ["Passengers", ["passengers", "seats"]], ["Pickup time", ["pickup_time", "scheduled_at"]]] },
+  delivery: { name: "MEI Delivery", icon: "📦", color: "#f59e0b", tip: "Verify the package and recipient before handover.",
+    checklist: ["Package handed to the right recipient", "Proof of delivery taken"], steps: flow("Head to pickup", "At pickup", "Picked up, on the way", "Delivered"),
+    fields: [["Package", ["package", "item", "package_type"]], ["Size / weight", ["size", "weight"]], ["Recipient", ["recipient", "recipient_name"]]] },
+  towing: { name: "MEI Towing", icon: "🚛", color: "#ef4444", tip: "Photograph the vehicle's condition before hooking up.",
+    checklist: ["Pre-tow photos taken", "Vehicle delivered and signed for"], steps: flow("Head to vehicle", "At the vehicle", "Towing in progress", "Vehicle delivered"),
+    fields: [["Vehicle", ["vehicle", "make_model"]], ["Plate", ["plate", "registration"]], ["Fault", ["fault", "issue", "problem"]]] },
+  roadside: { name: "Roadside Assistance", icon: "🛟", color: "#0ea5e9", tip: "Park safely and put on hazard lights before you work.",
+    checklist: ["Problem resolved or escalated", "Customer's vehicle starts and is safe to drive"], steps: flow("Head to customer", "I've arrived", "Start repair", "Issue resolved"),
+    fields: [["Problem", ["problem", "issue", "fault", "service_needed"]], ["Vehicle", ["vehicle", "make_model"]]] },
+  accident_scene: { name: "Accident Scene Management", icon: "🚧", color: "#f97316", tip: "Secure the scene first; photograph before moving anything.",
+    checklist: ["Scene photos uploaded", "Road cleared and traffic flowing"], steps: flow("Head to scene", "On scene", "Managing scene", "Scene cleared"),
+    fields: [["Scene type", ["scene_type", "incident", "issue"]], ["Vehicles involved", ["vehicles", "vehicles_involved"]], ["Injuries", ["injuries"]]] },
+  garage: { name: "MEI Auto (Garage)", icon: "🔧", color: "#8b5cf6", tip: "Give the customer a written quote before starting work.",
+    checklist: ["Quote approved by customer", "Work completed and vehicle tested"], steps: flow("Accept & prepare", "Vehicle received", "Work in progress", "Work completed"),
+    fields: [["Service", ["service", "service_needed", "issue"]], ["Vehicle", ["vehicle", "make_model"]], ["Preferred time", ["preferred_time", "pickup_time"]]] },
+  valuation: { name: "Valuation & Inspection", icon: "📋", color: "#14b8a6", tip: "Record chassis and mileage; photograph every panel.",
+    checklist: ["Report uploaded", "Chassis / plate verified"], steps: flow("Head to inspection", "On site", "Inspection started", "Report submitted"),
+    fields: [["Inspection type", ["inspection_type", "type", "valuation_type"]], ["Vehicle", ["vehicle", "make_model"]], ["Purpose", ["purpose"]]] },
+  marketplace: { name: "Marketplace Seller", icon: "🛍️", color: "#ec4899", tip: "Pack items securely and confirm the order before handover.",
+    checklist: ["Item matches the listing", "Buyer received the order"], steps: flow("Prepare order", "Ready for pickup", "Handed over", "Order completed"),
+    fields: [["Item", ["item", "product"]], ["Quantity", ["quantity", "qty"]]] },
+  home: { name: "Home Services", icon: "🏠", color: "#22c55e", tip: "Confirm scope and price with the customer before you begin.",
+    checklist: ["Work area left clean", "Customer satisfied with the work"], steps: flow("Head to the home", "I've arrived", "Start work", "Work completed"),
+    fields: [["Job type", ["service", "trade", "job_type"]], ["Issue", ["issue", "problem", "description"]], ["Urgency", ["urgency"]]] },
+  learn: { name: "MEI Learn", icon: "🎓", color: "#6366f1", tip: "Start on time and record attendance.",
+    checklist: ["Session attendance recorded", "Progress notes shared with the learner"], steps: flow("Head to session", "Session location reached", "Start session", "Session completed"),
+    fields: [["Subject", ["subject", "course"]], ["Level", ["level"]], ["Schedule", ["schedule", "preferred_time"]]] }
+};
+const FALLBACK = { name: "Provider", icon: "🧰", color: "#00d68f", tip: "", checklist: [], steps: flow("Head to customer", "I've arrived", "Start job", "Complete job"), fields: [] };
+const norm = (s) => String(s).toLowerCase().replace(/[^a-z0-9]+/g, "_").replace(/^_|_$/g, "");
+function parse(d) {
+  const out = {}; if (!d) return out;
+  if (typeof d === "object") { Object.entries(d).forEach(([k, v]) => (out[norm(k)] = v)); return out; }
+  try { const j = JSON.parse(d); if (j && typeof j === "object") return parse(j); } catch {}
+  String(d).split(/\n|\|/).forEach((p) => { const i = p.indexOf(":"); if (i > 0) out[norm(p.slice(0, i))] = p.slice(i + 1).trim(); });
+  return out;
+}
+window.MEI_MODULES = {
+  get: (k) => M[k] || FALLBACK,
+  list: () => Object.keys(M),
+  highlights(k, details) {
+    const m = parse(details), shown = [];
+    ((M[k] || FALLBACK).fields).forEach(([label, keys]) => { const key = keys.find((x) => m[x] != null && m[x] !== ""); if (key) shown.push([label, String(m[key])]); });
+    return shown;
+  },
+  step: (k, status) => (M[k] || FALLBACK).steps[status] || null
+};
 })();
