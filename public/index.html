@@ -1,11 +1,17 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-no-supabase>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="description" content="MEI One brings rides, delivery, roadside help, garage services, vehicle valuation and everyday services together in one place.">
 <meta name="theme-color" content="#102b25">
 <title>MEI One — Everything, Connected</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 64 64%27%3E%3Crect width=%2764%27 height=%2764%27 rx=%2714%27 fill=%27%23c7f36b%27/%3E%3Ctext x=%2732%27 y=%2745%27 font-size=%2740%27 font-weight=%27900%27 text-anchor=%27middle%27 fill=%27%23102b25%27 font-family=%27Arial%27%3EM%3C/text%3E%3C/svg%3E">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="MEI One">
+<meta property="og:title" content="MEI One — Everything, Connected">
+<meta property="og:description" content="Rides, delivery, towing, roadside help, garage services, vehicle valuation and more in one place.">
+<meta name="twitter:card" content="summary">
 
 <style>
 :root {
@@ -729,6 +735,11 @@ button{cursor:pointer}
           Connecting everyday services through one convenient
           customer experience.
         </p>
+        <p style="margin-top:10px;font-size:13px">
+          <strong>In an emergency, call 999 or 112.</strong>
+          <span data-mei-phone> Support: <a href="#"></a></span>
+          <span data-mei-email> · <a href="#"></a></span>
+        </p>
       </div>
 
       <div class="footer-col">
@@ -754,6 +765,7 @@ button{cursor:pointer}
 
     <div class="footer-bottom">
       <span>© <span id="year"></span> MEI One. All rights reserved.</span>
+      <span><a href="privacy.html">Privacy Policy</a> · <a href="terms.html">Terms of Service</a></span>
       <span>Part of MEI Press Holdings Ltd.</span>
     </div>
 
@@ -805,6 +817,8 @@ button{cursor:pointer}
   </div>
 </div>
 
+<script src="js/config.js"></script>
+<script src="js/contact.js"></script>
 <script>
 "use strict";
 
