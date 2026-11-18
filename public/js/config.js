@@ -11,6 +11,17 @@
   const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_P8gaG4CyyHuiKJJbW3t6Dw_we4UODZ_";
 
   const config = Object.freeze({
+    // Page routes used by js/site.js
+    routes: Object.freeze({
+      home: "index.html",
+      dashboard: "customer-dashboard.html"
+    }),
+
+    // TODO before launch: fill these in. They are shown on the legal pages,
+    // the footer and the emergency dialog when set. Leave "" to hide them.
+    supportEmail: "",
+    supportPhone: "",
+
     url: SUPABASE_URL,
     anonKey: SUPABASE_PUBLISHABLE_KEY,
     SUPABASE_URL,
@@ -22,6 +33,9 @@
 
   window.MEI_CONFIG = config;
   window.MEI_SUPABASE_CONFIG = config;
+
+  // Static pages (home, legal) load this file only for contact details.
+  if (document.documentElement.hasAttribute("data-no-supabase")) return;
 
   if (!window.supabase || typeof window.supabase.createClient !== "function") {
     console.error(
