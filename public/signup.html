@@ -481,6 +481,13 @@
         </div>
       </div>
 
+      <div class="field consent">
+        <label style="display:flex;gap:10px;align-items:flex-start;font-weight:500;font-size:13px;line-height:1.45;cursor:pointer">
+          <input id="consent" name="consent" type="checkbox" style="width:auto;margin-top:3px" required>
+          <span>I agree to the <a href="terms.html" target="_blank" rel="noopener" style="text-decoration:underline">Terms of Service</a> and have read the <a href="privacy.html" target="_blank" rel="noopener" style="text-decoration:underline">Privacy Policy</a>.</span>
+        </label>
+      </div>
+
       <button type="submit" class="primary-button" id="signupSubmit">Create account</button>
 
     </form>
@@ -517,7 +524,7 @@
 
   // Keep the ride intent when the person came from Rides.
   var suffix = service ? "?service=" + encodeURIComponent(service) : "";
-  var customerHome = service === "rides" || service === "ride" ? "dashboard.html?service=rides" : "dashboard.html";
+  var customerHome = service === "rides" || service === "ride" ? "customer-dashboard.html?service=rides" : "customer-dashboard.html";
 
   function chosenRole() {
     var r = form.querySelector('input[name="role"]:checked');
@@ -531,7 +538,7 @@
     return customerHome;
   }
 
-  $("loginLink").addEventListener("click", function () { window.location.href = "login.html" + suffix; });
+  $("loginLink").addEventListener("click", function () { window.location.href = "customer-signin.html" + suffix; });
 
   $("togglePassword").addEventListener("click", function () {
     var p = $("password"), hidden = p.type === "password";
@@ -577,6 +584,7 @@
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return show("Enter a valid email address.");
     if (!phone) return show("Enter a valid Kenyan mobile number, e.g. 0712345678.");
     if (password.length < 8) return show("Password must be at least 8 characters.");
+    if (!$("consent").checked) return show("Please accept the Terms of Service and Privacy Policy to continue.");
     if (!supabase) return show("MEI One could not connect right now. Please try again later.");
 
     btn.disabled = true;
@@ -589,7 +597,7 @@
         password: password,
         options: {
           data: { full_name: fullName, phone: phone, signup_intent: role },
-          emailRedirectTo: new URL(role === "customer" ? "login.html" + suffix : nextPage(role), window.location.href).href
+          emailRedirectTo: new URL(role === "customer" ? "customer-signin.html" + suffix : nextPage(role), window.location.href).href
         }
       });
       if (res.error) throw res.error;
