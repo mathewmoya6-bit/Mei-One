@@ -20,7 +20,7 @@
     // TODO before launch: fill these in. They are shown on the legal pages,
     // the footer and the emergency dialog when set. Leave "" to hide them.
     supportEmail: "",
-    supportPhone: "",
+    supportPhone: "+254 703 738 707",
 
     url: SUPABASE_URL,
     anonKey: SUPABASE_PUBLISHABLE_KEY,
