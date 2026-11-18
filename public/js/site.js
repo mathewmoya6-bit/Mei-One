@@ -131,7 +131,11 @@
           ${input("Full name", "full_name", "text", "Your full name", 'autocomplete="name"')}
           ${input("Phone", "phone", "tel", "07XXXXXXXX", 'autocomplete="tel"')}
           ${input("Email", "email", "email", "you@example.com", 'autocomplete="email"')}
-          ${input("Password", "password", "password", "Minimum 6 characters", 'autocomplete="new-password" minlength="6"')}
+          ${input("Password", "password", "password", "At least 8 characters", 'autocomplete="new-password" minlength="8"')}
+          <label class="consent" style="display:flex;gap:10px;align-items:flex-start;font-size:13px;line-height:1.45;margin:6px 0 10px">
+            <input type="checkbox" name="consent" required style="width:auto;margin-top:3px">
+            <span>I agree to the <a href="terms.html" target="_blank" rel="noopener">Terms of Service</a> and have read the <a href="privacy.html" target="_blank" rel="noopener">Privacy Policy</a>.</span>
+          </label>
           <div class="form-message" id="signupMessage" aria-live="polite"></div>
           <button type="submit" class="button button-primary button-large">Create account</button>
         </form>
@@ -359,8 +363,13 @@
       return;
     }
 
-    if (password.length < 6) {
-      showFormMessage(message, "Password must contain at least 6 characters.", "error");
+    if (formData.get("consent") !== "on") {
+      showFormMessage(message, "Please accept the Terms of Service and Privacy Policy to continue.", "error");
+      return;
+    }
+
+    if (password.length < 8) {
+      showFormMessage(message, "Password must contain at least 8 characters.", "error");
       return;
     }
 
@@ -385,7 +394,7 @@
       if (data.session) {
         showToast("Account created successfully.", "success");
         modal.close();
-        window.setTimeout(() => { window.location.href = postLoginDestination(route("dashboard", "dashboard.html")); }, 400);
+        window.setTimeout(() => { window.location.href = postLoginDestination(route("dashboard", "customer-dashboard.html")); }, 400);
       } else {
         showFormMessage(message, "Account created. Check your email to confirm your account.", "success");
         form.reset();
@@ -423,7 +432,7 @@
 
       showToast("Signed in successfully.", "success");
       modal.close();
-      window.setTimeout(() => { window.location.href = postLoginDestination(route("dashboard", "dashboard.html")); }, 300);
+      window.setTimeout(() => { window.location.href = postLoginDestination(route("dashboard", "customer-dashboard.html")); }, 300);
     } catch (error) {
       showFormMessage(message, friendlyAuthError(error), "error");
     } finally {
@@ -527,7 +536,7 @@
 
   function initDashboardLinks() {
     $$("[data-dashboard]").forEach((element) => {
-      element.addEventListener("click", () => { window.location.href = route("dashboard", "dashboard.html"); });
+      element.addEventListener("click", () => { window.location.href = route("dashboard", "customer-dashboard.html"); });
     });
   }
 
