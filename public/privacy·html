@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<!-- DRAFT TEMPLATE: have a Kenyan lawyer review before relying on this document. -->
+<html lang="en" data-no-supabase>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#102b25">
+<meta name="description" content="How MEI One collects, uses, shares and protects your personal data.">
+<title>Privacy Policy | MEI One</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 64 64%27%3E%3Crect width=%2764%27 height=%2764%27 rx=%2714%27 fill=%27%23c7f36b%27/%3E%3Ctext x=%2732%27 y=%2745%27 font-size=%2740%27 font-weight=%27900%27 text-anchor=%27middle%27 fill=%27%23102b25%27 font-family=%27Arial%27%3EM%3C/text%3E%3C/svg%3E">
+<style>
+:root{--navy:#102b25;--green:#c7f36b;--green-dark:#15835c;--bg:#f5f8f3;--ink:#142b27;--muted:#62746a;--line:#e7ece4;--font:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif}
+@media (prefers-color-scheme:dark){:root{--bg:#0e1a17;--ink:#e8f0ea;--muted:#9db0a6;--line:#24372f;--navy:#e8f0ea}}
+*{box-sizing:border-box}html{scroll-behavior:smooth}
+body{margin:0;font-family:var(--font);background:var(--bg);color:var(--ink);line-height:1.65}
+a{color:var(--green-dark)}@media (prefers-color-scheme:dark){a{color:#8fd8b3}}
+header{background:#fff;border-bottom:1px solid var(--line)}
+@media (prefers-color-scheme:dark){header{background:#0b1512}}
+.wrap{width:min(820px,calc(100% - 40px));margin:auto}
+.bar{display:flex;align-items:center;justify-content:space-between;min-height:68px;gap:16px}
+.brand{display:inline-flex;align-items:center;gap:10px;font-weight:900;font-size:20px;text-decoration:none;color:var(--navy)}
+.mark{width:36px;height:36px;border-radius:11px;background:var(--green);color:#102b25;display:grid;place-items:center;font-weight:950}
+.back{font-size:14px;font-weight:650;text-decoration:none}
+main{padding:44px 0 70px}
+h1{font-size:clamp(30px,5vw,42px);letter-spacing:-1px;line-height:1.15;margin:0 0 6px}
+.meta{color:var(--muted);font-size:14px;margin:0 0 28px}
+h2{font-size:21px;margin:34px 0 8px;letter-spacing:-.3px}
+p,li{font-size:16px}ul{padding-left:22px}li{margin:5px 0}
+.note{background:rgba(199,243,107,.28);border:1px solid rgba(21,131,92,.35);border-radius:14px;padding:14px 18px;margin:0 0 26px}
+.contact{background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px 20px;margin-top:10px}
+@media (prefers-color-scheme:dark){.contact{background:#12201c}}
+footer{border-top:1px solid var(--line);padding:24px 0;font-size:14px;color:var(--muted)}
+footer .wrap{display:flex;flex-wrap:wrap;gap:8px 22px;justify-content:space-between}
+</style>
+</head>
+<body>
+<header><div class="wrap bar">
+  <a class="brand" href="index.html"><span class="mark">M</span>MEI One</a>
+  <a class="back" href="index.html">← Back to home</a>
+</div></header>
+<main class="wrap">
+<h1>Privacy Policy</h1>
+<p class="meta">Last updated: 17 November 2026</p>
+<div class="note"><strong>In an emergency, call 999 or 112.</strong> Do not use MEI One to report an emergency.</div>
+
+<p>MEI One (“we”, “us”), part of MEI Press Holdings Ltd, connects customers with independent service providers for rides, delivery, towing, roadside assistance, accident scene support, garage services, vehicle valuation, home services and related offerings. This policy explains how we handle your personal data. We process personal data in line with the Kenya Data Protection Act, 2019.</p>
+
+<h2>1. Data we collect</h2>
+<ul>
+  <li><strong>Account data:</strong> your name, email address, phone number and password (stored securely by our authentication provider).</li>
+  <li><strong>Request data:</strong> service type, pickup, drop-off and incident locations, vehicle details (make, model, plate), descriptions or notes you provide, and the status and history of your requests.</li>
+  <li><strong>Provider data:</strong> if you apply as a provider or driver: business or personal details, service type, location, and any information we need to verify you.</li>
+  <li><strong>Technical data:</strong> device and browser information, log data and session information needed to keep the service secure and working.</li>
+  <li><strong>Communications:</strong> messages you send to our support team.</li>
+</ul>
+
+<h2>2. How we use it</h2>
+<ul>
+  <li>To create and manage your account and to provide the services you request.</li>
+  <li>To share your request with eligible providers and let the provider you are matched with reach you.</li>
+  <li>To verify and approve providers, prevent fraud and keep the platform safe.</li>
+  <li>To provide support, send service messages (such as confirmations and status updates) and respond to complaints.</li>
+  <li>To meet legal obligations and to improve and secure our services.</li>
+</ul>
+<p>Our lawful bases are your consent, performance of a contract with you, compliance with legal obligations, and our legitimate interests in running a safe and reliable platform.</p>
+
+<h2>3. Who we share it with</h2>
+<ul>
+  <li><strong>Service providers you are matched with.</strong> Your request details are visible to eligible providers. Your contact details are revealed to a provider once they accept your request.</li>
+  <li><strong>Infrastructure and technology partners</strong> that process data for us, including our hosting, database and authentication provider (Supabase), and payment partners where payments are offered.</li>
+  <li><strong>Authorities and professional advisers</strong> where required by law or to protect rights, safety and property.</li>
+</ul>
+<p>We do not sell your personal data.</p>
+
+<h2>4. International transfers</h2>
+<p>Some of our processors may store or process data outside Kenya. Where that happens we take steps to make sure your data is protected as required by the Data Protection Act.</p>
+
+<h2>5. Retention</h2>
+<p>We keep personal data only as long as needed for the purposes above, including to keep service records, resolve disputes and meet legal requirements. When it is no longer needed we delete or anonymise it.</p>
+
+<h2>6. Security</h2>
+<p>We use access controls, encrypted connections and role-based permissions to protect your data. No online service is completely secure, so please use a strong, unique password and keep it private.</p>
+
+<h2>7. Your rights</h2>
+<p>You may ask us to give you access to your personal data, correct it, delete it, restrict or object to certain processing, and receive a copy in a portable format. You may withdraw consent at any time; this does not affect processing done before you withdrew. To exercise a right, contact us using the details below. You also have the right to complain to the Office of the Data Protection Commissioner (ODPC) in Kenya.</p>
+
+<h2>8. Children</h2>
+<p>MEI One is intended for people aged 18 and over. We do not knowingly collect data from children.</p>
+
+<h2>9. Cookies and local storage</h2>
+<p>We use browser storage that is necessary to keep you signed in and to remember where you were heading after sign-in. We do not use it to track you across other sites.</p>
+
+<h2>10. Changes to this policy</h2>
+<p>We may update this policy. When we make important changes we will update the date above and, where appropriate, notify you.</p>
+
+<h2>11. Contact us</h2>
+<div class="contact">
+  <p style="margin:0" data-mei-email>Email: <a href="#"></a></p>
+  <p style="margin:0" data-mei-phone>Phone: <a href="#"></a></p>
+  <p style="margin:0" data-mei-contact-fallback>Contact MEI One through the support options in your account dashboard.</p>
+</div></main>
+<footer><div class="wrap">
+  <span>© <span id="year"></span> MEI One. Part of MEI Press Holdings Ltd.</span>
+  <span><a href="privacy.html">Privacy Policy</a> · <a href="terms.html">Terms of Service</a></span>
+</div></footer>
+<script src="js/config.js"></script>
+<script src="js/contact.js"></script>
+<script>document.getElementById("year").textContent=new Date().getFullYear();</script>
+</body>
+</html>
