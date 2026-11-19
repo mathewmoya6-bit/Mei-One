@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#071a2f">
+  <title>Open a Marketplace Shop | MEI One</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root{--navy:#071a2f;--green:#00d68f;--ink:#152238;--muted:#64748b;--line:#dce4ec;--bg:#f4f7fa;--white:#fff;--danger:#b42318}
+    *{box-sizing:border-box}body{margin:0;background:var(--bg);font-family:Inter,Arial,sans-serif;color:var(--ink)}
+    .topbar{background:var(--navy);color:#fff;padding:17px max(20px,calc((100% - 1100px)/2));display:flex;justify-content:space-between;align-items:center;gap:15px}
+    .brand{font-weight:800;letter-spacing:.2px;font-size:20px}.brand span{color:var(--green)}.topbar a{color:#fff;text-decoration:none;font-size:13px}
+    .wrap{max-width:1100px;margin:34px auto;padding:0 18px 50px}.intro{margin-bottom:24px}.eyebrow{color:#07875e;font-weight:800;text-transform:uppercase;font-size:11px;letter-spacing:1.3px}
+    h1{font-size:clamp(27px,4vw,38px);margin:9px 0;color:var(--navy)}.intro p{color:var(--muted);line-height:1.65;max-width:760px;margin:0}
+    .layout{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:22px;align-items:start}
+    .panel,.aside{background:var(--white);border:1px solid var(--line);border-radius:16px;box-shadow:0 8px 28px rgba(7,26,47,.045)}
+    .panel{padding:26px}.aside{padding:22px;position:sticky;top:18px}.section{padding-bottom:22px;margin-bottom:22px;border-bottom:1px solid #edf1f5}.section:last-of-type{border:0;margin:0;padding:0}
+    h2{font-size:16px;color:var(--navy);margin:0 0 17px}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:15px}
+    .field{display:flex;flex-direction:column;gap:7px}.field.full{grid-column:1/-1}label{font-size:12px;font-weight:700;color:#34445a}
+    input,select,textarea{width:100%;border:1px solid #cbd5e1;border-radius:9px;padding:12px 13px;font:inherit;font-size:13px;color:var(--ink);background:#fff;outline:none}
+    input:focus,select:focus,textarea:focus{border-color:#00a875;box-shadow:0 0 0 3px rgba(0,214,143,.12)}textarea{min-height:92px;resize:vertical}
+    input[type=file]{padding:9px;background:#fbfcfd}small,.hint{font-size:11px;color:var(--muted);line-height:1.5}
+    .types{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.type{border:1px solid var(--line);border-radius:11px;padding:13px;display:flex;gap:9px;align-items:flex-start;cursor:pointer}
+    .type:has(input:checked){border-color:#00b783;background:#effdf7}.type input{width:auto;margin:2px 0 0;accent-color:#00a875}.type b{display:block;font-size:12px}.type span{font-size:10px;color:var(--muted);display:block;margin-top:4px;line-height:1.4}
+    .checkline{display:flex;align-items:flex-start;gap:9px;font-size:11px;color:#475569;line-height:1.5}.checkline input{width:auto;margin-top:2px}
+    .btn{border:0;border-radius:10px;padding:14px 18px;background:var(--green);color:#032a20;font-weight:800;font-size:13px;cursor:pointer;width:100%}.btn:disabled{opacity:.55;cursor:not-allowed}
+    .notice{display:none;padding:12px 14px;border-radius:9px;margin-bottom:17px;font-size:12px;line-height:1.5}.notice.show{display:block}.notice.error{background:#fff1f0;color:var(--danger);border:1px solid #ffd1cc}.notice.ok{background:#ecfdf5;color:#05603a;border:1px solid #abefc6}
+    .aside h3{margin:0 0 12px;color:var(--navy);font-size:15px}.aside p,.aside li{font-size:12px;line-height:1.65;color:var(--muted)}.aside ul{padding-left:18px}.pill{display:inline-block;background:#e8fff5;color:#087653;padding:6px 9px;border-radius:20px;font-size:10px;font-weight:800;margin-bottom:13px}
+    .required{color:#d92d20}.footer{text-align:center;color:#94a3b8;font-size:11px;margin-top:22px}
+    @media(max-width:800px){.layout{grid-template-columns:1fr}.aside{position:static;order:-1}.grid{grid-template-columns:1fr}.types{grid-template-columns:1fr}.panel{padding:19px}.wrap{margin-top:24px}}
+  </style>
+</head>
+<body>
+<header class="topbar">
+  <div class="brand">MEI <span>One</span></div>
+  <a href="marketplace.html">← Back to Marketplace</a>
+</header>
+
+<main class="wrap">
+  <div class="intro">
+    <div class="eyebrow">MEI One Marketplace · Seller onboarding</div>
+    <h1>Open your shop on MEI One</h1>
+    <p>Register your retail or wholesale business and reach customers through MEI One. Your application will be reviewed before your shop is published. You can manage products and pricing after approval.</p>
+  </div>
+
+  <div class="layout">
+    <form class="panel" id="sellerForm">
+      <div id="notice" class="notice" role="status" aria-live="polite"></div>
+
+      <section class="section">
+        <h2>1. Choose your shop type</h2>
+        <div class="types">
+          <label class="type"><input type="radio" name="shop_type" value="retail" required><div><b>Retail shop</b><span>Sell directly to individual customers.</span></div></label>
+          <label class="type"><input type="radio" name="shop_type" value="wholesale"><div><b>Wholesale shop</b><span>Sell in bulk with quantity-based pricing.</span></div></label>
+          <label class="type"><input type="radio" name="shop_type" value="both"><div><b>Retail + wholesale</b><span>Serve both retail and bulk buyers.</span></div></label>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>2. Shop information</h2>
+        <div class="grid">
+          <div class="field"><label for="shop_name">Shop / trading name <span class="required">*</span></label><input id="shop_name" required maxlength="120" placeholder="e.g. Moya General Traders"></div>
+          <div class="field"><label for="category">Business category <span class="required">*</span></label>
+            <select id="category" required>
+              <option value="">Select category</option>
+              <option>Fashion & clothing</option><option>Food & groceries</option><option>Electronics</option>
+              <option>Home & furniture</option><option>Beauty & personal care</option><option>Building materials</option>
+              <option>Agriculture</option><option>Automotive & spare parts</option><option>Health & wellness</option>
+              <option>Books & stationery</option><option>General merchandise</option><option>Other</option>
+            </select>
+          </div>
+          <div class="field full"><label for="description">About your shop</label><textarea id="description" maxlength="1500" placeholder="Describe your business, products and what makes your shop different."></textarea></div>
+          <div class="field"><label for="phone">Business phone <span class="required">*</span></label><input id="phone" type="tel" required maxlength="30" placeholder="+254 7XX XXX XXX"></div>
+          <div class="field"><label for="email">Business email</label><input id="email" type="email" maxlength="254" placeholder="sales@example.com"></div>
+          <div class="field"><label for="county">County <span class="required">*</span></label><input id="county" required maxlength="80" placeholder="e.g. Siaya"></div>
+          <div class="field"><label for="town">Town / trading centre <span class="required">*</span></label><input id="town" required maxlength="100" placeholder="e.g. Ugunja"></div>
+          <div class="field full"><label for="physical_address">Physical address / location description</label><input id="physical_address" maxlength="250" placeholder="Building, street, market or landmark"></div>
+          <div class="field"><label for="business_registration_number">Business registration number</label><input id="business_registration_number" maxlength="100" placeholder="Registration number, if applicable"></div>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>3. Business verification documents</h2>
+        <p class="hint">Documents are stored in a private bucket. They are not displayed publicly. Upload clear PDF, JPG or PNG files, up to 10 MB each.</p>
+        <div class="grid" style="margin-top:14px">
+          <div class="field"><label for="registration_doc">Business registration certificate</label><input id="registration_doc" type="file" accept=".pdf,.jpg,.jpeg,.png,application/pdf,image/jpeg,image/png"><small>Optional if not yet registered; required where applicable.</small></div>
+          <div class="field"><label for="permit_doc">Single Business Permit</label><input id="permit_doc" type="file" accept=".pdf,.jpg,.jpeg,.png,application/pdf,image/jpeg,image/png"><small>Upload the current county permit, if applicable.</small></div>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>4. Shop branding</h2>
+        <div class="grid">
+          <div class="field"><label for="logo">Shop logo</label><input id="logo" type="file" accept="image/jpeg,image/png,image/webp"><small>JPG, PNG or WebP; maximum 5 MB.</small></div>
+          <div class="field"><label for="cover">Shop cover image</label><input id="cover" type="file" accept="image/jpeg,image/png,image/webp"><small>JPG, PNG or WebP; maximum 5 MB.</small></div>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>5. Delivery and fulfilment</h2>
+        <div class="grid">
+          <div class="field"><label for="delivery_method">How do you fulfil orders?</label>
+            <select id="delivery_method"><option value="">Select an option</option><option value="seller_delivery">Seller arranges delivery</option><option value="customer_pickup">Customer collection</option><option value="third_party">Third-party courier</option><option value="discuss_with_customer">Agree with customer per order</option></select>
+          </div>
+          <div class="field"><label for="delivery_areas">Delivery areas</label><input id="delivery_areas" maxlength="250" placeholder="e.g. Siaya, Kisumu, nationwide"></div>
+        </div>
+        <p class="hint">Delivery preferences are collected for onboarding. Final delivery charges and arrangements will be agreed and shown during checkout when that feature is enabled.</p>
+      </section>
+
+      <section class="section">
+        <label class="checkline"><input type="checkbox" id="declaration" required><span>I confirm that the information provided is accurate, that I am authorised to represent this business, and that MEI One may review the submitted information and documents for seller verification. <span class="required">*</span></span></label>
+      </section>
+
+      <button class="btn" id="submitBtn" type="submit">Submit shop application</button>
+      <p class="hint" style="margin:12px 0 0">Submitting an application does not publish your shop or guarantee approval. Do not upload passwords, PINs or payment card details.</p>
+    </form>
+
+    <aside class="aside">
+      <span class="pill">APPLICATION PROCESS</span>
+      <h3>What happens next?</h3>
+      <ul>
+        <li>Sign in to your MEI One account.</li>
+        <li>Submit your shop details and applicable documents.</li>
+        <li>Our team reviews the application.</li>
+        <li>Once approved, you can set up products, stock and retail or wholesale prices.</li>
+        <li>Your approved shop and active products can then appear in the marketplace.</li>
+      </ul>
+      <h3 style="margin-top:22px">Before you apply</h3>
+      <p>Use a business phone number you can access. Make sure document photos are readable and show all edges of the document.</p>
+      <p><b>Need help?</b><br>Contact MEI One support through the official MEI Group support channels.</p>
+    </aside>
+  </div>
+  <div class="footer">MEI One · A MEI Press Holdings Ltd platform</div>
+</main>
+
+<!-- Keep the shared MEI One configuration and Supabase client. -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4"></script>
+<script src="js/config.js"></script>
+<script src="js/supabase.js"></script>
+<script>
+(() => {
+  "use strict";
+
+  const form = document.getElementById("sellerForm");
+  const notice = document.getElementById("notice");
+  const submitBtn = document.getElementById("submitBtn");
+  const IMAGE_BUCKET = "marketplace-images";
+  const DOC_BUCKET = "marketplace-business-documents";
+  const MAX_IMAGE = 5 * 1024 * 1024;
+  const MAX_DOC = 10 * 1024 * 1024;
+  const ALLOWED_IMAGES = ["image/jpeg", "image/png", "image/webp"];
+  const ALLOWED_DOCS = ["application/pdf", "image/jpeg", "image/png"];
+
+  function client() {
+    return window.MEI_SUPABASE || window.supabaseClient || window.meiSupabase || null;
+  }
+
+  function show(message, type) {
+    notice.textContent = message;
+    notice.className = "notice show " + type;
+    notice.scrollIntoView({behavior:"smooth", block:"center"});
+  }
+
+  function cleanFileName(name) {
+    return name.normalize("NFKD").replace(/[^a-zA-Z0-9._-]+/g, "-").replace(/-+/g, "-").replace(/^-|-$/g, "").slice(-100);
+  }
+
+  function slugify(value) {
+    return value.toLowerCase().normalize("NFKD").replace(/[\u0300-\u036f]/g, "")
+      .replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 75);
+  }
+
+  async function uploadFile(sb, bucket, userId, folder, file, maxSize, allowedTypes) {
+    if (!file) return null;
+    if (!allowedTypes.includes(file.type)) throw new Error("Unsupported file type: " + file.name);
+    if (file.size > maxSize) throw new Error(file.name + " exceeds the allowed file size.");
+    const path = userId + "/" + folder + "/" + Date.now() + "-" + crypto.randomUUID() + "-" + cleanFileName(file.name);
+    const {error} = await sb.storage.from(bucket).upload(path, file, {
+      cacheControl: "3600", upsert: false, contentType: file.type
+    });
+    if (error) throw error;
+    if (bucket === IMAGE_BUCKET) {
+      const {data} = sb.storage.from(bucket).getPublicUrl(path);
+      return {path, url: data.publicUrl};
+    }
+    return {path, url: null};
+  }
+
+  form.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    notice.className = "notice";
+    const sb = client();
+
+    if (!sb || typeof sb.auth?.getUser !== "function") {
+      show("The MEI One Supabase client was not found. Check that js/config.js and js/supabase.js load correctly and expose window.MEI_SUPABASE.", "error");
+      return;
+    }
+
+    submitBtn.disabled = true;
+    submitBtn.textContent = "Submitting application…";
+
+    const uploadedPaths = [];
+    try {
+      const {data: authData, error: authError} = await sb.auth.getUser();
+      if (authError) throw authError;
+      const user = authData?.user;
+      if (!user) {
+        show("Please sign in to your MEI One account before submitting a shop application.", "error");
+        return;
+      }
+
+      const shopName = document.getElementById("shop_name").value.trim();
+      const shopType = form.querySelector('input[name="shop_type"]:checked')?.value;
+      if (!shopType) throw new Error("Choose whether your shop is retail, wholesale or both.");
+
+      const registration = document.getElementById("registration_doc").files[0] || null;
+      const permit = document.getElementById("permit_doc").files[0] || null;
+      const logo = document.getElementById("logo").files[0] || null;
+      const cover = document.getElementById("cover").files[0] || null;
+
+      // Upload files first. If a later step fails, the uploaded files are removed.
+      const [regUpload, permitUpload, logoUpload, coverUpload] = await Promise.all([
+        uploadFile(sb, DOC_BUCKET, user.id, "verification", registration, MAX_DOC, ALLOWED_DOCS),
+        uploadFile(sb, DOC_BUCKET, user.id, "verification", permit, MAX_DOC, ALLOWED_DOCS),
+        uploadFile(sb, IMAGE_BUCKET, user.id, "shops", logo, MAX_IMAGE, ALLOWED_IMAGES),
+        uploadFile(sb, IMAGE_BUCKET, user.id, "shops", cover, MAX_IMAGE, ALLOWED_IMAGES)
+      ]);
+      [regUpload, permitUpload, logoUpload, coverUpload].forEach(x => { if (x?.path) uploadedPaths.push({bucket: x === logoUpload || x === coverUpload ? IMAGE_BUCKET : DOC_BUCKET, path:x.path}); });
+
+      const shopData = {
+        owner_user_id: user.id,
+        shop_name: shopName,
+        slug: slugify(shopName) + "-" + user.id.slice(0, 8),
+        shop_type: shopType,
+        description: document.getElementById("description").value.trim() || null,
+        category: document.getElementById("category").value,
+        phone: document.getElementById("phone").value.trim(),
+        email: document.getElementById("email").value.trim() || user.email || null,
+        county: document.getElementById("county").value.trim(),
+        town: document.getElementById("town").value.trim(),
+        physical_address: document.getElementById("physical_address").value.trim() || null,
+        business_registration_number: document.getElementById("business_registration_number").value.trim() || null,
+        verification_document_path: regUpload?.path || null,
+        single_business_permit_path: permitUpload?.path || null,
+        logo_url: logoUpload?.url || null,
+        cover_image_url: coverUpload?.url || null,
+        status: "pending"
+      };
+
+      // The current marketplace_shops schema has one verification_document_path field.
+      // Additional document paths are retained in the private bucket and can be linked
+      // to dedicated columns after the document-schema extension is applied.
+      const {data: inserted, error: insertError} = await sb
+        .from("marketplace_shops")
+        .insert(shopData)
+        .select("id, shop_name, status")
+        .single();
+
+      if (insertError) throw insertError;
+
+      show("Your shop application has been submitted successfully. Application status: Pending review. Reference: " + inserted.id, "ok");
+      form.reset();
+      form.dataset.submitted = "true";
+      submitBtn.textContent = "Application submitted";
+    } catch (error) {
+      // Clean up files uploaded during an unsuccessful application.
+      for (const item of uploadedPaths) {
+        try { await sb.storage.from(item.bucket).remove([item.path]); } catch (_) {}
+      }
+      console.error("Marketplace seller registration error:", error);
+      show(error.message || "We could not submit your application. Please try again.", "error");
+    } finally {
+      if (!form.dataset.submitted) {
+        submitBtn.disabled = false;
+        submitBtn.textContent = "Submit shop application";
+      }
+    }
+  });
+})();
+</script>
+</body>
+</html>
