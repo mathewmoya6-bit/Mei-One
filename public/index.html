@@ -1,16 +1,19 @@
+
 <!DOCTYPE html>
 <html lang="en" data-no-supabase>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="description" content="MEI One brings rides, delivery, roadside help, garage services, vehicle valuation and everyday services together in one place.">
+<meta name="description" content="MEI One connects rides, delivery, roadside assistance, vehicle services, home services and an online marketplace in one convenient platform.">
 <meta name="theme-color" content="#102b25">
 <title>MEI One — Everything, Connected</title>
+
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 64 64%27%3E%3Crect width=%2764%27 height=%2764%27 rx=%2714%27 fill=%27%23c7f36b%27/%3E%3Ctext x=%2732%27 y=%2745%27 font-size=%2740%27 font-weight=%27900%27 text-anchor=%27middle%27 fill=%27%23102b25%27 font-family=%27Arial%27%3EM%3C/text%3E%3C/svg%3E">
+
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="MEI One">
 <meta property="og:title" content="MEI One — Everything, Connected">
-<meta property="og:description" content="Rides, delivery, towing, roadside help, garage services, vehicle valuation and more in one place.">
+<meta property="og:description" content="Discover services, shop products and connect with providers through MEI One.">
 <meta name="twitter:card" content="summary">
 
 <style>
@@ -61,7 +64,10 @@ button{cursor:pointer}
   display:block;color:#73847b;font-size:9px;
   letter-spacing:2px;margin-top:2px;
 }
-.nav-links{display:flex;align-items:center;gap:27px;color:#52665e;font-size:13px;font-weight:650}
+.nav-links{
+  display:flex;align-items:center;gap:20px;
+  color:#52665e;font-size:12px;font-weight:650;
+}
 .nav-links a:hover{color:var(--green-dark)}
 .nav-actions{display:flex;align-items:center;gap:10px}
 .btn{
@@ -70,7 +76,10 @@ button{cursor:pointer}
   font-weight:750;font-size:13px;transition:.2s;
 }
 .btn:hover{transform:translateY(-2px)}
-.btn-primary{background:var(--green);color:var(--navy);box-shadow:0 8px 18px rgba(137,190,72,.16)}
+.btn-primary{
+  background:var(--green);color:var(--navy);
+  box-shadow:0 8px 18px rgba(137,190,72,.16);
+}
 .btn-primary:hover{background:#b9eb57}
 .btn-outline{background:#fff;color:var(--navy);border:1px solid #dce6dd}
 .btn-outline:hover{border-color:var(--green-dark);background:#f5fff0}
@@ -101,7 +110,9 @@ button{cursor:pointer}
   color:var(--green-dark);font-size:11px;
   text-transform:uppercase;letter-spacing:1.8px;font-weight:850;
 }
-.eyebrow:before{content:"";width:22px;height:4px;border-radius:4px;background:var(--green)}
+.eyebrow:before{
+  content:"";width:22px;height:4px;border-radius:4px;background:var(--green);
+}
 .hero h1{
   max-width:540px;color:#15352b;
   font-size:clamp(43px,5vw,62px);
@@ -220,10 +231,7 @@ button{cursor:pointer}
 .band .eyebrow,.band .step-number{color:#c7f36b}
 .band .eyebrow:before{background:#c7f36b}
 .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
-.step{
-  padding:19px;border:1px solid rgba(255,255,255,.13);
-  background:rgba(255,255,255,.07);border-radius:16px;
-}
+.step{padding:19px;border:1px solid rgba(255,255,255,.13);background:rgba(255,255,255,.07);border-radius:16px}
 .step-number{font-size:10px;font-weight:900;letter-spacing:1px}
 .step h3{font-size:13px;margin:15px 0 7px}
 .step p{font-size:10px;line-height:1.6;margin:0}
@@ -253,9 +261,29 @@ button{cursor:pointer}
 .partner-box h2{color:var(--navy);font-size:28px;letter-spacing:-1px;margin:0 0 8px}
 .partner-box p{color:var(--muted);font-size:12px;margin:0;line-height:1.7;max-width:550px}
 
+/* MARKETPLACE SELLER CTA */
+.seller-cta{background:#f5f8f3}
+.seller-box{
+  display:flex;align-items:center;justify-content:space-between;
+  gap:30px;padding:38px 42px;border-radius:20px;
+  background:#153b31;color:white;
+}
+.seller-box h2{
+  color:white;font-size:28px;letter-spacing:-1px;
+  margin:0 0 8px;
+}
+.seller-box p{
+  color:#c4d3c9;font-size:12px;line-height:1.7;
+  margin:0;max-width:570px;
+}
+.seller-box .kicker{color:#c7f36b;margin-bottom:10px}
+
 /* FOOTER */
 .site-footer{background:#102b25;color:white;padding:58px 0 24px}
-.footer-grid{display:grid;grid-template-columns:1.5fr 1fr 1fr 1fr;gap:35px;padding-bottom:42px}
+.footer-grid{
+  display:grid;grid-template-columns:1.5fr 1fr 1fr 1fr;
+  gap:35px;padding-bottom:42px;
+}
 .footer-brand p{color:#94a7b9;max-width:270px;font-size:11px;line-height:1.8}
 .footer-col h4{color:white;font-size:11px;margin:4px 0 16px}
 .footer-col a{display:block;color:#94a7b9;font-size:11px;margin:11px 0}
@@ -310,12 +338,20 @@ button{cursor:pointer}
 /* ACCESSIBILITY */
 :focus-visible{outline:3px solid #16845b;outline-offset:3px}
 @media(prefers-reduced-motion:reduce){
-  *,*:before,*:after{scroll-behavior:auto!important;transition-duration:.01ms!important;animation-duration:.01ms!important}
+  *,*:before,*:after{
+    scroll-behavior:auto!important;
+    transition-duration:.01ms!important;
+    animation-duration:.01ms!important;
+  }
 }
 
 /* TABLET */
+@media(max-width:1000px){
+  .nav-links{gap:12px;font-size:11px}
+  .nav-actions .btn{padding:11px 13px;font-size:11px}
+}
 @media(max-width:900px){
-  .nav-links{gap:15px}
+  .nav-links{gap:10px}
   .hero-grid{grid-template-columns:1fr 1fr;gap:16px}
   .hero h1{font-size:45px}
   .services-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
@@ -366,6 +402,8 @@ button{cursor:pointer}
   .popular-card{min-height:225px}
   .partner-box{display:block;padding:28px 23px}
   .partner-box .btn{margin-top:20px}
+  .seller-box{display:block;padding:28px 23px}
+  .seller-box .btn{margin-top:20px}
   .footer-grid{grid-template-columns:1fr 1fr}
   .footer-brand{grid-column:1/-1}
   .footer-bottom{flex-direction:column}
@@ -387,9 +425,11 @@ button{cursor:pointer}
 
     <nav class="nav-links" id="navLinks" aria-label="Main navigation">
       <a href="#services">Services</a>
+      <a href="marketplace.html">Marketplace</a>
       <a href="#how">How it works</a>
       <a href="#popular">Explore MEI</a>
       <a href="#partners">Become a partner</a>
+      <a href="seller-register.html">Sell on MEI</a>
     </nav>
 
     <div class="nav-actions">
@@ -417,14 +457,14 @@ button{cursor:pointer}
 
       <p class="hero-copy">
         From getting there to getting things done, MEI One brings
-        everyday services together in one simple, dependable experience.
+        everyday services, shopping and business opportunities
+        together in one simple, dependable experience.
       </p>
 
       <div class="hero-actions">
         <a class="btn btn-primary" href="#services">Explore services →</a>
-        <button class="btn btn-outline" data-account-modal>
-          Create your account
-        </button>
+        <a class="btn btn-outline" href="marketplace.html">Shop Marketplace</a>
+        <a class="btn btn-dark" href="seller-register.html">Open a Shop ↗</a>
       </div>
 
       <div class="hero-note">
@@ -548,7 +588,6 @@ button{cursor:pointer}
         <span class="service-arrow">↗</span>
       </a>
 
-      <!-- ACCIDENT SCENE MANAGEMENT -->
       <a class="service-card" href="accident.html">
         <div class="service-icon">🚨</div>
         <h3>Accident Scene Management</h3>
@@ -580,14 +619,14 @@ button{cursor:pointer}
       <a class="service-card" href="marketplace.html">
         <div class="service-icon">🛒</div>
         <h3>Marketplace</h3>
-        <p>Discover products, offers and services in one place.</p>
+        <p>Discover products, compare offers and shop from MEI One businesses.</p>
         <span class="service-arrow">↗</span>
       </a>
 
       <a class="service-card" href="https://www.meidriveafrica.com"
          target="_blank" rel="noopener">
         <div class="service-icon">🎓</div>
-        <h3>Learning & Driver Training</h3>
+        <h3>Learning &amp; Driver Training</h3>
         <p>Build safer driving skills with MEI Drive Africa.</p>
         <span class="service-arrow">↗</span>
       </a>
@@ -661,7 +700,7 @@ button{cursor:pointer}
       </article>
 
       <article class="popular-card dark">
-        <div class="kicker">Learning & safety</div>
+        <div class="kicker">Learning &amp; safety</div>
         <h3>Drive safe. Arrive alive.</h3>
         <p>Discover driver training and road-safety learning with MEI Drive Africa.</p>
         <a class="btn btn-primary" href="https://www.meidriveafrica.com"
@@ -690,6 +729,30 @@ button{cursor:pointer}
 
       <a class="btn btn-dark" href="partner-apply.html">
         Become a provider ↗
+      </a>
+
+    </div>
+  </div>
+</section>
+
+<!-- MARKETPLACE SELLER CTA -->
+<section class="section seller-cta" id="sell-on-mei">
+  <div class="container">
+    <div class="seller-box">
+
+      <div>
+        <div class="kicker">MEI One Marketplace</div>
+        <h2>Have products to sell?</h2>
+        <p>
+          Open your own MEI One Marketplace shop and reach customers
+          online. Register a retail shop, wholesale shop, or both.
+          Manage your products, prices, inventory and customer orders
+          through your seller account.
+        </p>
+      </div>
+
+      <a class="btn btn-primary" href="seller-register.html">
+        Register Your Shop ↗
       </a>
 
     </div>
@@ -732,8 +795,8 @@ button{cursor:pointer}
           <span>MEI ONE<small>EVERYTHING, CONNECTED</small></span>
         </a>
         <p>
-          Connecting everyday services through one convenient
-          customer experience.
+          Connecting everyday services, shopping and businesses
+          through one convenient customer experience.
         </p>
         <p style="margin-top:10px;font-size:13px">
           <strong>In an emergency, call 999 or 112.</strong>
@@ -747,6 +810,8 @@ button{cursor:pointer}
         <a href="#services">All services</a>
         <a href="#how">How it works</a>
         <a href="#popular">MEI network</a>
+        <a href="marketplace.html">Shop Marketplace</a>
+        <a href="seller-register.html">Open a Shop</a>
       </div>
 
       <div class="footer-col">
@@ -756,9 +821,10 @@ button{cursor:pointer}
       </div>
 
       <div class="footer-col">
-        <h4>For providers</h4>
+        <h4>For providers &amp; sellers</h4>
         <a href="provider-signin.html">Provider Sign In</a>
         <a href="partner-apply.html">Become a Provider</a>
+        <a href="seller-register.html">Marketplace Seller Registration</a>
       </div>
 
     </div>
@@ -819,6 +885,7 @@ button{cursor:pointer}
 
 <script src="js/config.js"></script>
 <script src="js/contact.js"></script>
+
 <script>
 "use strict";
 
@@ -879,8 +946,8 @@ menuToggle.addEventListener("click", () => {
   menuToggle.textContent = isOpen ? "×" : "☰";
 });
 
-/* Close mobile navigation after selecting a section */
-$$('#navLinks a').forEach(link => {
+/* Close mobile navigation after selecting a link */
+$$("#navLinks a").forEach(link => {
   link.addEventListener("click", () => {
     navLinks.classList.remove("open");
     menuToggle.setAttribute("aria-expanded", "false");
